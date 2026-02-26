@@ -1,0 +1,5 @@
+http://example.com/2024/01/01/Git/
+http://example.com/2026/02/26/hello-world/
+http://example.com/about/index.html
+http://example.com/
+http://example.com/tags/Git/
