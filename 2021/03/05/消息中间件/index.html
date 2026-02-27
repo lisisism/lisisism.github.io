@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    消息中间件ActiveMQ/RabbitMQ 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">消息中间件ActiveMQ/RabbitMQ</div>
+  <div class="post-meta">
+    <div class="date">2021 三月 5日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="消息中间件"><a class="markdownIt-Anchor" href="#消息中间件"></a> 消息中间件</h1>
+<p>[TOC]</p>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>什么是消息中间件？</p>
+<p>以公众号为例，如果某学员订阅了公众号，每当站长发布新教程的时候，都可以在这个公众号得到通知，这就是一种广播订阅模式</p>
+<p>而公众号如何实现这一点呢？ 就可以通过 消息中间件 来轻松实现。<br />
+站长把最新的教程信息 发给 消息中间件服务器， 学员手机上的微信里的消息中间件客户端，就会自动去把消息获取出来显示，这样站长就达到了教程广播的效果了</p>
+<p><strong>实现方式</strong></p>
+<ul>
+<li>ActiveMQ</li>
+<li>RabbitMQ</li>
+</ul>
+<h2 id="activemq"><a class="markdownIt-Anchor" href="#activemq"></a> ActiveMQ</h2>
+<h3 id="安装启动"><a class="markdownIt-Anchor" href="#安装启动"></a> 安装启动</h3>
+<h4 id="下载启动"><a class="markdownIt-Anchor" href="#下载启动"></a> 下载启动</h4>
+<p>下载好后直接运行 <code>activemq.bat</code> 即可启动</p>
+<p>启动成功界面</p>
+<h4 id="访问"><a class="markdownIt-Anchor" href="#访问"></a> 访问</h4>
+<p>启动后，访问地址<code>http://127.0.0.1:8161/</code>就可以看到如图所示的界面</p>
+<p>这就是服务器的管理界面，在里面就可以看到都有哪些消息被创建了，哪些被消费了</p>
+<h4 id="管理界面"><a class="markdownIt-Anchor" href="#管理界面"></a> 管理界面</h4>
+<p>点击manager ActiveMQ broker，或者直接访问地址：<code>http://127.0.0.1:8161/admin/</code></p>
+<p>会弹出对话框，输入默认的账号和密码，都是<code>admin</code>，就进入了管理界面了</p>
+<blockquote>
+<p>这里就可以观察到队列数据和主题数据等信息</p>
+</blockquote>
+<h3 id="队列模式"><a class="markdownIt-Anchor" href="#队列模式"></a> 队列模式</h3>
+<h4 id="模式"><a class="markdownIt-Anchor" href="#模式"></a> 模式</h4>
+<p>activeMQ有两种模式，分别是<strong>队列模式</strong>和<strong>主题模式</strong></p>
+<p><strong>队列模式</strong>：其实就是分食模式，比如生产方发了10条消息到activeMQ服务器，而此时有多个消费方，那么这些消费方就会瓜分这些10条消息，一条消息只会被一个消费方得到</p>
+<h4 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h4>
+<h5 id="jar包"><a class="markdownIt-Anchor" href="#jar包"></a> jar包</h5>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee.MQSimple<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MQSimple<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.activemq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activemq-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.15.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<h5 id="工具类"><a class="markdownIt-Anchor" href="#工具类"></a> 工具类</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ;
+
+<span class="keyword">import</span> javax.swing.JOptionPane;
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="comment">/**</span>
+<span class="comment"> * 用于判断activeMQ是否启动</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ActiveMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">8161</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;ActiveMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h5 id="生产者-producer"><a class="markdownIt-Anchor" href="#生产者-producer"></a> 生产者 Producer</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ;
+
+<span class="keyword">import</span> javax.jms.Connection;
+<span class="keyword">import</span> javax.jms.ConnectionFactory;
+<span class="keyword">import</span> javax.jms.Destination;
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.MessageProducer;
+<span class="keyword">import</span> javax.jms.Session;
+<span class="keyword">import</span> javax.jms.TextMessage;
+
+<span class="keyword">import</span> org.apache.activemq.ActiveMQConnectionFactory;
+
+<span class="comment">/**</span>
+<span class="comment"> * 生产者</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestProducer</span> &#123;
+
+    <span class="comment">//服务地址，端口默认61616</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String url=<span class="string">&quot;tcp://127.0.0.1:61616&quot;</span>;
+    <span class="comment">//这次发送的消息名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String topicName=<span class="string">&quot;queue_style&quot;</span>;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMSException &#123;
+        <span class="comment">//0. 先判断端口是否启动了  Active MQ 服务器</span>
+        ActiveMQUtil.checkServer();
+        <span class="comment">//1.创建ConnectionFactory,绑定地址</span>
+        ConnectionFactory factory=<span class="keyword">new</span> <span class="title class_">ActiveMQConnectionFactory</span>(url);
+        <span class="comment">//2.创建Connection</span>
+        Connection connection= factory.createConnection();
+        <span class="comment">//3.启动连接</span>
+        connection.start();
+        <span class="comment">//4.创建会话</span>
+        Session session=connection.createSession(<span class="literal">false</span>, Session.AUTO_ACKNOWLEDGE);
+        <span class="comment">//5.创建一个目标 (队列类型)</span>
+        Destination destination=session.createQueue(topicName);
+        <span class="comment">//6.创建一个生产者</span>
+        MessageProducer producer=session.createProducer(destination);
+
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;
+            <span class="comment">//7.创建消息</span>
+            TextMessage textMessage=session.createTextMessage(<span class="string">&quot;队列消息-&quot;</span>+i);
+            <span class="comment">//8.发送消息</span>
+            producer.send(textMessage);
+            System.out.println(<span class="string">&quot;发送：&quot;</span>+textMessage.getText());
+        &#125;
+        <span class="comment">//7. 关闭连接</span>
+        connection.close();
+    &#125;
+&#125;</code></pre>
+<h5 id="消费者-consumer"><a class="markdownIt-Anchor" href="#消费者-consumer"></a> 消费者 Consumer</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ;
+
+<span class="keyword">import</span> javax.jms.Connection;
+<span class="keyword">import</span> javax.jms.ConnectionFactory;
+<span class="keyword">import</span> javax.jms.Destination;
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.Message;
+<span class="keyword">import</span> javax.jms.MessageConsumer;
+<span class="keyword">import</span> javax.jms.MessageListener;
+<span class="keyword">import</span> javax.jms.Session;
+<span class="keyword">import</span> javax.jms.TextMessage;
+
+<span class="keyword">import</span> org.apache.activemq.ActiveMQConnectionFactory;
+
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+<span class="comment">/**</span>
+<span class="comment"> * 订阅者</span>
+<span class="comment"> * <span class="doctag">@author</span> root</span>
+<span class="comment"> *</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestConsumer</span> &#123;
+    <span class="comment">//服务地址，端口默认61616</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String url=<span class="string">&quot;tcp://127.0.0.1:61616&quot;</span>;
+    <span class="comment">//这次消费的消息名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String topicName=<span class="string">&quot;queue_style&quot;</span>;
+
+    <span class="comment">//消费者有可能是多个，为了区分不同的消费者，为其创建随机名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String consumerName=<span class="string">&quot;consumer-&quot;</span> + RandomUtil.randomString(<span class="number">5</span>);
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMSException &#123;
+        <span class="comment">//0. 先判断端口是否启动了 Active MQ 服务器</span>
+        ActiveMQUtil.checkServer();
+        System.out.printf(<span class="string">&quot;%s 消费者启动了。 %n&quot;</span>, consumerName);
+
+        <span class="comment">//1.创建ConnectiongFactory,绑定地址</span>
+        ConnectionFactory factory=<span class="keyword">new</span> <span class="title class_">ActiveMQConnectionFactory</span>(url);
+        <span class="comment">//2.创建Connection</span>
+        Connection connection= factory.createConnection();
+        <span class="comment">//3.启动连接</span>
+        connection.start();
+        <span class="comment">//4.创建会话</span>
+        Session session=connection.createSession(<span class="literal">false</span>, Session.AUTO_ACKNOWLEDGE);
+        <span class="comment">//5.创建一个目标 （队列类型）</span>
+        Destination destination=session.createQueue(topicName);
+        <span class="comment">//6.创建一个消费者</span>
+        MessageConsumer consumer=session.createConsumer(destination);
+        <span class="comment">//7.创建一个监听器</span>
+        consumer.setMessageListener(<span class="keyword">new</span> <span class="title class_">MessageListener</span>() &#123;
+
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onMessage</span><span class="params">(Message arg0)</span> &#123;
+                <span class="comment">// TODO Auto-generated method stub</span>
+                TextMessage textMessage=(TextMessage)arg0;
+                <span class="keyword">try</span> &#123;
+                    System.out.println(consumerName +<span class="string">&quot; 接收消息：&quot;</span>+textMessage.getText());
+                &#125; <span class="keyword">catch</span> (JMSException e) &#123;
+                    <span class="comment">// TODO Auto-generated catch block</span>
+                    e.printStackTrace();
+                &#125;
+
+            &#125;
+        &#125;);
+
+        <span class="comment">//8. 因为不知道什么时候有，所以没法主动关闭，就不关闭了，一直处于监听状态</span>
+        <span class="comment">//connection.close();</span>
+    &#125;
+&#125;</code></pre>
+<h4 id="运行"><a class="markdownIt-Anchor" href="#运行"></a> 运行</h4>
+<ol>
+<li>首先运行两次TestConsumer类，启动两个消费者</li>
+<li>运行一次TestProducer，以启动生产者，生产者会生成100条消息</li>
+</ol>
+<blockquote>
+<p>然后两个消费者会瓜分这100条消息，如图所示，两个消费者会瓜分不同的消息</p>
+</blockquote>
+<h4 id="管理界面-2"><a class="markdownIt-Anchor" href="#管理界面-2"></a> 管理界面</h4>
+<p>访问地址：<code>http://127.0.0.1:8161/admin/queues.jsp</code>就可以看到刚才消息处理情况</p>
+<p>queue_style 是在代码中定义的消息名称</p>
+<p>number Of Consumers 表示有2个消费者</p>
+<p>Messages Enqueued：表示收到了 100 个消息</p>
+<p>Messages Dequeued：表示消费了 100 个消息</p>
+<h3 id="主题模式"><a class="markdownIt-Anchor" href="#主题模式"></a> 主题模式</h3>
+<p>需要注意的一点是，对于主题模式而言，消费者要先启动，如果在生产者生产完成之后，再启动，是看不到消息的</p>
+<h4 id="模式-2"><a class="markdownIt-Anchor" href="#模式-2"></a> 模式</h4>
+<p>activeMQ有两种模式，分别是<strong>队列模式</strong>和<strong>主题模式</strong></p>
+<p><strong>主题模式</strong>：就是订阅模式，比如生产方发了10条消息，而此时有多个消费方，那么多个消费方都能得到这10条消息，就如同订阅公众号那样</p>
+<p>主题模式就是每个订阅了的消费者，都可以获取所有的消息，而不像队列模式那样要争抢</p>
+<h4 id="实现-2"><a class="markdownIt-Anchor" href="#实现-2"></a> 实现</h4>
+<p>主题模式实现和队列模式实现基本相同，只有一行代码不同</p>
+<pre><code class="highlight plaintext">Destination destination=session.createTopic(topicName);</code></pre>
+<h5 id="jar包-2"><a class="markdownIt-Anchor" href="#jar包-2"></a> jar包</h5>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee.MQSimple<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MQSimple<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.activemq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activemq-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.15.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<h5 id="工具类-2"><a class="markdownIt-Anchor" href="#工具类-2"></a> 工具类</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ.topic;
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="keyword">import</span> javax.swing.*;
+
+<span class="comment">/**</span>
+<span class="comment"> * 用于判断activeMQ是否启动</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ActiveMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">8161</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;ActiveMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h5 id="生产者-producer-2"><a class="markdownIt-Anchor" href="#生产者-producer-2"></a> 生产者 Producer</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ.topic;
+
+<span class="keyword">import</span> javax.jms.Connection;
+<span class="keyword">import</span> javax.jms.ConnectionFactory;
+<span class="keyword">import</span> javax.jms.Destination;
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.MessageProducer;
+<span class="keyword">import</span> javax.jms.Session;
+<span class="keyword">import</span> javax.jms.TextMessage;
+
+<span class="keyword">import</span> org.apache.activemq.ActiveMQConnectionFactory;
+
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestProducer</span> &#123;
+
+    <span class="comment">//服务地址，端口默认61616</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String url=<span class="string">&quot;tcp://127.0.0.1:61616&quot;</span>;
+    <span class="comment">//这次发送的消息名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String topicName=<span class="string">&quot;topic_style&quot;</span>;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMSException &#123;
+        <span class="comment">//0. 先判断端口是否启动了  Active MQ 服务器</span>
+        ActiveMQUtil.checkServer();
+        <span class="comment">//1.创建ConnectiongFactory,绑定地址</span>
+        ConnectionFactory factory=<span class="keyword">new</span> <span class="title class_">ActiveMQConnectionFactory</span>(url);
+        <span class="comment">//2.创建Connection</span>
+        Connection connection= factory.createConnection();
+        <span class="comment">//3.启动连接</span>
+        connection.start();
+        <span class="comment">//4.创建会话</span>
+        Session session=connection.createSession(<span class="literal">false</span>, Session.AUTO_ACKNOWLEDGE);
+        <span class="comment">//5.创建一个目标 (主题类型)</span>
+        Destination destination=session.createTopic(topicName);
+        <span class="comment">//6.创建一个生产者</span>
+        MessageProducer producer=session.createProducer(destination);
+
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;
+            <span class="comment">//7.创建消息</span>
+            TextMessage textMessage=session.createTextMessage(<span class="string">&quot;主题消息-&quot;</span>+i);
+            <span class="comment">//8.发送消息</span>
+            producer.send(textMessage);
+            System.out.println(<span class="string">&quot;发送：&quot;</span>+textMessage.getText());
+        &#125;
+        <span class="comment">//7. 关闭连接</span>
+        connection.close();
+    &#125;
+&#125;</code></pre>
+<h5 id="消费者-consumer-2"><a class="markdownIt-Anchor" href="#消费者-consumer-2"></a> 消费者 Consumer</h5>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ.topic;
+
+<span class="keyword">import</span> javax.jms.Connection;
+<span class="keyword">import</span> javax.jms.ConnectionFactory;
+<span class="keyword">import</span> javax.jms.Destination;
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.Message;
+<span class="keyword">import</span> javax.jms.MessageConsumer;
+<span class="keyword">import</span> javax.jms.MessageListener;
+<span class="keyword">import</span> javax.jms.Session;
+<span class="keyword">import</span> javax.jms.TextMessage;
+
+<span class="keyword">import</span> org.apache.activemq.ActiveMQConnectionFactory;
+
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+<span class="comment">/**</span>
+<span class="comment"> * 订阅者</span>
+<span class="comment"> * <span class="doctag">@author</span> root</span>
+<span class="comment"> *</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestConsumer</span> &#123;
+    <span class="comment">//服务地址，端口默认61616</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String url=<span class="string">&quot;tcp://127.0.0.1:61616&quot;</span>;
+    <span class="comment">//这次消费的消息名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String topicName=<span class="string">&quot;topic_style&quot;</span>;
+
+    <span class="comment">//消费者有可能是多个，为了区分不同的消费者，为其创建随机名称</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String consumerName=<span class="string">&quot;consumer-&quot;</span> + RandomUtil.randomString(<span class="number">5</span>);
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> JMSException &#123;
+
+        <span class="comment">//0. 先判断端口是否启动了 Active MQ 服务器</span>
+        ActiveMQUtil.checkServer();
+        System.out.printf(<span class="string">&quot;%s 消费者启动了。 %n&quot;</span>, consumerName);
+        <span class="comment">//1.创建ConnectiongFactory,绑定地址</span>
+        ConnectionFactory factory=<span class="keyword">new</span> <span class="title class_">ActiveMQConnectionFactory</span>(url);
+        <span class="comment">//2.创建Connection</span>
+        Connection connection= factory.createConnection();
+        <span class="comment">//3.启动连接</span>
+        connection.start();
+        <span class="comment">//4.创建会话</span>
+        Session session=connection.createSession(<span class="literal">false</span>, Session.AUTO_ACKNOWLEDGE);
+        <span class="comment">//5.创建一个目标 （主题类型）</span>
+        Destination destination=session.createTopic(topicName);
+        <span class="comment">//6.创建一个消费者</span>
+        MessageConsumer consumer=session.createConsumer(destination);
+        <span class="comment">//7.创建一个监听器</span>
+        consumer.setMessageListener(<span class="keyword">new</span> <span class="title class_">MessageListener</span>() &#123;
+
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onMessage</span><span class="params">(Message arg0)</span> &#123;
+                <span class="comment">// TODO Auto-generated method stub</span>
+                TextMessage textMessage=(TextMessage)arg0;
+                <span class="keyword">try</span> &#123;
+                    System.out.println(consumerName +<span class="string">&quot; 接收消息：&quot;</span>+textMessage.getText());
+                &#125; <span class="keyword">catch</span> (JMSException e) &#123;
+                    <span class="comment">// TODO Auto-generated catch block</span>
+                    e.printStackTrace();
+                &#125;
+
+            &#125;
+        &#125;);
+
+        <span class="comment">//8. 因为不知道什么时候有，所以没法主动关闭，就不关闭了，一直处于监听状态</span>
+        <span class="comment">//connection.close();</span>
+    &#125;
+&#125;</code></pre>
+<h4 id="运行-2"><a class="markdownIt-Anchor" href="#运行-2"></a> 运行</h4>
+<ol>
+<li>首先运行两次 TestConsumer 类，以启动两个不同的消费者</li>
+<li>运行一次 TestProducer， 以启动 生产者，<br />
+这个生产者会生产100条消息</li>
+</ol>
+<blockquote>
+<p>这两个消费者都会收到这100条消息，如图所示这样的效果，两个消费者都能获取全部的信息</p>
+</blockquote>
+<h4 id="管理界面-3"><a class="markdownIt-Anchor" href="#管理界面-3"></a> 管理界面</h4>
+<p>访问地址： <code>http://127.0.0.1:8161/admin/topics.jsp</code> 就可以看到 刚才的消息处理情况</p>
+<p>看最下面那行：<br />
+topics_style 是在代码中定义的消息名称</p>
+<p>number Of Consumers 表示有2个消费者</p>
+<p>Messages Enqueued：表示收到了 100 个消息</p>
+<p>Messages Dequeued：表示消费了 200 个消息</p>
+<h3 id="spring模式"><a class="markdownIt-Anchor" href="#spring模式"></a> spring模式</h3>
+<h4 id="pomxml"><a class="markdownIt-Anchor" href="#pomxml"></a> pom.xml</h4>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee.MQSimple<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>MQSimple<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+        <span class="comment">&lt;!--activeMQ--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.activemq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activemq-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.15.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="comment">&lt;!--工具包--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+        <span class="comment">&lt;!--spring核心组件--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-jms<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.2.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.4.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<h4 id="spring_jmsxml"><a class="markdownIt-Anchor" href="#spring_jmsxml"></a> spring_jms.xml</h4>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:p</span>=<span class="string">&quot;http://www.springframework.org/schema/p&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:context</span>=<span class="string">&quot;http://www.springframework.org/schema/context&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd</span></span>
+<span class="string"><span class="tag">        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">context:component-scan</span> <span class="attr">base-package</span>=<span class="string">&quot;activeMQ.springActiveMQ&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">context:component-scan</span>&gt;</span>
+    <span class="comment">&lt;!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;targetConnectionFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.activemq.ActiveMQConnectionFactory&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;brokerURL&quot;</span> <span class="attr">value</span>=<span class="string">&quot;tcp://127.0.0.1:61616&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+    <span class="comment">&lt;!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory --&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;connectionFactory&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jms.connection.SingleConnectionFactory&quot;</span>&gt;</span>
+
+        <span class="comment">&lt;!-- 目标ConnectionFactory对应真实的可以产生JMS Connection的ConnectionFactory --&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;targetConnectionFactory&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;targetConnectionFactory&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+    <span class="comment">&lt;!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 --&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;jmsTemplate&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jms.core.JmsTemplate&quot;</span>&gt;</span>
+        <span class="comment">&lt;!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 --&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;connectionFactory&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;connectionFactory&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+    <span class="comment">&lt;!--这个是队列目的地, ActiveMQQueue 就表示队列模式。 如果要用主题模式就改成 ActiveMQTopic就行了 --&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;textDestination&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.activemq.command.ActiveMQQueue&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;queue_style&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+    <span class="comment">&lt;!-- 我的监听类 --&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;myMessageListener&quot;</span> <span class="attr">class</span>=<span class="string">&quot;activeMQ.springActiveMQ.MyMessageListener&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+    <span class="comment">&lt;!-- 消息监听容器，会伴随spring的启动 --&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.jms.listener.DefaultMessageListenerContainer&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;connectionFactory&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;connectionFactory&quot;</span> /&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;destination&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;textDestination&quot;</span> /&gt;</span>
+        <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;messageListener&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;myMessageListener&quot;</span> /&gt;</span>
+    <span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="工具类-3"><a class="markdownIt-Anchor" href="#工具类-3"></a> 工具类</h4>
+<p>测试activeMQ是否启动</p>
+<pre><code class="highlight java"><span class="keyword">package</span> activeMQ.springActiveMQ;
+
+<span class="keyword">import</span> javax.swing.JOptionPane;
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ActiveMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">8161</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;ActiveMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="生产者-producer-3"><a class="markdownIt-Anchor" href="#生产者-producer-3"></a> 生产者 Producer</h4>
+<pre><code class="highlight java"><span class="keyword">import</span> javax.jms.Destination;
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.Message;
+<span class="keyword">import</span> javax.jms.Session;
+ 
+<span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;
+<span class="keyword">import</span> org.springframework.jms.core.JmsTemplate;
+<span class="keyword">import</span> org.springframework.jms.core.MessageCreator;
+<span class="keyword">import</span> org.springframework.stereotype.Component;
+ 
+<span class="meta">@Component</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Producer</span> &#123;
+     
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> JmsTemplate jmsTemplate;
+     
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> Destination textDestination;
+     
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">sendTextMessage</span><span class="params">(<span class="keyword">final</span> String text)</span>&#123;
+        jmsTemplate.send(textDestination, <span class="keyword">new</span> <span class="title class_">MessageCreator</span>() &#123;
+             
+            <span class="keyword">public</span> Message <span class="title function_">createMessage</span><span class="params">(Session session)</span> <span class="keyword">throws</span> JMSException &#123;
+                <span class="keyword">return</span> session.createTextMessage(text);
+            &#125;
+        &#125;);
+    &#125;
+     
+&#125;</code></pre>
+<h4 id="testproducer-测试使用生产者"><a class="markdownIt-Anchor" href="#testproducer-测试使用生产者"></a> TestProducer 测试使用生产者</h4>
+<pre><code class="highlight java"><span class="keyword">import</span> org.junit.Before;
+<span class="keyword">import</span> org.junit.Test;
+<span class="keyword">import</span> org.junit.runner.RunWith;
+<span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;
+<span class="keyword">import</span> org.springframework.test.context.ContextConfiguration;
+<span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+ 
+<span class="keyword">import</span> cn.how2j.util.ActiveMQUtil;
+ 
+<span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span>
+<span class="meta">@ContextConfiguration(locations=&quot;classpath:spring_jms.xml&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestProducer</span> &#123;
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> Producer producer;
+     
+    <span class="meta">@Before</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        ActiveMQUtil.checkServer();
+    &#125;
+     
+    <span class="meta">@Test</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testSend</span><span class="params">()</span>&#123;
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;
+            producer.sendTextMessage(<span class="string">&quot;消息 &quot;</span> + i);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="消费者-consumer-3"><a class="markdownIt-Anchor" href="#消费者-consumer-3"></a> 消费者 Consumer</h4>
+<pre><code class="highlight java">
+<span class="keyword">import</span> javax.jms.JMSException;
+<span class="keyword">import</span> javax.jms.Message;
+<span class="keyword">import</span> javax.jms.MessageListener;
+<span class="keyword">import</span> javax.jms.TextMessage;
+ 
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+ 
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyMessageListener</span> <span class="keyword">implements</span> <span class="title class_">MessageListener</span> &#123;
+ 
+    <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;consumer-&quot;</span>+ RandomUtil.randomString(<span class="number">5</span>);
+    <span class="keyword">public</span>  <span class="title function_">MyMessageListener</span><span class="params">()</span> &#123;
+        System.out.println(name + <span class="string">&quot; started&quot;</span>);
+    &#125;
+     
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onMessage</span><span class="params">(Message message)</span> &#123;
+        TextMessage textMessage=(TextMessage)message;       
+        <span class="keyword">try</span> &#123;
+            System.out.println(name+<span class="string">&quot; 接收到消息：&quot;</span>+textMessage.getText());
+        &#125; <span class="keyword">catch</span> (JMSException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="testconsumer-测试使用消费者"><a class="markdownIt-Anchor" href="#testconsumer-测试使用消费者"></a> TestConsumer 测试使用消费者</h4>
+<p>消费者测试类，他其实什么都没做。 虽然它什么都没做，但是因为他是运行在 spring框架下的测试，所以一旦启动，就会导致一个新的 DefaultMessageListenerContainer 被启动，间接地导致 一个新的 MyMessageListener 被启动。 于是也就充当了消费者的角色了。<br />
+其中的</p>
+<pre><code class="highlight plaintext">System.in.read();</code></pre>
+<p>是为了这个类不退出，可以一直监听用</p>
+<p>于这个类似的，TestProducer类启动，也会导致一个MyMessageListener被启动，所以TestProducer本身即是一个生产者，也是一个消费者</p>
+<pre><code class="highlight java"><span class="keyword">import</span> java.io.IOException;
+ 
+<span class="keyword">import</span> org.junit.Before;
+<span class="keyword">import</span> org.junit.Test;
+<span class="keyword">import</span> org.junit.runner.RunWith;
+<span class="keyword">import</span> org.springframework.test.context.ContextConfiguration;
+<span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+ 
+<span class="keyword">import</span> cn.how2j.util.ActiveMQUtil;
+ 
+<span class="meta">@RunWith(SpringJUnit4ClassRunner.class)</span>
+<span class="meta">@ContextConfiguration(locations=&quot;classpath:spring_jms.xml&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestConsumer</span> &#123;
+    <span class="meta">@Before</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        ActiveMQUtil.checkServer();
+    &#125;
+     
+    <span class="meta">@Test</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test</span><span class="params">()</span>&#123;
+        <span class="keyword">try</span> &#123;
+            <span class="comment">//写这个是为了不让当前测试退出。  因为 spring的配置， MyMessageListener 会自动启动</span>
+            System.in.read();
+        &#125; <span class="keyword">catch</span> (IOException e) &#123;
+            e.printStackTrace();
+        &#125;       
+    &#125;   
+&#125;</code></pre>
+<h4 id="模式切换"><a class="markdownIt-Anchor" href="#模式切换"></a> 模式切换</h4>
+<p>当前例子是队列模式，要切换为主题模式只需修改spring_jms就可以了，顺便把queue也修改成topic_style，免得混淆</p>
+<pre><code class="highlight xml"><span class="comment">&lt;!--这个是队列目的地, ActiveMQQueue 就表示队列模式。 如果要用主题模式就改成 ActiveMQTopic就行了 --&gt;</span>
+<span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;textDestination&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.activemq.command.ActiveMQQueue&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;queue_style&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">bean</span>&gt;</span>
+</code></pre>
+<h2 id="rabbitmq"><a class="markdownIt-Anchor" href="#rabbitmq"></a> RabbitMQ</h2>
+<p>与 ActiveMQ 一样， rabbitmq 也是一种 消息中间件的实现。与之的区别在于， rabbitmq 更专业，更灵活，大企业，大型高要求的应用，普遍会采用 rabbitmq 来支持</p>
+<h3 id="安装运行"><a class="markdownIt-Anchor" href="#安装运行"></a> 安装运行</h3>
+<h4 id="安装erlang"><a class="markdownIt-Anchor" href="#安装erlang"></a> 安装erlang</h4>
+<p>RabbitMQ使用erlang语言开发，需要安装对应语言的环境</p>
+<p>下载安装erlang <code>otp_win64_18.1.exe</code>，配置环境<strong>变量path增加erlang的安装路径</strong>即可</p>
+<p>测试运行</p>
+<h4 id="安装运行-rabbitmq"><a class="markdownIt-Anchor" href="#安装运行-rabbitmq"></a> 安装/运行 rabbitMQ</h4>
+<p>下载rabbitMQ，运行<code>rabbitmq-server-3.6.5.exe</code>，使用默认设置，下一步下一步即可。</p>
+<p><strong>配置插件</strong></p>
+<p>运行如下命令</p>
+<pre><code class="highlight plaintext">&quot;D:\MQ\rabbitmq\rabbitmq_server-3.6.5\sbin\rabbitmq-plugins.bat&quot; enable rabbitmq_management
+</code></pre>
+<p><strong>重启 rabbitmq</strong></p>
+<p>运行以下命令以重启rabbitmq</p>
+<pre><code class="highlight plaintext">net stop RabbitMQ 
+net start RabbitMQ</code></pre>
+<h4 id="访问管理界面"><a class="markdownIt-Anchor" href="#访问管理界面"></a> 访问管理界面</h4>
+<p>管理界面</p>
+<pre><code class="highlight plaintext">http://127.0.0.1:15672</code></pre>
+<blockquote>
+<p>账号：guest<br />
+密码：guest</p>
+</blockquote>
+<h3 id="模式讲解"><a class="markdownIt-Anchor" href="#模式讲解"></a> 模式讲解</h3>
+<h4 id="amqp"><a class="markdownIt-Anchor" href="#amqp"></a> AMQP</h4>
+<p>于activeMQ不同，rabbitMQ使用的是一种叫做AMQP的协议来通信，AMQP是dvanced Message Queuing Protocol 的缩写。协议内容我们就没必要深入研究了，简单地说，通过这种协议，可以处理更为复杂的业务需求</p>
+<h4 id="消息路由过程"><a class="markdownIt-Anchor" href="#消息路由过程"></a> 消息路由过程</h4>
+<p>于ActiveMQ拿到消息就直接放在队列等待消费者拿走不同，Rabbit拿到消息后，先交给交换机exchange，然后交换机再根据预先设定的不同绑定bingdings策略，来确定要发给哪个队列</p>
+<p>如图所示，比起ActiveMQ多了Exchange和Bindings</p>
+<p>正式由于有了Exchange和Bindings，RabbitMQ就可以灵活地支撑多种模式</p>
+<h4 id="模式-3"><a class="markdownIt-Anchor" href="#模式-3"></a> 模式</h4>
+<p>RabbitMQ提供了Exchange模式：fanout,direct,topic,header，header模式在实际使用中较少，暂时学习前三种模式</p>
+<h5 id="fanout-模式"><a class="markdownIt-Anchor" href="#fanout-模式"></a> fanout 模式</h5>
+<p><strong>fanout</strong>模式就是广播模式，消息来了，会发给所有的队列</p>
+<h5 id="direct-模式"><a class="markdownIt-Anchor" href="#direct-模式"></a> direct 模式</h5>
+<p><strong>direct</strong>模式就是指定队列的模式，消息来了，只发给指定的quere，其他的queue都收不到</p>
+<h5 id="topic-模式"><a class="markdownIt-Anchor" href="#topic-模式"></a> topic 模式</h5>
+<p>主题模式，注意这里的主题模式，和 ActivityMQ 里的不一样。 ActivityMQ 里的主题，更像是广播模式</p>
+<p>那么这里的主题模式是什么意思呢？ 如图所示消息来源有： 美国新闻，美国天气，欧洲新闻，欧洲天气</p>
+<p>如果你想看 美国主题： 那么就会收到 美国新闻，美国天气<br />
+如果你想看 新闻主题： 那么就会收到 美国新闻，欧洲新闻<br />
+如果你想看 天气主题： 那么就会收到 美国天气，欧洲天气<br />
+如果你想看 欧洲主题： 那么就会收到 欧洲新闻，欧洲天气</p>
+<h3 id="fanout-模式代码"><a class="markdownIt-Anchor" href="#fanout-模式代码"></a> fanout 模式代码</h3>
+<h4 id="pomxml-2"><a class="markdownIt-Anchor" href="#pomxml-2"></a> pom.xml</h4>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.rabbitmq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>amqp-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+ <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+ 
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+</code></pre>
+<h4 id="rabbitmqutil"><a class="markdownIt-Anchor" href="#rabbitmqutil"></a> RabbitMQUtil</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.fanout;
+
+<span class="comment">/**</span>
+<span class="comment"> * 判断rabbitMQ服务器是否启动</span>
+<span class="comment"> */</span>
+<span class="keyword">import</span> javax.swing.JOptionPane;
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RabbitMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">15672</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;RabbitMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="testproducer"><a class="markdownIt-Anchor" href="#testproducer"></a> TestProducer</h4>
+<p>生产者</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.fanout;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+
+<span class="comment">/**</span>
+<span class="comment"> * 消息生成者</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestProducer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">&quot;fanout_exchange&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        RabbitMQUtil.checkServer();
+
+        <span class="comment">//创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ相关信息</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+
+        channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">&quot;fanout&quot;</span>);
+
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;
+            <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;direct 消息 &quot;</span> +i;
+            <span class="comment">//发送消息到队列中</span>
+            channel.basicPublish(EXCHANGE_NAME, <span class="string">&quot;&quot;</span>, <span class="literal">null</span>, message.getBytes(<span class="string">&quot;UTF-8&quot;</span>));
+            System.out.println(<span class="string">&quot;发送消息： &quot;</span> + message);
+
+        &#125;
+        <span class="comment">//关闭通道和连接</span>
+        channel.close();
+        connection.close();
+    &#125;
+&#125;</code></pre>
+<h4 id="testcustomer"><a class="markdownIt-Anchor" href="#testcustomer"></a> TestCustomer</h4>
+<p>消费者</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.fanout;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.AMQP;
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+<span class="keyword">import</span> com.rabbitmq.client.Consumer;
+<span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;
+<span class="keyword">import</span> com.rabbitmq.client.Envelope;
+
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+
+<span class="comment">/**</span>
+<span class="comment"> * 消息消费者</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestCustomer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">&quot;fanout_exchange&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        <span class="comment">//为当前消费者取随机名</span>
+        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;consumer-&quot;</span>+ RandomUtil.randomString(<span class="number">5</span>);
+
+        <span class="comment">//判断服务器是否启动</span>
+        RabbitMQUtil.checkServer();
+        <span class="comment">// 创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ地址</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+        <span class="comment">//交换机声明（参数为：交换机名称；交换机类型）</span>
+        channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">&quot;fanout&quot;</span>);
+        <span class="comment">//获取一个临时队列</span>
+        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> channel.queueDeclare().getQueue();
+        <span class="comment">//队列与交换机绑定（参数为：队列名称；交换机名称；routingKey忽略）</span>
+        channel.queueBind(queueName,EXCHANGE_NAME,<span class="string">&quot;&quot;</span>);
+
+        System.out.println(name +<span class="string">&quot; 等待接受消息&quot;</span>);
+        <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个频道，</span>
+        <span class="comment">// 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery</span>
+        <span class="type">Consumer</span> <span class="variable">consumer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel) &#123;
+            <span class="meta">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span>
+<span class="params">                                       AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span>
+                    <span class="keyword">throws</span> IOException &#123;
+                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(body, <span class="string">&quot;UTF-8&quot;</span>);
+                System.out.println(name + <span class="string">&quot; 接收到消息 &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);
+            &#125;
+        &#125;;
+        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span>
+        channel.basicConsume(queueName, <span class="literal">true</span>, consumer);
+    &#125;
+&#125;</code></pre>
+<h3 id="direct-模式代码"><a class="markdownIt-Anchor" href="#direct-模式代码"></a> direct 模式代码</h3>
+<h4 id="pomxml-3"><a class="markdownIt-Anchor" href="#pomxml-3"></a> pom.xml</h4>
+<pre><code class="highlight xml"><span class="comment">&lt;!--activeMQ--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.activemq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>activemq-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.15.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+<span class="comment">&lt;!--rabbitMQ--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.rabbitmq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>amqp-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<h4 id="rabbitmqutil-2"><a class="markdownIt-Anchor" href="#rabbitmqutil-2"></a> RabbitMQUtil</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.direct;
+
+<span class="comment">/**</span>
+<span class="comment"> * 判断rabbitMQ服务器是否启动</span>
+<span class="comment"> */</span>
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="keyword">import</span> javax.swing.*;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RabbitMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">15672</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;RabbitMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="testdirectproducer"><a class="markdownIt-Anchor" href="#testdirectproducer"></a> TestDirectProducer</h4>
+<p>生成者</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.direct;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+
+<span class="comment">/**</span>
+<span class="comment"> * 消息生成者</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestDirectProducer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String QUEUE_NAME=<span class="string">&quot;direct_queue&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        RabbitMQUtil.checkServer();
+
+        <span class="comment">//创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ相关信息</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;
+            <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="string">&quot;direct 消息 &quot;</span> +i;
+            <span class="comment">//发送消息到队列中</span>
+            channel.basicPublish(<span class="string">&quot;&quot;</span>, QUEUE_NAME, <span class="literal">null</span>, message.getBytes(<span class="string">&quot;UTF-8&quot;</span>));
+            System.out.println(<span class="string">&quot;发送消息： &quot;</span> + message);
+
+        &#125;
+        <span class="comment">//关闭通道和连接</span>
+        channel.close();
+        connection.close();
+    &#125;
+&#125;</code></pre>
+<h4 id="testdirectcustomer"><a class="markdownIt-Anchor" href="#testdirectcustomer"></a> TestDirectCustomer</h4>
+<p>消费者</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.direct;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.AMQP;
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+<span class="keyword">import</span> com.rabbitmq.client.Consumer;
+<span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;
+<span class="keyword">import</span> com.rabbitmq.client.Envelope;
+
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestDirectCustomer</span> &#123;
+    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="type">String</span> <span class="variable">QUEUE_NAME</span> <span class="operator">=</span> <span class="string">&quot;direct_queue&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        <span class="comment">//为当前消费者取随机名</span>
+        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;consumer-&quot;</span>+ RandomUtil.randomString(<span class="number">5</span>);
+
+        <span class="comment">//判断服务器是否启动</span>
+        RabbitMQUtil.checkServer();
+        <span class="comment">// 创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ地址</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+        <span class="comment">//声明要关注的队列</span>
+        channel.queueDeclare(QUEUE_NAME, <span class="literal">false</span>, <span class="literal">false</span>, <span class="literal">true</span>, <span class="literal">null</span>);
+        System.out.println(name +<span class="string">&quot; 等待接受消息&quot;</span>);
+        <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个频道，</span>
+        <span class="comment">// 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery</span>
+        <span class="type">Consumer</span> <span class="variable">consumer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel) &#123;
+            <span class="meta">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span>
+<span class="params">                                       AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span>
+                    <span class="keyword">throws</span> IOException &#123;
+                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(body, <span class="string">&quot;UTF-8&quot;</span>);
+                System.out.println(name + <span class="string">&quot; 接收到消息 &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);
+            &#125;
+        &#125;;
+        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span>
+        channel.basicConsume(QUEUE_NAME, <span class="literal">true</span>, consumer);
+    &#125;
+&#125;</code></pre>
+<h3 id="topic-模式代码"><a class="markdownIt-Anchor" href="#topic-模式代码"></a> topic 模式代码</h3>
+<p>先运行 TestCustomer4USA 专门用于接受美国专题消息<br />
+再运行 TestCustomer4News 专门用于接受新闻专题消息<br />
+最后运行 TestProducer ，分别在 四个路由：“usa.news”, “usa.weather”, “europe.news”, “europe.weather” 上发布 “美国新闻”, “美国天气”, “欧洲新闻”, “欧洲天气”.<br />
+于是就能在消费者端看到 不同的主题收到对应的消息了。</p>
+<h4 id="pomxml-4"><a class="markdownIt-Anchor" href="#pomxml-4"></a> pom.xml</h4>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.rabbitmq<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>amqp-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+ <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cn.hutool<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>hutool-all<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.3.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<h4 id="rabbitmqutil-3"><a class="markdownIt-Anchor" href="#rabbitmqutil-3"></a> RabbitMQUtil</h4>
+<p>判断服务器是否启动</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.topic;
+
+<span class="comment">/**</span>
+<span class="comment"> * 判断rabbitMQ服务器是否启动</span>
+<span class="comment"> */</span>
+
+<span class="keyword">import</span> cn.hutool.core.util.NetUtil;
+
+<span class="keyword">import</span> javax.swing.*;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RabbitMQUtil</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        checkServer();
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">checkServer</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span>(NetUtil.isUsableLocalPort(<span class="number">15672</span>)) &#123;
+            JOptionPane.showMessageDialog(<span class="literal">null</span>, <span class="string">&quot;RabbitMQ 服务器未启动 &quot;</span>);
+            System.exit(<span class="number">1</span>);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="testproducer-2"><a class="markdownIt-Anchor" href="#testproducer-2"></a> TestProducer</h4>
+<p>分别在 四个路由：“usa.news”, “usa.weather”, “europe.news”, “europe.weather” 上发布 “美国新闻”, “美国天气”, “欧洲新闻”, “欧洲天气”.</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.topic;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+
+<span class="comment">/**</span>
+<span class="comment"> * 消息生成者</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestProducer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">&quot;topics_exchange&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        RabbitMQUtil.checkServer();
+
+        <span class="comment">//创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ相关信息</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+
+        channel.exchangeDeclare(EXCHANGE_NAME, <span class="string">&quot;topic&quot;</span>);
+
+        String[] routing_keys = <span class="keyword">new</span> <span class="title class_">String</span>[] &#123; <span class="string">&quot;usa.news&quot;</span>, <span class="string">&quot;usa.weather&quot;</span>,
+                <span class="string">&quot;europe.news&quot;</span>, <span class="string">&quot;europe.weather&quot;</span> &#125;;
+        String[] messages = <span class="keyword">new</span> <span class="title class_">String</span>[] &#123; <span class="string">&quot;美国新闻&quot;</span>, <span class="string">&quot;美国天气&quot;</span>,
+                <span class="string">&quot;欧洲新闻&quot;</span>, <span class="string">&quot;欧洲天气&quot;</span> &#125;;
+
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; routing_keys.length; i++) &#123;
+            <span class="type">String</span> <span class="variable">routingKey</span> <span class="operator">=</span> routing_keys[i];
+            <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> messages[i];
+            channel.basicPublish(EXCHANGE_NAME, routingKey, <span class="literal">null</span>, message
+                    .getBytes());
+            System.out.printf(<span class="string">&quot;发送消息到路由：%s, 内容是: %s%n &quot;</span>, routingKey,message);
+
+        &#125;
+
+        <span class="comment">//关闭通道和连接</span>
+        channel.close();
+        connection.close();
+    &#125;
+&#125;</code></pre>
+<h4 id="testcustomer4usa"><a class="markdownIt-Anchor" href="#testcustomer4usa"></a> TestCustomer4USA</h4>
+<p>专门用于接受 usa.* 消息</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.topic;
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.AMQP;
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+<span class="keyword">import</span> com.rabbitmq.client.Consumer;
+<span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;
+<span class="keyword">import</span> com.rabbitmq.client.Envelope;
+
+<span class="keyword">import</span> cn.hutool.core.util.RandomUtil;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestCustomer4USA</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">&quot;topics_exchange&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        <span class="comment">//为当前消费者取名称</span>
+        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;consumer-usa&quot;</span>;
+
+        <span class="comment">//判断服务器是否启动</span>
+        RabbitMQUtil.checkServer();
+        <span class="comment">// 创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ地址</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+        <span class="comment">//交换机声明（参数为：交换机名称；交换机类型）</span>
+        channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">&quot;topic&quot;</span>);
+        <span class="comment">//获取一个临时队列</span>
+        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> channel.queueDeclare().getQueue();
+        <span class="comment">//接受 USA 信息</span>
+
+        channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">&quot;usa.*&quot;</span>);
+        System.out.println(name +<span class="string">&quot; 等待接受消息&quot;</span>);
+        <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个频道，</span>
+        <span class="comment">// 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery</span>
+        <span class="type">Consumer</span> <span class="variable">consumer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel) &#123;
+            <span class="meta">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span>
+<span class="params">                                       AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span>
+                    <span class="keyword">throws</span> IOException &#123;
+                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(body, <span class="string">&quot;UTF-8&quot;</span>);
+                System.out.println(name + <span class="string">&quot; 接收到消息 &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);
+            &#125;
+        &#125;;
+        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span>
+        channel.basicConsume(queueName, <span class="literal">true</span>, consumer);
+    &#125;
+&#125;</code></pre>
+<h4 id="testcustomer4news"><a class="markdownIt-Anchor" href="#testcustomer4news"></a> TestCustomer4News</h4>
+<p>专门用于接受 *.news 消息</p>
+<pre><code class="highlight java"><span class="keyword">package</span> rabbitMQ.topic;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.concurrent.TimeoutException;
+
+<span class="keyword">import</span> com.rabbitmq.client.AMQP;
+<span class="keyword">import</span> com.rabbitmq.client.Channel;
+<span class="keyword">import</span> com.rabbitmq.client.Connection;
+<span class="keyword">import</span> com.rabbitmq.client.ConnectionFactory;
+<span class="keyword">import</span> com.rabbitmq.client.Consumer;
+<span class="keyword">import</span> com.rabbitmq.client.DefaultConsumer;
+<span class="keyword">import</span> com.rabbitmq.client.Envelope;
+
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestCustomer4News</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">static</span> String EXCHANGE_NAME=<span class="string">&quot;topics_exchange&quot;</span>;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException, TimeoutException &#123;
+        <span class="comment">//为当前消费者取名称</span>
+        <span class="keyword">final</span> <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;consumer-news&quot;</span>;
+
+        <span class="comment">//判断服务器是否启动</span>
+        RabbitMQUtil.checkServer();
+        <span class="comment">// 创建连接工厂</span>
+        <span class="type">ConnectionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ConnectionFactory</span>();
+        <span class="comment">//设置RabbitMQ地址</span>
+        factory.setHost(<span class="string">&quot;localhost&quot;</span>);
+        <span class="comment">//创建一个新的连接</span>
+        <span class="type">Connection</span> <span class="variable">connection</span> <span class="operator">=</span> factory.newConnection();
+        <span class="comment">//创建一个通道</span>
+        <span class="type">Channel</span> <span class="variable">channel</span> <span class="operator">=</span> connection.createChannel();
+        <span class="comment">//交换机声明（参数为：交换机名称；交换机类型）</span>
+        channel.exchangeDeclare(EXCHANGE_NAME,<span class="string">&quot;topic&quot;</span>);
+        <span class="comment">//获取一个临时队列</span>
+        <span class="type">String</span> <span class="variable">queueName</span> <span class="operator">=</span> channel.queueDeclare().getQueue();
+        <span class="comment">//接受 USA 信息</span>
+
+        channel.queueBind(queueName, EXCHANGE_NAME, <span class="string">&quot;*.news&quot;</span>);
+        System.out.println(name +<span class="string">&quot; 等待接受消息&quot;</span>);
+        <span class="comment">//DefaultConsumer类实现了Consumer接口，通过传入一个频道，</span>
+        <span class="comment">// 告诉服务器我们需要那个频道的消息，如果频道中有消息，就会执行回调函数handleDelivery</span>
+        <span class="type">Consumer</span> <span class="variable">consumer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DefaultConsumer</span>(channel) &#123;
+            <span class="meta">@Override</span>
+            <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">handleDelivery</span><span class="params">(String consumerTag, Envelope envelope,</span>
+<span class="params">                                       AMQP.BasicProperties properties, <span class="type">byte</span>[] body)</span>
+                    <span class="keyword">throws</span> IOException &#123;
+                <span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">String</span>(body, <span class="string">&quot;UTF-8&quot;</span>);
+                System.out.println(name + <span class="string">&quot; 接收到消息 &#x27;&quot;</span> + message + <span class="string">&quot;&#x27;&quot;</span>);
+            &#125;
+        &#125;;
+        <span class="comment">//自动回复队列应答 -- RabbitMQ中的消息确认机制</span>
+        channel.basicConsume(queueName, <span class="literal">true</span>, consumer);
+    &#125;
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

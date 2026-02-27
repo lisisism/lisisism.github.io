@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java网络编程 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java网络编程</div>
+  <div class="post-meta">
+    <div class="date">2020 三月 6日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java网络编程"><a class="markdownIt-Anchor" href="#java网络编程"></a> $Java网络编程</h1>
+<ul>
+<li><a href="">网络编程</a>
+<ul>
+<li><a href="">网络编程基础</a>
+<ul>
+<li><a href="">IP地址</a></li>
+<li><a href="">域名</a></li>
+<li><a href="">网络模型</a></li>
+<li><a href="">常用协议</a></li>
+</ul>
+</li>
+<li><a href="">TCP</a>
+<ul>
+<li><a href="">服务器端</a></li>
+<li><a href="">客户端</a></li>
+<li><a href="">Socket流</a></li>
+</ul>
+</li>
+<li><a href="">UDP</a>
+<ul>
+<li><a href="">服务器端</a></li>
+<li><a href="">客户端</a></li>
+</ul>
+</li>
+<li><a href="">发送Email</a>
+<ul>
+<li><a href="">准备SMTP登录信息</a></li>
+<li><a href="">发送邮件</a></li>
+<li><a href="">发送HTML邮件</a></li>
+<li><a href="">发送附件</a></li>
+<li><a href="">发送内嵌图片的HTML邮件</a></li>
+<li><a href="">常见报错</a></li>
+</ul>
+</li>
+<li><a href="">接受Emial</a></li>
+<li><a href="">HTTP编程</a>
+<ul>
+<li><a href="">HTTP编程</a></li>
+</ul>
+</li>
+<li><a href="">RMI远程调用</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="网络编程"><a class="markdownIt-Anchor" href="#网络编程"></a> 网络编程</h2>
+<h3 id="网络编程基础"><a class="markdownIt-Anchor" href="#网络编程基础"></a> 网络编程基础</h3>
+<p>在学习Java网络编程之前，我们先来了解什么是计算机网络。</p>
+<p>计算机网络是指两台或更多的计算机组成的网络，在同一个网络中，任意两台计算机都可以直接通信，因为所有计算机都需要遵循同一种网络协议。</p>
+<p>那什么是互联网呢？互联网是网络的网络（internet），即把很多计算机网络连接起来，形成一个全球统一的互联网。</p>
+<p>对某个特定的计算机网络来说，它可能使用网络协议ABC，而另一个计算机网络可能使用网络协议XYZ。如果计算机网络各自的通讯协议不统一，就没法把不同的网络连接起来形成互联网。因此，为了把计算机网络接入互联网，就必须使用TCP/IP协议。TCP/IP协议泛指互联网协议，其中最重要的两个协议是TCP协议和IP协议。</p>
+<p>只有使用TCP/IP协议的计算机才能够联入互联网，使用其他网络协议（例如NetBIOS、AppleTalk协议等）是无法联入互联网的。</p>
+<h4 id="ip地址"><a class="markdownIt-Anchor" href="#ip地址"></a> IP地址</h4>
+<p>在互联网中，一个IP地址用于唯一标识一个网络接口（Network Interface）。一台联入互联网的计算机肯定有一个IP地址，但也可能有多个IP地址。</p>
+<p>IP地址分为<strong>IPv4和IPv6</strong>两种。IPv4采用32位地址，类似101.202.99.12，而IPv6采用128位地址，类似2001:0DA8:100A:0000:0000:1020:F2F3:1428。IPv4地址总共有232个（大约42亿），而IPv6地址则总共有2128个（大约340万亿亿亿亿），IPv4的地址目前已耗尽，而IPv6的地址是根本用不完的。</p>
+<p>IP地址又分为公网IP地址和内网IP地址。公网IP地址可以直接被访问，内网IP地址只能在内网访问。内网IP地址类似于：</p>
+<ul>
+<li>192.168.x.x</li>
+<li>10.x.x.x</li>
+</ul>
+<p>有一个特殊的IP地址，称之为<strong>本机地址</strong>，它总是127.0.0.1。</p>
+<p>IPv4地址实际上是一个32位整数。例如：</p>
+<pre><code class="highlight plaintext">106717964 = 0x65ca630c
+                    = 65  ca  63 0c
+                    = 101.202.99.12</code></pre>
+<p>如果一台计算机只有一个网卡，并且接入了网络，那么，它有一个本机地址127.0.0.1，还有一个IP地址，例如101.202.99.12，可以通过这个IP地址接入网络。如果一台计算机有两块网卡，那么除了本机地址，它可以有两个IP地址，可以分别接入两个网络。</p>
+<p>通常连接两个网络的设备是路由器或者交换机，它至少有两个IP地址，分别接入不同的网络，让网络之间连接起来。</p>
+<p>如果两台计算机位于同一个网络，那么他们之间可以直接通信，因为他们的IP地址前段是相同的，也就是网络号是相同的。网络号是IP地址通过子网掩码过滤后得到的。例如：</p>
+<p>某台计算机的IP是101.202.99.2，子网掩码是255.255.255.0，那么计算该计算机的网络号是：</p>
+<pre><code class="highlight plaintext">IP = 101.202.99.2
+Mask = 255.255.255.0
+Network = IP &amp; Mask = 101.202.99.0</code></pre>
+<p>每台计算机都需要正确配置IP地址和子网掩码，根据这两个就可以计算网络号，如果两台计算机计算出的网络号相同，说明两台计算机在同一个网络，可以直接通信。如果两台计算机计算出的网络号不同，那么两台计算机不在同一个网络，不能直接通信，它们之间必须通过路由器或者交换机这样的网络设备间接通信，我们把这种设备称为<strong>网关</strong>。</p>
+<p>网关的作用就是连接多个网络，负责把来自一个网络的数据包发到另一个网络，这个过程叫路由。</p>
+<p>所以，一台计算机的一个网卡会有3个关键配置：</p>
+<ul>
+<li>IP地址，例如：10.0.2.15</li>
+<li>子网掩码，例如：255.255.255.0</li>
+<li>网关的IP地址，例如：10.0.2.2</li>
+</ul>
+<h4 id="域名"><a class="markdownIt-Anchor" href="#域名"></a> 域名</h4>
+<p>因为直接记忆IP地址非常困难，所以我们通常使用域名访问某个特定的服务。域名解析服务器DNS负责把域名翻译成对应的IP，客户端再根据IP地址访问服务器。</p>
+<p>用nslookup可以查看域名对应的IP地址：</p>
+<pre><code class="highlight plaintext">$ nslookup www.liaoxuefeng.com
+Server:  xxx.xxx.xxx.xxx
+Address: xxx.xxx.xxx.xxx#53
+
+Non-authoritative answer:
+Name:    www.liaoxuefeng.com
+Address: 47.98.33.223</code></pre>
+<p>有一个特殊的本机域名localhost，它对应的IP地址总是本机地址127.0.0.1。</p>
+<h4 id="网络模型"><a class="markdownIt-Anchor" href="#网络模型"></a> 网络模型</h4>
+<p>由于计算机网络从底层的传输到高层的软件设计十分复杂，要合理地设计计算机网络模型，必须采用分层模型，每一层负责处理自己的操作。OSI（Open System Interconnect）网络模型是ISO组织定义的一个计算机互联的标准模型，注意它只是一个定义，目的是为了简化网络各层的操作，提供标准接口便于实现和维护。这个模型从上到下依次是：</p>
+<ul>
+<li>应用层，提供应用程序之间的通信；</li>
+<li>表示层：处理数据格式，加解密等等；</li>
+<li>会话层：负责建立和维护会话；</li>
+<li>传输层：负责提供端到端的可靠传输；</li>
+<li>网络层：负责根据目标地址选择路由来传输数据；</li>
+<li>链路层和物理层负责把数据进行分片并且真正通过物理网络传输，例如，无线网、光纤等。</li>
+</ul>
+<p>互联网实际使用的TCP/IP模型并不是对应到OSI的7层模型，而是大致对应OSI的5层模型：</p>
+<table>
+<thead>
+<tr>
+<th>OSI</th>
+<th>TCP/IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>应用层</td>
+<td>应用层</td>
+</tr>
+<tr>
+<td>表示层</td>
+<td></td>
+</tr>
+<tr>
+<td>会话层</td>
+<td></td>
+</tr>
+<tr>
+<td>传输层</td>
+<td>传输层</td>
+</tr>
+<tr>
+<td>网络层</td>
+<td>IP层</td>
+</tr>
+<tr>
+<td>链路层</td>
+<td>网络接口层</td>
+</tr>
+<tr>
+<td>物理层</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="常用协议"><a class="markdownIt-Anchor" href="#常用协议"></a> 常用协议</h4>
+<p>IP协议是一个分组交换，它不保证可靠传输。而TCP协议是传输控制协议，它是面向连接的协议，支持可靠传输和双向通信。TCP协议是建立在IP协议之上的，简单地说，IP协议只负责发数据包，不保证顺序和正确性，而TCP协议负责控制数据包传输，它在传输数据之前需要先建立连接，建立连接后才能传输数据，传输完后还需要断开连接。TCP协议之所以能保证数据的可靠传输，是通过接收确认、超时重传这些机制实现的。并且，TCP协议允许双向通信，即通信双方可以同时发送和接收数据。</p>
+<p><strong>TCP协议</strong>也是应用最广泛的协议，许多高级协议都是建立在TCP协议之上的，例如HTTP、SMTP等。</p>
+<p><strong>UDP协议</strong>（User Datagram Protocol）是一种数据报文协议，它是无连接协议，不保证可靠传输。因为UDP协议在通信前不需要建立连接，因此它的传输效率比TCP高，而且UDP协议比TCP协议要简单得多。</p>
+<p>选择UDP协议时，传输的数据通常是能容忍丢失的，例如，一些语音视频通信的应用会选择UDP协议。</p>
+<h3 id="tcp"><a class="markdownIt-Anchor" href="#tcp"></a> TCP</h3>
+<p>在开发网络应用程序的时候，我们又会遇到Socket这个概念。Socket是一个抽象概念，一个应用程序通过一个Socket来建立一个远程连接，而Socket内部通过TCP/IP协议把数据传输到网络：</p>
+<p><strong>Socket、TCP和部分IP的功能都是由操作系统提供的</strong>，不同的编程语言只是提供了对操作系统调用的简单的封装。例如，Java提供的几个Socket相关的类就封装了操作系统提供的接口。</p>
+<p>为什么需要Socket进行网络通信？</p>
+<ul>
+<li>因为仅仅通过IP地址进行通信是不够的，同一台计算机同一时间会运行多个网络应用程序，例如浏览器、QQ、邮件客户端等。当操作系统接收到一个数据包的时候，如果只有IP地址，它没法判断应该发给哪个应用程序，所以，操作系统抽象出Socket接口，每个应用程序需要各自对应到不同的Socket，数据包才能根据Socket正确地发到对应的应用程序。</li>
+<li><strong>一个Socket就是由IP地址和端口号</strong>（范围是0～65535）组成，可以把Socket简单理解为IP地址加端口号。端口号总是由操作系统分配，它是一个0～65535之间的数字，其中，小于1024的端口属于特权端口，需要管理员权限，大于1024的端口可以由任意用户的应用程序打开。</li>
+</ul>
+<p>使用Socket进行网络编程时，本质上就是两个进程之间的网络通信。其中一个进程必须充当服务器端，它会主动监听某个指定的端口，另一个进程必须充当客户端，它必须主动连接服务器的IP地址和指定端口，如果连接成功，服务器端和客户端就成功地建立了一个TCP连接，双方后续就可以随时发送和接收数据。</p>
+<p>因此，当Socket连接成功地在服务器端和客户端之间建立后：</p>
+<ul>
+<li><strong>对服务器端来说，它的Socket是指定的IP地址和指定的端口号</strong>；</li>
+<li><strong>对客户端来说，它的Socket是它所在计算机的IP地址和一个由操作系统分配的随机端口号</strong>。</li>
+</ul>
+<h4 id="服务器端"><a class="markdownIt-Anchor" href="#服务器端"></a> 服务器端</h4>
+<p>要使用Socket编程，我们首先要编写服务器端程序。Java标准库提供了ServerSocket来实现对指定IP和指定端口的监听。ServerSocket的典型实现代码如下：</p>
+<pre><code class="highlight plaintext">
+public class Server &#123;
+    public static void main(String[] args) throws IOException &#123;
+        ServerSocket ss = new ServerSocket(6666); // 监听指定端口
+        System.out.println(&quot;server is running...&quot;);
+        for (;;) &#123;
+            Socket sock = ss.accept();
+            System.out.println(&quot;connected from &quot; + sock.getRemoteSocketAddress());
+            Thread t = new Handler(sock);
+            t.start();
+        &#125;
+    &#125;
+&#125;
+
+class Handler extends Thread &#123;
+    Socket sock;
+
+    public Handler(Socket sock) &#123;
+        this.sock = sock;
+    &#125;
+
+    @Override
+    public void run() &#123;
+        try (InputStream input = this.sock.getInputStream()) &#123;
+            try (OutputStream output = this.sock.getOutputStream()) &#123;
+                handle(input, output);
+            &#125;
+        &#125; catch (Exception e) &#123;
+            try &#123;
+                this.sock.close();
+            &#125; catch (IOException ioe) &#123;
+            &#125;
+            System.out.println(&quot;client disconnected.&quot;);
+        &#125;
+    &#125;
+
+    private void handle(InputStream input, OutputStream output) throws IOException &#123;
+        var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+        var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        writer.write(&quot;hello\n&quot;);
+        writer.flush();
+        for (;;) &#123;
+            String s = reader.readLine();
+            if (s.equals(&quot;bye&quot;)) &#123;
+                writer.write(&quot;bye\n&quot;);
+                writer.flush();
+                break;
+            &#125;
+            writer.write(&quot;ok: &quot; + s + &quot;\n&quot;);
+            writer.flush();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>服务器端通过代码：</p>
+<pre><code class="highlight plaintext">ServerSocket ss = new ServerSocket(6666);</code></pre>
+<p>在指定端口6666监听。这里我们没有指定IP地址，表示在计算机的所有网络接口上进行监听。</p>
+<p>如果ServerSocket监听成功，我们就使用一个无限循环来处理客户端的连接：</p>
+<pre><code class="highlight plaintext">for (;;) &#123;
+    Socket sock = ss.accept();
+    Thread t = new Handler(sock);
+    t.start();
+&#125;</code></pre>
+<p>注意到代码<strong>ss.accept()表示每当有新的客户端连接进来后，就返回一个Socket实例</strong>，这个Socket实例就是用来和刚连接的客户端进行通信的。由于客户端很多，要实现并发处理，我们就必须为每个新的Socket创建一个新线程来处理，这样，主线程的作用就是接收新的连接，每当收到新连接后，就创建一个新线程进行处理。</p>
+<p>我们在多线程编程的章节中介绍过线程池，这里也完全可以利用线程池来处理客户端连接，能大大提高运行效率。</p>
+<p><strong>如果没有客户端连接进来，accept()方法会阻塞并一直等�</strong>�。如果有多个客户端同时连接进来，ServerSocket会把连接扔到队列里，然后一个一个处理。<strong>对于Java程序而言，只需要通过循环不断调用accept()就可以获取新的连接</strong>。</p>
+<h4 id="客户端"><a class="markdownIt-Anchor" href="#客户端"></a> 客户端</h4>
+<p>相比服务器端，客户端程序就要简单很多。一个典型的客户端程序如下：</p>
+<pre><code class="highlight plaintext">public class Client &#123;
+    public static void main(String[] args) throws IOException &#123;
+        Socket sock = new Socket(&quot;localhost&quot;, 6666); // 连接指定服务器和端口
+        try (InputStream input = sock.getInputStream()) &#123;
+            try (OutputStream output = sock.getOutputStream()) &#123;
+                handle(input, output);
+            &#125;
+        &#125;
+        sock.close();
+        System.out.println(&quot;disconnected.&quot;);
+    &#125;
+
+    private static void handle(InputStream input, OutputStream output) throws IOException &#123;
+        var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+        var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(&quot;[server] &quot; + reader.readLine());
+        for (;;) &#123;
+            System.out.print(&quot;&gt;&gt;&gt; &quot;); // 打印提示
+            String s = scanner.nextLine(); // 读取一行输入
+            writer.write(s);
+            writer.newLine();
+            writer.flush();
+            String resp = reader.readLine();
+            System.out.println(&quot;&lt;&lt;&lt; &quot; + resp);
+            if (resp.equals(&quot;bye&quot;)) &#123;
+                break;
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>客户端程序通过：</p>
+<pre><code class="highlight plaintext">Socket sock = new Socket(&quot;localhost&quot;, 6666);</code></pre>
+<p>连接到服务器端，注意上述代码的服务器地址是&quot;localhost&quot;，表示本机地址，端口号是6666。如果连接成功，将返回一个Socket实例，用于后续通信。</p>
+<h4 id="socket流"><a class="markdownIt-Anchor" href="#socket流"></a> Socket流</h4>
+<p>当Socket连接创建成功后，无论是服务器端，还是客户端，我们都使用Socket实例进行网络通信。因为TCP是一种基于流的协议，因此，Java标准库使用InputStream和OutputStream来封装Socket的数据流，这样我们使用Socket的流，和普通IO流类似：</p>
+<pre><code class="highlight plaintext">// 用于读取网络数据:
+InputStream in = sock.getInputStream();
+// 用于写入网络数据:
+OutputStream out = sock.getOutputStream();</code></pre>
+<p>最后我们重点来看看，为什么写入网络数据时，要调用flush()方法。</p>
+<p>如果不调用flush()，我们很可能会发现，客户端和服务器都收不到数据，这并不是Java标准库的设计问题，而是我们以流的形式写入数据的时候，并不是一写入就立刻发送到网络，而是先写入内存缓冲区，直到缓冲区满了以后，才会一次性真正发送到网络，这样设计的目的是为了提高传输效率。如果缓冲区的数据很少，而我们又想强制把这些数据发送到网络，就必须调用flush()强制把缓冲区数据发送出去。</p>
+<h3 id="udp"><a class="markdownIt-Anchor" href="#udp"></a> UDP</h3>
+<p>和TCP编程相比，UDP编程就简单得多，<strong>因为UDP没有创建连接，数据包也是一次收发一个，所以没有流的概念</strong>。</p>
+<p>在Java中使用UDP编程，仍然需要使用Socket，因为应用程序在使用UDP时必须指定网络接口（IP）和端口号。注意：<strong>UDP端口和TCP端口虽然都使用0~65535，但他们是两套独立的端口</strong>，即一个应用程序用TCP占用了端口1234，不影响另一个应用程序用UDP占用端口1234。</p>
+<h4 id="服务器端-2"><a class="markdownIt-Anchor" href="#服务器端-2"></a> 服务器端</h4>
+<p>在服务器端，使用UDP也需要监听指定的端口。Java提供了DatagramSocket来实现这个功能，代码如下：</p>
+<pre><code class="highlight plaintext">DatagramSocket ds = new DatagramSocket(6666); // 监听指定端口for (;;) &#123; // 无限循环
+    // 数据缓冲区:
+    byte[] buffer = new byte[1024];
+    DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+    ds.receive(packet); // 收取一个UDP数据包
+    // 收取到的数据存储在buffer中，由packet.getOffset(), packet.getLength()指定起始位置和长度
+    // 将其按UTF-8编码转换为String:
+    String s = new String(packet.getData(), packet.getOffset(), packet.getLength(), StandardCharsets.UTF_8);
+    // 发送数据:
+    byte[] data = &quot;ACK&quot;.getBytes(StandardCharsets.UTF_8);
+    packet.setData(data);
+    ds.send(packet);
+&#125;</code></pre>
+<p>服务器端首先使用如下语句在指定的端口监听UDP数据包：</p>
+<pre><code class="highlight plaintext">DatagramSocket ds = new DatagramSocket(6666);</code></pre>
+<p>如果没有其他应用程序占据这个端口，那么监听成功，我们就使用一个无限循环来处理收到的UDP数据包：</p>
+<pre><code class="highlight plaintext">for (;;) &#123;
+    ...
+&#125;</code></pre>
+<p>要接收一个UDP数据包，需要准备一个byte[]缓冲区，并通过DatagramPacket实现接收：</p>
+<pre><code class="highlight plaintext">byte[] buffer = new byte[1024];
+DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
+ds.receive(packet);</code></pre>
+<p>假设我们收取到的是一个String，那么，通过DatagramPacket返回的packet.getOffset()和packet.getLength()确定数据在缓冲区的起止位置：</p>
+<pre><code class="highlight plaintext">String s = new String(packet.getData(), packet.getOffset(), packet.getLength(), StandardCharsets.UTF_8);</code></pre>
+<p>当服务器收到一个DatagramPacket后，通常必须立刻回复一个或多个UDP包，因为客户端地址在DatagramPacket中，每次收到的DatagramPacket可能是不同的客户端，如果不回复，客户端就收不到任何UDP包。发送UDP包也是通过DatagramPacket实现的，发送代码非常简单：</p>
+<pre><code class="highlight plaintext">byte[] data = ...
+packet.setData(data);
+ds.send(packet);</code></pre>
+<h4 id="客户端-2"><a class="markdownIt-Anchor" href="#客户端-2"></a> 客户端</h4>
+<p>和服务器端相比，客户端使用UDP时，只需要直接向服务器端发送UDP包，然后接收返回的UDP包：</p>
+<pre><code class="highlight plaintext">DatagramSocket ds = new DatagramSocket();
+ds.setSoTimeout(1000);
+ds.connect(InetAddress.getByName(&quot;localhost&quot;), 6666); // 连接指定服务器和端口// 发送:byte[] .getBytes();
+DatagramPacket packet = new DatagramPacket(data, data.length);
+ds.send(packet);
+// 接收:byte[] buffer = new byte[1024];
+packet = new DatagramPacket(buffer, buffer.length);
+ds.receive(packet);
+String resp = new String(packet.getData(), packet.getOffset(), packet.getLength());
+ds.disconnect();</code></pre>
+<p>客户端打开一个DatagramSocket使用以下代码：</p>
+<pre><code class="highlight plaintext">DatagramSocket ds = new DatagramSocket();
+ds.setSoTimeout(1000);
+ds.connect(InetAddress.getByName(&quot;localhost&quot;), 6666);</code></pre>
+<p>客户端创建DatagramSocket实例时并不需要指定端口，而是由操作系统自动指定一个当前未使用的端口。紧接着，调用setSoTimeout(1000)设定超时1秒，意思是后续接收UDP包时，等待时间最多不会超过1秒，否则在没有收到UDP包时，客户端会无限等待下去。这一点和服务器端不一样，服务器端可以无限等待，因为它本来就被设计成长时间运行。</p>
+<p>注意到客户端的DatagramSocket还调用了一个connect()方法“连接”到指定的服务器端。不是说UDP是无连接的协议吗？为啥这里需要connect()？</p>
+<p>这个connect()方法不是真连接，它是为了在客户端的DatagramSocket实例中保存服务器端的IP和端口号，确保这个DatagramSocket实例只能往指定的地址和端口发送UDP包，不能往其他地址和端口发送。这么做不是UDP的限制，而是Java内置了安全检查。</p>
+<p>如果客户端希望向两个不同的服务器发送UDP包，那么它必须创建两个DatagramSocket实例。</p>
+<p>后续的收发数据和服务器端是一致的。通常来说，客户端必须先发UDP包，因为客户端不发UDP包，服务器端就根本不知道客户端的地址和端口号。</p>
+<p>如果客户端认为通信结束，就可以调用disconnect()断开连接：</p>
+<pre><code class="highlight plaintext">ds.disconnect();</code></pre>
+<p>注意到disconnect()也不是真正地断开连接，它只是清除了客户端DatagramSocket实例记录的远程服务器地址和端口号，这样，DatagramSocket实例就可以连接另一个服务器端。</p>
+<h3 id="发送email"><a class="markdownIt-Anchor" href="#发送email"></a> 发送Email</h3>
+<p>Email就是电子邮件。电子邮件的应用已经有几十年的历史了，我们熟悉的邮箱地址比如abc@example.com，邮件软件比如Outlook都是用来收发邮件的。</p>
+<p>使用Java程序也可以收发电子邮件。我们先来看一下传统的邮件是如何发送的。</p>
+<p>传统的邮件是通过邮局投递，然后从一个邮局到另一个邮局，最终到达用户的邮箱：</p>
+<p>电子邮件的发送过程也是类似的，只不过是电子邮件是从用户电脑的邮件软件，例如Outlook，发送到邮件服务器上，可能经过若干个邮件服务器的中转，最终到达对方邮件服务器上，收件方就可以用软件接收邮件：</p>
+<p>我们把类似Outlook这样的邮件软件称为MUA：Mail User Agent，意思是给用户服务的邮件代理；邮件服务器则称为MTA：Mail Transfer Agent，意思是邮件中转的代理；最终到达的邮件服务器称为MDA：Mail Delivery Agent，意思是邮件到达的代理。电子邮件一旦到达MDA，就不再动了。实际上，电子邮件通常就存储在MDA服务器的硬盘上，然后等收件人通过软件或者登陆浏览器查看邮件。</p>
+<p><strong>MTA和MDA这样的服务器软件通常是现成的，我们不关心这些服务器内部是如何运行的。要发送邮件，我们关心的是如何编写一个MUA的软件，把邮件发送到MTA上</strong>。</p>
+<p>MUA到MTA发送邮件的协议就是<strong>SMTP协议</strong>，它是Simple Mail Transport Protocol的缩写，使用标准端口25，也可以使用加密端口465或587。</p>
+<p>SMTP协议是一个建立在TCP之上的协议，任何程序发送邮件都必须遵守SMTP协议。使用Java程序发送邮件时，我们无需关心SMTP协议的底层原理，只需要使用JavaMail这个标准API就可以直接发送邮件。</p>
+<h4 id="准备smtp登录信息"><a class="markdownIt-Anchor" href="#准备smtp登录信息"></a> 准备SMTP登录信息</h4>
+<p>假设我们准备使用自己的邮件地址me@example.com给小明发送邮件，已知小明的邮件地址是xiaoming@somewhere.com，发送邮件前，我们首先要确定作为MTA的邮件服务器地址和端口号。<a target="_blank" rel="noopener" href="http://xn--smtp-p85fi8qoshztbee665e3uu7lcq79s9xb.example.com">邮件服务器地址通常是smtp.example.com</a>，端口号由邮件服务商确定使用25、465还是587。以下是一些常用邮件服务商的SMTP信息：</p>
+<ul>
+<li>QQ邮箱：<a target="_blank" rel="noopener" href="http://xn--SMTPsmtp-tq8m352aoj9bbgc.qq.com">SMTP服务器是smtp.qq.com</a>，端口是465/587；</li>
+<li>163邮箱：<a target="_blank" rel="noopener" href="http://xn--SMTPsmtp-tq8m352aoj9bbgc.163.com">SMTP服务器是smtp.163.com</a>，端口是465；</li>
+<li>Gmail邮箱：<a target="_blank" rel="noopener" href="http://xn--SMTPsmtp-tq8m352aoj9bbgc.gmail.com">SMTP服务器是smtp.gmail.com</a>，端口是465/587。</li>
+</ul>
+<p>有了SMTP服务器的域名和端口号，我们还需要SMTP服务器的登录信息，通常是使用自己的邮件地址作为用户名，登录口令是用户口令或者一个独立设置的SMTP口令。</p>
+<p>我们来看看如何使用JavaMail发送邮件。</p>
+<p>首先，我们需要创建一个Maven工程，并把JavaMail相关的两个依赖加入进来：</p>
+<pre><code class="highlight plaintext">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.mail&lt;/groupId&gt;
+        &lt;artifactId&gt;javax.mail-api&lt;/artifactId&gt;
+        &lt;version&gt;1.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.sun.mail&lt;/groupId&gt;
+        &lt;artifactId&gt;javax.mail&lt;/artifactId&gt;
+        &lt;version&gt;1.6.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    ...</code></pre>
+<p>然后，我们通过JavaMail API连接到SMTP服务器上：// 服务器地址:</p>
+<pre><code class="highlight plaintext">String smtp = &quot;smtp.office365.com&quot;;
+// 登录用户名:
+String username = &quot;jxsmtp101@outlook.com&quot;;
+// 登录口令:
+String password = &quot;********&quot;;
+// 连接到SMTP服务器587端口:
+Properties props = new Properties();
+props.put(&quot;mail.smtp.host&quot;, smtp); // SMTP主机名
+props.put(&quot;mail.smtp.port&quot;, &quot;587&quot;); // 主机端口号
+props.put(&quot;mail.smtp.auth&quot;, &quot;true&quot;); // 是否需要用户认证
+props.put(&quot;mail.smtp.starttls.enable&quot;, &quot;true&quot;); // 启用TLS加密// 获取Session实例:
+Session session = Session.getInstance(props, new Authenticator() &#123;
+    protected PasswordAuthentication getPasswordAuthentication() &#123;
+        return new PasswordAuthentication(username, password);
+    &#125;
+&#125;);
+// 设置debug模式便于调试:
+session.setDebug(true);</code></pre>
+<p>以587端口为例，连接SMTP服务器时，需要准备一个Properties对象，填入相关信息。最后获取Session实例时，如果服务器需要认证，还需要传入一个Authenticator对象，并返回指定的用户名和口令。</p>
+<p>当我们获取到Session实例后，打开调试模式可以看到SMTP通信的详细内容，便于调试。</p>
+<h4 id="发送邮件"><a class="markdownIt-Anchor" href="#发送邮件"></a> 发送邮件</h4>
+<p>发送邮件时，我们需要构造一个Message对象，然后调用</p>
+<pre><code class="highlight plaintext">Transport.send(Message)即可完成发送：MimeMessage message = new MimeMessage(session);
+// 设置发送方地址:
+message.setFrom(new InternetAddress(&quot;me@example.com&quot;));
+// 设置接收方地址:
+message.setRecipient(Message.RecipientType.TO, new InternetAddress(&quot;xiaoming@somewhere.com&quot;));
+// 设置邮件主题:
+message.setSubject(&quot;Hello&quot;, &quot;UTF-8&quot;);
+// 设置邮件正文:
+message.setText(&quot;Hi Xiaoming...&quot;, &quot;UTF-8&quot;);
+// 发送:
+Transport.send(message);</code></pre>
+<p>绝大多数邮件服务器要求发送方地址和登录用户名必须一致，否则发送将失败。填入真实的地址，运行上述代码，我们可以在控制台看到JavaMail打印的调试信息：这是JavaMail打印的调试信息:</p>
+<pre><code class="highlight plaintext">DEBUG: setDebug: JavaMail version 1.6.2DEBUG: getProvider() returning javax.mail.Provider[TRANSPORT,smtp,com.sun.mail.smtp.SMTPTransport,Oracle]
+DEBUG SMTP: need username and password for authentication
+DEBUG SMTP: protocolConnect returning false, host=smtp.office365.com, ...
+DEBUG SMTP: useEhlo true, useAuth true开始尝试连接smtp.office365.com:DEBUG SMTP: trying to connect to host &quot;smtp.office365.com&quot;, port 587, ...
+DEBUG SMTP: connected to host &quot;smtp.office365.com&quot;, port: 587发送命令EHLO:EHLO localhost
+SMTP服务器响应250:250-SG3P274CA0024.outlook.office365.com Hello250-SIZE 157286400
+...
+DEBUG SMTP: Found extension &quot;SIZE&quot;, arg &quot;157286400&quot;发送命令STARTTLS:STARTTLSSMTP服务器响应220:220 2.0.0 SMTP server ready
+EHLO localhost
+250-SG3P274CA0024.outlook.office365.com Hello [111.196.164.63]
+250-SIZE 157286400250-PIPELINING250-...
+DEBUG SMTP: Found extension &quot;SIZE&quot;, arg &quot;157286400&quot;
+...
+尝试登录:DEBUG SMTP: protocolConnect login, host=smtp.office365.com, user=********, password=********
+DEBUG SMTP: Attempt to authenticate using mechanisms: LOGIN PLAIN DIGEST-MD5 NTLM XOAUTH2 
+DEBUG SMTP: Using mechanism LOGINDEBUG SMTP: AUTH LOGIN command trace suppressed
+登录成功:DEBUG SMTP: AUTH LOGIN succeeded
+DEBUG SMTP: use8bit false开发发送邮件，设置FROM:MAIL FROM:&lt;********@outlook.com&gt;
+250 2.1.0 Sender OK设置TO:RCPT TO:&lt;********@sina.com&gt;
+250 2.1.5 Recipient OK发送邮件数据:DATA服务器响应354:354 Start mail input; end with &lt;CRLF&gt;.&lt;CRLF&gt;
+真正的邮件数据:Date: Mon, 2 Dec 2019 09:37:52 +0800 (CST)
+From: ********@outlook.com
+To: ********001@sina.com
+Message-ID: &lt;1617791695.0.1575250672483@localhost&gt;
+邮件主题是编码后的文本:Subject: =?UTF-8?Q?JavaMail=E9=82=AE=E4=BB=B6?=
+MIME-Version: 1.0Content-Type: text/plain; charset=UTF-8Content-Transfer-Encoding: base64
+
+邮件正文是Base64编码的文本:SGVsbG8sIOi/meaYr+S4gOWwgeadpeiHqmphdmFtYWls55qE6YKu5Lu277yB
+.
+邮件数据发送完成后，以\r\n.\r\n结束，服务器响应250表示发送成功:250 2.0.0 OK &lt;HK0PR03MB4961.apcprd03.prod.outlook.com&gt; [Hostname=HK0PR03MB4961.apcprd03.prod.outlook.com]
+DEBUG SMTP: message successfully delivered to mail server
+发送QUIT命令:QUIT服务器响应221结束TCP连接:221 2.0.0 Service closing transmission channel</code></pre>
+<p>从上面的调试信息可以看出，SMTP协议是一个请求-响应协议，客户端总是发送命令，然后等待服务器响应。服务器响应总是以数字开头，后面的信息才是用于调试的文本。这些响应码已经被定义在SMTP协议中了，</p>
+<p>查看具体的响应码就可以知道出错原因。如果一切顺利，对方将收到一封文本格式的电子邮件：</p>
+<h4 id="发送html邮件"><a class="markdownIt-Anchor" href="#发送html邮件"></a> 发送HTML邮件</h4>
+<p>发送HTML邮件和文本邮件是类似的，只需要把：</p>
+<pre><code class="highlight plaintext">message.setText(body, &quot;UTF-8&quot;);</code></pre>
+<p>改为：</p>
+<pre><code class="highlight plaintext">message.setText(body, &quot;UTF-8&quot;, &quot;html&quot;);</code></pre>
+<p>传入的body是类似<code>&lt;h1&gt;Hello&lt;/h1&gt;&lt;p&gt;Hi, xxx&lt;/p&gt;</code>这样的HTML字符串即可。HTML邮件可以在邮件客户端直接显示为网页格式：</p>
+<h4 id="发送附件"><a class="markdownIt-Anchor" href="#发送附件"></a> 发送附件</h4>
+<p>要在电子邮件中携带附件，我们就不能直接调用message.setText()方法，而是要构造一个Multipart对象：</p>
+<pre><code class="highlight plaintext">Multipart multipart = new MimeMultipart();
+// 添加text:
+BodyPart textpart = new MimeBodyPart();
+textpart.setContent(body, &quot;text/html;charset=utf-8&quot;);
+multipart.addBodyPart(textpart);
+// 添加image:
+BodyPart imagepart = new MimeBodyPart();
+imagepart.setFileName(fileName);
+imagepart.setDataHandler(new DataHandler(new ByteArrayDataSource(input, &quot;application/octet-stream&quot;)));
+multipart.addBodyPart(imagepart);
+// 设置邮件内容为multipart:
+message.setContent(multipart);</code></pre>
+<p>一个Multipart对象可以添加若干个BodyPart，其中第一个BodyPart是文本，即邮件正文，后面的BodyPart是附件。BodyPart依靠setContent()决定添加的内容，如果添加文本，用setContent(“…”, “text/plain;charset=utf-8”)添加纯文本，或者用setContent(“…”, “text/html;charset=utf-8”)添加HTML文本。如果添加附件，需要设置文件名（不一定和真实文件名一致），并且添加一个DataHandler()，传入文件的MIME类型。二进制文件可以用application/octet-stream，Word文档则是application/msword。</p>
+<p>最后，通过setContent()把Multipart添加到Message中，即可发送。</p>
+<p>带附件的邮件在客户端会被提示下载：</p>
+<h4 id="发送内嵌图片的html邮件"><a class="markdownIt-Anchor" href="#发送内嵌图片的html邮件"></a> 发送内嵌图片的HTML邮件</h4>
+<p>有些童鞋可能注意到，HTML邮件中可以内嵌图片，这是怎么做到的？如果给一个<code>&lt;img src=&quot;http://example.com/test.jpg&quot;&gt;</code>，这样的外部图片链接通常会被邮件客户端过滤，并提示用户显示图片并不安全。只有内嵌的图片才能正常在邮件中显示。</p>
+<p>内嵌图片实际上也是一个附件，即邮件本身也是Multipart，但需要做一点额外的处理：</p>
+<pre><code class="highlight plaintext">Multipart multipart = new MimeMultipart();
+// 添加text:
+BodyPart textpart = new MimeBodyPart();
+textpart.setContent(&quot;&lt;h1&gt;Hello&lt;/h1&gt;&lt;p&gt;&lt;img src=\&quot;cid:img01\&quot;&gt;&lt;/p&gt;&quot;, &quot;text/html;charset=utf-8&quot;);
+multipart.addBodyPart(textpart);
+// 添加image:
+BodyPart imagepart = new MimeBodyPart();
+imagepart.setFileName(fileName);
+imagepart.setDataHandler(new DataHandler(new ByteArrayDataSource(input, &quot;image/jpeg&quot;)));
+// 与HTML的&lt;img src=&quot;cid:img01&quot;&gt;关联:
+imagepart.setHeader(&quot;Content-ID&quot;, &quot;&lt;img01&gt;&quot;);
+multipart.addBodyPart(imagepart);</code></pre>
+<p>在HTML邮件中引用图片时，需要设定一个ID，用类似<img src="cid:img01">引用，然后，在添加图片作为BodyPart时，除了要正确设置MIME类型（根据图片类型使用image/jpeg或image/png），还需要设置一个Header：</p>
+<pre><code class="highlight plaintext">imagepart.setHeader(&quot;Content-ID&quot;, &quot;&lt;img01&gt;&quot;);</code></pre>
+<p>这个ID和HTML中引用的ID对应起来，邮件客户端就可以正常显示内嵌图片：</p>
+<h4 id="常见报错"><a class="markdownIt-Anchor" href="#常见报错"></a> 常见报错</h4>
+<p>如果用户名或口令错误，会导致535登录失败：</p>
+<pre><code class="highlight plaintext">DEBUG SMTP: AUTH LOGIN failed
+Exception in thread &quot;main&quot; javax.mail.AuthenticationFailedException: 535 5.7.3 Authentication unsuccessful [HK0PR03CA0105.apcprd03.prod.outlook.com]</code></pre>
+<p>如果登录用户和发件人不一致，会导致554拒绝发送错误：</p>
+<pre><code class="highlight plaintext">DEBUG SMTP: MessagingException while sending, THROW: 
+com.sun.mail.smtp.SMTPSendFailedException: 554 5.2.0 STOREDRV.Submission.Exception:SendAsDeniedException.MapiExceptionSendAsDenied;</code></pre>
+<p>有些时候，如果邮件主题和正文过于简单，会导致554被识别为垃圾邮件的错误：</p>
+<pre><code class="highlight plaintext">DEBUG SMTP: MessagingException while sending, THROW: 
+com.sun.mail.smtp.SMTPSendFailedException: 554 DT:SPM</code></pre>
+<h3 id="接受emial"><a class="markdownIt-Anchor" href="#接受emial"></a> 接受Emial</h3>
+<p>发送Email的过程我们在上一节已经讲过了，客户端总是通过SMTP协议把邮件发送给MTA。</p>
+<p>接收Email则相反，因为邮件最终到达收件人的MDA服务器，所以，接收邮件是收件人用自己的客户端把邮件从MDA服务器上抓取到本地的过程。</p>
+<p>接收邮件使用最广泛的协议是POP3：Post Office Protocol version 3，它也是一个建立在TCP连接之上的协议。POP3服务器的标准端口是110，如果整个会话需要加密，那么使用加密端口995。</p>
+<p>另一种接收邮件的协议是IMAP：Internet Mail Access Protocol，它使用标准端口143和加密端口993。IMAP和POP3的主要区别是，IMAP协议在本地的所有操作都会自动同步到服务器上，并且，IMAP可以允许用户在邮件服务器的收件箱中创建文件夹。</p>
+<p>JavaMail也提供了IMAP协议的支持。因为POP3和IMAP的使用方式非常类似，因此我们只介绍POP3的用法。</p>
+<p>使用POP3收取Email时，我们无需关心POP3协议底层，因为JavaMail提供了高层接口。首先需要连接到Store对象：</p>
+<pre><code class="highlight plaintext">// 准备登录信息:
+String host = &quot;pop3.example.com&quot;;
+int port = 995;
+String username = &quot;bob@example.com&quot;;
+String password = &quot;password&quot;;
+
+Properties props = new Properties();
+props.setProperty(&quot;mail.store.protocol&quot;, &quot;pop3&quot;); // 协议名称
+props.setProperty(&quot;mail.pop3.host&quot;, host);// POP3主机名
+props.setProperty(&quot;mail.pop3.port&quot;, String.valueOf(port)); // 端口号// 启动SSL:
+props.put(&quot;mail.smtp.socketFactory.class&quot;, &quot;javax.net.ssl.SSLSocketFactory&quot;);
+props.put(&quot;mail.smtp.socketFactory.port&quot;, String.valueOf(port));
+
+// 连接到Store:
+URLName url = new URLName(&quot;pop3&quot;, host, post, &quot;&quot;, username, password);
+Session session = Session.getInstance(props, null);
+session.setDebug(true); // 显示调试信息
+Store store = new POP3SSLStore(session, url);
+store.connect();</code></pre>
+<p>一个Store对象表示整个邮箱的存储，要收取邮件，我们需要通过Store访问指定的Folder（文件夹），通常是INBOX表示收件箱：</p>
+<pre><code class="highlight plaintext">// 获取收件箱:
+Folder folder = store.getFolder(&quot;INBOX&quot;);
+// 以读写方式打开:
+folder.open(Folder.READ_WRITE);
+// 打印邮件总数/新邮件数量/未读数量/已删除数量:
+System.out.println(&quot;Total messages: &quot; + folder.getMessageCount());
+System.out.println(&quot;New messages: &quot; + folder.getNewMessageCount());
+System.out.println(&quot;Unread messages: &quot; + folder.getUnreadMessageCount());
+System.out.println(&quot;Deleted messages: &quot; + folder.getDeletedMessageCount());
+// 获取每一封邮件:
+Message[] messages = folder.getMessages();
+for (Message message : messages) &#123;
+    // 打印每一封邮件:
+    printMessage((MimeMessage) message);
+&#125;</code></pre>
+<p>当我们获取到一个Message对象时，可以强制转型为MimeMessage，然后打印出邮件主题、发件人、收件人等信息：</p>
+<pre><code class="highlight plaintext">void printMessage(MimeMessage msg) throws IOException, MessagingException &#123;
+    // 邮件主题:
+    System.out.println(&quot;Subject: &quot; + MimeUtility.decodeText(msg.getSubject()));
+    // 发件人:
+    Address[] froms = msg.getFrom();
+    InternetAddress address = (InternetAddress) froms[0];
+    String personal = address.getPersonal();
+    String from = personal == null ? address.getAddress() : (MimeUtility.decodeText(personal) + &quot; &lt;&quot; + address.getAddress() + &quot;&gt;&quot;);
+    System.out.println(&quot;From: &quot; + from);
+    // 继续打印收件人:
+    ...
+&#125;</code></pre>
+<p>比较麻烦的是获取邮件的正文。一个MimeMessage对象也是一个Part对象，它可能只包含一个文本，也可能是一个Multipart对象，即由几个Part构成，因此，需要递归地解析出完整的正文：</p>
+<pre><code class="highlight plaintext">String getBody(Part part) throws MessagingException, IOException &#123;
+    if (part.isMimeType(&quot;text/*&quot;)) &#123;
+        // Part是文本:
+        return part.getContent().toString();
+    &#125;
+    if (part.isMimeType(&quot;multipart/*&quot;)) &#123;
+        // Part是一个Multipart对象:
+        Multipart multipart = (Multipart) part.getContent();
+        // 循环解析每个子Part:
+        for (int i = 0; i &lt; multipart.getCount(); i++) &#123;
+            BodyPart bodyPart = multipart.getBodyPart(i);
+            String body = getBody(bodyPart);
+            if (!body.isEmpty()) &#123;
+                return body;
+            &#125;
+        &#125;
+    &#125;
+    return &quot;&quot;;
+&#125;</code></pre>
+<p>最后记得关闭Folder和Store：</p>
+<pre><code class="highlight plaintext">folder.close(true); // 传入true表示删除操作会同步到服务器上（即删除服务器收件箱的邮件）
+store.close();</code></pre>
+<h3 id="http编程"><a class="markdownIt-Anchor" href="#http编程"></a> HTTP编程</h3>
+<p>什么是HTTP？HTTP就是目前使用最广泛的Web应用程序使用的基础协议，例如，浏览器访问网站，手机App访问后台服务器，都是通过HTTP协议实现的。</p>
+<p>HTTP是HyperText Transfer Protocol的缩写，翻译为<strong>超文本传输协议</strong>，它是基于TCP协议之上的一种请求-响应协议。</p>
+<p>我们来看一下浏览器请求访问某个网站时发送的HTTP请求-响应。当浏览器希望访问某个网站时，浏览器和网站服务器之间首先建立TCP连接，且服务器总是使用80端口和加密端口443，然后，浏览器向服务器发送一个HTTP请求，服务器收到后，返回一个HTTP响应，并且在响应中包含了HTML的网页内容，这样，浏览器解析HTML后就可以给用户显示网页了。一个完整的HTTP请求-响应如下：</p>
+<p>HTTP请求的格式是固定的，它由<strong>HTTP Header和HTTP Body</strong>两部分构成。第一行总是请求方法 路径 HTTP版本，例如，GET / HTTP/1.1表示使用GET请求，路径是/，版本是HTTP/1.1。</p>
+<p>后续的每一行都是固定的Header: Value格式，我们称为HTTP Header，服务器依靠某些特定的Header来识别客户端请求，例如：</p>
+<ul>
+<li>Host：表示请求的域名，因为一台服务器上可能有多个网站，因此有必要依靠Host来识别请求是发给哪个网站的；</li>
+<li>User-Agent：表示客户端自身标识信息，不同的浏览器有不同的标识，服务器依靠User-Agent判断客户端类型是IE还是Chrome，是Firefox还是一个Python爬虫；</li>
+<li>Accept：表示客户端能处理的HTTP响应格式，<code>*/*</code>表示任意格式，<code>text/*</code>表示任意文本，<code>image/png</code>表示PNG格式的图片；</li>
+<li>Accept-Language：表示客户端接收的语言，多种语言按优先级排序，服务器依靠该字段给用户返回特定语言的网页版本。</li>
+</ul>
+<p>如果是GET请求，那么该HTTP请求只有HTTP Header，没有HTTP Body。如果是POST请求，那么该HTTP请求带有Body，以一个空行分隔。一个典型的带Body的HTTP请求如下：</p>
+<pre><code class="highlight plaintext">POST /login HTTP/1.1
+Host: www.example.com
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 30
+
+username=hello&amp;password=123456</code></pre>
+<p>POST请求通常要设置Content-Type表示Body的类型，Content-Length表示Body的长度，这样服务器就可以根据请求的Header和Body做出正确的响应。</p>
+<p>此外，GET请求的参数必须附加在URL上，并以URLEncode方式编码，例如：<a target="_blank" rel="noopener" href="http://www.example.com/?a=1&amp;b=K%26R%EF%BC%8C%E5%8F%82%E6%95%B0%E5%88%86%E5%88%AB%E6%98%AFa=1%E5%92%8Cb=K&amp;R%E3%80%82%E5%9B%A0%E4%B8%BAURL%E7%9A%84%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%EF%BC%8CGET%E8%AF%B7%E6%B1%82%E7%9A%84%E5%8F%82%E6%95%B0%E4%B8%8D%E8%83%BD%E5%A4%AA%E5%A4%9A%EF%BC%8C%E8%80%8CPOST%E8%AF%B7%E6%B1%82%E7%9A%84%E5%8F%82%E6%95%B0%E5%B0%B1%E6%B2%A1%E6%9C%89%E9%95%BF%E5%BA%A6%E9%99%90%E5%88%B6%EF%BC%8C%E5%9B%A0%E4%B8%BAPOST%E8%AF%B7%E6%B1%82%E7%9A%84%E5%8F%82%E6%95%B0%E5%BF%85%E9%A1%BB%E6%94%BE%E5%88%B0Body%E4%B8%AD%E3%80%82%E5%B9%B6%E4%B8%94%EF%BC%8CPOST%E8%AF%B7%E6%B1%82%E7%9A%84%E5%8F%82%E6%95%B0%E4%B8%8D%E4%B8%80%E5%AE%9A%E6%98%AFURL%E7%BC%96%E7%A0%81%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8C%89%E4%BB%BB%E6%84%8F%E6%A0%BC%E5%BC%8F%E7%BC%96%E7%A0%81%EF%BC%8C%E5%8F%AA%E9%9C%80%E8%A6%81%E5%9C%A8Content-Type%E4%B8%AD%E6%AD%A3%E7%A1%AE%E8%AE%BE%E7%BD%AE%E5%8D%B3%E5%8F%AF%E3%80%82%E5%B8%B8%E8%A7%81%E7%9A%84%E5%8F%91%E9%80%81JSON%E7%9A%84POST%E8%AF%B7%E6%B1%82%E5%A6%82%E4%B8%8B%EF%BC%9A">http://www.example.com/?a=1&amp;b=K%26R，参数分别是a=1和b=K&amp;R。因为URL的长度限制，GET请求的参数不能太多，而POST请求的参数就没有长度限制，因为POST请求的参数必须放到Body中。并且，POST请求的参数不一定是URL编码，可以按任意格式编码，只需要在Content-Type中正确设置即可。常见的发送JSON的POST请求如下：</a></p>
+<pre><code class="highlight plaintext">POST /login HTTP/1.1
+Content-Type: application/json
+Content-Length: 38
+
+&#123;&quot;username&quot;:&quot;bob&quot;,&quot;password&quot;:&quot;123456&quot;&#125;</code></pre>
+<p>HTTP响应也是由Header和Body两部分组成，一个典型的HTTP响应如下：</p>
+<pre><code class="highlight plaintext">HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 133251
+
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;body&gt;
+&lt;h1&gt;Hello&lt;/h1&gt;
+...</code></pre>
+<p>响应的第一行总是HTTP版本 响应代码 响应说明，例如，HTTP/1.1 200 OK表示版本是HTTP/1.1，响应代码是200，响应说明是OK。客户端只依赖响应代码判断HTTP响应是否成功。HTTP有固定的响应代码：</p>
+<ul>
+<li>1xx：表示一个提示性响应，例如101表示将切换协议，常见于WebSocket连接；</li>
+<li>2xx：表示一个成功的响应，例如200表示成功，206表示只发送了部分内容；</li>
+<li>3xx：表示一个重定向的响应，例如301表示永久重定向，303表示客户端应该按指定路径重新发送请求；</li>
+<li>4xx：表示一个因为客户端问题导致的错误响应，例如400表示因为Content-Type等各种原因导致的无效请求，404表示指定的路径不存在；</li>
+<li>5xx：表示一个因为服务器问题导致的错误响应，例如500表示服务器内部故障，503表示服务器暂时无法响应。</li>
+</ul>
+<p>当浏览器收到第一个HTTP响应后，它解析HTML后，又会发送一系列HTTP请求，例如，GET /logo.jpg HTTP/1.1请求一个图片，服务器响应图片请求后，会直接把二进制内容的图片发送给浏览器：</p>
+<pre><code class="highlight plaintext">HTTP/1.1 200 OK
+Content-Type: image/jpeg
+Content-Length: 18391
+
+????JFIFHH??XExifMM?i&amp;??X?...(二进制的JPEG图片)</code></pre>
+<p>因此，服务器总是被动地接收客户端的一个HTTP请求，然后响应它。客户端则根据需要发送若干个HTTP请求。</p>
+<p>对于最早期的HTTP/1.0协议，每次发送一个HTTP请求，客户端都需要先创建一个新的TCP连接，然后，收到服务器响应后，关闭这个TCP连接。由于建立TCP连接就比较耗时，因此，为了提高效率，HTTP/1.1协议允许在一个TCP连接中反复发送-响应，这样就能大大提高效率：</p>
+<p>因为HTTP协议是一个请求-响应协议，客户端在发送了一个HTTP请求后，必须等待服务器响应后，才能发送下一个请求，这样一来，如果某个响应太慢，它就会堵住后面的请求。</p>
+<p>所以，为了进一步提速，HTTP/2.0允许客户端在没有收到响应的时候，发送多个HTTP请求，服务器返回响应的时候，不一定按顺序返回，只要双方能识别出哪个响应对应哪个请求，就可以做到并行发送和接收：</p>
+<p>可见，HTTP/2.0进一步提高了效率。</p>
+<h4 id="http编程-2"><a class="markdownIt-Anchor" href="#http编程-2"></a> HTTP编程</h4>
+<p>既然HTTP涉及到客户端和服务器端，和TCP类似，我们也需要针对客户端编程和针对服务器端编程。</p>
+<p>本节我们不讨论服务器端的HTTP编程，因为服务器端的HTTP编程本质上就是编写Web服务器，这是一个非常复杂的体系，也是JavaEE开发的核心内容，我们在后面的章节再仔细研究。</p>
+<p>本节我们只讨论作为客户端的HTTP编程。</p>
+<p>因为浏览器也是一种HTTP客户端，所以，客户端的HTTP编程，它的行为本质上和浏览器是一样的，即发送一个HTTP请求，接收服务器响应后，获得响应内容。</p>
+<p>只不过浏览器进一步把响应内容解析后渲染并展示给了用户，而我们使用Java进行HTTP客户端编程仅限于获得响应内容。</p>
+<p>我们来看一下Java如何使用HTTP客户端编程。Java标准库提供了基于HTTP的包，但是要注意，早期的JDK版本是通过HttpURLConnection访问HTTP，典型代码如下：</p>
+<pre><code class="highlight plaintext">
+URL url = new URL(&quot;http://www.example.com/path/to/target?a=1&amp;b=2&quot;);
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+conn.setRequestMethod(&quot;GET&quot;);
+conn.setUseCaches(false);
+conn.setConnectTimeout(5000); // 请求超时5秒// 设置HTTP头:
+conn.setRequestProperty(&quot;Accept&quot;, &quot;*/*&quot;);
+conn.setRequestProperty(&quot;User-Agent&quot;, &quot;Mozilla/5.0 (compatible; MSIE 11; Windows NT 5.1)&quot;);
+// 连接并发送HTTP请求:
+conn.connect();
+// 判断HTTP响应是否200:if (conn.getResponseCode() != 200) &#123;
+    throw new RuntimeException(&quot;bad response&quot;);
+&#125;               
+// 获取所有响应Header:
+Map&lt;String, List&lt;String&gt;&gt; map = conn.getHeaderFields();
+for (String key : map.keySet()) &#123;
+    System.out.println(key + &quot;: &quot; + map.get(key));
+&#125;
+// 获取响应内容:
+InputStream input = conn.getInputStream();
+...</code></pre>
+<p>上述代码编写比较繁琐，并且需要手动处理InputStream，所以用起来很麻烦。</p>
+<p>从Java 11开始，引入了新的HttpClient，它使用链式调用的API，能大大简化HTTP的处理。</p>
+<p>我们来看一下如何使用新版的HttpClient。首先需要创建一个全局HttpClient实例，因为HttpClient内部使用线程池优化多个HTTP连接，可以复用：</p>
+<pre><code class="highlight plaintext">static HttpClient httpClient = HttpClient.newBuilder().build();</code></pre>
+<p>使用GET请求获取文本内容代码如下：</p>
+<pre><code class="highlight plaintext">
+import java.net.URI;
+import java.net.http.*;
+import java.net.http.HttpClient.Version;
+import java.time.Duration;
+import java.util.*;
+
+public class Main &#123;
+    // 全局HttpClient:
+    static HttpClient httpClient = HttpClient.newBuilder().build();
+
+    public static void main(String[] args) throws Exception &#123;
+        String url = &quot;https://www.sina.com.cn/&quot;;
+        HttpRequest request = HttpRequest.newBuilder(new URI(url))
+            // 设置Header:
+            .header(&quot;User-Agent&quot;, &quot;Java HttpClient&quot;).header(&quot;Accept&quot;, &quot;*/*&quot;)
+            // 设置超时:
+            .timeout(Duration.ofSeconds(5))
+            // 设置版本:
+            .version(Version.HTTP_2).build();
+        HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        // HTTP允许重复的Header，因此一个Header可对应多个Value:
+        Map&lt;String, List&lt;String&gt;&gt; headers = response.headers().map();
+        for (String header : headers.keySet()) &#123;
+            System.out.println(header + &quot;: &quot; + headers.get(header).get(0));
+        &#125;
+        System.out.println(response.body().substring(0, 1024) + &quot;...&quot;);
+    &#125;
+&#125;</code></pre>
+<p>如果我们要获取图片这样的二进制内容，只需要把HttpResponse.BodyHandlers.ofString()换成HttpResponse.BodyHandlers.ofByteArray()，就可以获得一个HttpResponse&lt;byte[]&gt;对象。如果响应的内容很大，不希望一次性全部加载到内存，可以使用HttpResponse.BodyHandlers.ofInputStream()获取一个InputStream流。</p>
+<p>要使用POST请求，我们要准备好发送的Body数据并正确设置Content-Type：</p>
+<pre><code class="highlight plaintext">
+String url = &quot;http://www.example.com/login&quot;;
+String body = &quot;username=bob&amp;password=123456&quot;;
+HttpRequest request = HttpRequest.newBuilder(new URI(url))
+    // 设置Header:
+    .header(&quot;Accept&quot;, &quot;*/*&quot;)
+    .header(&quot;Content-Type&quot;, &quot;application/x-www-form-urlencoded&quot;)
+    // 设置超时:
+    .timeout(Duration.ofSeconds(5))
+    // 设置版本:
+    .version(Version.HTTP_2)
+    // 使用POST并设置Body:
+    .POST(BodyPublishers.ofString(body, StandardCharsets.UTF_8)).build();
+HttpResponse&lt;String&gt; response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+String s = response.body();</code></pre>
+<h3 id="rmi远程调用"><a class="markdownIt-Anchor" href="#rmi远程调用"></a> RMI远程调用</h3>
+<p>Java的RMI远程调用是指，一个JVM中的代码可以通过网络实现远程调用另一个JVM的某个方法。RMI是Remote Method Invocation的缩写。</p>
+<p>提供服务的一方我们称之为服务器，而实现远程调用的一方我们称之为客户端。</p>
+<p>我们先来实现一个最简单的RMI：服务器会提供一个WorldClock服务，允许客户端获取指定时区的时间，即允许客户端调用下面的方法：</p>
+<pre><code class="highlight plaintext">LocalDateTime getLocalDateTime(String zoneId);</code></pre>
+<p>要实现RMI，服务器和客户端必须共享同一个接口。我们定义一个WorldClock接口，代码如下：</p>
+<pre><code class="highlight plaintext">public interface WorldClock extends Remote &#123;
+    LocalDateTime getLocalDateTime(String zoneId) throws RemoteException;
+&#125;</code></pre>
+<p>Java的RMI规定此接口必须派生自java.rmi.Remote，并在每个方法声明抛出RemoteException。</p>
+<p>下一步是编写服务器的实现类，因为客户端请求的调用方法getLocalDateTime()最终会通过这个实现类返回结果。实现类WorldClockService代码如下：</p>
+<pre><code class="highlight plaintext">public class WorldClockService implements WorldClock &#123;
+    @Override
+    public LocalDateTime getLocalDateTime(String zoneId) throws RemoteException &#123;
+        return LocalDateTime.now(ZoneId.of(zoneId)).withNano(0);
+    &#125;
+&#125;</code></pre>
+<p>现在，服务器端的服务相关代码就编写完毕。我们需要通过Java RMI提供的一系列底层支持接口，把上面编写的服务以RMI的形式暴露在网络上，客户端才能调用：</p>
+<pre><code class="highlight plaintext">public class Server &#123;
+    public static void main(String[] args) throws RemoteException &#123;
+        System.out.println(&quot;create World clock remote service...&quot;);
+        // 实例化一个WorldClock:
+        WorldClock worldClock = new WorldClockService();
+        // 将此服务转换为远程服务接口:
+        WorldClock skeleton = (WorldClock) UnicastRemoteObject.exportObject(worldClock, 0);
+        // 将RMI服务注册到1099端口:
+        Registry registry = LocateRegistry.createRegistry(1099);
+        // 注册此服务，服务名为&quot;WorldClock&quot;:
+        registry.rebind(&quot;WorldClock&quot;, skeleton);
+    &#125;
+&#125;</code></pre>
+<p>上述代码主要目的是通过RMI提供的相关类，将我们自己的WorldClock实例注册到RMI服务上。RMI的默认端口是1099，最后一步注册服务时通过rebind()指定服务名称为&quot;WorldClock&quot;。</p>
+<p>下一步我们就可以编写客户端代码。RMI要求服务器和客户端共享同一个接口，因此我们要把WorldClock.java这个接口文件复制到客户端，然后在客户端实现RMI调用：</p>
+<pre><code class="highlight plaintext">public class Client &#123;
+    public static void main(String[] args) throws RemoteException, NotBoundException &#123;
+        // 连接到服务器localhost，端口1099:
+        Registry registry = LocateRegistry.getRegistry(&quot;localhost&quot;, 1099);
+        // 查找名称为&quot;WorldClock&quot;的服务并强制转型为WorldClock接口:
+        WorldClock worldClock = (WorldClock) registry.lookup(&quot;WorldClock&quot;);
+        // 正常调用接口方法:
+        LocalDateTime now = worldClock.getLocalDateTime(&quot;Asia/Shanghai&quot;);
+        // 打印调用结果:
+        System.out.println(now);
+    &#125;
+&#125;</code></pre>
+<p>先运行服务器，再运行客户端。从运行结果可知，因为客户端只有接口，并没有实现类，因此，客户端获得的接口方法返回值实际上是通过网络从服务器端获取的。整个过程实际上非常简单，对客户端来说，客户端持有的WorldClock接口实际上对应了一个“实现类”，它是由Registry内部动态生成的，并负责把方法调用通过网络传递到服务器端。而服务器端接收网络调用的服务并不是我们自己编写的WorldClockService，而是Registry自动生成的代码。我们把客户端的“实现类”称为stub，而服务器端的网络服务类称为skeleton，它会真正调用服务器端的WorldClockService，获取结果，然后把结果通过网络传递给客户端。整个过程由RMI底层负责实现序列化和反序列化：</p>
+<p>Java的RMI严重依赖序列化和反序列化，而这种情况下可能会造成严重的安全漏洞，因为Java的序列化和反序列化不但涉及到数据，还涉及到二进制的字节码，即使使用白名单机制也很难保证100%排除恶意构造的字节码。因此，使用RMI时，双方必须是内网互相信任的机器，不要把1099端口暴露在公网上作为对外服务。此外，Java的RMI调用机制决定了双方必须是Java程序，其他语言很难调用Java的RMI。</p>
+<p>如果要使用不同语言进行RPC调用，可以选择更通用的协议，例如gRPC。</p>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

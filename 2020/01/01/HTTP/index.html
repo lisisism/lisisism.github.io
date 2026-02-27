@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    HTTP 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">HTTP</div>
+  <div class="post-meta">
+    <div class="date">2020 一月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">HTTP</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="http"><a class="markdownIt-Anchor" href="#http"></a> $HTTP</h1>
+<h1 id="http-2"><a class="markdownIt-Anchor" href="#http-2"></a> HTTP</h1>
+<ul>
+<li><a href="">HTTP</a>
+<ul>
+<li><a href="">URL/URI</a>
+<ul>
+<li><a href="">URL</a></li>
+<li><a href="">URI和URL的区别</a></li>
+</ul>
+</li>
+<li><a href="">HTTP协议</a>
+<ul>
+<li><a href="">协议</a></li>
+<li><a href="">HTTP协议概述</a>
+<ul>
+<li><a href="">什么是HTTP协议</a></li>
+<li><a href="">什么是WEB资源</a></li>
+<li><a href="">HTTP作用</a></li>
+<li><a href="">如何通信</a></li>
+<li><a href="">HTTP版本</a></li>
+</ul>
+</li>
+<li><a href="">HTTP协议组成</a>
+<ul>
+<li><a href="">请求消息Request</a>
+<ul>
+<li><a href="">请求行</a></li>
+<li><a href="">请求头</a></li>
+<li><a href="">请求体</a></li>
+</ul>
+</li>
+<li><a href="">响应消息Response</a>
+<ul>
+<li><a href="">状态行</a></li>
+<li><a href="">响应头</a></li>
+<li><a href="">响应体</a></li>
+</ul>
+</li>
+<li><a href="">GET请求和POST请求的区别</a></li>
+</ul>
+</li>
+<li><a href="">通过浏览器查看HTTP协议</a>
+<ul>
+<li><a href="">调试工具</a>
+<ul>
+<li><a href="">使用火狐浏览器</a></li>
+<li><a href="">打开调试工具</a></li>
+<li><a href="">观察 request response</a></li>
+</ul>
+</li>
+<li><a href="">HTTP请求request协议</a>
+<ul>
+<li><a href="">请求行</a></li>
+<li><a href="">请求头部</a></li>
+<li><a href="">请求参数</a></li>
+</ul>
+</li>
+<li><a href="">HTTP响应response协议</a>
+<ul>
+<li><a href="">状态行</a></li>
+<li><a href="">消息报头</a></li>
+<li><a href="">响应正文</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Servlet处理HTTP协议</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="urluri"><a class="markdownIt-Anchor" href="#urluri"></a> URL/URI</h2>
+<h3 id="url"><a class="markdownIt-Anchor" href="#url"></a> URL</h3>
+<p>HTTP使用统一资源标识符（Uniform Resource Identifiers, URI）来传输数据和建立连接。<strong>URL是一种特殊类型的URI</strong>，包含了用于查找某个资源的足够的信息</p>
+<p>URL,全称是UniformResourceLocator, 中文叫统一资源定位符,是互联网上用来标识某一处资源的地址。以下面这个URL为例，介绍下普通URL的各部分组成：</p>
+<p><code>http://www.aspxfans.com:8080/news/index.asp?boardID=5&amp;ID=24618&amp;page=1#name</code></p>
+<p>从上面的URL可以看出，一个完整的URL包括以下几部分：</p>
+<p>1.协议部分：该URL的协议部分为“http：”，这代表网页使用的是HTTP协议。在Internet中可以使用多种协议，如HTTP，FTP等等本例中使用的是HTTP协议。在&quot;HTTP&quot;后面的“//”为分隔符</p>
+<p>2.域名部分：该URL的域名部分为“<a target="_blank" rel="noopener" href="http://www.aspxfans.com">www.aspxfans.com</a>”。一个URL中，也可以使用IP地址作为域名使用</p>
+<p>3.端口部分：跟在域名后面的是端口，域名和端口之间使用“:”作为分隔符。端口不是一个URL必须的部分，如果省略端口部分，将采用默认端口</p>
+<p>4.虚拟目录部分：从域名后的第一个“/”开始到最后一个“/”为止，是虚拟目录部分。虚拟目录也不是一个URL必须的部分。本例中的虚拟目录是“/news/”</p>
+<p>5.文件名部分：从域名后的最后一个“/”开始到“？”为止，是文件名部分，如果没有“?”,则是从域名后的最后一个“/”开始到“#”为止，是文件部分，如果没有“？”和“#”，那么从域名后的最后一个“/”开始到结束，都是文件名部分。本例中的文件名是“index.asp”。文件名部分也不是一个URL必须的部分，如果省略该部分，则使用默认的文件名</p>
+<p>6.锚部分：从“#”开始到最后，都是锚部分。本例中的锚部分是“name”。锚部分也不是一个URL必须的部分</p>
+<p>7.参数部分：从“？”开始到“#”为止之间的部分为参数部分，又称搜索部分、查询部分。本例中的参数部分为“boardID=5&amp;ID=24618&amp;page=1”。参数可以允许有多个参数，参数与参数之间用“&amp;”作为分隔符</p>
+<h3 id="uri和url的区别"><a class="markdownIt-Anchor" href="#uri和url的区别"></a> URI和URL的区别</h3>
+<p><strong>URI，是uniform resource identifier，统一资源标识符，用来唯一的标识一个资源</strong>。</p>
+<p>Web上可用的每种资源如HTML文档、图像、视频片段、程序等都是一个来URI来定位的</p>
+<p>URI一般由三部组成：</p>
+<p>①访问资源的命名机制</p>
+<p>②存放资源的主机名</p>
+<p>③资源自身的名称，由路径表示，着重强调于资源</p>
+<p><strong>URL是uniform resource locator，统一资源定位器，它是一种具体的URI，即URL可以用来标识一个资源，而且还指明了如何locate这个资源</strong></p>
+<p>URL是Internet上用来描述信息资源的字符串，主要用在各种WWW客户程序和服务器程序上，特别是著名的Mosaic。</p>
+<p>采用URL可以用一种统一的格式来描述各种信息资源，包括文件、服务器的地址和目录等。URL一般由三部组成：</p>
+<p>①协议(或称为服务方式)</p>
+<p>②存有该资源的主机IP地址(有时也包括端口号)</p>
+<p>③主机资源的具体地址。如目录和文件名等</p>
+<p><strong>URN，uniform resource name，统一资源命名，是通过名字来标识资源，比如mailto:java-net@java.sun.com</strong></p>
+<p>URI是以一种抽象的，高层次概念定义统一资源标识，而URL和URN则是具体的资源标识的方式。URL和URN都是一种URI。笼统地说，每个 URL 都是 URI，但不一定每个 URI 都是 URL。这是因为 URI 还包括一个子类，即统一资源名称 (URN)，它命名资源但不指定如何定位资源。上面的 mailto、news 和 isbn URI 都是 URN 的示例。</p>
+<p>在Java的URI中，一个URI实例可以代表绝对的，也可以是相对的，只要它符合URI的语法规则。而URL类则不仅符合语义，还包含了定位该资源的信息，因此它不能是相对的。</p>
+<p>在Java类库中，URI类不包含任何访问资源的方法，它唯一的作用就是解析。</p>
+<p>相反的是，URL类可以打开一个到达资源的流</p>
+<h2 id="http协议"><a class="markdownIt-Anchor" href="#http协议"></a> HTTP协议</h2>
+<h3 id="协议"><a class="markdownIt-Anchor" href="#协议"></a> 协议</h3>
+<blockquote>
+<p>HTTP目前最新版本为HTTP2.0</p>
+</blockquote>
+<h3 id="http协议概述"><a class="markdownIt-Anchor" href="#http协议概述"></a> HTTP协议概述</h3>
+<p><strong>HTTP协议</strong>是建立在<strong>客户端和服务器</strong>之间的一个<strong>协议</strong>，在客户端和服务器之间需要数据的传输，而<strong>传输数据</strong>的时候，我们要<strong>按照指定的规则或者叫协议</strong>去传输数据</p>
+<h4 id="什么是http协议"><a class="markdownIt-Anchor" href="#什么是http协议"></a> 什么是HTTP协议</h4>
+<p><strong>HyperText Transfer Protocol   /超文本传输协议</strong></p>
+<p>HTTP协议是由w3c（万维网联盟）制定的一种应用层协议，用来指定<strong>浏览器</strong>与web<strong>服务器</strong>之间<strong>如何通信</strong>以及通信的<strong>数据格式</strong></p>
+<ul>
+<li>HTTP是一个属于应用层基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）</li>
+<li>HTTP协议工作于客户端-服务端架构为上。浏览器作为HTTP客户端通过URL向HTTP服务端即WEB服务器发送所有请求。Web服务器根据接收到的请求后，向客户端发送响应信息</li>
+<li>HTTP协议是一个无状态协议（不会记录每次访问时的信息）</li>
+</ul>
+<blockquote>
+<p>白话：就是一个规范（w3c）,规定了浏览器和服务器如何通信以及通信的数据格式</p>
+</blockquote>
+<h4 id="什么是web资源"><a class="markdownIt-Anchor" href="#什么是web资源"></a> 什么是WEB资源</h4>
+<p>通过浏览器可以访问到的所有资源都是<strong>web资源</strong></p>
+<p>web资源分为<strong>静态资源</strong>和<strong>动态资源</strong></p>
+<ul>
+<li><strong>动态资源</strong>是通过后台程序展示页面数据的，比如Servlet请求。</li>
+<li><strong>静态资源</strong>的数据是不变的，比如HTML、JPG、AVI</li>
+</ul>
+<h4 id="http作用"><a class="markdownIt-Anchor" href="#http作用"></a> HTTP作用</h4>
+<p>就是为了约束<strong>客户端与服务器</strong>之间<strong>传输WEB资源时的格式</strong></p>
+<h4 id="如何通信"><a class="markdownIt-Anchor" href="#如何通信"></a> 如何通信</h4>
+<ul>
+<li>建立连接</li>
+<li>发送请求</li>
+<li>接收响应</li>
+<li>断开连接</li>
+<li>一次请求一次连接，降低服务器发压力</li>
+</ul>
+<h4 id="http版本"><a class="markdownIt-Anchor" href="#http版本"></a> HTTP版本</h4>
+<p><strong>HTTP/1.0</strong></p>
+<p>这是第一个在通讯中指定版本号的HTTP协议版本，至今仍被广泛采用，特别是在代理服务器中</p>
+<p><strong>HTTP/1.1</strong></p>
+<p>当前版本，持久连接被默认采用，并能很好地配置代理服务器工作，还支持以管道方式同时发送多个请求，以便降低线路负载，提高传输速度</p>
+<hr />
+<p>HTTP1.1和HTTP1.0版本之间最大的区别就是：1.2可以一个连接传输多个web资源</p>
+<p><strong>HTTP/2.0</strong></p>
+<ul>
+<li><strong>多路复用 (Multiplexing)</strong>
+<ul>
+<li>多路复用允许同时通过单一的 HTTP/2 连接发起多重的请求-响应消息</li>
+<li></li>
+</ul>
+</li>
+<li>
+<h2 id="二进制分帧"><a class="markdownIt-Anchor" href="#二进制分帧"></a> 二进制分帧</h2>
+</li>
+<li>首部压缩</li>
+<li>服务端推送</li>
+</ul>
+<h3 id="http协议组成"><a class="markdownIt-Anchor" href="#http协议组成"></a> HTTP协议组成</h3>
+<h4 id="请求消息request"><a class="markdownIt-Anchor" href="#请求消息request"></a> 请求消息Request</h4>
+<p>HTTP请求协议信息由三部分组成：<strong>请求行、请求头、请求体，简称行头体</strong></p>
+<h5 id="请求行"><a class="markdownIt-Anchor" href="#请求行"></a> 请求行</h5>
+<p>也叫请求首行，它包含四部分（请求方法、URI、协议/版本、回车换行）：</p>
+<pre><code class="highlight plaintext">GET /user.html HTTP/1.1</code></pre>
+<p><strong>请求方法：</strong></p>
+<h5 id="请求头"><a class="markdownIt-Anchor" href="#请求头"></a> 请求头</h5>
+<p>请求头的信息是以<strong>key:value</strong>形式展现的。</p>
+<p>一般来说，大多数请求头的信息都不是必须的，我们只需要了解一些常见的请求</p>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Content-Type</strong></td>
+<td>是请求消息中非常重要的内容，表示请求正文中的文档属于什么MIME类型。Content-Type: [type]/[subtype]; parameter。例如最常见的就是text/html，它的意思是说返回的内容是文本类型，这个文本又是HTML格式的。</td>
+</tr>
+<tr>
+<td><strong>Host</strong></td>
+<td>指定请求资源的Intenet主机和端口号，必须表示请求url的原始服务器或网关的位置。HTTP/1.1请求必须包含主机头域，否则系统会以400状态码返回</td>
+</tr>
+<tr>
+<td><strong>Accept</strong></td>
+<td>浏览器可接受的MIME类型</td>
+</tr>
+<tr>
+<td>Accept-Charset</td>
+<td>浏览器可接受的字符集</td>
+</tr>
+<tr>
+<td>Accept-Encoding</td>
+<td>浏览器能够进行解码的数据编码方式，比如gzip。Servlet能够向支持gzip的浏览器返回经gzip编码的HTML页面。许多情形下这可以减少5到10倍的下载时间</td>
+</tr>
+<tr>
+<td>Accept-Language</td>
+<td>浏览器所希望的语言种类，当服务器能够提供一种以上的语言版本时要用到</td>
+</tr>
+<tr>
+<td>Authorization</td>
+<td>授权信息，通常出现在对服务器发送的WWW-Authenticate头的应答中</td>
+</tr>
+<tr>
+<td>Connection</td>
+<td>表示是否需要持久连接。如果Servlet看到这里的值为“Keep- Alive”，或者看到请求使用的是HTTP1.1（HTTP 1.1默认进行持久连接），它就可以利用持久连接的优点，当页面包含多个元素时（例如Applet，图片），显著地减少下载所需要的时间。要实现这一点，Servlet需要在应答中发送一个Content-Length头，最简单的实现方法是：先把内容写入 ByteArrayOutputStream，然后在正式写出内容之前计算它的大小</td>
+</tr>
+<tr>
+<td>Content-Length</td>
+<td>表示请求消息正文的长度</td>
+</tr>
+<tr>
+<td><strong>Cookie</strong></td>
+<td>这是最重要的请求头信息之一，可以在客户端记录访问状态。</td>
+</tr>
+<tr>
+<td>From</td>
+<td>请求发送者的email地址，由一些特殊的Web客户程序使用，浏览器不会用到它</td>
+</tr>
+<tr>
+<td>If-Modified-Since</td>
+<td>只有当所请求的内容在指定的日期之后又经过修改才返回它，否则返回304“Not Modified”应答</td>
+</tr>
+<tr>
+<td>Pragma</td>
+<td>指定“no-cache”值表示服务器必须返回一个刷新后的文档，即使它是代理服务器而且已经有了页面的本地拷贝</td>
+</tr>
+<tr>
+<td><strong>Referer</strong></td>
+<td>包含一个URL，用户从该URL代表的页面出发访问当前请求的页面，使用场景：防盗链、统计网站访问信息。</td>
+</tr>
+<tr>
+<td><strong>User-Agent</strong></td>
+<td>浏览器类型（客户端类型），如果Servlet返回的内容与浏览器类型有关则该值非常有用</td>
+</tr>
+<tr>
+<td>UA-Pixels，UA-Color，UA-OS，UA-CPU</td>
+<td>由某些版本的IE浏览器所发送的非标准的请求头，表示屏幕大小、颜色深度、操作系统和CPU类型</td>
+</tr>
+</tbody>
+</table>
+<p><strong>MIME概述</strong>：</p>
+<p>多用途互联网邮件扩展类型，也叫媒体类型</p>
+<p>MIME格式：大类型/小类型，阅读是反过来，比如text/html,读成html文本</p>
+<h5 id="请求体"><a class="markdownIt-Anchor" href="#请求体"></a> 请求体</h5>
+<p>也叫请求正文。</p>
+<ul>
+<li>GET请求的请求体是空的，请求参数都是通过请求行传给服务器端</li>
+<li>POST请求的请求体可以承载数据，请求头和请求体之间有一个空行作为分割线</li>
+</ul>
+<p><strong>通过表单POST提交的请求体的表现形式主要有三种：</strong></p>
+<p>这三种都是通过form表单的enctype属性来决定的</p>
+<ul>
+<li><code>application/x-www-form-urlencoded</code>：会对中文进行URL编码，并且多个参数以&amp;连接，上传文件只能上传文件名称。</li>
+<li><code>text/plain</code>：纯文本方式，不会对中文进行URL编码，不会使用&amp;连接多个key-value参数，上传文件只能上传文件名称。</li>
+<li><code>multipart/form-data</code>：多部件表现形式，这种方式主要可以完成文件上传，可以将上传的文件名称和文件内容都传递给服务器端。</li>
+</ul>
+<h4 id="响应消息response"><a class="markdownIt-Anchor" href="#响应消息response"></a> 响应消息Response</h4>
+<p>响应协议信息，也由三部分组成：状态行、响应头、响应体（响应正文）</p>
+<h5 id="状态行"><a class="markdownIt-Anchor" href="#状态行"></a> 状态行</h5>
+<p>状态行由协议/版本、数字形式的状态码、状态描述三部分组成</p>
+<pre><code class="highlight plaintext">HTTP/1.1 200 OK</code></pre>
+<p><strong>状态码说明</strong></p>
+<h5 id="响应头"><a class="markdownIt-Anchor" href="#响应头"></a> 响应头</h5>
+<p>响应头中的信息也是ke:value方式展现的</p>
+<table>
+<thead>
+<tr>
+<th>信息</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Content-Type</strong></td>
+<td>是返回消息中非常重要的内容，表示后面的文档属于什么MIME类型。Content-Type: [type]/[subtype]; parameter。例如最常见的就是text/html，它的意思是说返回的内容是文本类型，这个文本又是HTML格式的。原则上浏览器会根据Content-Type来决定如何显示返回的消息体内容</td>
+</tr>
+<tr>
+<td><strong>Location</strong></td>
+<td>Location响应报头域用于重定向接受者到一个新的位置。例如：客户端所请求的页面已不存在原先的位置，为了让客户端重定向到这个页面新的位置，服务 器端可以发回Location响应报头后使用重定向语句，让客户端去访问新的域名所对应的服务器上的资源。当我们在JSP中使用重定向语句的时候，服务器 端向客户端发回的响应报头中，就会有Location响应报头域。</td>
+</tr>
+<tr>
+<td><strong>Server</strong></td>
+<td>Server响应报头域包含了服务器用来处理请求的软件信息。它和User-Agent请求报头域是相对应的，前者发送服务器端软件的信息，后者发送客户 端软件(浏览器)和操作系统的信息。下面是Server响应报头域的一个例子：Server: Apache-Coyote/1.1</td>
+</tr>
+<tr>
+<td>WWW-Authenticate</td>
+<td>WWW-Authenticate响应报头域必须被包含在401(未授权的)响应消息中，这个报头域和前面讲到的Authorization请求报头域是 相关的，当客户端收到401响应消息，就要决定是否请求服务器对其进行验证。如果要求服务器对其进行验证，就可以发送一个包含了 Authorization报头域的请求，下面是WWW-Authenticate响应报头域的一个例子：WWW-Authenticate: Basic realm=&quot;Basic Auth Test!&quot;从这个响应报头域，可以知道服务器端对我们所请求的资源采用的是基本验证机制。</td>
+</tr>
+<tr>
+<td><strong>Content-Length</strong></td>
+<td>表示响应消息正文的长度</td>
+</tr>
+<tr>
+<td>Expires</td>
+<td>Expires实体报头域给出响应过期的日期和时间。通常，代理服务器或浏览器会缓存一些页面。当用户再次访问这些页面时，直接从缓存中加载并显示给用 户，这样缩短了响应的时间，减少服务器的负载。为了让代理服务器或浏览器在一段时间后更新页面，我们可以使用Expires实体报头域指定页面过期的时 间。当用户又一次访问页面时，如果Expires报头域给出的日期和时间比Date普通报头域给出的日期和时间要早(或相同)，那么代理服务器或浏览器就 不会再使用缓存的页面而是从服务器上请求更新的页面。不过要注意，即使页面过期了，也并不意味着服务器上的原始资源在此时间之前或之后发生了改变。</td>
+</tr>
+<tr>
+<td>Last-Modified</td>
+<td>Last-Modified实体报头域用于指示资源最后的修改日期及时间。</td>
+</tr>
+<tr>
+<td><strong>Set-Cookie</strong></td>
+<td>设置和页面关联的Cookie。Servlet不应使用response.setHeader(“Set-Cookie”, …)，而是应使用HttpServletResponse提供的专用方法addCookie。参见下文有关Cookie设置的讨论。</td>
+</tr>
+<tr>
+<td><strong>Allow</strong></td>
+<td>服务器支持哪些请求方法（如GET、POST等）。</td>
+</tr>
+<tr>
+<td>Content-Encoding</td>
+<td>文档的编码（Encode）方法。只有在解码之后才可以得到Content-Type头指定的内容类型。利用gzip压缩文档能够显著地减少HTML文档的下载时间。Java的GZIPOutputStream可以很方便地进行gzip压缩，但只有Unix上的Netscape和Windows上的IE 4、IE 5才支持它。因此，Servlet应该通过查看Accept-Encoding头（即request.getHeader(“Accept-Encoding”)）检查浏览器是否支持gzip，为支持gzip的浏览器返回经gzip压缩的HTML页面，为其他浏览器返回普通页面。</td>
+</tr>
+</tbody>
+</table>
+<h5 id="响应体"><a class="markdownIt-Anchor" href="#响应体"></a> 响应体</h5>
+<p>响应体，也叫响应正文，里面包含服务器发给客户端的web资源信息。</p>
+<p>响应正文信息返回到浏览器时，浏览器需要根据响应头中<code>Content-type</code>设置的MIME类型来打开响应正文信息</p>
+<p><strong>响应报文</strong></p>
+<pre><code class="highlight plaintext">//响应头
+HTTP/1.1 200 OK
+Server:Apache Tomcat/6.0.12             //服务器类型
+Date:Mon,6Oct2012 16.35.12 GMT          //时间
+Content-Type:text/html;charset=GBK        //正文类型   常见类型：text/html;charset=GBK 超文本类型    text/plain;charset=GBK 普通文本类型   application/octet-stream  流/下载
+Content-Length:112               //正文长度(字节长度)
+//响应正文与响应头之间有换行符 
+
+&lt;html&gt;&lt;head&gt;
+&lt;title&gt;HTTP响应示例&lt;title&gt;
+&lt;/head&gt;
+&lt;body&gt;你好啊&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<h4 id="get请求和post请求的区别"><a class="markdownIt-Anchor" href="#get请求和post请求的区别"></a> GET请求和POST请求的区别</h4>
+<p><strong>提交数据的方式不同</strong></p>
+<p>GET是通过请求行提交请求参数的。</p>
+<p>POST是通过请求体提交请求参数的。</p>
+<p><strong>使用场景不同</strong></p>
+<p>GET请求的目的是获取到数据，简单点说，就是客户端向服务器端要东西</p>
+<p>POST请求的目的是给服务器提交数据。就是客户端向服务器端给东西。</p>
+<p><strong>传递参数的大小不同</strong></p>
+<p>GET请求是通过请求行中的请求URL传递给客户端的。HTTP协议对请求URL的长度没有限制，但是不同的浏览器对请求URL长度是由限制的。</p>
+<p>POST请求是通过请求体传递请求参数的。</p>
+<p>总之POST传递的请求参数大小比GET方式要大，要多</p>
+<h3 id="通过浏览器查看http协议"><a class="markdownIt-Anchor" href="#通过浏览器查看http协议"></a> 通过浏览器查看HTTP协议</h3>
+<h4 id="调试工具"><a class="markdownIt-Anchor" href="#调试工具"></a> 调试工具</h4>
+<h5 id="使用火狐浏览器"><a class="markdownIt-Anchor" href="#使用火狐浏览器"></a> 使用火狐浏览器</h5>
+<ul>
+<li>打开网页</li>
+</ul>
+<h5 id="打开调试工具"><a class="markdownIt-Anchor" href="#打开调试工具"></a> 打开调试工具</h5>
+<ul>
+<li>快捷键F12</li>
+</ul>
+<h5 id="观察-request-response"><a class="markdownIt-Anchor" href="#观察-request-response"></a> 观察 request response</h5>
+<h4 id="http请求request协议"><a class="markdownIt-Anchor" href="#http请求request协议"></a> HTTP请求request协议</h4>
+<ul>
+<li>请求消息由请求行，请求头部，空行，和i请求数据4部分组成</li>
+</ul>
+<h5 id="请求行-2"><a class="markdownIt-Anchor" href="#请求行-2"></a> 请求行</h5>
+<ul>
+<li>打开网页，输入</li>
+</ul>
+<pre><code class="highlight plaintext">http://127.0.0.1/addHero.html</code></pre>
+<ul>
+<li>可以通过浏览器看到两个重要的信息
+<ul>
+<li>提交的method是POST，访问的路劲是addHero</li>
+</ul>
+</li>
+</ul>
+<h5 id="请求头部"><a class="markdownIt-Anchor" href="#请求头部"></a> 请求头部</h5>
+<ul>
+<li>请求头部信息提供了如下信息:
+<ul>
+<li><strong>Host</strong>: 主机名</li>
+<li><strong>User-Agent</strong>: 浏览器基本资料</li>
+<li><strong>Accept</strong>: 浏览器能够识别的响应类型</li>
+<li><strong>Accept-Language</strong>: 浏览器默认语言</li>
+<li><strong>Accept-Encoding</strong>: 浏览器能够识别的压缩方式</li>
+<li><strong>Referer</strong>: 来路页面， /addHero 这个路径是通过addHero.html这个页面跳转过来的。</li>
+<li><strong>Connecton</strong>：是否保持连接</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">Host: how2j.cn
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:66.0) Gecko/20100101 Firefox/66.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2
+Accept-Encoding: gzip, deflate
+Referer: http://how2j.cn/k/http/http-request/570.html
+Connection: keep-alive
+Cookie: UM_distinctid=16a8c956ccd2df-030dd65812c5098-4c312c7c-144000-16a8c956ccfbbf; CNZZDATA1258013751=803555947-1557135931-null%7C1557135931; JSESSIONID=412D8904F163A9060090D27CD1C93F86; user.uuid=bb9307e9-20ba-4b5f-8274-bbab363921f1; isLogin=true
+Upgrade-Insecure-Requests: 1
+Cache-Control: max-age=0</code></pre>
+<h5 id="请求参数"><a class="markdownIt-Anchor" href="#请求参数"></a> 请求参数</h5>
+<ul>
+<li>点开Params(参数)页，可以看到本次提交数据所传递的参数</li>
+<li></li>
+</ul>
+<h4 id="http响应response协议"><a class="markdownIt-Anchor" href="#http响应response协议"></a> HTTP响应response协议</h4>
+<ul>
+<li>响应信息由状态行，消息报头，响应正文组成</li>
+</ul>
+<h5 id="状态行-2"><a class="markdownIt-Anchor" href="#状态行-2"></a> 状态行</h5>
+<ul>
+<li>访问页面<code>http://127.0.0.1/listHero</code>
+<ul>
+<li>可以看到响应代码为 <strong>200 OK</strong>，即表示响应成功</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h5 id="消息报头"><a class="markdownIt-Anchor" href="#消息报头"></a> 消息报头</h5>
+<ul>
+<li>消息报头中提供如下信息：
+<ul>
+<li>Content-Length: 表示长度</li>
+<li>Content-Type: 内容格式</li>
+<li>Date: 日期</li>
+<li>Server: 服务器类型</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h5 id="响应正文"><a class="markdownIt-Anchor" href="#响应正文"></a> 响应正文</h5>
+<ul>
+<li>如图所示，在响应正文里就是具体的html内容了</li>
+<li>访问不同的页面，就不一定是html，有可能是css,js甚至是图片了</li>
+<li></li>
+</ul>
+<h2 id="servlet处理http协议"><a class="markdownIt-Anchor" href="#servlet处理http协议"></a> Servlet处理HTTP协议</h2>
+<pre><code class="highlight plaintext">package web;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Enumeration;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+public class TimeServlet extends HttpServlet &#123;
+
+       @Override
+       protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException &#123;
+             //1使用request获取请求数据
+                    //请求行
+                    System.out.println(&quot;请求方式：&quot;+req.getMethod());
+                    System.out.println(&quot;访问路径：&quot;+req.getServletPath());
+                    System.out.println(&quot;协议类型：&quot;+req.getProtocol());
+                    //消息头(键值对)
+                    //Enumeration是老版本的迭代器，作用及用法和iterator类似
+                    Enumeration&lt;String&gt; e = req.getHeaderNames();//得到消息头数据的名字
+                    while(e.hasMoreElements())&#123;
+                           String key = e.nextElement();
+                           String value = req.getHeader(key);
+                           System.out.println(key+&quot;:&quot;+value);
+                    &#125;
+                    //实体内容*
+                    //本案例没有传递具体的业务数据，所以实体的业务数据为空
+                    
+             //2使用response发送响应数据
+                    //状态行
+                           //该数据由服务器自动填充
+                    //消息头
+                           //消息头中的大部分数据由服务器填充，但返回的内容格式需要程序员指定
+                           //声明服务器向浏览器响应的内容是什么格式，html格式的文本，即发送的是网页
+                           //如果格式写错了，浏览器会无法识别，它只能让你保存这个网页
+                           res.setContentType(&quot;text/html&quot;); 
+                   
+             //输出流
+             PrintWriter out = res.getWriter();
+             
+             Date date = new Date();
+             //格式化时间
+             SimpleDateFormat sdf = new SimpleDateFormat(&quot;HH:mm:ss&quot;);
+             String now = sdf.format(date);
+             
+             //实体内容
+                    //我们输出的网页就是具体的实体内容
+                    out.println(&quot;&lt;p&gt;&quot;+now+&quot;&lt;/p&gt;&quot;);
+                    out.close();
+             
+       &#125;
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

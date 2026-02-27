@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    正则表达式 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">正则表达式</div>
+  <div class="post-meta">
+    <div class="date">2020 十月 17日</div>
+    <div class="tags">
+      
+      <div class="tag-item">正则</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="正则表达式"><a class="markdownIt-Anchor" href="#正则表达式"></a> $正则表达式</h1>
+<h2 id="正则表达式-2"><a class="markdownIt-Anchor" href="#正则表达式-2"></a> 正则表达式</h2>
+<ul>
+<li><a href="">正则表达式</a>
+<ul>
+<li><a href="">匹配规则</a></li>
+<li><a href="">复杂匹配</a></li>
+<li><a href="">分组匹配</a></li>
+<li><a href="">非贪婪匹配</a></li>
+<li><a href="">搜索和替换</a></li>
+<li><a href="">常用正则</a></li>
+</ul>
+</li>
+</ul>
+<p>正则表达式是一套标准，它可以用于任何语言。Java标准库的java.util.regex包内置了正则表达式引擎，在Java程序中使用正则表达式非常简单。</p>
+<p><strong>单个字符匹配规则</strong></p>
+<table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>规则</th>
+<th>可以匹配</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>指定字符</td>
+<td>A</td>
+</tr>
+<tr>
+<td>\u548c</td>
+<td>指定Unicode字符</td>
+<td>和</td>
+</tr>
+<tr>
+<td>.</td>
+<td>任意字符</td>
+<td>a，b，&amp;，0</td>
+</tr>
+<tr>
+<td>\d</td>
+<td>数字0~9</td>
+<td>0~9</td>
+</tr>
+<tr>
+<td>\w</td>
+<td>大小写字母，数字和下划线</td>
+<td>a<sub>z，A</sub>Z，0~9，_</td>
+</tr>
+<tr>
+<td>\s</td>
+<td>空格、Tab键</td>
+<td>空格，Tab</td>
+</tr>
+<tr>
+<td>\D</td>
+<td>非数字</td>
+<td>a，A，&amp;，_，……</td>
+</tr>
+<tr>
+<td>\W</td>
+<td>非\w</td>
+<td>&amp;，@，中，……</td>
+</tr>
+<tr>
+<td>\S</td>
+<td>非\s</td>
+<td>a，A，&amp;，_，……</td>
+</tr>
+</tbody>
+</table>
+<p><strong>多个字符匹配规则</strong></p>
+<table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>规则</th>
+<th>可以匹配</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A*</td>
+<td>任意个数字符</td>
+<td>空，A，AA，AAA，……</td>
+</tr>
+<tr>
+<td>A+</td>
+<td>至少1个字符</td>
+<td>A，AA，AAA，……</td>
+</tr>
+<tr>
+<td>A?</td>
+<td>0个或1个字符</td>
+<td>空，A</td>
+</tr>
+<tr>
+<td>A{3}</td>
+<td>指定个数字符</td>
+<td>AAA</td>
+</tr>
+<tr>
+<td>A{2,3}</td>
+<td>指定范围个数字符</td>
+<td>AA，AAA</td>
+</tr>
+<tr>
+<td>A{2,}</td>
+<td>至少n个字符</td>
+<td>AA，AAA，AAAA，……</td>
+</tr>
+<tr>
+<td>A{0,3}</td>
+<td>最多n个字符</td>
+<td>空，A，AA，AAA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="匹配规则"><a class="markdownIt-Anchor" href="#匹配规则"></a> 匹配规则</h3>
+<p>正则表达式的匹配规则是从左到右按规则匹配。我们首先来看如何使用正则表达式来做精确匹配。</p>
+<p>对于正则表达式abc来说，它只能精确地匹配字符串&quot;abc&quot;，不能匹配&quot;ab&quot;，“Abc”，&quot;abcd&quot;等其他任何字符串</p>
+<p>如果正则表达式有特殊字符，那就需要用\转义。例如，正则表达式a&amp;c，其中&amp;是用来匹配特殊字符&amp;的，它能精确匹配字符串&quot;a&amp;c&quot;，但不能匹配&quot;ac&quot;、“a-c”、&quot;a&amp;&amp;c&quot;等</p>
+<p>要注意正则表达式在Java代码中也是一个字符串，所以，对于正则表达式a&amp;c来说，对应的Java字符串是&quot;a&amp;c&quot;，因为\也是Java字符串的转义字符，两个\实际上表示的是一个\：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String re1 = &quot;abc&quot;;
+        System.out.println(&quot;abc&quot;.matches(re1));
+        System.out.println(&quot;Abc&quot;.matches(re1));
+        System.out.println(&quot;abcd&quot;.matches(re1));
+
+        String re2 = &quot;a\\&amp;c&quot;; // 对应的正则是a\&amp;c
+        System.out.println(&quot;a&amp;c&quot;.matches(re2));
+        System.out.println(&quot;a-c&quot;.matches(re2));
+        System.out.println(&quot;a&amp;&amp;c&quot;.matches(re2));
+    &#125;
+&#125;</code></pre>
+<p>如果想匹配非ASCII字符，例如中文，那就用\u####的十六进制表示，例如：a\u548cc匹配字符串&quot;a和c&quot;，中文字符和的Unicode编码是548c</p>
+<hr />
+<p><strong>匹配任意字符</strong></p>
+<p>精确匹配实际上用处不大，因为我们直接用String.equals()就可以做到。大多数情况下，我们想要的匹配规则更多的是模糊匹配。我们可以用 <code>.</code> 匹配一个任意字符</p>
+<p>例如，正则表达式a.c中间的.可以匹配一个任意字符，例如，下面的字符串都可以被匹配：</p>
+<ul>
+<li>“abc”，因为.可以匹配字符b；</li>
+<li>“a&amp;c”，因为.可以匹配字符&amp;；</li>
+<li>“acc”，因为.可以匹配字符c。</li>
+</ul>
+<p>但它不能匹配&quot;ac&quot;、“a&amp;&amp;c”，因为.匹配一个字符且仅限一个字符。</p>
+<hr />
+<p><strong>匹配数字</strong></p>
+<p>用.可以匹配任意字符，这个口子开得有点大。如果我们只想匹配0~9这样的数字，可以用\d匹配。例如，正则表达式00\d可以匹配：</p>
+<ul>
+<li>“007”，因为\d可以匹配字符7；</li>
+<li>“008”，因为\d可以匹配字符8。它不能匹</li>
+</ul>
+<p>配&quot;00A&quot;，“0077”，因为\d仅限单个数字字符</p>
+<hr />
+<p><strong>匹配常用字符</strong></p>
+<p>用\w可以匹配一个字母、数字或下划线，w的意思是word。例如，java\w可以匹配：</p>
+<ul>
+<li>“javac”，因为\w可以匹配英文字符c；</li>
+<li>“java9”，因为\w可以匹配数字字符9；。</li>
+<li>“java_”，因为\w可以匹配下划线_。</li>
+</ul>
+<p>它不能匹配&quot;java#&quot;，&quot;java &quot;，因为\w不能匹配#、空格等字符。</p>
+<hr />
+<p><strong>匹配空格字符</strong></p>
+<p>用\s可以匹配一个空格字符，注意空格字符不但包括空格，还包括tab字符（在Java中用\t表示）。例如，a\sc可以匹配：</p>
+<ul>
+<li>“a c”，因为\s可以匹配空格字符；</li>
+<li>“a c”，因为\s可以匹配tab字符\t。</li>
+</ul>
+<p>它不能匹配&quot;ac&quot;，&quot;abc&quot;等。</p>
+<hr />
+<p><strong>匹配非数字</strong></p>
+<p>用\d可以匹配一个数字，而\D则匹配一个非数字。例如，00\D可以匹配：</p>
+<ul>
+<li>“00A”，因为\D可以匹配非数字字符A；</li>
+<li>“00#”，因为\D可以匹配非数字字符#。</li>
+</ul>
+<p>00\d可以匹配的字符串&quot;007&quot;，&quot;008&quot;等，00\D是不能匹配的。</p>
+<p>类似的，\W可以匹配\w不能匹配的字符，\S可以匹配\s不能匹配的字符，这几个正好是反着来的。</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String re1 = &quot;java\\d&quot;; // 对应的正则是java\d
+        System.out.println(&quot;java9&quot;.matches(re1));
+        System.out.println(&quot;java10&quot;.matches(re1));
+        System.out.println(&quot;javac&quot;.matches(re1));
+
+        String re2 = &quot;java\\D&quot;;
+        System.out.println(&quot;javax&quot;.matches(re2));
+        System.out.println(&quot;java#&quot;.matches(re2));
+        System.out.println(&quot;java5&quot;.matches(re2));
+    &#125;
+&#125;
+</code></pre>
+<hr />
+<p><strong>重复匹配</strong></p>
+<p>修饰符<code>*</code>可以匹配<strong>任意个字符</strong>，包括0个字符。我们用<code>A\d*</code>可以匹配：</p>
+<ul>
+<li>A：因为<code>\d*</code>可以匹配0个数字；</li>
+<li>A0：因为<code>\d*</code>可以匹配1个数字0；</li>
+<li>A380：因为<code>\d*</code>可以匹配多个数字380。</li>
+</ul>
+<p>修饰符+可以匹配<strong>至少一个字符</strong>。我们用A\d+可以匹配：</p>
+<ul>
+<li>A0：因为\d+可以匹配1个数字0；</li>
+<li>A380：因为\d+可以匹配多个数字380。</li>
+</ul>
+<p>但它无法匹配&quot;A&quot;，因为修饰符+要求至少一个字符。</p>
+<p>修饰符?可以匹配<strong>0个或一个字符</strong>。我们用A\d?可以匹配：</p>
+<ul>
+<li>A：因为\d?可以匹配0个数字；</li>
+<li>A0：因为\d+可以匹配1个数字0。</li>
+</ul>
+<p>但它无法匹配&quot;A33&quot;，因为修饰符?超过1个字符就不能匹配了</p>
+<p>用修饰符{n}就可以<strong>精确指定n个字符</strong>。A\d{3}可以精确匹配：</p>
+<ul>
+<li>A380：因为\d{3}可以匹配3个数字380。</li>
+</ul>
+<p>用修饰符{n,m}就可以<strong>指定匹配n~m个字符</strong>。A\d{3,5}可以精确匹配：</p>
+<ul>
+<li>A380：因为\d{3,5}可以匹配3个数字380；</li>
+<li>A3800：因为\d{3,5}可以匹配4个数字3800；</li>
+<li>A38000：因为\d{3,5}可以匹配5个数字38000。</li>
+</ul>
+<p>如果没有上限，那么修饰符{n,}就可以匹配至少n个字符。</p>
+<h3 id="复杂匹配"><a class="markdownIt-Anchor" href="#复杂匹配"></a> 复杂匹配</h3>
+<table>
+<thead>
+<tr>
+<th>正则表达式</th>
+<th>规则</th>
+<th>可以匹配</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>开头</td>
+<td>字符串开头</td>
+</tr>
+<tr>
+<td>$</td>
+<td>结尾</td>
+<td>字符串结束</td>
+</tr>
+<tr>
+<td>[ABC]</td>
+<td>[…]内任意字符</td>
+<td>A，B，C</td>
+</tr>
+<tr>
+<td>[A-F0-9xy]</td>
+<td>指定范围的字符</td>
+<td>A，……，F，0，……，9，x，y</td>
+</tr>
+<tr>
+<td>[^A-F]</td>
+<td>指定范围外的任意字符</td>
+<td>非A~F</td>
+</tr>
+<tr>
+<td>`AB</td>
+<td>CD</td>
+<td>EF`</td>
+</tr>
+</tbody>
+</table>
+<p><strong>匹配开头和结尾</strong></p>
+<p>用正则表达式进行多行匹配时，我们用<sup>表示开头，表示结尾。例如，</sup>A\d{3}，可以匹配&quot;A001&quot;、“A380”</p>
+<hr />
+<p><strong>匹配指定范围</strong></p>
+<p>如果我们规定一个7~8位数字的电话号码不能以0开头，应该怎么写匹配规则呢？\d{7,8}是不行的，因为第一个\d可以匹配到0</p>
+<p>使用[…]可以<strong>匹配范围内的字符</strong>，例如，[123456789]可以匹配1~9，这样就可以写出上述电话号码的规则：[123456789]\d{6,7}</p>
+<p>把所有字符全列出来太麻烦，[…]还有一种写法，直接写[1-9]就可以</p>
+<p>要匹配大小写不限的十六进制数，比如1A2b3c，我们可以这样写：[0-9a-fA-F]，它表示一共可以匹配以下任意范围的字符：</p>
+<ul>
+<li>0-9：字符0~9；</li>
+<li>a-f：字符a~f；</li>
+<li>A-F：字符A~F。</li>
+</ul>
+<p>如果要匹配6位十六进制数，前面讲过的{n}仍然可以继续配合使用：[0-9a-fA-F]{6}</p>
+<p>[…]还有一种排除法，即不包含指定范围的字符。假设我们要匹配任意字符，但不包括数字，可以写[^1-9]{3}：</p>
+<ul>
+<li>可以匹配&quot;ABC&quot;，因为不包含字符1~9；</li>
+<li>可以匹配&quot;A00&quot;，因为不包含字符1~9；</li>
+<li>不能匹配&quot;A01&quot;，因为包含字符1；</li>
+<li>不能匹配&quot;A05&quot;，因为包含字符5。</li>
+</ul>
+<hr />
+<p><strong>或规则匹配</strong></p>
+<p>用|连接的两个正则规则是或规则，例如，AB|CD表示可以匹配AB或CD。</p>
+<p>我们来看这个正则表达式java|php：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String re = &quot;java|php&quot;;
+        System.out.println(&quot;java&quot;.matches(re));
+        System.out.println(&quot;php&quot;.matches(re));
+        System.out.println(&quot;go&quot;.matches(re));
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>它可以匹配&quot;java&quot;或&quot;php&quot;，但无法匹配&quot;go&quot;。</p>
+<p>要把go也加进来匹配，可以改写为java|php|go</p>
+</blockquote>
+<hr />
+<p><strong>使用括号</strong></p>
+<p>现在我们想要匹配字符串learn java、learn php和learn go怎么办？一个最简单的规则是learn\sjava|learn\sphp|learn\sgo，但是这个规则太复杂了，可以把公共部分提出来，然后用(…)把子规则括起来表示成learn\s(java|php|go)</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String re = &quot;learn\\s(java|php|go)&quot;;
+        System.out.println(&quot;learn java&quot;.matches(re));
+        System.out.println(&quot;learn Java&quot;.matches(re));
+        System.out.println(&quot;learn php&quot;.matches(re));
+        System.out.println(&quot;learn Go&quot;.matches(re));
+    &#125;
+&#125;</code></pre>
+<h3 id="分组匹配"><a class="markdownIt-Anchor" href="#分组匹配"></a> 分组匹配</h3>
+<p>我们前面讲到的(…)可以用来把一个子规则括起来，这样写learn\s(java|php|go)就可以更方便地匹配长字符串了。</p>
+<p>实际上(…)还有一个重要作用，就是分组匹配</p>
+<p>我们来看一下如何用正则匹配区号-电话号码这个规则。利用前面讲到的匹配规则，写出来很容易：</p>
+<pre><code class="highlight plaintext">\d&#123;3,4&#125;\-\d&#123;6,8&#125;</code></pre>
+<p>虽然这个正则匹配规则很简单，但是往往匹配成功后，下一步是提取区号和电话号码，分别存入数据库。于是问题来了：如何提取匹配的子串？</p>
+<p>当然可以用String提供的indexOf()和substring()这些方法，但它们从正则匹配的字符串中提取子串没有通用性，下一次要提取learn\s(java|php)还得改代码</p>
+<p>正确的方法是用(…)先把要提取的规则分组，把上述正则表达式变为(\d{3,4})-(\d{6,8})</p>
+<p>现在我们没办法用String.matches()这样简单的判断方法了，必须引入java.util.regex包，用Pattern对象匹配，匹配后获得一个Matcher对象，如果匹配成功，就可以直接从Matcher.group(index)返回子串：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Pattern p = Pattern.compile(&quot;(\\d&#123;3,4&#125;)\\-(\\d&#123;7,8&#125;)&quot;);
+        Matcher m = p.matcher(&quot;010-12345678&quot;);
+        if (m.matches()) &#123;
+            String g1 = m.group(1);
+            String g2 = m.group(2);
+            System.out.println(g1);
+            System.out.println(g2);
+        &#125; else &#123;
+            System.out.println(&quot;匹配失败!&quot;);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>运行上述代码，会得到两个匹配上的子串010和12345678。</p>
+<p>要特别注意，Matcher.group(index)方法的参数用1表示第一个子串，2表示第二个子串。如果我们传入0会得到什么呢？答案是010-12345678，即整个正则匹配到的字符串。</p>
+</blockquote>
+<hr />
+<p><strong>Pattern</strong></p>
+<p>我们在前面的代码中用到的正则表达式代码是String.matches()方法，而我们在分组提取的代码中用的是java.util.regex包里面的Pattern类和Matcher类。实际上这两种代码本质上是一样的，因为String.matches()方法内部调用的就是Pattern和Matcher类的方法</p>
+<p>但是反复使用String.matches()对同一个正则表达式进行多次匹配效率较低，因为每次都会创建出一样的Pattern对象。完全可以先创建出一个Pattern对象，然后反复使用，就可以实现编译一次，多次匹配：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Pattern pattern = Pattern.compile(&quot;(\\d&#123;3,4&#125;)\\-(\\d&#123;7,8&#125;)&quot;);
+        pattern.matcher(&quot;010-12345678&quot;).matches(); // true
+        pattern.matcher(&quot;021-123456&quot;).matches(); // true
+        pattern.matcher(&quot;022#1234567&quot;).matches(); // false
+        // 获得Matcher对象:
+        Matcher matcher = pattern.matcher(&quot;010-12345678&quot;);
+        if (matcher.matches()) &#123;
+            String whole = matcher.group(0); // &quot;010-12345678&quot;, 0表示匹配的整个字符串
+            String area = matcher.group(1); // &quot;010&quot;, 1表示匹配的第1个子串
+            String tel = matcher.group(2); // &quot;12345678&quot;, 2表示匹配的第2个子串
+            System.out.println(area);
+            System.out.println(tel);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>使用Matcher时，必须首先调用matches()判断是否匹配成功，匹配成功后，才能调用group()提取子串。利用提取子串的功能，我们轻松获得了区号和号码两部分。</p>
+</blockquote>
+<h3 id="非贪婪匹配"><a class="markdownIt-Anchor" href="#非贪婪匹配"></a> 非贪婪匹配</h3>
+<p>在介绍非贪婪匹配前，我们先看一个简单的问题：</p>
+<p>给定一个字符串表示的数字，判断该数字末尾0的个数。例如：</p>
+<ul>
+<li>“123000”：3个0</li>
+<li>“10100”：2个0</li>
+<li>“1001”：0个0</li>
+</ul>
+<p>可以很容易地写出该正则表达式：(\d+)(0*)，Java代码如下：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Pattern pattern = Pattern.compile(&quot;(\\d+)(0*)&quot;);
+        Matcher matcher = pattern.matcher(&quot;1230000&quot;);
+        if (matcher.matches()) &#123;
+            System.out.println(&quot;group1=&quot; + matcher.group(1)); // &quot;1230000&quot;
+            System.out.println(&quot;group2=&quot; + matcher.group(2)); // &quot;&quot;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>然而打印的第二个子串是空字符串&quot;&quot;</p>
+</blockquote>
+<p>实际上，我们期望分组匹配结果是：</p>
+<table>
+<thead>
+<tr>
+<th>input</th>
+<th>\d+</th>
+<th>0*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>123000</td>
+<td>“123”</td>
+<td>“000”</td>
+</tr>
+<tr>
+<td>10100</td>
+<td>“101”</td>
+<td>“00”</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>“1001”</td>
+<td>“”</td>
+</tr>
+</tbody>
+</table>
+<p>但实际的分组匹配结果是这样的：</p>
+<table>
+<thead>
+<tr>
+<th>input</th>
+<th>\d+</th>
+<th>0*</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>123000</td>
+<td>“123000”</td>
+<td>“”</td>
+</tr>
+<tr>
+<td>10100</td>
+<td>“10100”</td>
+<td>“”</td>
+</tr>
+<tr>
+<td>1001</td>
+<td>“1001”</td>
+<td>“”</td>
+</tr>
+</tbody>
+</table>
+<p>仔细观察上述实际匹配结果，实际上它是完全合理的，因为\d+确实可以匹配后面任意个0。</p>
+<p>这是因为正则表达式默认使用贪婪匹配：任何一个规则，它总是尽可能多地向后匹配，因此，\d+总是会把后面的0包含进来。</p>
+<p>要让\d+尽量少匹配，让<code>0*</code>尽量多匹配，我们就必须让\d+使用非贪婪匹配。在规则\d+后面加个?即可表示非贪婪匹配。我们改写正则表达式如下：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Pattern pattern = Pattern.compile(&quot;(\\d+?)(0*)&quot;);
+        Matcher matcher = pattern.matcher(&quot;1230000&quot;);
+        if (matcher.matches()) &#123;
+            System.out.println(&quot;group1=&quot; + matcher.group(1)); // &quot;123&quot;
+            System.out.println(&quot;group2=&quot; + matcher.group(2)); // &quot;0000&quot;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>因此，给定一个匹配规则，加上?后就变成了非贪婪匹配</p>
+<p>我们再来看这个正则表达式(\d??)(9*)，注意\d?表示匹配0个或1个数字，后面第二个?表示非贪婪匹配，因此，给定字符串&quot;9999&quot;，匹配到的两个子串分别是&quot;“和&quot;9999”，因为对于\d?来说，可以匹配1个9，也可以匹配0个9，但是因为后面的?表示非贪婪匹配，它就会尽可能少的匹配，结果是匹配了0个9</p>
+<h3 id="搜索和替换"><a class="markdownIt-Anchor" href="#搜索和替换"></a> 搜索和替换</h3>
+<hr />
+<p><strong>分割字符串</strong></p>
+<p>使用正则表达式分割字符串可以实现更加灵活的功能。String.split()方法传入的正是正则表达式。我们来看下面的代码：</p>
+<pre><code class="highlight plaintext">&quot;a b c&quot;.split(&quot;\\s&quot;); // &#123; &quot;a&quot;, &quot;b&quot;, &quot;c&quot; &#125;
+&quot;a b  c&quot;.split(&quot;\\s&quot;); // &#123; &quot;a&quot;, &quot;b&quot;, &quot;&quot;, &quot;c&quot; &#125;
+&quot;a, b ;; c&quot;.split(&quot;[\\,\\;\\s]+&quot;); // &#123; &quot;a&quot;, &quot;b&quot;, &quot;c&quot; &#125;</code></pre>
+<p>如果我们想让用户输入一组标签，然后把标签提取出来，因为用户的输入往往是不规范的，这时，使用合适的正则表达式，就可以消除多个空格、混合,和;这些不规范的输入，直接提取出规范的字符串。</p>
+<hr />
+<p><strong>搜索字符串</strong></p>
+<p>使用正则表达式还可以搜索字符串，我们来看例子：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String s = &quot;the quick brown fox jumps over the lazy dog.&quot;;
+        Pattern p = Pattern.compile(&quot;\\wo\\w&quot;);
+        Matcher m = p.matcher(s);
+        while (m.find()) &#123;
+            String sub = s.substring(m.start(), m.end());
+            System.out.println(sub);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>我们获取到Matcher对象后，不需要调用matches()方法（因为匹配整个串肯定返回false），而是反复调用find()方法，在整个串中搜索能匹配上\wo\w规则的子串，并打印出来。这种方式比String.indexOf()要灵活得多，因为我们搜索的规则是3个字符：中间必须是o，前后两个必须是字符[A-Za-z0-9_]。</p>
+<hr />
+<p><strong>替换字符串</strong></p>
+<p>使用正则表达式替换字符串可以直接调用String.replaceAll()，它的第一个参数是正则表达式，第二个参数是待替换的字符串。我们还是来看例子：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String s = &quot;The     quick\t\t brown   fox  jumps   over the  lazy dog.&quot;;
+        String r = s.replaceAll(&quot;\\s+&quot;, &quot; &quot;);
+        System.out.println(r); // &quot;The quick brown fox jumps over the lazy dog.&quot;
+    &#125;
+&#125;</code></pre>
+<p>上面的代码把不规范的连续空格分隔的句子变成了规范的句子。可见，灵活使用正则表达式可以大大降低代码量。</p>
+<hr />
+<p><strong>反向引用</strong></p>
+<p>如果我们要把搜索到的指定字符串按规则替换，比如前后各加一个<b>xxxx</b>，这个时候，使用replaceAll()的时候，我们传入的第二个参数可以使用$1、$2来反向引用匹配到的子串。例如：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        String s = &quot;the quick brown fox jumps over the lazy dog.&quot;;
+        String r = s.replaceAll(&quot;\\s([a-z]&#123;4&#125;)\\s&quot;, &quot; &lt;b&gt;$1&lt;/b&gt; &quot;);
+        System.out.println(r);
+    &#125;
+&#125;</code></pre>
+<p>上述代码的运行结果是：</p>
+<pre><code class="highlight plaintext">the quick brown fox jumps &lt;b&gt;over&lt;/b&gt; the &lt;b&gt;lazy&lt;/b&gt; dog.</code></pre>
+<p>它实际上把任何4字符单词的前后用<b>xxxx</b>括起来。实现替换的关键就在于&quot; <b>$1</b> &quot;，它用匹配的分组子串([a-z]{4})替换了$1。</p>
+<h3 id="常用正则"><a class="markdownIt-Anchor" href="#常用正则"></a> 常用正则</h3>
+<p><strong>ipv4</strong></p>
+<pre><code class="highlight plaintext">((2(5[0-5]|[0-4]\d))|[0-1]?\d&#123;1,2&#125;)(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d&#123;1,2&#125;))&#123;3&#125;</code></pre>
+<p><strong>ipv6</strong></p>
+<pre><code class="highlight plaintext">\s*((([0-9A-Fa-f]&#123;1,4&#125;:)&#123;7&#125;([0-9A-Fa-f]&#123;1,4&#125;|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;6&#125;(:[0-9A-Fa-f]&#123;1,4&#125;|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;)|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;5&#125;(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,2&#125;)|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;)|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;4&#125;(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,3&#125;)|((:[0-9A-Fa-f]&#123;1,4&#125;)?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;))|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;3&#125;(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,4&#125;)|((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;0,2&#125;:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;))|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;2&#125;(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,5&#125;)|((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;0,3&#125;:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;))|:))|(([0-9A-Fa-f]&#123;1,4&#125;:)&#123;1&#125;(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,6&#125;)|((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;0,4&#125;:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;))|:))|(:(((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;1,7&#125;)|((:[0-9A-Fa-f]&#123;1,4&#125;)&#123;0,5&#125;:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d))&#123;3&#125;))|:)))(%.+)?\s*</code></pre>
+<p><strong>mac地址</strong></p>
+<pre><code class="highlight plaintext">(([A-Fa-f0-9]&#123;2&#125;-)&#123;5&#125;[A-Fa-f0-9]&#123;2&#125;)|(([A-Fa-f0-9]&#123;2&#125;:)&#123;5&#125;[A-Fa-f0-9]&#123;2&#125;)</code></pre>
+<p><strong>手机号码</strong></p>
+<pre><code class="highlight plaintext">(^((\+86)|(86))[\s|-]?(1[3456789]\d&#123;9&#125;))|(1[3456789]\d&#123;9&#125;)|(^1[3-9]\d&#123;1&#125;-\d&#123;4&#125;-\d&#123;4&#125;$)</code></pre>
+<p><strong>email</strong></p>
+<pre><code class="highlight plaintext">[A-Za-z0-9._%+-]+@([A-Za-z0-9.-]+)\.([a-zA-Z]&#123;2,4&#125;)</code></pre>
+<p><strong>固定电话</strong></p>
+<pre><code class="highlight plaintext">(^((\+86)|(86))[\s|-]?(0?[1-9]\d&#123;1,2&#125;[\s|-]?[1-9]\d&#123;6,7&#125;))|(0[1-9]\d&#123;1,2&#125;[\s|-]?[1-9]\d&#123;6,7&#125;)</code></pre>
+<p><strong>股票代码</strong></p>
+<pre><code class="highlight plaintext">((300)|(600)|(601)|(603)|(605)|(688)|(900)|(000)|(002)|(200)|(730)|(700)|(080)|(580)|(031)|(400))\d&#123;3&#125;</code></pre>
+<p><strong>港澳通行证</strong></p>
+<pre><code class="highlight plaintext">[CWcw]&#123;1&#125;\w&#123;1&#125;\d&#123;7&#125;</code></pre>
+<p><strong>台胞证</strong></p>
+<pre><code class="highlight plaintext">(\d&#123;8&#125;(0[1-9]|[1-9]\d&#123;1&#125;)?)|(\d&#123;10&#125;(\(([BDA]|\d&#123;2&#125;)\))?)</code></pre>
+<p><strong>回乡证</strong></p>
+<pre><code class="highlight plaintext">[HMhm]&#123;1&#125;\d&#123;10&#125;</code></pre>
+<p><strong>医师执业证书</strong></p>
+<pre><code class="highlight plaintext">[12](10|20|30|41|42|43|44|45|46|47|48)(1[1-5]|2[1-3]|3[1-7]|4[1-6]|5[0-4]|6[1-6]|71|8[1-2])\d&#123;10&#125;</code></pre>
+<p><strong>医师资格证书</strong></p>
+<pre><code class="highlight plaintext">(19|20)\d&#123;2&#125;(1[1-5]|2[1-3]|3[1-7]|4[1-6]|5[0-4]|6[1-6]|71|8[1-2])[1234](10|20|30|41|42|43|44|45|46|47|48)[1-9]\d&#123;16&#125;[0-9Xx]</code></pre>
+<p><strong>护士执业证书</strong></p>
+<pre><code class="highlight plaintext">(19|20)\d&#123;2&#125;(1[1-5]|2[1-3]|3[1-7]|4[1-6]|5[0-4]|6[1-6]|71|8[1-2])\d&#123;6&#125;</code></pre>
+<p><strong>车牌</strong></p>
+<pre><code class="highlight plaintext">(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]&#123;5&#125;[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]&#123;4&#125;)))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]&#123;4&#125;[A-HJ-NP-Z0-9挂学警港澳使领]))</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

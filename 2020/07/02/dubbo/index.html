@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Dubbo 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Dubbo</div>
+  <div class="post-meta">
+    <div class="date">2020 七月 2日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Dubbo</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="dubbo"><a class="markdownIt-Anchor" href="#dubbo"></a> Dubbo</h1>
+<p><a target="_blank" rel="noopener" href="http://dubbo.apache.org">http://dubbo.apache.org</a></p>
+<p>[toc]</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<h3 id="产生的背景"><a class="markdownIt-Anchor" href="#产生的背景"></a> 产生的背景</h3>
+<p>随着互联网项目用户量的急剧增长，访问并发量的陡然增加，-个应用中所有的功能都集中于一个项目中，已经完全不能满足需要了，系统性能急需提升。提升性能的<strong>最直接的方式是构建集群</strong>，构建具有负载均衡功能的集群。但仅仅依靠增加具有相同业务功能的主机来提高系统的性能，能力是有限的。需要将应用的功能进行分解，分解为多个子工程，每个子工程仅完成某一特定功能，例如，登录子工程、订单业务子工程、支付业务子工程、红包业务子工程等。即，将原来项目中的业务模块，变为了独立工程。在这种情况下若性能还需要进一步再提升，则可为每个项目构建集群.</p>
+<p><strong>这种将一个应用使用多个独立的工程实现的系统架构，称为SOA系统架构</strong>(ServiceOriented Architecture, |即面向服务的系统架构)。。</p>
+<p>这些子工程原本都是为一个应用服务的，而该应用在没有被拆分为多个子工程时，原本都是在一个工程中的，各个模块都是运行在处于同一个主机的同一个 JVM中，个类的对象调用另一个类的对象，即各个模块间进行数据通信是没有任何问题的。但拆分为多个子工程后，各个子工程都是运行在各自的主机的JVM中的，它们间的数据通信如何实现的呢?</p>
+<ul>
+<li>可以<strong>通过RPC协议</strong>(Remote Procedure Call Protocol,远程过程调用协议)<strong>完成通信</strong>。</li>
+</ul>
+<p><strong>Dubbo就是RPC协议的实现者之一</strong>。</p>
+<h4 id="soa"><a class="markdownIt-Anchor" href="#soa"></a> SOA</h4>
+<p>SOA, Service Oriented Architecture,<strong>面向服务的架构</strong>，是一-个组件模型(即子项目模型)，它将应用程序的不同功能单元(称为服务)通过这些服务之间定义的良好接口和契约联系起来。接口是采用中立的方式进行定义的(所谓中立方式是指没有与任何具体实现相绑定的的定义方式，即只有接口，没有实现的方式)。它应该独立于实现服务的硬件平台、操作系统(即跨平台)和编程语言(即已被编译为可执行文件)。 这使得构建在各种各样的系统中的服务可以以一种统一和通用的方式进行交互。。</p>
+<p>面向服务架构，它可以根据需求通过网络对松散耦合的粗粒度应用组件(即子项目)进行分布式部署、组合和使用。服务层是SOA的基础，可以直接被应用调用，从而有效控制系统中与软件代理交互的人为依赖性(即人为参与度更低了)。</p>
+<p>SOA是一种粗粒度、松耦合服务架构，服务之间通过简单、精确定义的接口进行通讯，不涉及底层编程接口和通讯模型。SOA可以看作是B/S模型、XML (标准通用标记语言的子集) /Web Service技术之后的自然延伸。</p>
+<p>SOA将能够帮助软件工程师们站在一个新的高度理解企业级架构中的各种组件的开发、部署形式，它将帮助企业系统架构者以更迅速、更可靠、更具重用性架构整个业务系统。较之以往，以SOA架构的系统能够更加从容地面对业务的急剧变化。</p>
+<h4 id="rpc"><a class="markdownIt-Anchor" href="#rpc"></a> RPC</h4>
+<p>RPC (Remote Procedure Call Protocol)一一<strong>远程过程调用协议</strong>，它是一种通过网络从远程计算机程序上请求服务，而不需要了解底层网络技术的协议。RPC协议假定某些传输协议的存在，如TCP或UDP，为通信程序之间携带信息数据。在OSI网络通信模型(OSI七层网络模型，OSI, OpenSystem Interconnection,开放系统互联)中，RPC跨越了传输层和应用层。RPC使得开发包括网络分布式多程序在内的应用程序更加容易。</p>
+<p>RPC采用客户机/服务器模式(即C/S模式)。请求程序就是一个客户机，而服务提供程序就是一个服务器。首先，客户机调用进程发送一个有进程参数的调用信息到服务进程，然后等待应答信息。在服务器端，进程保持睡眠状态直到调用信息到达为止。当一个调用信息到达，服务器获得进程参数，计算结果，发送答复信息，然后等待下一个调用信息，最后，客户端调用进程接收答复信息，获得进程结果，然后调用执行继续进行。</p>
+<blockquote>
+<p><strong>其实RPC的底层就是Socket实现的，只要知道对方的主机名与端口号，就可通过网络连接上，而无需知道其底层是怎样实现的通信</strong>。</p>
+</blockquote>
+<h3 id="系统架构设计的关键点"><a class="markdownIt-Anchor" href="#系统架构设计的关键点"></a> 系统架构设计的关键点</h3>
+<ul>
+<li><strong>单一应用架构</strong></li>
+</ul>
+<p>当网站流量很小时，只需一个应用，将所有功能都部署在起，以减少部署节点和成本。当<strong>流量增加时通过搭建集群增加主机的水平扩展方式可以提升整个系统的性能</strong>。此时，用于简化增删改查工作量的数据访问框架是关键。</p>
+<ul>
+<li><strong>垂直应用架构</strong></li>
+</ul>
+<p>当访问量逐渐增大，单一应用架构的水平扩展，其所带来的速度提升越来越小。此时<strong>可以将应用拆成互不相干的几个应用，以提升效率</strong>。这时用于加速前端页面开发的Web框架是关键。。</p>
+<ul>
+<li><strong>分布式服务架构</strong></li>
+</ul>
+<p>当垂直应用越来越多，应用之间的交互是不可避免的。这时将核心业务抽取出来作为独立的服务，逐渐形成稳定的服务中心，使前端应用能更快速的响应多变的市场需求。此时，用于<strong>提高业务复用及整合的分布式服务框架</strong>是关键。</p>
+<ul>
+<li><strong>流动计算架构</strong></li>
+</ul>
+<p>当服务越来越多，容量的评估(主机所能支撑特定服务的能力称为容量)、小服务资源的浪费等问题逐渐显现，此时需增加一个调度中心，使其基于访问压力实时管理集群容量，提高集群利用率。此时用于<strong>提高机器利用率的资源调度和治理中心</strong>是关键</p>
+<h2 id="dubbo概述"><a class="markdownIt-Anchor" href="#dubbo概述"></a> Dubbo概述</h2>
+<p>Dubbo是阿里巴巴公司开源的一个高性能优秀的服务框架，使得<strong>应用可通过高性能的RPC实现服务的输出和输入功能</strong>，可以和Spring框架无缝集成。</p>
+<p>Dubbo发展过程中的重要时间点:</p>
+<ul>
+<li>2011年开源，之后就迅速成为了国内该类开源项目的佼佼者。2011年时，优秀的、可在生产环境使用的RPC框架很少，Dubbo 的出现迅速给人眼前一亮的感觉，迅速受到了开发者的亲睐。</li>
+<li>2012年10月之后就基本停止了重要升级，改为阶段性维护。</li>
+<li>2014年10月30日发布2.4.11版本后，Dubbo停止更新。</li>
+<li>2017年9月7日，Dubbo在GitHub发布了2.5.4版本。</li>
+<li>2017年10月云栖大会上，阿里宣布Dubbo被列入集团重点维护开源项目，这也就意味着Dubbo起死回生，开始重新进入快车道。</li>
+<li>2018年2月15日，大年三十，经过- 系列紧张的投票，来自阿里巴巴的广受社区欢迎的RPC开源框架Dubbo宣布正式进入Apache孵化器。</li>
+</ul>
+<blockquote>
+<p>Dubbo原官网为: <code>http://dubbo.io</code> 。在2018年2月15日，Dubbo正式进入Apache开源孵化器后，官网域名更新为了<a target="_blank" rel="noopener" href="http://dubbo.apache.org">http://dubbo.apache.org</a></p>
+</blockquote>
+<blockquote>
+<p>Dubbo官网已做过了中英文国际化，用户可在中英文间任何切换。</p>
+</blockquote>
+<h3 id="dubbo四大组件"><a class="markdownIt-Anchor" href="#dubbo四大组件"></a> Dubbo四大组件</h3>
+<ul>
+<li><strong>Provider</strong>：暴露服务方，亦称为服务提供者</li>
+<li><strong>Consumer</strong>：调用远程服务方，亦称为服务消费者</li>
+<li><strong>Registry</strong>：服务注册与发现的中心，提供目录服务，亦称为服务注册中心，即zookeeper</li>
+<li><strong>Monitor</strong>：统计服务的调用次数，调用时间等信息的日志服务，亦称为服务监控中心</li>
+</ul>
+<blockquote>
+<p>(注: init: 表示初始化过程，只会执行一次  async:异步处理过程  sync:同步处理过程)</p>
+</blockquote>
+<ol start="0">
+<li>
+<p><strong>start</strong>: Dubbo 服务启动，Spring 容器首先会创建服务提供者。</p>
+</li>
+<li>
+<p><strong>register</strong>:服务提供者创建好后，马上会注册到服务注册中心Registry,这个注册过程称为服务暴露。服务暴露的本质是将服务名称(接口)与服务提供者主机写入到注册中心Registry 的服务映射表中。注册中心充当着“域名服务器”的角色。</p>
+</li>
+<li>
+<p><strong>subscribe</strong>:  服务消费者启动后，首先会向服务注册中心订阅相关服务，当然，该服务必须是Provider暴露于注册中心中的服务。</p>
+</li>
+<li>
+<p><strong>notify</strong>:消费者可能订阅的服务在注册中心还没有相应的提供者。当相应的提供者在注册中心注册后，注册中心会马上通知订阅该服务的消费者。但消费者在订阅了指定服务后，在没有收到注册中心的通知之前是不会被阻塞的，而是可以继续订阅其它服务。注意，一个消费者可以订阅多个服务。</p>
+</li>
+<li>
+<p><strong>invake</strong>:消费者以同步的方式调用提供者提供的请求。消费者通过远程注册中心的服务列表调用远程服务，Dubbo会基于负载均衡算法，选一台提供者处理消费者的请求。而消费者的这个调用是同步的，即提供者在没有向消费者返回处理结果之前，消费者处于阻塞状态，直到提供者返回处理结果，或等待超时。等待超时，Dubbo 会再选个提供者为消费者服务</p>
+</li>
+<li>
+<p><strong>count</strong>:每个消费者对各个服务的累计调用次数、调用时间;每个提供者被消费者调用的累计次数和时间，消费者与调用者都会定时发送到监控中心，由监控中心记录。这些统计数据可以在Dubbo的可视化界面看到</p>
+</li>
+</ol>
+<h3 id="dubbo三大领域模型"><a class="markdownIt-Anchor" href="#dubbo三大领域模型"></a> Dubbo三大领域模型</h3>
+<p>为了对Dubbo整体架构叙述的方便，Dubbo抽象出了三大领域模型。注意，这里的领域模型与DDD (Domain Driven Design,领域驱动模型设计)无关。</p>
+<ul>
+<li>
+<p><strong>Protocol服务域</strong>:是Invoker暴露和引用的主功能入口，它负责Invoker的生命周期管理。</p>
+</li>
+<li>
+<p><strong>Invoker实体域</strong>:是Dubbo的核心模型，其它模型都向它靠扰，或转换成它，它代表一个可执行体，可向它发起invoke调用，它有可能是一个本地的实现，也可能是一个远程的实现，也可能一个集群实现。</p>
+</li>
+<li>
+<p><strong>Invocation会话域</strong>:它持有调用过程中的变量，比如方法名，参数等。</p>
+</li>
+</ul>
+<h3 id="dubbo两大设计原则"><a class="markdownIt-Anchor" href="#dubbo两大设计原则"></a> Dubbo两大设计原则</h3>
+<p>Double这个框架在设计时有两大设计原则:</p>
+<ul>
+<li><strong>采用Microkernel（微内核） + Plugin（插件）模式</strong>，Microkernel 只负责组装Plugin, Dubbo 自身的功能也是通过扩展点实现的，也就是Dubbo的所有功能点都可被用户自定义扩展所替换。</li>
+<li>采用URL作为配置信息的统格式，所有扩展点都通过传递URL携带配置信息。</li>
+</ul>
+<h3 id="dubbo整体架构"><a class="markdownIt-Anchor" href="#dubbo整体架构"></a> Dubbo整体架构</h3>
+<p>Dubbo的架构设计共分为了10层。最上面的Service层是Dubbo开发分布式服务开发者实现业务逻辑的接口层。图中左边淡蓝色背景为服务消费者使用的接口，右边淡绿色背景为服务提供者使用的接口，位于中轴线的为双方都要用到的接口。对于这10层，根据其总体功能划分，可以划分为三大层:</p>
+<h4 id="business层"><a class="markdownIt-Anchor" href="#business层"></a> Business层</h4>
+<p>该层仅包含个service服务层，该层与实际业务逻辑有关，根据服务消费方和服务提供方的业务设计，实现对应的接口。</p>
+<h4 id="rpc层"><a class="markdownIt-Anchor" href="#rpc层"></a> RPC层</h4>
+<p>该层主要负责整个分布式系统中各个主机间的通讯。该层包含了以下6层。</p>
+<ul>
+<li><strong>config配置层</strong></li>
+</ul>
+<p>对外配置按口，以ServiceConfig和ReferenceConfig为中心，可以直接new配置类，也可以根据spring解析配置生成配置类</p>
+<ul>
+<li><strong>proxyt 服务代理层</strong>。</li>
+</ul>
+<p>服务接口透明代理，生成服务的客户端Stub和服务器端Skeleton, 以ServiceProxy 为中心，扩展接口为ProxyFactory。.</p>
+<p>Proxy层封装了所有接口的透明化代理，而在其它层都以Invoker为中心，只有到了暴露给用户使用时，才用Proxy将Invoker转成接口，或将接口实现转成Invoker, 也就是去掉Proxy 层RPC是可以Run的，只是不那么透明，不那么看起来像调本地服务一样调远程服务。。</p>
+<ul>
+<li><strong>registry注册中心层</strong></li>
+</ul>
+<p>封装服务地址的注册和发现，以服务URL为中心，扩展接口为RegistryFactory、Registry、RegistryService,可能没有服务注册中心，此时服务提供方直接暴露服务</p>
+<ul>
+<li><strong>cluster 路曲层</strong></li>
+</ul>
+<p>封装多个提供者的路由和负载均衡，并桥接注册中心，以Invoker为中心，扩展接口为Cluster、Directory, Router 和LoadBalance,将多个服务提供方组合为一一个服务提供方，实现对服务消费通明。只需要与一个服务提供方进行交互。</p>
+<p>Dubbo官方指出，在Dubbo的整体架构中，Cluster 只是一一个外围概念。Cluster 的目的是将多个Invoker 伪装成一个 Invoker, 这样用户只需关注Protocol 层Invoker 即可，加上Cluster或者去掉Cluster 对其它层都不会造成影响，因为只有一一个提供者时，是不需要Cluster的。</p>
+<ul>
+<li><strong>monitor 监控层</strong></li>
+</ul>
+<p>RPC调用时间和次数监控，以Statistics为中心，扩展接口MonitorFactory、Monitor 和MonitorService。</p>
+<ul>
+<li><strong>protocol远程调用层</strong></li>
+</ul>
+<p>封装RPC调用，以Invocation和Result为中心，扩展接口为Protocol Invoker和Exporter.Protocol是服务域，它是Invoker暴露和引用的主功能入口，它负责Invoker的生命周期管理。Invoker是实体域，它是Dubbo的核心模型，其他模型都是向它靠拢，或转换成它，它代表一个可执行体，可向它发起Invoker调用，它有可能是一个本地实现，也有可能是.个远程实现，也有可能是一个集群实现。</p>
+<p>在RPC中，Protocol 是核心层，也就是只要有Protocol + Invoker + Exporter就可以完成非透明的RPC调用，然后在Invoker 的主过程上Filter 拦截点</p>
+<h4 id="remotting层"><a class="markdownIt-Anchor" href="#remotting层"></a> Remotting层</h4>
+<p>Remoting实现是Dubbo 协议的实现，如果我们选择RMI协议,整个Remoting都不会用上，Remoting 内部再划为Transport传输层和Exchange信息交换层，Transport层只负责单向消息传输，是对Mina, Netty, Grizzly的抽象，它也可以扩展UDP传输，而Exchange层是在传输层之上封装了Request-Response 语义。</p>
+<p>具体包含以下三层:</p>
+<ul>
+<li><strong>exchange信息交换层</strong></li>
+</ul>
+<p>封装请求响应模式，同步转异步，以Request和Response为中心，扩展接口为Exchanger和ExchangeChannel,ExchangeClient和ExchangeServer.。</p>
+<ul>
+<li><strong>transport 网络传输层</strong></li>
+</ul>
+<p>抽象和mina和netty为统接口， 以Message为中心，扩展接口为Channel、Transporter、Client、Server和Codec.</p>
+<ul>
+<li><strong>serialize数据序列化层</strong></li>
+</ul>
+<p>可复用的一些工具，扩展接口为Serialization、ObjectInput、ObjectOutput和ThreadPool</p>
+<h3 id="版本号"><a class="markdownIt-Anchor" href="#版本号"></a> 版本号</h3>
+<h4 id="dubbo版本号与zookeeper客户端"><a class="markdownIt-Anchor" href="#dubbo版本号与zookeeper客户端"></a> Dubbo版本号与zookeeper客户端</h4>
+<p>Dubbo在2.6.0之前，默认使用的zookeeper客户端为zkClient</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.101tec<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zkclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p>但从2018/2/15，Dubbo宣布进入Dubbo孵化器，然后同年4月发布2.6.1版本，将默认客户端由zkClient修改为Netflix公司开发的curator，但目前其支持的版本为2.12.0</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<h2 id="dubbo核心用法"><a class="markdownIt-Anchor" href="#dubbo核心用法"></a> Dubbo核心用法</h2>
+<h3 id="第一个dubbo程序"><a class="markdownIt-Anchor" href="#第一个dubbo程序"></a> 第一个Dubbo程序</h3>
+<h4 id="创建业务接口工程"><a class="markdownIt-Anchor" href="#创建业务接口工程"></a> 创建业务接口工程</h4>
+<p>创建一个普通的maven工程：</p>
+<p>目录如下：</p>
+<p>工程pom依赖：</p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>firstCommon<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">properties</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<p>在包<code>com.lee.service</code>下创建接口：</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.service;
+
+<span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SomeService</span> &#123;
+
+    String <span class="title function_">hello</span><span class="params">(String name)</span>;
+&#125;</code></pre>
+<p>使用<code>mvn install</code>将项目打包至本地，供其他工程依赖</p>
+<blockquote>
+<p>业务接口工程创建完毕</p>
+</blockquote>
+<h4 id="创建提供者provider"><a class="markdownIt-Anchor" href="#创建提供者provider"></a> 创建提供者Provider</h4>
+<p>创建基础的maven工程，工程目录如下：</p>
+<p><strong>pom依赖：</strong></p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>firstProvider<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">properties</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span>
+        <span class="comment">&lt;!--整体指定spring的版本号--&gt;</span>
+        <span class="tag">&lt;<span class="name">spring-version</span>&gt;</span>4.3.16.RELEASE<span class="tag">&lt;/<span class="name">spring-version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+
+        <span class="comment">&lt;!--这里依赖我们写好的接口jar包--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>firstCommon<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="comment">&lt;!--dubbo的依赖--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+        <span class="comment">&lt;!--spring的依赖--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-expression<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aop<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aspects<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-tx<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<p><strong>spring配置文件</strong></p>
+<ul>
+<li><code>&lt;dubbo:application/&gt;</code>标签用于注册提供Dubbo服务的应用名称，即服务提供者名称，该名称在监控中心可以使用到，其名称一般与项目名称相同</li>
+<li><code>&lt;dubbo:service/&gt;</code>标签用于注册服务提供者，暴露服务：
+<ul>
+<li><strong>interface</strong>：用于指定服务提供接口</li>
+<li><strong>ref</strong>：用于指定服务真正的实施者</li>
+<li><strong>registry</strong>：&quot;N/A&quot;表示将当前服务注册到“注册中心不适用（N/A,Not Application,不适用）”，即当前服务不注册到注册中心，将采用点对点服务</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务，先采用直连的方式--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                    <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                    <span class="attr">registry</span>=<span class="string">&quot;N/A&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<p><strong>定义接口实现类：</strong></p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.service;
+<span class="comment">//这个类实现的接口是之前那个工程里的接口</span>
+<span class="comment">//服务提供者的真正实现</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">SomeService</span>&#123;
+    
+    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(String name)</span> &#123;
+        System.out.println(<span class="string">&quot;dubbo world welcome you :&quot;</span>+name);
+        <span class="keyword">return</span> <span class="string">&quot;com.lee&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<p><strong>定义启动类:</strong></p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.run;
+
+<span class="keyword">import</span> org.springframework.context.ApplicationContext;
+<span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="comment">//服务提供者</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunProvider</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;
+        <span class="comment">//创建spring容器</span>
+        <span class="type">ApplicationContext</span> <span class="variable">ac</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;spring-dubbo-provider.xml&quot;</span>);
+        <span class="comment">//启动容器</span>
+        ((ClassPathXmlApplicationContext)ac).start();
+        <span class="comment">//保持容器的启动,将当前主线程阻塞</span>
+        System.in.read();
+    &#125;
+&#125;
+</code></pre>
+<h4 id="创建消费者consumer"><a class="markdownIt-Anchor" href="#创建消费者consumer"></a> 创建消费者Consumer</h4>
+<p>创建一个基础的maven工程，工程目录如下：</p>
+<p><strong>pom依赖</strong></p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span></span>
+<span class="tag">         <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span>
+<span class="tag">         <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>firstConsumer<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">properties</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">project.build.sourceEncoding</span>&gt;</span>UTF-8<span class="tag">&lt;/<span class="name">project.build.sourceEncoding</span>&gt;</span>
+        <span class="comment">&lt;!--整体指定spring的版本号--&gt;</span>
+        <span class="tag">&lt;<span class="name">spring-version</span>&gt;</span>4.3.16.RELEASE<span class="tag">&lt;/<span class="name">spring-version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+
+        <span class="comment">&lt;!--这里依赖我们写好的接口jar包--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.lee<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>firstCommon<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="comment">&lt;!--dubbo的依赖--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.6.4<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+        <span class="comment">&lt;!--spring的依赖--&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-beans<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-context<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-expression<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aop<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-aspects<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;spring-version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+    <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">project</span>&gt;</span></code></pre>
+<p><strong>spring配置文件</strong></p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程的名称，监控中心使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstConsumer&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--消费引用（直连方式）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                     <span class="attr">url</span>=<span class="string">&quot;dubbo://localhost:20880&quot;</span>/&gt;</span>
+    
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<p><strong>创建启动类：</strong></p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.run;
+
+<span class="keyword">import</span> com.lee.service.SomeService;
+<span class="keyword">import</span> org.springframework.context.ApplicationContext;
+<span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;
+<span class="comment">//消费者</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunConsumer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        <span class="comment">//创建spring容器</span>
+        <span class="type">ApplicationContext</span> <span class="variable">ac</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;spring-dubbo-consumer.xml&quot;</span>);
+        <span class="comment">//</span>
+        <span class="type">SomeService</span> <span class="variable">someService</span> <span class="operator">=</span> (SomeService) ac.getBean(<span class="string">&quot;someService&quot;</span>);
+
+        System.out.println(someService.hello(<span class="string">&quot;leeboer&quot;</span>));
+    &#125;
+&#125;
+</code></pre>
+<h4 id="运行测试"><a class="markdownIt-Anchor" href="#运行测试"></a> 运行测试</h4>
+<p>依次运行生产者和消费者的启动类：</p>
+<p>运行生产者启动类：</p>
+<p>运行消费者启动类：</p>
+<p>然后生产者控制台也有相应的输出：</p>
+<h3 id="zookeeper注册中心"><a class="markdownIt-Anchor" href="#zookeeper注册中心"></a> zookeeper注册中心</h3>
+<p>修改上述工程，使 直连方式 调用变为 通过zookeeper注册中心 调用：</p>
+<p>首先在服务器启动zookeeper:</p>
+<h4 id="生产者provider"><a class="markdownIt-Anchor" href="#生产者provider"></a> 生产者Provider</h4>
+<p>添加zk客户端依赖：</p>
+<pre><code class="highlight xml"><span class="comment">&lt;!--zk客户端依赖--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p><strong>修改spring配置文件</strong></p>
+<ul>
+<li>zookeeper的默认端口为2181</li>
+<li>dubbo默认使用的zookeeper注册器，所以删掉<code>registry=&quot;N/A&quot;</code>即可</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="comment">&lt;!--&lt;dubbo:registry protocol=&quot;zookeeper&quot; address=&quot;129.28.192.181:2181&quot;/&gt;--&gt;</span>
+
+<span class="comment">&lt;!--    &amp;lt;!&amp;ndash;暴露服务，先采用直连的方式&amp;ndash;&amp;gt;</span>
+<span class="comment">    &lt;dubbo:service interface=&quot;com.lee.service.SomeService&quot;</span>
+<span class="comment">                    ref=&quot;someService&quot;</span>
+<span class="comment">                    registry=&quot;N/A&quot;/&gt;--&gt;</span>
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="消费者consumer"><a class="markdownIt-Anchor" href="#消费者consumer"></a> 消费者Consumer</h4>
+<p>添加zk客户端依赖：</p>
+<pre><code class="highlight xml"><span class="comment">&lt;!--zk客户端依赖--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.12.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p><strong>修改spring配置文件</strong></p>
+<ul>
+<li>zookeeper的默认端口为2181</li>
+<li>dubbo默认使用的zookeeper注册器，所以删掉url即可</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程的名称，监控中心使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstConsumer&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--消费引用（服务注册中心），不指定urlj就是默认从服务注册中心引用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>/&gt;</span>
+<span class="comment">&lt;!--    &amp;lt;!&amp;ndash;消费引用（直连方式）&amp;ndash;&amp;gt;</span>
+<span class="comment">    &lt;dubbo:reference id=&quot;someService&quot;</span>
+<span class="comment">                     interface=&quot;com.lee.service.SomeService&quot;</span>
+<span class="comment">                     url=&quot;dubbo://localhost:20880&quot;/&gt;--&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="测试"><a class="markdownIt-Anchor" href="#测试"></a> 测试</h4>
+<p>生产者输出：</p>
+<p>消费者输出：</p>
+<p>调用成功！</p>
+<h4 id="zookeeper集群连接"><a class="markdownIt-Anchor" href="#zookeeper集群连接"></a> zookeeper集群连接</h4>
+<p>分别修改生产者和消费者的spring配置文件即可：</p>
+<ul>
+<li>顺序随便指定即可</li>
+</ul>
+<pre><code class="highlight xml"><span class="comment">&lt;!--声明zk服务中心--&gt;</span> 
+<span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181?backup=129.28.192.182:2181,129.28.192.183:2181,129.28.192.184:2181&quot;</span>/&gt;</span>
+</code></pre>
+<h3 id="dubboannotion简化"><a class="markdownIt-Anchor" href="#dubboannotion简化"></a> dubbo:annotion简化</h3>
+<ul>
+<li>使用<code>&lt;dubbo:annotation package=&quot;com.lee.service&quot;/&gt;</code>注解简化<bean>标签</li>
+<li>但是bean类的注解@Service要使用alibaba的</li>
+<li>服务方和消费方都可以使用</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+                   
+    <span class="comment">&lt;!--如果有多个bean，可以配置按包自动扫描--&gt;</span>         
+    <span class="comment">&lt;!--读取dubbo服务提供者（Service实现类）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:annotation</span> <span class="attr">package</span>=<span class="string">&quot;com.lee.service&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h3 id="dubbo声明式缓存"><a class="markdownIt-Anchor" href="#dubbo声明式缓存"></a> Dubbo声明式缓存</h3>
+<p><strong>慎用：只能用于同意查询条件下结果不变的数据</strong></p>
+<p>为了进一步提高消费者对用户的响应速度，减轻提供者的压力，Dubbo提供了<strong>基于结果</strong>的声明式缓存，该缓存是基于消费者端的，所以使用简单，<strong>只需修改消费者配置文件，与提供者</strong>无关</p>
+<p>直接在zk注册中心例子进行修改，只需修改消费者即可</p>
+<h4 id="基于服务级别"><a class="markdownIt-Anchor" href="#基于服务级别"></a> 基于服务级别</h4>
+<p><strong>修改消费者配置文件</strong></p>
+<ul>
+<li>仅需在<code>&lt;dubbo:reference/&gt;</code>中添加<code>cache=&quot;true&quot;</code>即可</li>
+<li>该种缓存是基于服务级别的声明式缓存（结果缓存）</li>
+</ul>
+<pre><code class="highlight xml"><span class="comment">&lt;!--从注册中心获取到指定服务，服务名称为接口名--&gt;</span>
+<span class="comment">&lt;!--cache=&quot;true&quot;表示开启声明式缓存--&gt;</span>
+<span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                 <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                 <span class="attr">cache</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></code></pre>
+<p><strong>修改RunConsumer运行类</strong></p>
+<p>修改RunConsumer调用两次服务端</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.run;
+
+<span class="keyword">import</span> com.lee.service.SomeService;
+<span class="keyword">import</span> org.springframework.context.ApplicationContext;
+<span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;
+<span class="comment">//消费者</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunConsumer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        <span class="comment">//创建spring容器</span>
+        <span class="type">ApplicationContext</span> <span class="variable">ac</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;spring-dubbo-consumer.xml&quot;</span>);
+        <span class="comment">//</span>
+        <span class="type">SomeService</span> <span class="variable">someService</span> <span class="operator">=</span> (SomeService) ac.getBean(<span class="string">&quot;someService&quot;</span>);
+        <span class="comment">//调用两次</span>
+        System.out.println(someService.hello(<span class="string">&quot;leeboer&quot;</span>));
+        System.out.println(someService.hello(<span class="string">&quot;leeboer&quot;</span>));
+    &#125;
+&#125;</code></pre>
+<p><strong>查看运行结果</strong></p>
+<p>消费者调用了两次服务者，但服务者只处理了一次</p>
+<p>消费者输出：</p>
+<p>服务端输出：</p>
+<blockquote>
+<p>注意：这种缓存是<strong>缓存相同调用条件</strong>的<strong>结果</strong>，换了调用条件会再次调用服务端</p>
+</blockquote>
+<h4 id="基于方法级别"><a class="markdownIt-Anchor" href="#基于方法级别"></a> 基于方法级别</h4>
+<p><strong>方法级别的结果缓存</strong></p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:method</span> <span class="attr">name</span>=<span class="string">&quot;hello&quot;</span> <span class="attr">cache</span>=<span class="string">&quot;lru&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">dubbo:reference</span>&gt;</span></code></pre>
+<p>dubbo提供了三种结果缓存机制:</p>
+<ul>
+<li><strong>Iru</strong>：服务级别缓存的默认机制。该机制默认可以缓存1000个结果。若超出1000,将采用<strong>最近最少</strong>使用原则来删除缓存，以保证最热的数据被缓存</li>
+<li><strong>threadlocal</strong>：当前线程缓存。 当多个线程要对当前线程进行某操作时首先需要查询当前线程的某个信息，通过线程缓存，则可有效减少查询。</li>
+<li><strong>jcache</strong>: 可以桥接各种缓存实现，即第三方缓存产品。</li>
+</ul>
+<h4 id="结果缓存的应用场景"><a class="markdownIt-Anchor" href="#结果缓存的应用场景"></a> 结果缓存的应用场景</h4>
+<p>Dubbo的结果缓存可以应用在<strong>查询结果不变</strong>的场景</p>
+<p>即不能使用在如下场景：消费者A调用的业务方法后从DB中查询到了一个结果a，此后，消费者B对DB中的改结果相关数据进行了修改，已使该查询结果变味了b，但是由于使用了结果缓存，消费者A中调用业务方法后的查询结果将长时间为a，知道该结果由于缓存空间满而被消除，否则，永远无法得到更新后的结果b.</p>
+<h3 id="多版本控制"><a class="markdownIt-Anchor" href="#多版本控制"></a> 多版本控制</h3>
+<p>Dubbo的多版本控制指的是，服务名称(接口名)相同的情况下提供不同的服务(实现类不同)，然而消费者是通过服务名称(接口名)进行服务查找并进行消费的。提供者所提供的服务名称相同，如何让消费者通过名称进行服务查找呢?为服务添加一个版本号，使用“<strong>服务名称+版本号</strong>”的方式来<strong>唯一确定一个服务</strong>。</p>
+<p>多版本控制主要的应用场景是:当一个接口的实现类需要升级时，可以使用版本号进行过渡(根据开闭原则，不能直接修改原实现类，只能添加新的实现类)。需要注意的是，版本号不同的服务间是不能相互引用的，因为新版本存在的目的是替换老版本。在生产环境中若存在多个提供者需要升级，一般不会一 次性全 部进行升级，而是会在低压力时间段先升级一部分，然后在下次再进行部分升级，直到全部升级完成。那么，这期间就需要使用版本号进行过渡。</p>
+<h4 id="修改提供者"><a class="markdownIt-Anchor" href="#修改提供者"></a> 修改提供者</h4>
+<p>提供者增加一个接口的实现类（版本升级/替换）：</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.service;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">OtherServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">SomeService</span> &#123;
+    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(String name)</span> &#123;
+        System.out.println(<span class="string">&quot;OtherServiceImpl world welcome you :&quot;</span>+name);
+        <span class="keyword">return</span> <span class="string">&quot;OtherServiceImpl运行成功&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.service;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">SomeService</span>&#123;
+
+    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(String name)</span> &#123;
+        System.out.println(<span class="string">&quot;SomeServiceImpl world welcome you :&quot;</span>+name);
+        <span class="keyword">return</span> <span class="string">&quot;SomeServiceImpl运行成功&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<p><strong>修改提供者spring配置文件</strong></p>
+<ul>
+<li><code>&lt;dubbo:service&gt;</code>中的<strong>version</strong>属性用于多版本控制</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="comment">&lt;!--&lt;dubbo:registry protocol=&quot;zookeeper&quot; address=&quot;129.28.192.181:2181&quot;/&gt;--&gt;</span>
+    
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">version</span>=<span class="string">&quot;1.0.0&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">version</span>=<span class="string">&quot;2.0.0&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;otherService&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="修改消费者"><a class="markdownIt-Anchor" href="#修改消费者"></a> 修改消费者</h4>
+<p>消费者<strong>只需修改spring配置文件</strong>即可：</p>
+<ul>
+<li>用不同的版本号来区分相同接口的不同实现</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程的名称，监控中心使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstConsumer&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--消费引用（服务注册中心），不指定url就是默认从服务注册中心引用--&gt;</span>
+    <span class="comment">&lt;!--多版本控制，相同接口，不同的实现类，用版本号区分--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">version</span>=<span class="string">&quot;1.0.0&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">version</span>=<span class="string">&quot;2.0.0&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<p>启动类调用：</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.run;
+
+<span class="keyword">import</span> com.lee.service.SomeService;
+<span class="keyword">import</span> org.springframework.context.ApplicationContext;
+<span class="keyword">import</span> org.springframework.context.support.ClassPathXmlApplicationContext;
+<span class="comment">//消费者</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RunConsumer</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        <span class="comment">//创建spring容器</span>
+        <span class="type">ApplicationContext</span> <span class="variable">ac</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ClassPathXmlApplicationContext</span>(<span class="string">&quot;spring-dubbo-consumer.xml&quot;</span>);
+        <span class="comment">//多版本控制，相同接口的不同实现类，用版本号控制</span>
+        <span class="type">SomeService</span> <span class="variable">someService</span> <span class="operator">=</span> (SomeService) ac.getBean(<span class="string">&quot;someService&quot;</span>);
+        <span class="type">SomeService</span> <span class="variable">otherService</span> <span class="operator">=</span> (SomeService) ac.getBean(<span class="string">&quot;otherService&quot;</span>);
+
+        System.out.println(someService.hello(<span class="string">&quot;leeboer&quot;</span>));
+        System.out.println(otherService.hello(<span class="string">&quot;leeboer&quot;</span>));
+    &#125;
+&#125;
+</code></pre>
+<h4 id="运行测试-2"><a class="markdownIt-Anchor" href="#运行测试-2"></a> 运行测试</h4>
+<p>消费者：</p>
+<p>提供者：</p>
+<blockquote>
+<p>通过版本号来区分调用相同接口的不同实现（一般用来版本升级使用）</p>
+</blockquote>
+<h3 id="服务分组"><a class="markdownIt-Anchor" href="#服务分组"></a> 服务分组</h3>
+<p>服务分组与多版本控制的<strong>使用方式几乎是相同</strong>的，只要将<strong>version替换为group</strong>即可。但使用目的不同。使用版本控制的目的是为了升级，将原有老版本替换掉，将来不再提供老版本的服务，<u>所以不同版本间不能出现相互调用</u>。而分组的目的则不同，其也是针对相同接口，给出了多种实现类。但不同的是，<strong>这些不同实现并没有谁替换掉谁的意思，是针对不同需求，或针对不同功能模块所给出的不同实现</strong>。这些实现所提供的服务是并存的，所以它们间可以出现相互调用关系。例如，对于支付服务的实现，可以有微信支付实现与支付宝支付实现等。</p>
+<p><strong>修改提供者spring配置文件</strong></p>
+<ul>
+<li><code>varsion</code>改为<code>group</code>即可</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="comment">&lt;!--&lt;dubbo:registry protocol=&quot;zookeeper&quot; address=&quot;129.28.192.181:2181&quot;/&gt;--&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--服务分组，用来区别相同接口的不同实现--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.weixin&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.zhifubao&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;otherService&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<p><strong>修改消费者的spring配置文件</strong></p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程的名称，监控中心使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstConsumer&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--消费引用（服务注册中心），不指定url就是默认从服务注册中心引用--&gt;</span>
+    <span class="comment">&lt;!--服务分组，用来区分相同接口的不同实现--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.weixin&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.zhifubao&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<blockquote>
+<p>服务分组和多版本控制的用法基本相同，功能也基本相同，只是使用场景不容</p>
+</blockquote>
+<h3 id="服务暴露延迟"><a class="markdownIt-Anchor" href="#服务暴露延迟"></a> 服务暴露延迟</h3>
+<p>如果我们的服务启动过程需要warmup事件（预热时间，与jvm重启后的预热过程相似，在启动后一小段时间后性能才能达到最佳状态，比如初始化缓存，等待相关资源就为等，可以<strong>使用deplay进行延迟暴露</strong>）</p>
+<p>只需在<strong>服务提供者</strong>的<code>&lt;dubbo:service/&gt;</code>标签中<strong>添加delay属性</strong></p>
+<ul>
+<li>其值若为<strong>正数</strong>，则单位为毫秒，表示在指定时间后再发布服务</li>
+<li>若值<strong>为-1</strong>，则表示再spring初始化完毕后再暴露服务</li>
+</ul>
+<p>修改服务提供者的spring配置文件</p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="comment">&lt;!--&lt;dubbo:registry protocol=&quot;zookeeper&quot; address=&quot;129.28.192.181:2181&quot;/&gt;--&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.weixin&quot;</span> <span class="attr">delay</span>=<span class="string">&quot;5000&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h3 id="多注册中心"><a class="markdownIt-Anchor" href="#多注册中心"></a> 多注册中心</h3>
+<p>很多时候一个项目中会有多个注册中心</p>
+<h4 id="同一个服务注册到多个中心"><a class="markdownIt-Anchor" href="#同一个服务注册到多个中心"></a> 同一个服务注册到多个中心</h4>
+<p>同一个服务可以注册到不同地域的多个注册中心，以便为不同地域的服务消费者提供更为快捷的服务</p>
+<p><strong>修改服务提供者spring配置文件</strong></p>
+<ul>
+<li>多个注册中心之间使用逗号分割</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;bjCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;xaCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.193:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--多注册中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">register</span>=<span class="string">&quot;bjCenter,xaCenter&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="不同服务注册到不同中心"><a class="markdownIt-Anchor" href="#不同服务注册到不同中心"></a> 不同服务注册到不同中心</h4>
+<p>修改服务提供者配置文件：</p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;bjCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;xaCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.193:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--不同服务注册到不同的注册中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">register</span>=<span class="string">&quot;bjCenter&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.OtherService&quot;</span> <span class="attr">register</span>=<span class="string">&quot;xaCenter&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;otherService&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="同一个服务引用自不同的中心"><a class="markdownIt-Anchor" href="#同一个服务引用自不同的中心"></a> 同一个服务引用自不同的中心</h4>
+<p>同一个消费者需要调用两个不同中心的服务，而调用该服务的名称（接口），版本等都是相同的，不同中心的的这个相同名称的服务调用的是不同数据库中的数据，即相同服务最终执行的结果是不同的</p>
+<p>修改服务消费者spring配置文件：</p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程的名称，监控中心使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstConsumer&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;bjCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">id</span>=<span class="string">&quot;xaCenter&quot;</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.193:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--消费引用（服务注册中心），不指定url就是默认从服务注册中心引用--&gt;</span>
+    <span class="comment">&lt;!--相同的服务接口，不同的注册中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;bjSomeService&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                     <span class="attr">registry</span>=<span class="string">&quot;bjCenter&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:reference</span> <span class="attr">id</span>=<span class="string">&quot;xaSomeService&quot;</span></span>
+<span class="tag">                     <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                     <span class="attr">registry</span>=<span class="string">&quot;xnCenter&quot;</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h3 id="多协议支持"><a class="markdownIt-Anchor" href="#多协议支持"></a> 多协议支持</h3>
+<h4 id="服务暴露协议"><a class="markdownIt-Anchor" href="#服务暴露协议"></a> 服务暴露协议</h4>
+<p>在我们之前的示例中，服务提供者与服务消费者都是通过zookeeper连接协议连接上zookeeper注册中心的</p>
+<p>提供者与消费者均连接上了注册中心，那么消费者就理所当然的可以享受提供者提供的服务了?</p>
+<p>实际情况并不是这样的。前述的zookeeper协议，是消费者/提供者连接注册中心的连接协议，而非消费者与提供者间的连接协议。</p>
+<p>当消费者连接上注册中心后，在消费服务之前，首先需要连接上这个服务提供者。虽然消费者通过注册中心可以获取到服务提供者，但提供者对于消费者来说却是透明的，消费者并不知道真正的服务提供者是谁。不过，无论提供者是谁，消费者都必须连接上提供者才可以获取到真正的服务， 而这个连接也是需要专门的连接协议的。这个协议称为服务暴露协议。</p>
+<p>可是我们之前的代码中并没有看到服务暴露协议的相关配置，但仍可正常运行项目，这是为什么呢?</p>
+<p><strong>因为采用了默认的暴露协议: Dubbo服务暴露协议</strong>。</p>
+<p>除了Dubbo服务暴露协议外，Dubbo框架还支持另外七种服务暴露协议:</p>
+<ul>
+<li>Hessian协议、</li>
+<li>HTTP协议</li>
+<li>RMI 协议</li>
+<li>WebService协议</li>
+<li>Thrift 协议</li>
+<li>Memcached协议</li>
+<li>Redis协议</li>
+</ul>
+<p>但在实际生产中，使用最多的就是Dubbo服务暴露协议。</p>
+<p><strong>Dubbo服务暴露协议，适合于小数据量大并发的服务调用，以及服务消费者主机数远大于服务提供者主机数的情况</strong>。</p>
+<h4 id="服务暴露协议用法"><a class="markdownIt-Anchor" href="#服务暴露协议用法"></a> 服务暴露协议用法</h4>
+<p>下面以Dubbo暴露协议用法为例来说明服务暴露协议的用法。</p>
+<ol>
+<li>
+<p>在服务提供者的spring配置文件中首先需要注册服务暴露协议</p>
+</li>
+<li>
+<p>然后再在暴露服务时具体指定所使用的已注册的暴露协议。</p>
+</li>
+<li>
+<p><strong>protocol</strong>：用于指定当前服务所使用的暴露协议</p>
+</li>
+</ol>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明服务暴露协议--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">port</span>=<span class="string">&quot;20880&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--切换不同的服务暴露协议（暴露给消费者）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                   <span class="attr">protocol</span>=<span class="string">&quot;dubbo&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="同一服务支持多种协议"><a class="markdownIt-Anchor" href="#同一服务支持多种协议"></a> 同一服务支持多种协议</h4>
+<p>使用<code>&lt;dubbo:protocol&gt;</code>标签来声明协议</p>
+<ul>
+<li><strong>name</strong>属性：指定协议类型</li>
+<li><strong>port</strong>属性：指定端口号</li>
+<li><strong>id</strong>属性：如果有同协议多端口号，使用id区分，例：id=“dubbo1”</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册服务暴露协议（多协议支持）--&gt;</span>
+    <span class="comment">&lt;!--name指定的就是协议类型--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">port</span>=<span class="string">&quot;20880&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;rmi&quot;</span> <span class="attr">port</span>=<span class="string">&quot;1099&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--切换不同的服务暴露协议（暴露给消费者）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                   <span class="attr">protocol</span>=<span class="string">&quot;dubbo,rmi&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h4 id="不同服务使用不同协议"><a class="markdownIt-Anchor" href="#不同服务使用不同协议"></a> 不同服务使用不同协议</h4>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册服务暴露协议（多协议支持）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">port</span>=<span class="string">&quot;20880&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;rmi&quot;</span> <span class="attr">port</span>=<span class="string">&quot;1099&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="comment">&lt;!--不同服务使用不同的协议--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.weixin&quot;</span></span>
+<span class="tag">                   <span class="attr">protocol</span>=<span class="string">&quot;dubbo&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">group</span>=<span class="string">&quot;pay.zhifubao&quot;</span></span>
+<span class="tag">                   <span class="attr">protocol</span>=<span class="string">&quot;rmi&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h3 id="dubbo的高级设置及使用建议"><a class="markdownIt-Anchor" href="#dubbo的高级设置及使用建议"></a> Dubbo的高级设置及使用建议</h3>
+<h4 id="在provider上尽量多配置consumer端属性"><a class="markdownIt-Anchor" href="#在provider上尽量多配置consumer端属性"></a> 在Provider上尽量多配置Consumer端属性</h4>
+<p>Provider上尽量多配置Consumer端的属性，让Provider实现者开始就思考</p>
+<p>Provider服务特点、服务质量等问题。因为作服务的提供者，比服务使用方更清楚服务性能参数，如调用的超时时间、合理的重试次数等。在Provider配置后，Consumer不配置则会使用Provider的配置值，即Provider配置可以作为Consumer的缺省值。否则，Consumer会使用Consumer端的全局设置，这对于Provider是不可控的，并且往往是不合理的。</p>
+<p><strong>对整个服务的限制：</strong></p>
+<p>以下属性配置在<code>&lt;dubbo:method/&gt;</code>上则是针对<strong>指定方法</strong>，配置在<code>&lt;dubbo:service/&gt;</code>上则是针对<strong>整个服务</strong></p>
+<ul>
+<li><code>timeout</code>：远程服务调用超时时限</li>
+<li><code>retries</code>：失败重试次数，默认值是2</li>
+<li><code>loadbalance</code>：负载均衡算法，默认是随机random，还可以有轮roundrobin、最不活跃优先leastactive等</li>
+<li><code>actives</code>:  消费者最大并发调用限制，即当Consumer 对一个服务的并发调用到上限后，新调用会阻塞直到超时</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册服务暴露协议（多协议支持）--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">port</span>=<span class="string">&quot;20880&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span></span>
+<span class="tag">                   <span class="attr">protocol</span>=<span class="string">&quot;dubbo&quot;</span></span>
+<span class="tag">                   <span class="attr">timeout</span>=<span class="string">&quot;300&quot;</span></span>
+<span class="tag">                   <span class="attr">retries</span>=<span class="string">&quot;2&quot;</span></span>
+<span class="tag">                   <span class="attr">loadbalance</span>=<span class="string">&quot;random&quot;</span></span>
+<span class="tag">                   <span class="attr">actives</span>=<span class="string">&quot;0&quot;</span>/&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<p><strong>对某个方法的限制：</strong></p>
+<pre><code class="highlight xml"><span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+<span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span> <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">protocol</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">timeout</span>=<span class="string">&quot;300&quot;</span> <span class="attr">retries</span>=<span class="string">&quot;2&quot;</span> <span class="attr">loadbalance</span>=<span class="string">&quot;random&quot;</span> <span class="attr">actives</span>=<span class="string">&quot;0&quot;</span>&gt;</span>
+    <span class="comment">&lt;!--对方法的单独配置--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:method</span> <span class="attr">name</span>=<span class="string">&quot;hello&quot;</span> <span class="attr">timeout</span>=<span class="string">&quot;1000&quot;</span> <span class="attr">retries</span>=<span class="string">&quot;9&quot;</span> <span class="attr">loadbalance</span>=<span class="string">&quot;leastactive&quot;</span> <span class="attr">actives</span>=<span class="string">&quot;5&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">dubbo:service</span>&gt;</span></code></pre>
+<h4 id="provider上配置合理的provider端属性"><a class="markdownIt-Anchor" href="#provider上配置合理的provider端属性"></a> Provider上配置合理的Provider端属性</h4>
+<p><code>&lt;dubbo:protocol&gt;</code>标签</p>
+<ul>
+<li><strong>threads</strong>属性：用来指定服务线程池大小</li>
+</ul>
+<p><code>&lt;dubbo:service/&gt;</code>标签</p>
+<ul>
+<li><strong>executes</strong>属性：用来指定服务提供者并行执行请求上限，即当Provider对一个服务的并发调用达到上限后，新调用会阻塞，此时Consumer可能会超时。该属性配置在<code>&lt;dubbo:method/&gt;</code>上则是针对方法，配置在<code>&lt;dubbo:service/&gt;</code>则是针对整个服务</li>
+</ul>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://www.springframework.org/schema/beans&quot;</span></span>
+<span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span> <span class="attr">xmlns:dubbo</span>=<span class="string">&quot;http://code.alibabatech.com/schema/dubbo&quot;</span></span>
+<span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd&quot;</span>&gt;</span>
+
+    <span class="comment">&lt;!--当前工程名称，该名称在监控平台使用--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:application</span> <span class="attr">name</span>=<span class="string">&quot;firstProvider&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册service，其就是真正的服务提供者--&gt;</span>
+    <span class="comment">&lt;!--相同接口的不同实现类，多版本控制--&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.SomeServiceImpl&quot;</span>/&gt;</span>
+    <span class="tag">&lt;<span class="name">bean</span> <span class="attr">id</span>=<span class="string">&quot;otherService&quot;</span> <span class="attr">class</span>=<span class="string">&quot;com.lee.service.OtherServiceImpl&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--声明zk服务中心--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:registry</span> <span class="attr">address</span>=<span class="string">&quot;zookeeper://129.28.192.181:2181&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--注册服务暴露协议（多协议支持）--&gt;</span>
+    <span class="comment">&lt;!--threads属性用来指定服务线程池的大小--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:protocol</span> <span class="attr">name</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">port</span>=<span class="string">&quot;20880&quot;</span> <span class="attr">threads</span>=<span class="string">&quot;200&quot;</span>/&gt;</span>
+
+    <span class="comment">&lt;!--暴露服务：将服务暴露给zk服务中心，不写registry属性即可，默认使用zookeeper--&gt;</span>
+    <span class="tag">&lt;<span class="name">dubbo:service</span> <span class="attr">interface</span>=<span class="string">&quot;com.lee.service.SomeService&quot;</span></span>
+<span class="tag">                   <span class="attr">ref</span>=<span class="string">&quot;someService&quot;</span> <span class="attr">protocol</span>=<span class="string">&quot;dubbo&quot;</span> <span class="attr">timeout</span>=<span class="string">&quot;300&quot;</span> <span class="attr">retries</span>=<span class="string">&quot;2&quot;</span> <span class="attr">loadbalance</span>=<span class="string">&quot;random&quot;</span> <span class="attr">actives</span>=<span class="string">&quot;0&quot;</span>&gt;</span>
+        <span class="comment">&lt;!--对方法的单独配置--&gt;</span>
+        <span class="comment">&lt;!--executes服务提供者并行执行请求上限--&gt;</span>
+        <span class="tag">&lt;<span class="name">dubbo:method</span> <span class="attr">name</span>=<span class="string">&quot;hello&quot;</span> <span class="attr">executes</span>=<span class="string">&quot;50&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">dubbo:service</span>&gt;</span>
+
+<span class="tag">&lt;/<span class="name">beans</span>&gt;</span></code></pre>
+<h3 id="spring-boot中使用dubbo"><a class="markdownIt-Anchor" href="#spring-boot中使用dubbo"></a> spring boot中使用dubbo</h3>
+<h4 id="总步骤"><a class="markdownIt-Anchor" href="#总步骤"></a> 总步骤</h4>
+<p>一个Dubbo项目至少应该由三个工程构成:</p>
+<ul>
+<li><strong>commons工程</strong>：包含Service接口、实体类、常量类、工具类等</li>
+<li><strong>serviceDao工程</strong>：包含Serice实现类、Dao 接口、Mapper映射文件的服务提供者</li>
+<li><strong>userWeb工程</strong>：包含SpringMVC的处理器类的服务消费者。</li>
+</ul>
+<p>其中commons工程就是一个普通的Maven-Java工程，另外两个都是Spring Boot的web工程。</p>
+<h4 id="commons工程"><a class="markdownIt-Anchor" href="#commons工程"></a> commons工程</h4>
+<p>里面放基础的bean类和service接口</p>
+<h4 id="服务提供者工程定义"><a class="markdownIt-Anchor" href="#服务提供者工程定义"></a> 服务提供者工程定义</h4>
+<ul>
+<li><strong>添加 zkClient依赖</strong>（因为Dubbo 与Spring Boot整合依赖使用的是低版本2.6.0的dubbo，所以要使用zkClient，高版本2.6.1的dubbo使用的zi依赖是curator）、<strong>Dubbo 与Spring Boot整合依赖</strong>（添加了该依赖就不用单独再添加dubbo的依赖了），及<strong>commons工程依赖</strong></li>
+</ul>
+<blockquote>
+<p>pom文件中记得要注册dao包下mybatis映射文件为资源目录</p>
+</blockquote>
+<pre><code class="highlight xml"><span class="comment">&lt;!--dubbo和spring整合依赖--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span><span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.101tec<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zkclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+        <span class="comment">&lt;!--去掉zkclient中的log4j依赖，否则有依赖冲突--&gt;</span>
+    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+         <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<ul>
+<li>在入口类上添加@EnableDubboConfiguration注解，开启Dubbo自动配置</li>
+</ul>
+<pre><code class="highlight java"><span class="meta">@SpringBootApplication</span> 
+<span class="meta">@EnableCaching</span> <span class="comment">//开启缓存 </span>
+<span class="meta">@EnableTransactionManagement</span>  <span class="comment">//开启事务</span>
+<span class="meta">@EnableDubboConfiguration</span>   <span class="comment">//开启dubbo自动配置</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProviderApplication</span> &#123; 
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+     SpringApplication.run(ProviderApplication.class, args);
+    &#125; 
+&#125;
+</code></pre>
+<ul>
+<li>在主配置文件中添加
+<ul>
+<li>spring.application.name属性，指定提供者应用名称；</li>
+<li>添加spring.dubbo.registry属性，指定注册中心</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight properties"><span class="comment"># 配置jsp的寻找路径 </span>
+<span class="attr">spring.mvc.view.prefix</span>=<span class="string">/ </span>
+<span class="attr">spring.mvc.view.suffix</span>=<span class="string">.jsp </span>
+<span class="comment"></span>
+<span class="comment">#注册映射文件</span>
+<span class="attr">mybatis.mapper-locations</span>=<span class="string">classpath:com/abc/primary/dao/*.xml</span>
+<span class="comment">#注册实体类别名</span>
+<span class="attr">mybatis.type-aliases-package</span>=<span class="string">com.abc.primary.beans</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">#datasource数据源 </span>
+<span class="attr">spring.datasource.type</span>=<span class="string">com.alibaba.druid.pool.DruidDataSource</span>
+<span class="attr">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.jdbc.Driver </span>
+<span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://127.0.0.1:3306/lee_test?characterEncoding=UTF-8 </span>
+<span class="attr">spring.datasource.username</span>=<span class="string">root </span>
+<span class="attr">spring.datasource.password</span>=<span class="string">admin </span>
+<span class="comment"></span>
+<span class="comment">#连接单机Redis</span>
+<span class="attr">spring.redis.host</span>=<span class="string">osRedis</span>
+<span class="attr">spring.redis.port</span>=<span class="string">6379</span>
+<span class="attr">spring.redis.password</span>=<span class="string">111</span>
+<span class="comment">#连接redis高可用集群</span>
+<span class="comment">#spring.redis.sentinel.master=mymaster</span>
+<span class="comment">#spring.redis.sentinel.nodes=sentinel1:26379,sentinel2:26379,sentinel3:26379</span>
+<span class="comment"></span>
+<span class="comment">#开启缓存，指定cache类型</span>
+<span class="attr">spring.cache.type</span>=<span class="string">redis</span>
+<span class="comment">#缓存区域名</span>
+<span class="attr">spring.cache.cache-names</span>=<span class="string">realTimeCache</span>
+
+<span class="attr">--------------------------------------</span>
+<span class="comment">#dubbo相关命令</span>
+<span class="comment"></span>
+<span class="comment">#dubbo应用的名称(一般为项目名)</span>
+<span class="attr">spring.application.name</span>=<span class="string">dubboProvider</span>
+<span class="comment">#zookeeper注册中心</span>
+<span class="attr">spring.dubbo.registry</span>=<span class="string">zookeeper://192.168.1.1:2181</span></code></pre>
+<blockquote>
+<p>因为bean为commons工程中依赖过来的，写mybatis注册实体类别名时就从commons工程拷贝全路径即可</p>
+</blockquote>
+<hr />
+<ul>
+<li>在Service实现类上<strong>添加Dubbo的@Service注解</strong>，及@Component注解.</li>
+</ul>
+<blockquote>
+<p>这里新添加的@Service注解时Dubbo的注解，而非Spring的注解，表示其为Dubbo的服务提供者</p>
+</blockquote>
+<blockquote>
+<p>而@Component仍为Spring的注解，表示当前类的对象由spring容器管理</p>
+</blockquote>
+<pre><code class="highlight java"><span class="meta">@Service</span>   <span class="comment">//dubbo的注解</span>
+<span class="meta">@Component</span>      <span class="comment">//纳入spring管理</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeServiceImpl</span> <span class="keyword">implements</span> <span class="title class_">ISomeService</span>&#123;
+    
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> IStudentDao dao;
+    
+    <span class="comment">//... ...</span>
+&#125;</code></pre>
+<blockquote>
+<p>这里的@service替换的时原来spring配置文件中的<code>&lt;dubbo:service&gt;</code>标签，可以为@Service注解添加version,group,timeout等各种属性</p>
+</blockquote>
+<h4 id="服务消费者工程定义"><a class="markdownIt-Anchor" href="#服务消费者工程定义"></a> 服务消费者工程定义</h4>
+<ul>
+<li>添加zkClient依赖、Dubbo与SpringBoot整合依赖，及commons工程依赖</li>
+</ul>
+<pre><code class="highlight xml"><span class="comment">&lt;!--dubbo和spring整合依赖--&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span><span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.101tec<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zkclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.10<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="comment">&lt;!--去掉zkclient中的log4j依赖，否则有依赖冲突--&gt;</span>
+    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+         <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<ul>
+<li>在入口类上添加@EnableDubboConfiguration注解，开启Dubbo自动配置。</li>
+</ul>
+<pre><code class="highlight java"><span class="meta">@SpringBootApplication</span> 
+<span class="meta">@EnableCaching</span> <span class="comment">//开启缓存 </span>
+<span class="meta">@EnableTransactionManagement</span>  <span class="comment">//开启事务</span>
+<span class="meta">@EnableDubboConfiguration</span>   <span class="comment">//开启dubbo自动配置</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ProviderApplication</span> &#123; 
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+     SpringApplication.run(ProviderApplication.class, args);
+    &#125; 
+&#125;
+</code></pre>
+<ul>
+<li>在主配置文件中添加spring application.name属性，指定提供者应用名称:添加spring. dubbo.registry属性，指定注册中心</li>
+</ul>
+<pre><code class="highlight properties"><span class="comment"># 配置jsp的寻找路径 </span>
+<span class="attr">spring.mvc.view.prefix</span>=<span class="string">/ </span>
+<span class="attr">spring.mvc.view.suffix</span>=<span class="string">.jsp </span>
+<span class="comment"></span>
+<span class="comment">#注册映射文件</span>
+<span class="attr">mybatis.mapper-locations</span>=<span class="string">classpath:com/abc/primary/dao/*.xml</span>
+<span class="comment">#注册实体类别名</span>
+<span class="attr">mybatis.type-aliases-package</span>=<span class="string">com.abc.primary.beans</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">#datasource数据源 </span>
+<span class="attr">spring.datasource.type</span>=<span class="string">com.alibaba.druid.pool.DruidDataSource</span>
+<span class="attr">spring.datasource.driver-class-name</span>=<span class="string">com.mysql.jdbc.Driver </span>
+<span class="attr">spring.datasource.url</span>=<span class="string">jdbc:mysql://127.0.0.1:3306/lee_test?characterEncoding=UTF-8 </span>
+<span class="attr">spring.datasource.username</span>=<span class="string">root </span>
+<span class="attr">spring.datasource.password</span>=<span class="string">admin </span>
+<span class="comment"></span>
+<span class="comment">#连接单机Redis</span>
+<span class="attr">spring.redis.host</span>=<span class="string">osRedis</span>
+<span class="attr">spring.redis.port</span>=<span class="string">6379</span>
+<span class="attr">spring.redis.password</span>=<span class="string">111</span>
+<span class="comment">#连接redis高可用集群</span>
+<span class="comment">#spring.redis.sentinel.master=mymaster</span>
+<span class="comment">#spring.redis.sentinel.nodes=sentinel1:26379,sentinel2:26379,sentinel3:26379</span>
+<span class="comment"></span>
+<span class="comment">#开启缓存，指定cache类型</span>
+<span class="attr">spring.cache.type</span>=<span class="string">redis</span>
+<span class="comment">#缓存区域名</span>
+<span class="attr">spring.cache.cache-names</span>=<span class="string">realTimeCache</span>
+
+<span class="attr">--------------------------------------</span>
+<span class="comment">#dubbo相关命令</span>
+<span class="comment"></span>
+<span class="comment">#dubbo应用的名称(一般为项目名)</span>
+<span class="attr">spring.application.name</span>=<span class="string">dubboProvider</span>
+<span class="comment">#zookeeper注册中心</span>
+<span class="attr">spring.dubbo.registry</span>=<span class="string">zookeeper://192.168.1.1:2181</span></code></pre>
+<ul>
+<li>在处理器Service成员变量上添加@Reference注解，删除@Autowired注解</li>
+</ul>
+<blockquote>
+<p>在处理器的Service成员变量声明上添加@Reference注解，删除@Autowired注解，否则其会在当前工程的容器中查找该对象，而该对象是在注册中心，并没有在当前工程的容器中，这样会报错，所以一定要删除该注解</p>
+</blockquote>
+<pre><code class="highlight JAVA"><span class="meta">@Controller</span>
+<span class="meta">@RequestMapping(&quot;/test&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SomeHandler</span>&#123;
+    <span class="comment">//@Autowired    //一定要去掉该注解，否则报错</span>
+    <span class="meta">@Reference</span>  <span class="comment">//dubbo的注解</span>
+    <span class="keyword">private</span> ISomeService service;
+&#125;</code></pre>
+<blockquote>
+<p>这里的@Reference替换的是原来spring配置文件中的<code>&lt;dubbo:reference&gt;</code>标签，若提供者的@service注解添加了version,group等属性，则这里的@Reference也要添加相应属性与之对应</p>
+</blockquote>
+<h4 id="其他步骤"><a class="markdownIt-Anchor" href="#其他步骤"></a> 其他步骤</h4>
+<ul>
+<li>开启服务器Redis</li>
+</ul>
+<pre><code class="highlight plaintext">redis-server /usr/local/redis-4.0.11/redis.conf</code></pre>
+<ul>
+<li>开启服务器zookeeper</li>
+</ul>
+<pre><code class="highlight plaintext">zkServer.sh start</code></pre>
+<h2 id="dubbo监控平台的部署与使用"><a class="markdownIt-Anchor" href="#dubbo监控平台的部署与使用"></a> Dubbo监控平台的部署与使用</h2>
+<h3 id="孵化与监控平台"><a class="markdownIt-Anchor" href="#孵化与监控平台"></a> 孵化与监控平台</h3>
+<p>从dubbo2.6.1版本开始，dubbo的监控平台已经从源码中分离了出去</p>
+<h3 id="安装部署监控平台"><a class="markdownIt-Anchor" href="#安装部署监控平台"></a> 安装部署监控平台</h3>
+<p><strong>Maven方式部署</strong></p>
+<p>安装：</p>
+<pre><code class="highlight plaintext">#下载源代码
+git clone https://github.com/apache/dubbo-admin.git
+
+#编译
+cd dubbo-admin
+mvn clean package
+
+#执行
+cd dubbo-admin-distribution/target
+java -jar dubbo-admin-0.1.jar</code></pre>
+<p>访问：</p>
+<pre><code class="highlight plaintext">http://localhost:8080
+
+服务器默认访问：
+http://localhost:7001</code></pre>
+<hr />
+<p><strong>配置</strong></p>
+<p>配置文件为：</p>
+<pre><code class="highlight plaintext">dubbo-admin-server/src/main/resources/application.properties</code></pre>
+<p>主要的配置有：</p>
+<pre><code class="highlight properties"><span class="attr">admin.config-center</span>=<span class="string">zookeeper://127.0.0.1:2181</span>
+<span class="attr">admin.metadata-report.address</span>=<span class="string">zookeeper://127.0.0.1:2181</span>
+<span class="comment"></span>
+<span class="comment">#主要改这个即可</span>
+<span class="attr">admin.registry.address</span>=<span class="string">zookeeper://127.0.0.1:2181</span></code></pre>
+<p>三个配置项分别指定了配置中心，注册中心和元数据中心的地址，关于这三个中心的详细说明，可以参考这里。 也可以和Dubbo2.7一样，在配置中心指定元数据和注册中心的地址，以zookeeper为例，配置的路径和内容如下:</p>
+<pre><code class="highlight properties"><span class="comment">#/dubbo/config/dubbo/dubbo.properties</span>
+<span class="attr">dubbo.registry.address</span>=<span class="string">zookeeper://127.0.0.1:2181</span>
+<span class="attr">dubbo.metadata-report.address</span>=<span class="string">zookeeper://127.0.0.1:2181</span></code></pre>
+<blockquote>
+<p>配置中心里的地址会覆盖掉本地application.properties的配置</p>
+</blockquote>
+<h3 id="dubbo监控平台访问"><a class="markdownIt-Anchor" href="#dubbo监控平台访问"></a> dubbo监控平台访问</h3>
+<p>可以在<code>dubbo-admin-server/src/main/resources/application.properties</code>配置文件中指定访问端口号：</p>
+<pre><code class="highlight plaintext">localhost:8080</code></pre>
+<p>也可以在配置文件中修改用户名和密码:</p>
+<pre><code class="highlight plaintext">默认用户名：root
+默认密码：root</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

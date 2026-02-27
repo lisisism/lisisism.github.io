@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    xlsx-streamer 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">xlsx-streamer</div>
+  <div class="post-meta">
+    <div class="date">2020 四月 27日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="处理超大excel文件"><a class="markdownIt-Anchor" href="#处理超大excel文件"></a> 处理超大Excel文件</h1>
+<h2 id="使用xlsx-streamer"><a class="markdownIt-Anchor" href="#使用xlsx-streamer"></a> 使用xlsx-streamer</h2>
+<p><strong>增加依赖</strong></p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.monitorjbl<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>xlsx-streamer<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p><strong>代码处理</strong></p>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">testLoad</span><span class="params">()</span> <span class="keyword">throws</span> Exception&#123;
+    <span class="type">FileInputStream</span> <span class="variable">in</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">FileInputStream</span>(<span class="string">&quot;e:/2.xlsx&quot;</span>);
+    <span class="type">Workbook</span> <span class="variable">wk</span> <span class="operator">=</span> StreamingReader.builder()
+            .rowCacheSize(<span class="number">100</span>)  <span class="comment">//缓存到内存中的行数，默认是10</span>
+            .bufferSize(<span class="number">4096</span>)  <span class="comment">//读取资源时，缓存到内存的字节大小，默认是1024</span>
+            .open(in);  <span class="comment">//打开资源，必须，可以是InputStream或者是File，注意：只能打开XLSX格式的文件</span>
+    <span class="type">Sheet</span> <span class="variable">sheet</span> <span class="operator">=</span> wk.getSheetAt(<span class="number">0</span>);
+    <span class="comment">//遍历所有的行</span>
+    <span class="keyword">for</span> (Row row : sheet) &#123;
+        System.out.println(<span class="string">&quot;开始遍历第&quot;</span> + row.getRowNum() + <span class="string">&quot;行数据：&quot;</span>);
+        <span class="comment">//遍历所有的列</span>
+        <span class="keyword">for</span> (Cell cell : row) &#123;
+            System.out.print(cell.getStringCellValue() + <span class="string">&quot; &quot;</span>);
+        &#125;
+        System.out.println(<span class="string">&quot; &quot;</span>);
+    &#125;
+&#125;</code></pre>
+<h2 id="使用easyexcel"><a class="markdownIt-Anchor" href="#使用easyexcel"></a> 使用easyExcel</h2>
+<p><strong>增加依赖</strong></p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>easyexcel<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p><strong>代码实现</strong></p>
+<pre><code class="highlight java"><span class="type">String</span> <span class="variable">fileName</span> <span class="operator">=</span> <span class="string">&quot;D:\\Users\\Desktop\\测试文件\\libo.xlsx&quot;</span>;
+EasyExcel.read(fileName, noModelDataListener).sheet().doRead();</code></pre>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">NoModelDataListener</span> <span class="keyword">extends</span> <span class="title class_">AnalysisEventListener</span>&lt;Map&lt;Integer, String&gt;&gt; &#123;
+    <span class="comment">/**</span>
+<span class="comment">     * 每隔5条存储数据库，实际使用中可以3000条，然后清理list ，方便内存回收</span>
+<span class="comment">     */</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">BATCH_COUNT</span> <span class="operator">=</span> <span class="number">5</span>;
+    List&lt;Map&lt;Integer, String&gt;&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;Map&lt;Integer, String&gt;&gt;();
+
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onException</span><span class="params">(Exception exception, AnalysisContext context)</span> <span class="keyword">throws</span> Exception &#123;
+<span class="comment">//         如果是某一个单元格的转换异常 能获取到具体行号</span>
+<span class="comment">//         如果要获取头的信息 配合invokeHeadMap使用</span>
+        <span class="keyword">if</span> (exception <span class="keyword">instanceof</span> ExcelDataConvertException) &#123;
+            <span class="type">ExcelDataConvertException</span> <span class="variable">excelDataConvertException</span> <span class="operator">=</span> (ExcelDataConvertException)exception;
+            LOGGER.error(<span class="string">&quot;第&#123;&#125;行，第&#123;&#125;列解析异常，数据为:&#123;&#125;&quot;</span>, excelDataConvertException.getRowIndex(),
+                    excelDataConvertException.getColumnIndex(), excelDataConvertException.getCellData());
+        &#125;
+        <span class="keyword">throw</span> exception;
+    &#125;
+
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">invokeHeadMap</span><span class="params">(Map&lt;Integer, String&gt; headMap, AnalysisContext context)</span>&#123;
+        System.out.println();
+        <span class="comment">//LOGGER.info(&quot;解析到一条头数据:&#123;&#125;&quot;, JSON.toJSONString(headMap));</span>
+    &#125;
+
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">invoke</span><span class="params">(Map&lt;Integer, String&gt; data, AnalysisContext context)</span> &#123;
+        <span class="keyword">if</span> (list.size() &lt;= BATCH_COUNT) &#123;
+            list.add(data);
+            System.out.println(list.toString());
+        &#125;
+    &#125;
+
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">doAfterAllAnalysed</span><span class="params">(AnalysisContext context)</span> &#123;
+    &#125;
+
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

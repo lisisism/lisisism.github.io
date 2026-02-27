@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    JAVA反射 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">JAVA反射</div>
+  <div class="post-meta">
+    <div class="date">2020 一月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java反射"><a class="markdownIt-Anchor" href="#java反射"></a> $JAVA反射</h1>
+<ul>
+<li><a href="">Java动态性</a>
+<ul>
+<li><a href="">反射</a>
+<ul>
+<li><a href="">Class类</a></li>
+<li><a href="">访问字段</a></li>
+<li><a href="">调用方法</a></li>
+<li><a href="">调用构造方法</a></li>
+<li><a href="">获取继承关系</a></li>
+<li><a href="">动态代理</a></li>
+<li><a href="">反射机制的性能问题</a></li>
+<li><a href="">操作泛型</a></li>
+<li><a href="">操作注解</a></li>
+</ul>
+</li>
+<li><a href="">反射应用</a>
+<ul>
+<li><a href="">通过配置文件来获取对象</a></li>
+<li><a href="">输入类名/执行某个方法</a></li>
+<li><a href="">JUnit4的原型案例</a></li>
+<li><a href="">Spring源码实现</a></li>
+</ul>
+</li>
+<li><a href="">动态编译</a></li>
+<li><a href="">脚本引擎执行JavaScript代码</a>
+<ul>
+<li><a href="">实例</a></li>
+</ul>
+</li>
+<li><a href="">字节码操作</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="java动态性"><a class="markdownIt-Anchor" href="#java动态性"></a> Java动态性</h1>
+<p>动态语言：</p>
+<p>程序运行时，可以改变程序结构或变量类型，典型的语言：</p>
+<ul>
+<li>Python，ruby，JavaScript</li>
+</ul>
+<p>C，C++，Java不是动态语言，但是Java有一定的动态性，我们可以利用反射机制，字节码操作获得类型动态语言的特性</p>
+<p>Java的动态性让编程的时候更加灵活</p>
+<p><strong>动态与静态</strong></p>
+<ul>
+<li><strong>静态</strong>：事先约定的规则，执行期间按照固定规则执行
+<ul>
+<li>Java中的静态执行：编译就已经确定执行的规则（执行次序），再运行期间按照编译结果顺序执行</li>
+</ul>
+</li>
+<li><strong>动态</strong>：事先没有约定，在执行期间动态的确定执行规则
+<ul>
+<li>Java中的动态执行：运行期间才能确定加载那些类，创建哪些对象，执行哪些方法…</li>
+</ul>
+</li>
+</ul>
+<h2 id="反射"><a class="markdownIt-Anchor" href="#反射"></a> 反射</h2>
+<p><strong>反射会降低程序的效率，大概慢30倍</strong></p>
+<p>什么是反射？</p>
+<ul>
+<li>反射就是Reflection，Java的反射是指程序在运行期可以拿到一个对象的所有信息。</li>
+<li>反射机制值得是可以于运行时加载，探知，使用编译期间完全未知的类</li>
+<li>程序在运行状态中，可以动态加载一个只有名称的类，对于任意一个已加载的类，都能够知道这个类的所有属性和方法，对于任意一个对象，都能够调用它的任意一个方法和属性</li>
+<li>加载完类之后，在堆内存中，就产生了一个Class类型的对象（一个类只有一个Class对象），这个对象就包含了完整的类的机构信息，我们可以通过这个对象看到类的结构</li>
+</ul>
+<p>正常情况下，如果我们要调用一个对象的方法，或者访问一个对象的字段，通常会传入对象实例：</p>
+<pre><code class="highlight plaintext">// Main.javaimport com.itranswarp.learnjava.Person;
+
+public class Main &#123;
+    String getFullName(Person p) &#123;
+        return p.getFirstName() + &quot; &quot; + p.getLastName();
+    &#125;
+&#125;</code></pre>
+<p>但是，如果不能获得Person类，只有一个Object实例，比如这样：</p>
+<pre><code class="highlight plaintext">String getFullName(Object obj) &#123;
+    return ???
+&#125;</code></pre>
+<p>怎么办？有童鞋会说：强制转型啊！</p>
+<pre><code class="highlight plaintext">String getFullName(Object obj) &#123;
+    Person p = (Person) obj;
+    return p.getFirstName() + &quot; &quot; + p.getLastName();
+&#125;</code></pre>
+<blockquote>
+<p>强制转型的时候，你会发现一个问题：编译上面的代码，仍然需要引用Person类。不然，去掉import语句，你看能不能编译通过？</p>
+</blockquote>
+<p>所以，反射是为了解决在运行期，对某个实例一无所知的情况下，如何调用其方法。</p>
+<hr />
+<p><strong>反射机制常见的作用</strong></p>
+<ul>
+<li>动态加载类，动态获取类信息（方法，属性，构造器）</li>
+<li>动态构造对象</li>
+<li>动态调用类和对象的任意方法，构造器</li>
+<li>动态调用和处理属性</li>
+<li>获取泛型信息</li>
+<li>处理注解</li>
+<li><strong>实例</strong>
+<ul>
+<li>eclipse中解析类的结构使用了反射</li>
+<li>JUnit识别被测试方法使用了反射
+<ul>
+<li>JUnit3利用反射查找test开头的方法</li>
+<li>JUnit4利用反射解析@Test查找测试的方法</li>
+</ul>
+</li>
+<li>Spring管理bean对象，注入bean属性使用了反射
+<ul>
+<li>利用反射创建Bean对象实例</li>
+<li>利用反射注入Bean的属性</li>
+</ul>
+</li>
+<li>注解的解析使用了反射
+<ul>
+<li>利用反射API支持注解</li>
+</ul>
+</li>
+<li>强行执行私有方法（访问私有属性）</li>
+</ul>
+</li>
+</ul>
+<h3 id="class类"><a class="markdownIt-Anchor" href="#class类"></a> Class类</h3>
+<ul>
+<li>java.lang.Class类十分特殊，用来表示Java中（class/interface/enum/annotation/primitive type/void）本身</li>
+<li>Class类的对象包含了某个被加载类的结构，一个被加载的类对应一个Class对象</li>
+<li>当一个class被加载，或当加载器（class loader）的defineClass()被JVM调用，JVM便自动产生一个Class对象</li>
+<li>Class类是Reflecation的根源，针对任何我们想要动态加载，运行的类，唯有先获得相应的Class对象</li>
+</ul>
+<hr />
+<ul>
+<li>执行<code>Class.forName(path)</code>后开始加载类
+<ul>
+<li>.java文件先编译为.class文件，然后把这个类加载到<strong>方法区</strong>，然后再<strong>堆区</strong>生成通向方法区的后门，即生成Class对象存储了在方法区中类的所有信息，在把这个Class对象的引用返回给<strong>栈区</strong>的那个变量</li>
+<li>Class.forName(path)方法的作用就是，把这个类加载到方法区，在堆区生成对应的Class对象</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>除了int等基本类型外，Java的其他类型全部都是class（包括interface）。例如：</p>
+<ul>
+<li>String</li>
+<li>Object</li>
+<li>Runnable</li>
+<li>Exception</li>
+<li>…</li>
+</ul>
+<p>仔细思考，我们可以得出结论：class（包括interface）的本质是数据类型（Type）。无继承关系的数据类型无法赋值：</p>
+<pre><code class="highlight plaintext">Number n = new Double(123.456); // OK
+String s = new Double(123.456); // compile error!</code></pre>
+<p>而class是由JVM在执行过程中动态加载的。JVM在第一次读取到一种class类型时，将其加载进内存。</p>
+<p><strong>每加载一种class，JVM就为其创建一个Class类型的实例，并关联起来</strong>。注意：这里的Class类型是一个名叫Class的class。它长这样：</p>
+<pre><code class="highlight plaintext">public final class Class &#123;
+    private Class() &#123;&#125;
+&#125;</code></pre>
+<p>以String类为例，当JVM加载String类时，它首先读取String.class文件到内存，然后，为String类创建一个Class实例并关联起来：</p>
+<pre><code class="highlight plaintext">Class cls = new Class(String);</code></pre>
+<p>这个Class实例是JVM内部创建的，如果我们查看JDK源码，可以发现Class类的构造方法是private，只有JVM能创建Class实例，我们自己的Java程序是无法创建Class实例的。</p>
+<p>所以，JVM持有的每个Class实例都指向一个数据类型（class或interface）：</p>
+<p>一个Class实例包含了该class的所有完整信息：</p>
+<p>由于JVM为每个加载的class创建了对应的Class实例，并在实例中保存了该class的所有信息，包括类名、包名、父类、实现的接口、所有方法、字段等，因此，如果获取了某个Class实例，我们就可以通过这个Class实例获取到该实例对应的class的所有信息。</p>
+<p>这种通过Class实例获取class信息的方法称为反射（Reflection）</p>
+<p>如何获取一个class的Class实例？有三个方法：</p>
+<hr />
+<p>方法一：<strong>直接通过一个class的静态变量class获取：</strong></p>
+<pre><code class="highlight plaintext">Class cls = String.class;</code></pre>
+<p>方法二：<strong>如果我们有一个实例变量，可以通过该实例变量提供的getClass()方法获取：</strong></p>
+<pre><code class="highlight plaintext">String s = &quot;Hello&quot;;
+Class cls = s.getClass();</code></pre>
+<p>方法三：<strong>如果知道一个class的完整类名，可以通过静态方法Class.forName()获取：</strong></p>
+<pre><code class="highlight plaintext">Class cls = Class.forName(&quot;java.lang.String&quot;);</code></pre>
+<blockquote>
+<p>获取类对象的时候，会导致类属性被初始化（即加载到类的方法区），无论什么途径获取类对象，都会导致静态属性被初始化，而且只会执行一次</p>
+</blockquote>
+<blockquote>
+<p>注意：使用Class c = Hero.class这种方式不会导致静态属性被初始化（当我们使用.class的方式时，初始化被延迟到了对静态方法或者是非常数静态域进行首次引用时才执行）</p>
+</blockquote>
+<hr />
+<p>因为Class实例在JVM（在同一个ClassLoader下，通常一个JVM，只会有一个ClassLoader）中是唯一的，所以，上述方法获取的Class实例是同一个实例。可以用==比较两个Class实例：</p>
+<pre><code class="highlight plaintext">Class cls1 = String.class;
+
+String s = &quot;Hello&quot;;
+Class cls2 = s.getClass();
+
+boolean sameClass = cls1 == cls2; // true</code></pre>
+<p>注意一下Class实例比较和instanceof的差别：</p>
+<pre><code class="highlight plaintext">Integer n = new Integer(123);
+
+boolean b1 = n instanceof Integer; // true，因为n是Integer类型
+boolean b2 = n instanceof Number; // true，因为n是Number类型的子类
+
+boolean b3 = n.getClass() == Integer.class; // true，因为n.getClass()返回Integer.class
+boolean b4 = n.getClass() == Number.class; // false，因为Integer.class!=Number.class</code></pre>
+<p>用instanceof不但匹配指定类型，还匹配指定类型的子类。而用==判断class实例可以精确地判断数据类型，但不能作子类型比较</p>
+<p>通常情况下，我们应该用instanceof判断数据类型，因为面向抽象编程的时候，我们不关心具体的子类型。只有在需要精确判断一个类型是不是某个class的时候，我们才使用==判断class实例</p>
+<p>因为反射的目的是为了获得某个实例的信息。因此，当我们拿到某个Object实例时，我们可以通过反射获取该Object的class信息：</p>
+<pre><code class="highlight plaintext">void printObjectInfo(Object obj) &#123;
+    Class cls = obj.getClass();
+&#125;</code></pre>
+<p>要从Class实例获取获取的基本信息，参考下面的代码：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        printClassInfo(&quot;&quot;.getClass());
+        printClassInfo(Runnable.class);
+        printClassInfo(java.time.Month.class);
+        printClassInfo(String[].class);
+        printClassInfo(int.class);
+    &#125;
+
+    static void printClassInfo(Class cls) &#123;
+        System.out.println(&quot;Class name: &quot; + cls.getName());
+        System.out.println(&quot;Simple name: &quot; + cls.getSimpleName());
+        if (cls.getPackage() != null) &#123;
+            System.out.println(&quot;Package name: &quot; + cls.getPackage().getName());
+        &#125;
+        System.out.println(&quot;is interface: &quot; + cls.isInterface());
+        System.out.println(&quot;is enum: &quot; + cls.isEnum());
+        System.out.println(&quot;is array: &quot; + cls.isArray());
+        System.out.println(&quot;is primitive: &quot; + cls.isPrimitive());
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>对于数组，一维二维数组是不一样的Class对象</p>
+</blockquote>
+<hr />
+<p><strong>静态方法加上synchronized修饰符，同步对象是什么</strong></p>
+<ul>
+<li>当synchronized修饰静态方法的时候，同步对象就是这个类的类对象
+<ul>
+<li>如代码种的例子，当第一个线程进入method1的时候，需要占用TestReflectioiin.class才能执行</li>
+<li>第二个线程进入method2的时候进不去，只有等待第一个线程释放了对TestReflection.class的占用，才能够执行，反推过来，当么第二个线程也是需要占用TestReflection.class，那么TestReflection.class就是method2的同步对象</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package reflection;
+public class TestReflection &#123;
+    public static void main(String[] args) throws InterruptedException &#123;
+        Thread t1= new Thread()&#123;
+            public void run()&#123;
+                //调用method1
+                TestReflection.method1();
+            &#125;
+        &#125;;
+        t1.setName(&quot;第一个线程&quot;);
+        t1.start();
+         
+        //保证第一个线程先调用method1
+        Thread.sleep(1000);
+         
+        Thread t2= new Thread()&#123;
+            public void run()&#123;
+                //调用method2
+                TestReflection.method2();
+            &#125;
+        &#125;;
+        t2.setName(&quot;第二个线程&quot;);
+        t2.start();
+    &#125;
+ 
+    public static void method1() &#123;
+        synchronized (TestReflection.class) &#123;
+            // 对于method1而言，同步对象是TestReflection.class，只有占用TestReflection.class才可以执行到这里
+            System.out.println(Thread.currentThread().getName() + &quot; 进入了method1方法&quot;);
+            try &#123;
+                System.out.println(&quot;运行5秒&quot;);
+                Thread.sleep(5000);
+            &#125; catch (InterruptedException e) &#123;
+ 
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125; 
+    public static synchronized void method2() &#123;
+        // 对于mehotd2而言，必然有个同步对象，通过观察发现，当某个线程在method1中，占用了TestReflection.class之后
+        // 就无法进入method2，推断出，method2的同步对象，就是TestReflection.class
+        System.out.println(Thread.currentThread().getName() + &quot; 进入了method2方法&quot;);
+        try &#123;
+            System.out.println(&quot;运行5秒&quot;);
+            Thread.sleep(5000);
+        &#125; catch (InterruptedException e) &#123;
+ 
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h3 id="访问字段"><a class="markdownIt-Anchor" href="#访问字段"></a> 访问字段</h3>
+<p>对任意的一个Object实例，只要我们获取了它的Class，就可以获取它的一切信息。</p>
+<p>我们先看看如何通过Class实例<strong>获取字段信息</strong>。Class类提供了以下几个方法来获取字段：</p>
+<ul>
+<li>Field getField(name)：根据字段名获取某个public的field（包括父类）</li>
+<li>Field getDeclaredField(name)：根据字段名获取当前类的某个field（不包括父类）</li>
+<li>Field[] getFields()：获取所有public的field（包括父类）</li>
+<li>Field[] getDeclaredFields()：获取当前类的所有field（不包括父类）</li>
+</ul>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Class stdClass = Student.class;
+        // 获取public字段&quot;score&quot;:
+        System.out.println(stdClass.getField(&quot;score&quot;));
+        // 获取继承的public字段&quot;name&quot;:
+        System.out.println(stdClass.getField(&quot;name&quot;));
+        // 获取private字段&quot;grade&quot;:
+        System.out.println(stdClass.getDeclaredField(&quot;grade&quot;));
+    &#125;
+&#125;
+
+class Student extends Person &#123;
+    public int score;
+    private int grade;
+&#125;
+
+class Person &#123;
+    public String name;
+&#125;</code></pre>
+<p>上述代码首先获取Student的Class实例，然后，分别获取public字段、继承的public字段以及private字段，打印出的Field类似：</p>
+<pre><code class="highlight plaintext">public int Student.score
+public java.lang.String Person.name
+private int Student.grade</code></pre>
+<hr />
+<p>一个<strong>Field对象</strong>包含了一个字段的所有信息：</p>
+<ul>
+<li>getName()：返回字段名称，例如，“name”；</li>
+<li>getType()：返回字段类型，也是一个Class实例，例如，String.class；</li>
+<li>getModifiers()：返回字段的修饰符，它是一个int，不同的bit表示不同的含义。</li>
+</ul>
+<p>以String类的value字段为例，它的定义是：</p>
+<pre><code class="highlight plaintext">public final class String &#123;
+    private final byte[] value;
+&#125;</code></pre>
+<p>我们用反射获取该字段的信息，代码如下：</p>
+<pre><code class="highlight plaintext">Field f = String.class.getDeclaredField(&quot;value&quot;);
+f.getName(); // &quot;value&quot;
+f.getType(); // class [B 表示byte[]类型
+int m = f.getModifiers();
+Modifier.isFinal(m); // trueModifier.isPublic(m); // falseModifier.isProtected(m); // falseModifier.isPrivate(m); // trueModifier.isStatic(m); // false</code></pre>
+<hr />
+<p><strong>获取字段的值</strong></p>
+<p>利用反射拿到字段的一个Field实例只是第一步，我们还可以拿到一个实例对应的该字段的值。</p>
+<p>例如，对于一个Person实例，我们可以先拿到name字段对应的Field，再获取这个实例的name字段的值：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+
+    public static void main(String[] args) throws Exception &#123;
+        Object p = new Person(&quot;Xiao Ming&quot;);
+        Class c = p.getClass();
+        Field f = c.getDeclaredField(&quot;name&quot;);
+        Object value = f.get(p);
+        System.out.println(value); // &quot;Xiao Ming&quot;
+    &#125;
+&#125;
+
+class Person &#123;
+    private String name;
+
+    public Person(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;</code></pre>
+<p>上述代码先获取Class实例，再获取Field实例，然后，用Field.get(Object)获取指定实例的指定字段的值。</p>
+<p>运行代码，如果不出意外，会得到一个IllegalAccessException，这是因为name被定义为一个private字段，正常情况下，Main类无法访问Person类的private字段。要修复错误，可以将private改为public，或者，在调用Object value = f.get(p);前，先写一句：</p>
+<pre><code class="highlight plaintext">f.setAccessible(true);</code></pre>
+<p>调用Field.setAccessible(true)的意思是，别管这个字段是不是public，一律允许访问。</p>
+<p>可以试着加上上述语句，再运行代码，就可以打印出private字段的值。</p>
+<p>有童鞋会问：如果使用反射可以获取private字段的值，那么类的封装还有什么意义？</p>
+<p>答案是正常情况下，我们总是通过p.name来访问Person的name字段，编译器会根据public、protected和private决定是否允许访问字段，这样就达到了数据封装的目的。</p>
+<p>而反射是一种非常规的用法，使用反射，首先代码非常繁琐，其次，它更多地是给工具或者底层框架来使用，目的是在不知道目标实例任何信息的情况下，获取特定字段的值。</p>
+<p>此外，setAccessible(true)可能会失败。如果JVM运行期存在SecurityManager，那么它会根据规则进行检查，有可能阻止setAccessible(true)。例如，某个SecurityManager可能不允许对java和javax开头的package的类调用setAccessible(true)，这样可以保证JVM核心库的安全。</p>
+<hr />
+<p><strong>设置字段的值</strong></p>
+<p>通过Field实例既然可以获取到指定实例的字段值，自然也可以设置字段的值。</p>
+<p>设置字段值是通过Field.set(Object, Object)实现的，其中第一个Object参数是指定的实例，第二个Object参数是待修改的值。示例代码如下：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+
+    public static void main(String[] args) throws Exception &#123;
+        Person p = new Person(&quot;Xiao Ming&quot;);
+        System.out.println(p.getName()); // &quot;Xiao Ming&quot;
+        Class c = p.getClass();
+        Field f = c.getDeclaredField(&quot;name&quot;);
+        f.setAccessible(true);
+        f.set(p, &quot;Xiao Hong&quot;);
+        System.out.println(p.getName()); // &quot;Xiao Hong&quot;
+    &#125;
+&#125;
+
+class Person &#123;
+    private String name;
+
+    public Person(String name) &#123;
+        this.name = name;
+    &#125;
+
+    public String getName() &#123;
+        return this.name;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>运行上述代码，打印的name字段从Xiao Ming变成了Xiao Hong，说明通过反射可以直接修改字段的值。</p>
+</blockquote>
+<blockquote>
+<p>同样的，修改非public字段，需要首先调用setAccessible(true)。</p>
+</blockquote>
+<h3 id="调用方法"><a class="markdownIt-Anchor" href="#调用方法"></a> 调用方法</h3>
+<p>我们已经能通过Class实例获取所有Field对象，同样的，可以通过Class实例获取所有Method信息。Class类提供了以下几个方法来获取Method：</p>
+<ul>
+<li>Method <code>getMethod</code>(name, Class…)：获取某个public的Method（包括父类）</li>
+<li>Method <code>getDeclaredMethod</code>(name, Class…)：获取当前类的某个Method（不包括父类）</li>
+<li>Method[] <code>getMethods</code>()：获取所有public的Method（包括父类）</li>
+<li>Method[] <code>getDeclaredMethods</code>()：获取当前类的所有Method（不包括父类）我们来看一下示例代码：</li>
+</ul>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Class stdClass = Student.class;
+        // 获取public方法getScore，参数为String:
+        System.out.println(stdClass.getMethod(&quot;getScore&quot;, String.class));
+        // 获取继承的public方法getName，无参数:
+        System.out.println(stdClass.getMethod(&quot;getName&quot;));
+        // 获取private方法getGrade，参数为int:
+        System.out.println(stdClass.getDeclaredMethod(&quot;getGrade&quot;, int.class));
+    &#125;
+&#125;
+
+class Student extends Person &#123;
+    public int getScore(String type) &#123;
+        return 99;
+    &#125;
+    private int getGrade(int year) &#123;
+        return 1;
+    &#125;
+&#125;
+
+class Person &#123;
+    public String getName() &#123;
+        return &quot;Person&quot;;
+    &#125;
+&#125;</code></pre>
+<p>上述代码首先获取Student的Class实例，然后，分别获取public方法、继承的public方法以及private方法，打印出的Method类似：</p>
+<pre><code class="highlight plaintext">public int Student.getScore(java.lang.String)
+public java.lang.String Person.getName()
+private int Student.getGrade(int)</code></pre>
+<p>一个Method对象包含一个方法的所有信息：</p>
+<ul>
+<li><code>getName</code>()：返回方法名称，例如：“getScore”；</li>
+<li><code>getReturnType</code>()：返回方法返回值类型，也是一个Class实例，例如：String.class；</li>
+<li><code>getParameterTypes</code>()：返回方法的参数类型，是一个Class数组，例如：{String.class, int.class}；</li>
+<li><code>getModifiers</code>()：返回方法的修饰符，它是一个int，不同的bit表示不同的含义。</li>
+</ul>
+<hr />
+<p><strong>调用方法</strong></p>
+<p>当我们获取到一个Method对象时，就可以对它进行调用。我们以下面的代码为例：</p>
+<pre><code class="highlight plaintext">String s = &quot;Hello world&quot;;
+String r = s.substring(6); // &quot;world&quot;</code></pre>
+<p>如果用反射来调用substring方法，需要以下代码：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // String对象:
+        String s = &quot;Hello world&quot;;
+        // 获取String substring(int)方法，参数为int:
+        Method m = String.class.getMethod(&quot;substring&quot;, int.class);
+        // 在s对象上调用该方法并获取结果:
+        String r = (String) m.invoke(s, 6);
+        // 打印调用结果:
+        System.out.println(r);
+    &#125;
+&#125;</code></pre>
+<p>注意到substring()有两个重载方法，我们获取的是String substring(int)这个方法。思考一下如何获取String substring(int, int)方法。</p>
+<p>对Method实例调用invoke就相当于调用该方法，invoke的第一个参数是对象实例，即在哪个实例上调用该方法，后面的可变参数要与方法参数一致，否则将报错。</p>
+<hr />
+<p><strong>调用静态方法</strong></p>
+<p>如果获取到的Method表示一个静态方法，调用静态方法时，由于无需指定实例对象，所以invoke方法传入的第一个参数永远为null。我们以Integer.parseInt(String)为例：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 获取Integer.parseInt(String)方法，参数为String:
+        Method m = Integer.class.getMethod(&quot;parseInt&quot;, String.class);
+        // 调用该静态方法并获取结果:
+        Integer n = (Integer) m.invoke(null, &quot;12345&quot;);
+        // 打印调用结果:
+        System.out.println(n);
+    &#125;
+&#125;</code></pre>
+<hr />
+<p><strong>调用非public方法</strong></p>
+<p>和Field类似，对于非public方法，我们虽然可以通过Class.getDeclaredMethod()获取该方法实例，但直接对其调用将得到一个IllegalAccessException。为了调用非public方法，我们通过Method.setAccessible(true)允许其调用：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Person p = new Person();
+        Method m = p.getClass().getDeclaredMethod(&quot;setName&quot;, String.class);
+        m.setAccessible(true);
+        m.invoke(p, &quot;Bob&quot;);
+        System.out.println(p.name);
+    &#125;
+&#125;
+
+class Person &#123;
+    String name;
+    private void setName(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>此外，setAccessible(true)可能会失败。如果JVM运行期存在SecurityManager，那么它会根据规则进行检查，有可能阻止setAccessible(true)。例如，某个SecurityManager可能不允许对java和javax开头的package的类调用setAccessible(true)，这样可以保证JVM核心库的安全。</p>
+</blockquote>
+<hr />
+<p><strong>多态</strong></p>
+<p>我们来考察这样一种情况：一个Person类定义了hello()方法，并且它的子类Student也覆写了hello()方法，那么，从Person.class获取的Method，作用于Student实例时，调用的方法到底是哪个？</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 获取Person的hello方法:
+        Method h = Person.class.getMethod(&quot;hello&quot;);
+        // 对Student实例调用hello方法:
+        h.invoke(new Student());
+    &#125;
+&#125;
+
+class Person &#123;
+    public void hello() &#123;
+        System.out.println(&quot;Person:hello&quot;);
+    &#125;
+&#125;
+
+class Student extends Person &#123;
+    public void hello() &#123;
+        System.out.println(&quot;Student:hello&quot;);
+    &#125;
+&#125;</code></pre>
+<p>运行上述代码，发现打印出的是Student:hello，因此，使用反射调用方法时，仍然遵循多态原则：即总是调用实际类型的覆写方法（如果存在）。上述的反射代码：</p>
+<pre><code class="highlight plaintext">Method m = Person.class.getMethod(&quot;hello&quot;);
+m.invoke(new Student());</code></pre>
+<p>实际上相当于：</p>
+<pre><code class="highlight plaintext">Person p = new Student();
+p.hello();</code></pre>
+<p>更多的思考：</p>
+<pre><code class="highlight plaintext">package com.suninfo.adm.controller;
+
+import java.lang.reflect.Method;
+
+public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 获取Person的hello方法:
+        Method h = Person.class.getMethod(&quot;hello&quot;);
+        // 对Student实例调用hello方法:
+        h.invoke(new Student());//输出：Student:hello
+        // 对Person实例调用hello方法:
+        h.invoke(new Person()); //输出：Person:hello
+        
+        // 获取Person的hello方法:
+        Method h1 = Student.class.getMethod(&quot;hello&quot;);
+        // 对Student实例调用hello方法:
+        h1.invoke(new Student());//输出:Student:hello
+        // 对Person实例调用hello方法:
+        h1.invoke(new Person());//报错Exception in thread &quot;main&quot; java.lang.IllegalArgumentException
+    &#125;
+&#125;
+
+class Person &#123;
+    public void hello() &#123;
+        System.out.println(&quot;Person:hello&quot;);
+    &#125;
+&#125;
+
+class Student extends Person &#123;
+    public void hello() &#123;
+        System.out.println(&quot;Student:hello&quot;);
+    &#125;
+&#125;</code></pre>
+<h3 id="调用构造方法"><a class="markdownIt-Anchor" href="#调用构造方法"></a> 调用构造方法</h3>
+<p>我们通常使用new操作符创建新的实例：</p>
+<pre><code class="highlight plaintext">Person p = new Person();</code></pre>
+<p>如果通过反射来创建新的实例，可以调用Class提供的newInstance()方法：</p>
+<pre><code class="highlight plaintext">Person p = Person.class.newInstance();</code></pre>
+<p>调用Class.newInstance()的局限是，它只能调用该类的public无参数构造方法（如果没有无参构造器，就会抛出异常）。如果构造方法带有参数，或者不是public，就无法直接通过Class.newInstance()来调用。</p>
+<p>为了调用任意的构造方法，Java的反射API提供了Constructor对象，它包含一个构造方法的所有信息，可以创建一个实例。Constructor对象和Method非常类似，不同之处仅在于它是一个构造方法，并且，调用结果总是返回实例：</p>
+<pre><code class="highlight plaintext">import java.lang.reflect.Constructor;
+public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 获取构造方法Integer(int):
+        Constructor cons1 = Integer.class.getConstructor(int.class);
+        // 调用构造方法:
+        Integer n1 = (Integer) cons1.newInstance(123);
+        System.out.println(n1);
+
+        // 获取构造方法Integer(String)
+        Constructor cons2 = Integer.class.getConstructor(String.class);
+        Integer n2 = (Integer) cons2.newInstance(&quot;456&quot;);
+        System.out.println(n2);
+    &#125;
+&#125;</code></pre>
+<p>通过Class实例获取Constructor的方法如下：</p>
+<ul>
+<li><code>getConstructor</code>(Class…)：获取某个public的Constructor；</li>
+<li><code>getDeclaredConstructor</code>(Class…)：获取某个Constructor；</li>
+<li><code>getConstructors</code>()：获取所有public的Constructor；</li>
+<li><code>getDeclaredConstructors</code>()：获取所有Constructor。</li>
+</ul>
+<blockquote>
+<p>注意Constructor总是当前类定义的构造方法，和父类无关，因此不存在多态的问题。</p>
+</blockquote>
+<blockquote>
+<p>调用非public的Constructor时，必须首先通过setAccessible(true)设置允许访问。setAccessible(true)可能会失败。</p>
+</blockquote>
+<h3 id="获取继承关系"><a class="markdownIt-Anchor" href="#获取继承关系"></a> 获取继承关系</h3>
+<p>当我们获取到某个Class对象时，实际上就获取到了一个类的类型：</p>
+<pre><code class="highlight plaintext">Class cls = String.class; // 获取到String的Class</code></pre>
+<p>还可以用实例的getClass()方法获取：</p>
+<pre><code class="highlight plaintext">String s = &quot;&quot;;
+Class cls = s.getClass(); // s是String，因此获取到String的Class</code></pre>
+<p>最后一种获取Class的方法是通过Class.forName(“”)，传入Class的完整类名获取：</p>
+<pre><code class="highlight plaintext">Class s = Class.forName(&quot;java.lang.String&quot;);</code></pre>
+<p>这三种方式获取的Class实例都是同一个实例，因为JVM对每个加载的Class只创建一个Class实例来表示它的类型。</p>
+<hr />
+<p><strong>获取父类的Class</strong></p>
+<p>有了Class实例，我们还可以获取它的父类的Class：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Class i = Integer.class;
+        Class n = i.getSuperclass();
+        System.out.println(n);//Number
+        Class o = n.getSuperclass();
+        System.out.println(o);//Object
+        System.out.println(o.getSuperclass());//null
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>运行上述代码，可以看到，Integer的父类类型是Number，Number的父类是Object，Object的父类是null。除Object外，其他任何非interface的Class都必定存在一个父类类型</p>
+</blockquote>
+<hr />
+<p><strong>获取interface</strong></p>
+<p>由于一个类可能实现一个或多个接口，通过Class我们就可以查询到实现的接口类型。例如，查询Integer实现的接口：</p>
+<pre><code class="highlight plaintext">import java.lang.reflect.Method;
+public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Class s = Integer.class;
+        Class[] is = s.getInterfaces();
+        for (Class i : is) &#123;
+            System.out.println(i);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>运行上述代码可知，Integer实现的接口有：</p>
+<ul>
+<li>java.lang.Comparable</li>
+<li>java.lang.constant.Constable</li>
+<li>java.lang.constant.ConstantDesc</li>
+</ul>
+<blockquote>
+<p>要特别注意：getInterfaces()只返回当前类直接实现的接口类型，并不包括其父类实现的接口类型：</p>
+</blockquote>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        Class s = Integer.class.getSuperclass();
+        Class[] is = s.getInterfaces();
+        for (Class i : is) &#123;
+            System.out.println(i);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>Integer的父类是Number，Number实现的接口是java.io.Serializable</p>
+</blockquote>
+<p>此外，对所有interface的Class调用getSuperclass()返回的是null，获取接口的父接口要用getInterfaces()：</p>
+<pre><code class="highlight plaintext">System.out.println(java.io.DataInputStream.class.getSuperclass()); // java.io.FilterInputStream，因为DataInputStream继承自FilterInputStream
+System.out.println(java.io.Closeable.class.getSuperclass()); // null，对接口调用getSuperclass()总是返回null，获取接口的父接口要用getInterfaces()</code></pre>
+<blockquote>
+<p>如果一个类没有实现任何interface，那么getInterfaces()返回空数组。</p>
+</blockquote>
+<hr />
+<p><strong>继承关系</strong></p>
+<p>当我们判断一个实例是否是某个类型时，正常情况下，使用instanceof操作符：</p>
+<pre><code class="highlight plaintext">Object n = Integer.valueOf(123);
+boolean isDouble = n instanceof Double; // false
+boolean isInteger = n instanceof Integer; // true
+boolean isNumber = n instanceof Number; // true
+boolean isSerializable = n instanceof java.io.Serializable; // true</code></pre>
+<p>如果是两个Class实例，要判断一个向上转型是否成立，可以调用isAssignableFrom()：</p>
+<pre><code class="highlight plaintext">// Integer i = ?
+Integer.class.isAssignableFrom(Integer.class); // true，因为Integer可以赋值给Integer// Number n = ?
+Number.class.isAssignableFrom(Integer.class); // true，因为Integer可以赋值给Number// Object o = ?
+Object.class.isAssignableFrom(Integer.class); // true，因为Integer可以赋值给Object// Integer i = ?
+Integer.class.isAssignableFrom(Number.class); // false，因为Number不能赋值给Integer</code></pre>
+<h3 id="动态代理"><a class="markdownIt-Anchor" href="#动态代理"></a> 动态代理</h3>
+<p>我们来比较Java的class和interface的区别：</p>
+<ul>
+<li>可以实例化class（非abstract）；</li>
+<li>不能实例化interface。</li>
+</ul>
+<p>所有interface类型的变量总是通过向上转型并指向某个实例的：</p>
+<pre><code class="highlight plaintext">CharSequence cs = new StringBuilder();</code></pre>
+<p>有没有可能不编写实现类，直接在运行期创建某个interface的实例呢？</p>
+<p>这是可能的，因为Java标准库提供了一种动态代理（Dynamic Proxy）的机制：可以在运行期动态创建某个interface的实例。</p>
+<p>什么叫运行期动态创建？听起来好像很复杂。所谓动态代理，是和静态相对应的。我们来看静态代码怎么写：</p>
+<p>定义接口：</p>
+<pre><code class="highlight plaintext">public interface Hello &#123;
+    void morning(String name);
+&#125;</code></pre>
+<p>编写实现类：</p>
+<pre><code class="highlight plaintext">public class HelloWorld implements Hello &#123;
+    public void morning(String name) &#123;
+        System.out.println(&quot;Good morning, &quot; + name);
+    &#125;
+&#125;</code></pre>
+<p>创建实例，转型为接口并调用：</p>
+<pre><code class="highlight plaintext">Hello hello = new HelloWorld();
+hello.morning(&quot;Bob&quot;);</code></pre>
+<p>这种方式就是我们通常编写代码的方式。</p>
+<p>还有一种方式是动态代码，我们仍然先定义了接口Hello，但是我们并不去编写实现类，而是直接通过JDK提供的一个Proxy.newProxyInstance()创建了一个Hello接口对象。这种没有实现类但是在运行期动态创建了一个接口对象的方式，我们称为动态代码。JDK提供的动态创建接口对象的方式，就叫动态代理。</p>
+<p>一个最简单的动态代理实现如下：</p>
+<pre><code class="highlight plaintext">import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        InvocationHandler handler = new InvocationHandler() &#123;
+            @Override
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+                System.out.println(method);
+                if (method.getName().equals(&quot;morning&quot;)) &#123;
+                    System.out.println(&quot;Good morning, &quot; + args[0]);
+                &#125;
+                return null;
+            &#125;
+        &#125;;
+        Hello hello = (Hello) Proxy.newProxyInstance(
+            Hello.class.getClassLoader(), // 传入ClassLoader
+            new Class[] &#123; Hello.class &#125;, // 传入要实现的接口
+            handler); // 传入处理调用方法的InvocationHandler
+        hello.morning(&quot;Bob&quot;);
+    &#125;
+&#125;
+
+interface Hello &#123;
+    void morning(String name);
+&#125;</code></pre>
+<p>在运行期动态创建一个interface实例的方法如下：</p>
+<ol>
+<li>定义一个InvocationHandler实例，它负责实现接口的方法调用；</li>
+<li>通过Proxy.newProxyInstance()创建interface实例，它需要3个参数：
+<ul>
+<li>使用的ClassLoader，通常就是接口类的ClassLoader；</li>
+<li>需要实现的接口数组，至少需要传入一个接口进去；</li>
+<li>用来处理接口方法调用的InvocationHandler实例。</li>
+</ul>
+</li>
+<li>将返回的Object强制转型为接口。</li>
+</ol>
+<p>动态代理实际上是JDK在运行期动态创建class字节码并加载的过程，它并没有什么黑魔法，把上面的动态代理改写为静态实现类大概长这样：</p>
+<pre><code class="highlight plaintext">public class HelloDynamicProxy implements Hello &#123;
+    InvocationHandler handler;
+    public HelloDynamicProxy(InvocationHandler handler) &#123;
+        this.handler = handler;
+    &#125;
+    public void morning(String name) &#123;
+        handler.invoke(
+           this,
+           Hello.class.getMethod(&quot;morning&quot;),
+           new Object[] &#123; name &#125;);
+    &#125;
+&#125;</code></pre>
+<p>其实就是JDK帮我们自动编写了一个上述类（不需要源码，可以直接生成字节码），并不存在可以直接实例化接口的黑魔法。</p>
+<h3 id="反射机制的性能问题"><a class="markdownIt-Anchor" href="#反射机制的性能问题"></a> 反射机制的性能问题</h3>
+<p><strong>setAccessible</strong></p>
+<ul>
+<li>启用和禁用访问安全检查的开关，值为true则表示反射的对象在使用时应该取消Java语言的访问检查，值为false则指示反射的对象应该实施Java语言访问检查，并不是为true就能访问为false就不能访问</li>
+<li>禁止安全检查，可以提高反射的运行速度</li>
+</ul>
+<p><strong>可以考虑使用：cglib/javaassist字节码操作</strong></p>
+<p><strong>速度比较测试</strong></p>
+<pre><code class="highlight plaintext">package com.li.test.time;
+
+import java.lang.reflect.Method;
+
+import com.li.test.bean.User;
+/**
+ * 比较普通方法调用与普通反射调用与取消安全检查反射调用的时差
+ * @author Mr
+ *
+ */
+public class ReflectionTime &#123;
+
+     public static void test1()&#123;
+           User user = new User();
+           long startTime = System.currentTimeMillis();
+
+           for(long i=0;i&lt;1000000000l;i++)&#123;
+                user.getUname();
+           &#125;
+           long endTime = System.currentTimeMillis();
+           System.out.println(&quot;普通方法调用，执行10亿次耗时：&quot;+(endTime-startTime)+&quot;ms&quot;);
+     &#125;
+     //速度是上面的30倍
+     public static void test2()&#123;
+           try &#123;
+                Class&lt;User&gt; clazz = (Class&lt;User&gt;) Class.forName(&quot;com.li.test.bean.User&quot;);
+                User user = clazz.newInstance();
+                Method method = clazz.getDeclaredMethod(&quot;getUname&quot;, null);
+
+                long startTime = System.currentTimeMillis();
+
+                for(long i=0;i&lt;1000000000l;i++)&#123;
+                      method.invoke(user, null);
+                &#125;
+                long endTime = System.currentTimeMillis();
+                System.out.println(&quot;反射动态方法调用，执行10亿次耗时：&quot;+(endTime-startTime)+&quot;ms&quot;);
+
+           &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+           &#125;
+     &#125;
+     //速度大约比上面可提高四倍
+     public static void test3()&#123;
+           try &#123;
+                Class&lt;User&gt; clazz = (Class&lt;User&gt;) Class.forName(&quot;com.li.test.bean.User&quot;);
+                User user = clazz.newInstance();
+                Method method = clazz.getDeclaredMethod(&quot;getUname&quot;, null);
+                method.setAccessible(true); //跳过安全检查
+                long startTime = System.currentTimeMillis();
+
+                for(long i=0;i&lt;1000000000l;i++)&#123;
+                      method.invoke(user, null);
+                &#125;
+                long endTime = System.currentTimeMillis();
+                System.out.println(&quot;反射动态方法调用，跳过安全检查，执行10亿次耗时：&quot;+(endTime-startTime)+&quot;ms&quot;);
+
+           &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+           &#125;
+     &#125;
+     public static void main(String[] args) &#123;
+           test1();
+           test2();
+           test3();
+     &#125;
+&#125;</code></pre>
+<h3 id="操作泛型"><a class="markdownIt-Anchor" href="#操作泛型"></a> 操作泛型</h3>
+<ul>
+<li>Java采用泛型擦除的机制来引入泛型，Java中的泛型仅仅是给编译器javac使用的，确保数据的安全性和免去强制类型转换的麻烦，但是，一旦编译完成，所有的和泛型有关的类型全部擦除</li>
+<li>为了通过反射操作这些类型以迎合实际开发的需要，Java就新增了ParameterizedType，GenericArrayType，TypeVariable和WildcardType几种类型来代表不能被归一到Class类中的类型，但是又和原始类型齐名的类型。
+<ul>
+<li>ParameterizedType：表示一种参数化的类型，比如Collection<String></li>
+<li>GenericArrayType：表示一种元素类型是参数化类型或者类型变量的数组类型</li>
+<li>TypeVariable：是各种类型变量的公共父接口</li>
+<li>WildcardType：代表一种通配符类型表达式，比如？，？ extends Number，？ super Integer</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.li.test;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
+
+import com.li.test.bean.User;
+
+/**
+ * 反射读取泛型内容
+ * 因为泛型只给编译器提供使用，编译完成后泛型也就被擦除
+ * 所以反射机制无法读取，所以要使用反射中的特殊的方法来读取
+ * @author Mr
+ *
+ */
+public class ReflectionGeneric &#123;
+
+     public void test1(Map&lt;String,User&gt; map,List&lt;User&gt; list)&#123;
+           System.out.println(&quot;ReflectionGeneric.test1&quot;);
+     &#125;
+     public Map&lt;String,User&gt; test2()&#123;
+           System.out.println(&quot;ReflectionGeneric.test2&quot;);
+           return null;
+     &#125;
+
+     public static void main(String[] args) &#123;
+
+           try &#123;
+                //获得指定方法参数泛型信息
+                Method method = ReflectionGeneric.class.getMethod(&quot;test1&quot;, Map.class,List.class);
+                //Type是一个表示类型的类，和泛型相关的参数类型都是他的子类
+                Type[] type = method.getGenericParameterTypes();//获取包含带泛型参数类型
+                for (Type paramType : type) &#123;
+                      System.out.println(&quot;#&quot;+paramType);
+                      if(paramType instanceof ParameterizedType)&#123;  //判断是不是带泛型的参数类型
+                            //getActualTypeArguments()获得真正的泛型参数类型，即&lt;&gt;中的类型
+                           Type[] genericTypes = ((ParameterizedType) paramType).getActualTypeArguments();
+                           for (Type genericType: genericTypes) &#123;
+                                 System.out.println(&quot;泛型类型：&quot;+genericType);
+                           &#125;
+                      &#125;
+                &#125;
+
+                System.out.println(&quot;+++++++++++++++++++++++++++++++++++++++++++++++++++++&quot;);
+                //获得指定方法返回值泛型信息
+                Method method2 = ReflectionGeneric.class.getMethod(&quot;test2&quot;, null);
+                Type returnType = method2.getGenericReturnType();//返回该方法包含泛型返回值的返回信息
+                if(returnType instanceof ParameterizedType)&#123;
+                      Type[] genericTypes = ((ParameterizedType) returnType).getActualTypeArguments(); //返回真正的&lt;&gt;中的类型
+
+                      for (Type genericType : genericTypes) &#123;
+                           System.out.println(&quot;返回值，泛型类型&quot;+genericType);
+                      &#125;
+                &#125;
+           &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+           &#125;
+     &#125;
+&#125;</code></pre>
+<h3 id="操作注解"><a class="markdownIt-Anchor" href="#操作注解"></a> 操作注解</h3>
+<ul>
+<li>可以通过反射API：getAnnotations,getAnnotation获得相关信息</li>
+</ul>
+<pre><code class="highlight plaintext">//获得类的所有有效注解
+Annotation[] annotations = clazz.getAnnotations();
+for(Annotation a : annotations)&#123;
+    System.out.println(a);
+&#125;
+
+//获得类的指定注解
+SxtTable st = (SxtTable)clazz.getAnnotation(SxtTable.class);
+System.out.println(st.value());
+
+//获得类的属性的注解
+Field f = clazz.getDeclaredField(&quot;studentName&quot;);
+SxtField sxtField = f.getAnnotation(SxtField.class);
+System.out.println(sxtField.columnName()+&quot;--&quot;+sxtField.type()+&quot;--&quot;+sxtField.length());</code></pre>
+<p><strong>操作注解实例</strong>:</p>
+<pre><code class="highlight plaintext">package com.li.test.annotation;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
+public class ReflectionAnnotation &#123;
+     public static void main(String[] args) &#123;
+
+           try &#123;
+                Class clazz = Class.forName(&quot;com.li.test.annotation.SxtStudent&quot;);
+
+                //获得类的所有有效注解
+                Annotation[] annotations = clazz.getAnnotations();
+                for (Annotation annotation : annotations) &#123;
+                      System.out.println(annotation);
+                &#125;
+
+                //获得类的指定注解
+                SxtTable st = (SxtTable) clazz.getAnnotation(SxtTable.class);
+                System.out.println(st.value());
+
+                //获得类的属性的注解
+                Field field = clazz.getDeclaredField(&quot;sname&quot;);//获取snmae成员变量的所有信息 (没有Declared字样的只能获取public的字段)
+                SxtField sxtField = field.getAnnotation(SxtField.class);// 从所有信息中找出注解SxtField
+                System.out.println(sxtField.columnName()+&quot;--&quot;+sxtField.length()+&quot;--&quot;+sxtField.type());
+
+                //根据获取的表名，字段的信息，拼出DDL语句，然后，使用JDBC执行这个SQL，在数据库中生成相关的表
+           &#125; catch (Exception e) &#123;
+                e.printStackTrace();
+           &#125;
+     &#125;
+&#125;</code></pre>
+<h2 id="反射应用"><a class="markdownIt-Anchor" href="#反射应用"></a> 反射应用</h2>
+<h3 id="通过配置文件来获取对象"><a class="markdownIt-Anchor" href="#通过配置文件来获取对象"></a> 通过配置文件来获取对象</h3>
+<pre><code class="highlight plaintext">
+package reflection;
+ 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+ 
+import charactor.Hero;
+ 
+public class TestReflection &#123;
+    public static void main(String[] args) throws InterruptedException &#123;
+        Hero h = getHero();
+        System.out.println(h);
+    &#125;
+ 
+    public static Hero getHero() &#123;
+ 
+        File f = new File(&quot;E:/project/j2se/hero.config&quot;);
+ 
+        try (FileReader fr = new FileReader(f)) &#123;
+            String className = null;
+            char[] all = new char[(int) f.length()];
+            fr.read(all);
+            className = new String(all);
+            Class clazz=Class.forName(className);
+            Constructor c= clazz.getConstructor();
+            Hero h= (Hero) c.newInstance();
+            return h;
+        &#125; catch (Exception e) &#123;
+            e.printStackTrace();
+            return null;
+            &#125;    
+    &#125;
+&#125;</code></pre>
+<h3 id="输入类名执行某个方法"><a class="markdownIt-Anchor" href="#输入类名执行某个方法"></a> 输入类名/执行某个方法</h3>
+<ul>
+<li>输入一个类名，执行其test开头的非静态无参无返回值方法</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.controller;
+import java.lang.reflect.Method;
+import java.util.Scanner;
+public class demo &#123;
+       public static void main(String[] args) throws Exception &#123;
+             //动态加载类
+             Scanner in&lt; = new Scanner(System.in);
+             System.out.println(&quot;输入类名&quot;);
+             String className = in.nextLine();
+             Class cls = Class.forName(className);
+             //动态获取全部方法信息
+             Method[] ary = cls.getDeclaredMethods();
+             Object obj = cls.newInstance();
+             for(Method method : ary) &#123;
+                    if(method.getName().startsWith(&quot;test&quot;)) &#123;
+                           System.out.println(method);
+                           //执行方法
+                           method.invoke(obj);
+                    &#125;
+             &#125;
+       &#125;
+&#125;</code></pre>
+<h3 id="junit4的原型案例"><a class="markdownIt-Anchor" href="#junit4的原型案例"></a> JUnit4的原型案例</h3>
+<ul>
+<li>JUnit4通过@Test注解来找到测试方法并执行</li>
+<li>自己声明一个注解</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.demoJUnit;
+
+import java.lang.annotation.Retention;
+
+import java.lang.annotation.RetentionPolicy;
+/*
+ * 自己声明一个注解
+ */
+//这个注解的默认值是RetentionPolicy.SOURCE，表示源代码，仅在源代码中存在，编译即擦除
+//注解值改为RetentionPolicy.CLASS，编译后也存在，即class文件中也存在，运行时擦除
+//注解值改为RetentionPolicy.RUNTIME，表示程序运行时也存在
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Demo &#123;
+&#125;</code></pre>
+<ul>
+<li>使用注解</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.demoJUnit;
+/*
+ * 执行一个类中全部以@Demo标注的方法
+ */
+public class TestCase &#123;
+       public void test() &#123;
+             System.out.println(&quot;test&quot;);
+       &#125;
+       @Demo
+       public void hello() &#123;
+             System.out.println(&quot;Hello&quot;);
+       &#125;
+      
+       @Demo
+       public void helloKitty() &#123;
+             System.out.println(&quot;Hello Kitty&quot;);
+       &#125;
+&#125;</code></pre>
+<ul>
+<li>执行被@Demo注解标注的方法</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.demoJUnit;
+import java.lang.reflect.Method;
+import java.util.Scanner;
+/*
+ * JUnit4的原型
+ */
+public class DemoJUnitTest &#123;
+       public static void main(String[] args) throws Exception &#123;
+             //动态加载类
+             //动态获取全部方法
+             //动态检查方法的注解信息
+             Scanner sc = new Scanner(System.in);
+             System.out.println(&quot;类名：&quot;);
+             String className = sc.nextLine();
+             Class clazz = Class.forName(className);
+             Method[] ary = clazz.getDeclaredMethods();
+             Object obj = clazz.newInstance();
+             for(Method method:ary) &#123;
+                    //检查一个方法的注解信息
+                    //method.getAnnotation(被检查的注解类型)
+                    //返回注册类型，如果为空表示没有注解
+                    //不为空表示找到了被检查的注解
+             Demo ann =   method.getAnnotation(Demo.class);
+             System.out.println(method+&quot;  \n&quot;+ann);
+             if(ann != null) &#123;
+                    method.invoke(obj);
+             &#125;
+           &#125;
+       &#125;
+&#125;</code></pre>
+<h3 id="spring源码实现"><a class="markdownIt-Anchor" href="#spring源码实现"></a> Spring源码实现</h3>
+<ul>
+<li>
+<p>Spring就是用反射实现的</p>
+</li>
+<li>
+<p>ApplicationContext实现</p>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.springdemo;
+
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+public class ApplicationContext &#123;
+	//缓存spring容器的bean对象
+	private Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
+	
+	/*
+	 * 利用配置文件初始化当前容器
+	 * 利用xml配置文件，初始化全部的bean对象
+	 */
+	public ApplicationContext(String xml) throws Exception &#123;
+		//利用dom4j，读取xml文件
+		//解析xml文件内容，得到bean的类名，bean的id
+		//根据类名动态加载类并且创建对象，将对象和对应的id添加到map中
+		//从Resource(classpath)中读取流
+		InputStream in = getClass().getClassLoader().getResourceAsStream(xml);
+		//SAXReader就是一个高级流，必须依赖一个低级流
+		SAXReader reader = new SAXReader(); 
+		Document doc = reader.read(in);
+		in.close();
+		//解析xml  &lt;beans&gt;&lt;bean&gt;....
+		//读取根元素
+		Element root = doc.getRootElement();
+		//读取根元素中全部的bean子元素
+		List&lt;Element&gt; list = root.elements(&quot;bean&quot;);
+		for(Element e : list) &#123;
+			//e就是bean元素id属性和class属性
+			String id = e.attributeValue(&quot;id&quot;);
+			String className = e.attributeValue(&quot;class&quot;);
+			//动态加载类，动态创建对象
+			Class clazz = Class.forName(className);
+			Object obj = clazz.newInstance();
+			map.put(id, obj);
+		&#125;
+	&#125;
+	
+	public Object getBean(String id) &#123;
+		//根据id在map查找对象，并返回对象
+		return map.get(id);
+	&#125;
+	//泛型方法:有点是可以减少一次类型转换
+	public&lt;T&gt; T getBean(String id,Class&lt;T&gt; clazz) &#123;
+		return (T)map.get(id);
+	&#125;
+	
+&#125;</code></pre>
+<ul>
+<li>测试运行</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.netctoss.springdemo;
+
+import com.lee.netctoss.demo.Foo;
+
+public class Test &#123;
+	public static void main(String[] args) throws Exception &#123;
+		ApplicationContext ac = new ApplicationContext(&quot;springDemo.xml&quot;);
+		Foo foo = (Foo) ac.getBean(&quot;foo&quot;);
+		System.out.println(foo);
+	&#125;
+&#125;</code></pre>
+<h2 id="动态编译"><a class="markdownIt-Anchor" href="#动态编译"></a> 动态编译</h2>
+<p>Java6.0引入了动态编译的机制</p>
+<p>动态编译的应用场景：</p>
+<ul>
+<li>可以做一个浏览器端编写Java代码，上传服务器编译和运行的在线测评系统</li>
+<li>服务器动态加载某些类文件进行编译</li>
+</ul>
+<hr />
+<p><strong>动态编译</strong>的两种做法：</p>
+<ul>
+<li><strong>通过Runtime调用javac</strong>，启动新的进程去操作</li>
+</ul>
+<pre><code class="highlight plaintext">Runtime run = Runtime.getRuntime();
+Process process = run.exec(&quot;javac -cp d:/myjava/HelloWorld.java&quot;);</code></pre>
+<ul>
+<li><strong>通过JavaCompiler动态编译</strong>
+<ul>
+<li>参数1：为Java编译器提供参数</li>
+<li>参数2：得到Java编译器的输出信息</li>
+<li>参数3：接收编译器的错误信息</li>
+<li>参数4：可变参数（String数组）能传入一个或者多个Java源文件</li>
+<li>返回值：0表示编译成功，其他表示编译失败</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">public static int compileFile(String sourceFile)&#123;
+    //动态编译
+    JavaCompiler compiler = ToolProvider.getSystem.JavaCompiler();
+    int result = compiler.run(null,null,null,sourceFile);
+    System.out.println(result==0?&quot;编译成功&quot;:&quot;编译失败&quot;);
+    return result;
+&#125;</code></pre>
+<hr />
+<p><strong>动态运行编译好的类</strong></p>
+<ul>
+<li>通过Runtime.getRuntime()运行启动新的进程进行动态编译</li>
+</ul>
+<pre><code class="highlight plaintext">Runtime run = Runtime.getRuntime();
+Process process = run.exec(&quot;java -cp d:/myjava HolloWorld.java&quot;);</code></pre>
+<ul>
+<li>通过反射运行编译好的类</li>
+</ul>
+<pre><code class="highlight plaintext">//通过反射运行编译好的类
+public static void runJavaClassByReflect(String dir,String classFile) throws Exception&#123;
+    try&#123;
+        URL[] urls = new URL[]&#123;new URL(&quot;file:/&quot;+dir)&#125;;
+        URLClassLoader loader = new URLClassLoader(urls);
+        Class c = loader.loadClass(classFile);
+        //调用加载类的main方法
+        c.getMethod(&quot;main&quot;,String[].class).invoke(null,(Object)new String[]&#123;&#125;);
+    &#125;catch(Exception e)&#123;
+        e.printStackTrace();
+    &#125;
+&#125;</code></pre>
+<p>案例：</p>
+<pre><code class="highlight plaintext">package com.li.test.DynamicCompile;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
+
+import javax.tools.JavaCompiler;
+import javax.tools.ToolProvider;
+
+/**
+ * 测试Java动态编译
+ * 和运行编译好的类
+ * @author Mr
+ *
+ */
+public class Demo &#123;
+
+    public static void main(String[] args) throws IOException &#123;
+        //如果要运行这个字符串代码，可以通过io操作，先把字符串存成一个临时文件，然后调用动态编译方法
+        String path  = &quot;public class Hi&#123;public static void main(String[] args)&#123;System.out.println(\&quot;你好\&quot;)&#125;&#125;&quot;;
+
+        //动态的编译一个路径的Java文件为class文件
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();//获得这个工具
+        /*
+         * 第一个参数：为java编译器提供参数，输入流InputStream  /为null则默认使用System.in
+         * 第二个参数：得到java编译器的输出信息，输出流OutputSteam    /为null则默认使用System.out
+         * 第三个参数：接收编译器的  错误信息，输出流        /为null则默认使用System.err
+         * 第四个参数：可变参数(是一个String数组)能传入一个或多个Java源文件
+         * 返回值：0表示成功，非0表示编译失败
+         */
+        int result = compiler.run(null, null, null, &quot;f:/java/HelloWord.java&quot;); 
+        System.out.println(result==0?&quot;编译成功&quot;:&quot;编译失败&quot;);
+
+        /**
+         * 动态运行编译好的类
+         */
+        //方法一  通过Runtime调用
+        Runtime run = Runtime.getRuntime();
+        Process process =  run.exec(&quot;java -cp f:/java HelloWord&quot;);
+        //通过Process来进行对两个进程之间的交互
+        InputStream in =  process.getInputStream();
+        BufferedReader bf = new BufferedReader(new InputStreamReader(in));
+        String str = &quot;&quot;;
+        while((str=bf.readLine())!=null)&#123;
+            System.out.println(str);
+        &#125;
+        //方法二  通过反射进行
+        try &#123;
+            URL[] urls = new URL[]&#123;new URL(&quot;file:/&quot;+&quot;f:/java/&quot;)&#125;;
+            URLClassLoader loader = new URLClassLoader(urls);
+            Class c = loader.loadClass(&quot;HelloWord&quot;); //加载HelloWord类
+            //调用加载类的main方法
+            Method method = c.getMethod(&quot;main&quot;, String[].class);  //因为main方法是静态方法，所以下面调用的时候可以不用传递对象，所以第一个参数为null
+
+            //method.invoke(null, (Object)new String[]&#123;&#125;,(Object)new String[]&#123;&#125;); //传递两个数组的写法
+            /*
+             * 这里需要加(Object)的原因
+             * 加上强制转型后，会把new String[]&#123;&#125;当成一个对象传递给数组
+             * method.invoke(null, (Object)new String[]&#123;&quot;aa&quot;,&quot;bb&quot;&#125;);
+             * 由于可变参数是jdk5.0之后才有，如果不加，会编译成method.invoke(null,&quot;aa&quot;,&quot;bb&quot;);这样就与main方法形参不匹配
+             * main方法只是需要一个String数组类型的实参
+             */
+            method.invoke(null, (Object)new String[]&#123;&#125;);
+        &#125; catch (ClassNotFoundException | NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) &#123;
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h2 id="脚本引擎执行javascript代码"><a class="markdownIt-Anchor" href="#脚本引擎执行javascript代码"></a> 脚本引擎执行JavaScript代码</h2>
+<ul>
+<li>Java脚本引擎是从JDK6.0之后添加的新功能</li>
+<li>脚本引擎介绍：
+<ul>
+<li>使得Java应用程序可以通过一套固定的接口于各种脚本引擎交互，从而达到在Java平台上调用各种脚本语言的目的</li>
+<li>Java脚本API是联通Java平台和脚本语言的桥梁</li>
+</ul>
+</li>
+<li>获得脚本引擎对象</li>
+<li>Java脚本API为开发者提供了如下功能
+<ul>
+<li>获取脚本程序输入，通过脚本引擎运行脚本并返回运行结果，这是最核心的接口</li>
+<li>通过脚本引擎的运行上下文在脚本和Java平台间交换数据</li>
+<li>通过Java应用程序调用脚本函数</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意是：接口。Java可以使用各种不同的实现，从而通用的调用js、groovy、python等脚本</p>
+</blockquote>
+<h4 id="实例"><a class="markdownIt-Anchor" href="#实例"></a> 实例</h4>
+<pre><code class="highlight plaintext">package com.li.test.RhinoTest;
+
+import java.io.FileReader;
+import java.net.URL;
+import java.util.List;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
+public class Demo &#123;
+
+    public static void main(String[] args) throws Exception &#123;
+        //获取脚本引擎对象
+        ScriptEngineManager sem = new ScriptEngineManager();//获取脚本引擎工具管理器
+        ScriptEngine engine = sem.getEngineByName(&quot;javascript&quot;); //获取引擎管理器
+
+        //定义变量，存储到引擎上下文中,在Java与脚本引擎之间会有一个类似桥梁的东西，存在桥梁中(上下文)
+        engine.put(&quot;msg&quot;, &quot;gaoqi is a good man!&quot;);
+        //下面是一个JavaScript脚本语言
+        String str = &quot;var user = &#123;name:&#x27;bolee&#x27;,age:18,schools:[&#x27;清华大学&#x27;,&#x27;北京尚学堂&#x27;]&#125;;&quot;;
+        str += &quot;print(user.name);&quot;;
+
+        //执行脚本     
+        engine.eval(str);
+        engine.eval(&quot;msg = &#x27;sxt is a good school&#x27;;&quot;);  //这个可以修改上下文中的变量
+        //说明上下文中的数据既可以被javascript操作，也可被Java操作
+        System.out.println(engine.get(&quot;msg&quot;));
+
+        System.out.println(&quot;******************************&quot;);
+
+        //定义函数
+        engine.eval(&quot;function add(a,b)&#123;var sum=a+b;return sum;&#125;&quot;);
+        //取得调用接口
+        Invocable jsInvoke = (Invocable) engine;
+        //执行脚本中定义的方法
+        Object result1 = jsInvoke.invokeFunction(&quot;add&quot;, new Object[]&#123;13,20&#125;);
+        System.out.println(result1);
+
+        //导入其他java包，使得其他包中的Java类,若需要深入了解细节，可以详细学习Rhino的语法
+        String jsCode = &quot;var list = java.util.Arrays.asList([\&quot;北京尚学堂\&quot;,\&quot;清华大学\&quot;,\&quot;北京大学\&quot;])&quot;;
+        engine.eval(jsCode);
+
+        List&lt;String&gt; list2 = (List&lt;String&gt;)engine.get(&quot;list&quot;);
+        for (String temp : list2) &#123;
+            System.out.println(temp);
+        &#125;
+
+        //执行一个js文件(我们将a.js至于项目的src下即可)
+        URL url = Demo.class.getClassLoader().getResource(&quot;a.js&quot;);
+        FileReader fr = new FileReader(url.getPath());
+        engine.eval(fr);
+        fr.close();   
+
+    &#125;
+&#125;</code></pre>
+<h2 id="字节码操作"><a class="markdownIt-Anchor" href="#字节码操作"></a> 字节码操作</h2>
+<ul>
+<li><strong>虚拟机启动后，虚拟机就会把class文件加载到虚拟机里面，字节码操作就是操作虚拟机种加载好的字节码</strong></li>
+<li>Java动态性的两种常见实现方式
+<ul>
+<li>字节码操作</li>
+<li>反射</li>
+</ul>
+</li>
+<li>运行操作字节码可以让我们实现如下功能
+<ul>
+<li>动态生成新的类</li>
+<li>动态改变某个类的结构（添加/删除/修改 新的属性/方法）</li>
+</ul>
+</li>
+<li>优势
+<ul>
+<li>比反射开销小，性能搞</li>
+<li>JAVAasist性能高于反射，低于ASM</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.li.test;
+/**
+ * 使用Javassist操作字节码
+ * 测试使用Javassist生成一个新的类
+ * @author Mr
+ *
+ */
+public class Demo &#123;
+     public static void main(String[] args) throws Exception &#123;
+           ClassPool pool = ClassPool.getDefault();  //获得类池
+           CtClass ct = pool.makeClass(&quot;com.li.bean.Emp&quot;);//从类池获得CtClass   ,CtClass代表我们要创建的类，和java中的Class类似
+
+           //创建属性
+           CtField f1 = CtField.make(&quot;private int empno;&quot;, ct);
+           CtField f2 = CtField.make(&quot;private String ename;&quot;, ct);
+           ct.addField(f1);
+           ct.addField(f2);
+
+           //创建方法
+           CtMethod m1 = CtMethod.make(&quot;public int getEmpno()&#123;return empno;&#125;&quot;, ct);
+           CtMethod m2 = CtMethod.make(&quot;public void setEmpno(int empno)&#123;this.empno=empno;&#125;&quot;, ct);
+           ct.addMethod(m1);
+           ct.addMethod(m2);
+
+           //添加构造器   第一个形参int  第二个形参 String
+           CtConstructor constructor = new CtConstructor(new CtClass[]&#123;CtClass.intType,pool.get(&quot;java.lang.String&quot;)&#125;, ct);
+          constructor.setBody(&quot;&#123;this.empno=empno;this.ename=ename;&#125;&quot;);
+           ct.addConstructor(constructor);
+           //上面写的只是在内存中加载的一个类
+           ct.writeFile(&quot;f:/java&quot;);//写入到一个工作空间中
+           System.out.println(&quot;生成类成功&quot;);
+     &#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">package com.li.test;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtConstructor;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.CtNewMethod;
+import javassist.NotFoundException;
+/*
+ * 使用javassist来操作字节码文件，即编译后的文件
+ * 对字节码类进行增删改查
+ */
+public class Demo2 &#123;
+
+    public static void test1() throws Exception&#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass cc = pool.get(&quot;com.li.test.Emp&quot;);
+
+        byte[] bt = cc.toBytecode();//返回代码的字节码
+        System.out.println(Arrays.toString(bt));
+
+        System.out.println(cc.getName());//获取类名
+        System.out.println(cc.getSimpleName());
+        System.out.println(cc.getSuperclass());//获得父类
+        System.out.println(cc.getInterfaces()); //获得接口
+        &#125;
+    /**
+     * 在类中生成新的方法，并调用
+     * @throws Exception
+     */
+    public static void test2() throws Exception&#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass cc = pool.get(&quot;com.li.test.Emp&quot;);
+        //CtMethod m1 = CtMethod.make(&quot;public int getEmpno()&#123;return empno;&#125;&quot;, cc);  //第一种创建方法
+        //CtMethod m = CtNewMethod.make(&quot;public int add(int a,int b)&#123;return a+b;&#125;&quot;, cc);  //第二种创建方法
+        //第三中创建方法
+        CtMethod m = new CtMethod(CtClass.intType,&quot;add&quot;,new CtClass[]&#123;CtClass.intType,CtClass.intType&#125;,cc);   //连个CtClass表示有两个int类型的形参
+        m.setModifiers(Modifier.PUBLIC);
+        m.setBody(&quot;&#123;System.out.println(\&quot;www.sxt.cn\&quot;);return $1+$2;&#125;&quot;); //$0表示this,$1,$2...表示第一个第二个第三个...参数
+        cc.addMethod(m);
+
+        //通过反射调用新生成的方法
+        Class clazz = cc.toClass();
+        Object obj = clazz.newInstance();  
+        Method method = clazz.getMethod(&quot;add&quot;, int.class,int.class);  //从CLass信息中获取“add”方法信息
+        Object i = method.invoke(obj, 4,5);  //先newInstance再invoke
+        System.out.println(i);
+    &#125;
+    /**
+     * 修改已有的方法信息，修改方法的内容
+     * @throws Exception
+     */
+    public static void test3() throws Exception&#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass cc = pool.get(&quot;com.li.test.Emp&quot;);
+        CtMethod cm = cc.getDeclaredMethod(&quot;sayHello&quot;,new CtClass[]&#123;CtClass.intType&#125;);
+        cm.insertBefore(&quot;System.out.println($1);System.out.println(\&quot;start!!\&quot;);&quot;);//在方法的内前面增加代码
+        cm.insertAt(8, &quot;int b=3;System.out.println(\&quot;b=\&quot;+b);&quot;);
+        cm.insertAfter(&quot;System.out.println(\&quot;end!!!\&quot;);&quot;);//在方法内后面增加代码
+
+        //通过反射调用新生成的方法
+        Class clazz = cc.toClass();
+        Object obj = clazz.newInstance();
+        Method method = clazz.getMethod(&quot;sayHello&quot;, int.class);  //从CLass信息中获取“add”方法信息
+        method.invoke(obj, 400);
+
+    &#125;
+    /**
+     * 操作属性
+     * @throws Exception
+     *
+     */
+    public static void test4() throws Exception&#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass cc = pool.get(&quot;com.li.test.Emp&quot;);
+
+        //CtField f1 = CtField.make(&quot;private int salary;&quot;,cc);
+        CtField f1 = new CtField(CtClass.intType,&quot;salary&quot;,cc);
+        f1.setModifiers(Modifier.PRIVATE);
+        cc.addField(f1);  //加到类中
+
+        //cc.getDeclaredField(&quot;ename&quot;); //获得指定的属性
+
+        //增加相应的get和set方法
+        cc.addMethod(CtNewMethod.getter(&quot;getSalary&quot;, f1));
+        cc.addMethod(CtNewMethod.getter(&quot;setSalary&quot;, f1));
+    &#125;
+    /*
+     * 操作构造器构造器
+     */
+    public static void test5() throws Exception&#123;
+        ClassPool pool = ClassPool.getDefault();
+        CtClass cc = pool.get(&quot;com.li.test.Emp&quot;);
+        /*
+         * //获得所有的构造器
+         */
+        CtConstructor[] cs = cc.getConstructors();//获得所有的构造器
+        for (CtConstructor temp : cs) &#123;
+            System.out.println(temp.getLongName());
+            //在构造器的前后加代码
+            temp.insertBefore(null);//前面加代码
+            temp.insertAfter(null);//后面加代码
+            temp.insertAt(2, null);//指定行加代码
+        &#125;
+    &#125;
+    /*
+     * 操作注解，只可以查看，暂时不支持注解的修改
+     */
+    public static void test6() throws Exception&#123;
+
+        CtClass cc =ClassPool.getDefault().get(&quot;com.li.test.Emp&quot;);
+
+        Object[] obj = cc.getAnnotations();//获取这个类的所有注解
+        Author a = (Author) obj[0];
+        String name = a.name();
+        int year = a.year();
+        System.out.println(&quot;name:&quot;+name+&quot;    year:&quot;+year);
+
+    &#125;
+    public static void main(String[] args) throws Exception &#123;
+        //test1();
+        test6();
+    &#125;
+&#125;</code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

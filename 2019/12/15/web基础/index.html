@@ -1,0 +1,1691 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    web基础 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">web基础</div>
+  <div class="post-meta">
+    <div class="date">2019 十二月 15日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">Web</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="web基础"><a class="markdownIt-Anchor" href="#web基础"></a> $web基础</h1>
+<ul>
+<li><a href="">web基础</a>
+<ul>
+<li><a href="">HTTP协议</a></li>
+<li><a href="">编写http服务器</a></li>
+</ul>
+</li>
+<li><a href="">servlet入门</a>
+<ul>
+<li><a href="">实现一个简单的servlet</a></li>
+<li><a href="">servlet版本</a></li>
+<li><a href="">tomcat版本</a></li>
+</ul>
+</li>
+<li><a href="">Servlet开发</a>
+<ul>
+<li><a href="">生成可执行war�</a>�</li>
+</ul>
+</li>
+<li><a href="">servlet进阶</a>
+<ul>
+<li><a href="">HttpServletRequest</a></li>
+<li><a href="">HttpServletResponse</a></li>
+<li><a href="">servlet多线程模型</a></li>
+</ul>
+</li>
+<li><a href="">重定向与转发</a>
+<ul>
+<li><a href="">Redirect</a></li>
+<li><a href="">Forward</a></li>
+</ul>
+</li>
+<li><a href="">使用Session和Cookie</a>
+<ul>
+<li><a href="">Session</a></li>
+<li><a href="">Cookie</a></li>
+<li><a href="">分布式</a></li>
+</ul>
+</li>
+<li><a href="">MVC</a></li>
+<li><a href="">手写简单Spring MVC</a>
+<ul>
+<li><a href="">引入</a></li>
+<li><a href="">设计MVC框架</a></li>
+<li><a href="">实现渲染</a></li>
+</ul>
+</li>
+<li><a href="">使用filter</a>
+<ul>
+<li><a href="">修改请求</a></li>
+<li><a href="">修改响应</a></li>
+</ul>
+</li>
+<li><a href="">使用Listener</a>
+<ul>
+<li><a href="">ServletContext</a></li>
+</ul>
+</li>
+<li><a href="">部署</a></li>
+</ul>
+<h2 id="web基础-2"><a class="markdownIt-Anchor" href="#web基础-2"></a> web基础</h2>
+<p>今天我们访问网站，使用App时，都是基于Web这种Browser/Server模式，简称BS架构，它的特点是，客户端只需要浏览器，应用程序的逻辑和数据都存储在服务器端。浏览器只需要请求服务器，获取Web页面，并把Web页面展示给用户即可。Web页面具有极强的交互性。</p>
+<p>由于Web页面是用HTML编写的，而HTML具备超强的表现力，并且，服务器端升级后，客户端无需任何部署就可以使用到新的版本，因此，BS架构升级非常容易。</p>
+<h3 id="http协议"><a class="markdownIt-Anchor" href="#http协议"></a> HTTP协议</h3>
+<p>在Web应用中，浏览器请求一个URL，服务器就把生成的HTML网页发送给浏览器，而浏览器和服务器之间的传输协议是HTTP，所以：HTML是一种用来定义网页的文本，会HTML，就可以编写网页；HTTP是在网络上传输HTML的协议，用于浏览器和服务器的通信。HTTP协议是一个基于TCP协议之上的请求-响应协议，它非常简单，我们先使用Chrome浏览器查看新浪首页，然后选择View - Developer - Inspect Elements就可以看到HTML：</p>
+<p>对于Browser来说，请求页面的流程如下：</p>
+<ul>
+<li>与服务器建立TCP连接；</li>
+<li>发送HTTP请求；</li>
+<li>收取HTTP响应，然后把网页在浏览器中显示出来。</li>
+</ul>
+<p>浏览器发送的HTTP请求如下：</p>
+<pre><code class="highlight plaintext">GET / HTTP/1.1
+Host: www.sina.com.cn
+User-Agent: Mozilla/5.0 xxx
+Accept: */*
+Accept-Language: zh-CN,zh;q=0.9,en-US;q=0.8</code></pre>
+<p>其中，第一行表示使用GET请求获取路径为/的资源，并使用HTTP/1.1协议，从第二行开始，每行都是以Header: Value形式表示的HTTP头，比较常用的HTTP Header包括：</p>
+<ul>
+<li>Host: 表示请求的主机名，因为一个服务器上可能运行着多个网站，因此，Host表示浏览器正在请求的域名；</li>
+<li>User-Agent: 标识客户端本身，例如Chrome浏览器的标识类似Mozilla/5.0 … Chrome/79，IE浏览器的标识类似Mozilla/5.0 (Windows NT …) like Gecko；</li>
+<li>Accept：<code>表示浏览器能接收的资源类型，如text/*，image/*或者*/*表示所有；</code></li>
+<li>Accept-Language：表示浏览器偏好的语言，服务器可以据此返回不同语言的网页；</li>
+<li>Accept-Encoding：表示浏览器可以支持的压缩类型，例如gzip, deflate, br。</li>
+</ul>
+<p>服务器的响应如下：</p>
+<pre><code class="highlight plaintext">HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 21932
+Content-Encoding: gzip
+Cache-Control: max-age=300
+
+&lt;html&gt;...网页数据...</code></pre>
+<p>服务器响应的第一行总是版本号+空格+数字+空格+文本，数字表示响应代码，其中2xx表示成功，3xx表示重定向，4xx表示客户端引发的错误，5xx表示服务器端引发的错误。数字是给程序识别，文本则是给开发者调试使用的。常见的响应代码有：</p>
+<ul>
+<li>200 OK：表示成功；</li>
+<li>301 Moved Permanently：表示该URL已经永久重定向；</li>
+<li>302 Found：表示该URL需要临时重定向；</li>
+<li>304 Not Modified：表示该资源没有修改，客户端可以使用本地缓存的版本；</li>
+<li>400 Bad Request：表示客户端发送了一个错误的请求，例如参数无效；</li>
+<li>401 Unauthorized：表示客户端因为身份未验证而不允许访问该URL；</li>
+<li>403 Forbidden：表示服务器因为权限问题拒绝了客户端的请求；</li>
+<li>404 Not Found：表示客户端请求了一个不存在的资源；</li>
+<li>500 Internal Server Error：表示服务器处理时内部出错，例如因为无法连接数据库；</li>
+<li>503 Service Unavailable：表示服务器此刻暂时无法处理请求。</li>
+</ul>
+<p>从第二行开始，服务器每一行均返回一个HTTP头。服务器经常返回的HTTP Header包括：</p>
+<ul>
+<li>Content-Type：表示该响应内容的类型，例如text/html，image/jpeg；</li>
+<li>Content-Length：表示该响应内容的长度（字节数）；</li>
+<li>Content-Encoding：表示该响应压缩算法，例如gzip；</li>
+<li>Cache-Control：指示客户端应如何缓存，例如max-age=300表示可以最多缓存300秒。</li>
+</ul>
+<p>HTTP请求和响应都由HTTP Header和HTTP Body构成，其中HTTP Header每行都以\r\n结束。如果遇到两个连续的\r\n，那么后面就是HTTP Body。浏览器读取HTTP Body，并根据Header信息中指示的Content-Type、Content-Encoding等解压后显示网页、图像或其他内容。</p>
+<p>通常浏览器获取的第一个资源是HTML网页，在网页中，如果嵌入了JavaScript、CSS、图片、视频等其他资源，浏览器会根据资源的URL再次向服务器请求对应的资源。</p>
+<p>关于HTTP协议的详细内容，请参考HTTP权威指南一书，或者Mozilla开发者网站。</p>
+<p>我们在前面介绍的HTTP编程是以客户端的身份去请求服务器资源。现在，我们需要以服务器的身份响应客户端请求，编写服务器程序来处理客户端请求通常就称之为Web开发。</p>
+<h3 id="编写http服务器"><a class="markdownIt-Anchor" href="#编写http服务器"></a> 编写http服务器</h3>
+<p>我们来看一下如何编写HTTP Server。一个HTTP Server本质上是一个TCP服务器，我们先用TCP编程的多线程实现的服务器端框架：</p>
+<pre><code class="highlight plaintext">
+public class Server &#123;
+    public static void main(String[] args) throws IOException &#123;
+        ServerSocket ss = new ServerSocket(8080); // 监听指定端口
+        System.out.println(&quot;server is running...&quot;);
+        for (;;) &#123;
+            Socket sock = ss.accept();
+            System.out.println(&quot;connected from &quot; + sock.getRemoteSocketAddress());
+            Thread t = new Handler(sock);
+            t.start();
+        &#125;
+    &#125;
+&#125;
+
+class Handler extends Thread &#123;
+    Socket sock;
+
+    public Handler(Socket sock) &#123;
+        this.sock = sock;
+    &#125;
+
+    public void run() &#123;
+        try (InputStream input = this.sock.getInputStream()) &#123;
+            try (OutputStream output = this.sock.getOutputStream()) &#123;
+                handle(input, output);
+            &#125;
+        &#125; catch (Exception e) &#123;
+            try &#123;
+                this.sock.close();
+            &#125; catch (IOException ioe) &#123;
+            &#125;
+            System.out.println(&quot;client disconnected.&quot;);
+        &#125;
+    &#125;
+
+    private void handle(InputStream input, OutputStream output) throws IOException &#123;
+        var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+        // TODO: 处理HTTP请求
+    &#125;
+&#125;</code></pre>
+<p>只需要在handle()方法中，用Reader读取HTTP请求，用Writer发送HTTP响应，即可实现一个最简单的HTTP服务器。编写代码如下：</p>
+<pre><code class="highlight plaintext">
+private void handle(InputStream input, OutputStream output) throws IOException &#123;
+    System.out.println(&quot;Process new http request...&quot;);
+    var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+    var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+    // 读取HTTP请求:
+    boolean requestOk = false;
+    String first = reader.readLine();
+    if (first.startsWith(&quot;GET / HTTP/1.&quot;)) &#123;
+        requestOk = true;
+    &#125;
+    for (;;) &#123;
+        String header = reader.readLine();
+        if (header.isEmpty()) &#123; // 读取到空行时, HTTP Header读取完毕
+            break;
+        &#125;
+        System.out.println(header);
+    &#125;
+    System.out.println(requestOk ? &quot;Response OK&quot; : &quot;Response Error&quot;);
+    if (!requestOk) &#123;
+        // 发送错误响应:
+        writer.write(&quot;HTTP/1.0 404 Not Found\r\n&quot;);
+        writer.write(&quot;Content-Length: 0\r\n&quot;);
+        writer.write(&quot;\r\n&quot;);
+        writer.flush();
+    &#125; else &#123;
+        // 发送成功响应:
+        String data = &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello, world!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;;
+        int length = data.getBytes(StandardCharsets.UTF_8).length;
+        writer.write(&quot;HTTP/1.0 200 OK\r\n&quot;);
+        writer.write(&quot;Connection: close\r\n&quot;);
+        writer.write(&quot;Content-Type: text/html\r\n&quot;);
+        writer.write(&quot;Content-Length: &quot; + length + &quot;\r\n&quot;);
+        writer.write(&quot;\r\n&quot;); // 空行标识Header和Body的分隔
+        writer.write(data);
+        writer.flush();
+    &#125;
+&#125;</code></pre>
+<p>这里的核心代码是，先读取HTTP请求，这里我们只处理GET /的请求。当读取到空行时，表示已读到连续两个\r\n，说明请求结束，可以发送响应。发送响应的时候，首先发送响应代码HTTP/1.0 200 OK表示一个成功的200响应，使用HTTP/1.0协议，然后，依次发送Header，发送完Header后，再发送一个空行标识Header结束，紧接着发送HTTP Body，在浏览器输入<a target="_blank" rel="noopener" href="http://local.liaoxuefeng.com:8080/%E5%B0%B1%E5%8F%AF%E4%BB%A5%E7%9C%8B%E5%88%B0%E5%93%8D%E5%BA%94%E9%A1%B5%E9%9D%A2%EF%BC%9A">http://local.liaoxuefeng.com:8080/就可以看到响应页面：</a></p>
+<p>HTTP目前有多个版本，1.0是早期版本，浏览器每次建立TCP连接后，只发送一个HTTP请求并接收一个HTTP响应，然后就关闭TCP连接。由于创建TCP连接本身就需要消耗一定的时间，因此，HTTP 1.1允许浏览器和服务器在同一个TCP连接上反复发送、接收多个HTTP请求和响应，这样就大大提高了传输效率。</p>
+<p>我们注意到HTTP协议是一个请求-响应协议，它总是发送一个请求，然后接收一个响应。能不能一次性发送多个请求，然后再接收多个响应呢？HTTP 2.0可以支持浏览器同时发出多个请求，但每个请求需要唯一标识，服务器可以不按请求的顺序返回多个响应，由浏览器自己把收到的响应和请求对应起来。可见，HTTP 2.0进一步提高了传输效率，因为浏览器发出一个请求后，不必等待响应，就可以继续发下一个请求。</p>
+<p>HTTP 3.0为了进一步提高速度，将抛弃TCP协议，改为使用无需创建连接的UDP协议，目前HTTP 3.0仍然处于实验阶段。</p>
+<h2 id="servlet入门"><a class="markdownIt-Anchor" href="#servlet入门"></a> servlet入门</h2>
+<p>在上一节中，我们看到，编写HTTP服务器其实是非常简单的，只需要先编写基于多线程的TCP服务，然后在一个TCP连接中读取HTTP请求，发送HTTP响应即可。</p>
+<p>但是，要编写一个完善的HTTP服务器，以HTTP/1.1为例，需要考虑的包括：</p>
+<ul>
+<li>识别正确和错误的HTTP请求；</li>
+<li>识别正确和错误的HTTP头；</li>
+<li>复用TCP连接；</li>
+<li>复用线程；</li>
+<li>IO异常处理；</li>
+<li>…</li>
+</ul>
+<p>这些基础工作需要耗费大量的时间，并且经过长期测试才能稳定运行。如果我们只需要输出一个简单的HTML页面，就不得不编写上千行底层代码，那就根本无法做到高效而可靠地开发。</p>
+<p>因此，在JavaEE平台上，处理TCP连接，解析HTTP协议这些底层工作统统扔给现成的Web服务器去做，我们只需要把自己的应用程序跑在Web服务器上。为了实现这一目的，JavaEE提供了Servlet API，我们使用Servlet API编写自己的Servlet来处理HTTP请求，Web服务器实现Servlet API接口，实现底层功能：</p>
+<h3 id="实现一个简单的servlet"><a class="markdownIt-Anchor" href="#实现一个简单的servlet"></a> 实现一个简单的servlet</h3>
+<pre><code class="highlight plaintext">// WebServlet注解表示这是一个Servlet，并映射到地址/:@WebServlet(urlPatterns = &quot;/&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException &#123;
+        // 设置响应类型:
+        resp.setContentType(&quot;text/html&quot;);
+        // 获取输出流:
+        PrintWriter pw = resp.getWriter();
+        // 写入响应:
+        pw.write(&quot;&lt;h1&gt;Hello, world!&lt;/h1&gt;&quot;);
+        // 最后不要忘记flush强制输出:
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>一个Servlet总是继承自HttpServlet，然后覆写doGet()或doPost()方法。注意到doGet()方法传入了HttpServletRequest和HttpServletResponse两个对象，分别代表HTTP请求和响应。我们使用Servlet API时，并不直接与底层TCP交互，也不需要解析HTTP协议，因为HttpServletRequest和HttpServletResponse就已经封装好了请求和响应。以发送响应为例，我们只需要设置正确的响应类型，然后获取PrintWriter，写入响应即可。</p>
+<p>现在问题来了：Servlet API是谁提供？Servlet API是一个jar包，我们需要通过Maven来引入它，才能正常编译。编写pom.xml文件如下：</p>
+<pre><code class="highlight plaintext">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    &lt;groupId&gt;com.itranswarp.learnjava&lt;/groupId&gt;
+    &lt;artifactId&gt;web-servlet-hello&lt;/artifactId&gt;
+    &lt;packaging&gt;war&lt;/packaging&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;maven.compiler.source&gt;17&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;17&lt;/maven.compiler.target&gt;
+        &lt;java.version&gt;17&lt;/java.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;jakarta.servlet&lt;/groupId&gt;
+            &lt;artifactId&gt;jakarta.servlet-api&lt;/artifactId&gt;
+            &lt;version&gt;5.0.0&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;finalName&gt;hello&lt;/finalName&gt;
+    &lt;/build&gt;
+&lt;/project&gt;</code></pre>
+<p>注意到这个pom.xml与前面我们讲到的普通Java程序有个区别，打包类型不是jar，而是war，表示Java Web Application Archive：</p>
+<pre><code class="highlight plaintext">&lt;packaging&gt;war&lt;/packaging&gt;</code></pre>
+<p>引入的Servlet API如下：</p>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+    &lt;groupId&gt;jakarta.servlet&lt;/groupId&gt;
+    &lt;artifactId&gt;jakarta.servlet-api&lt;/artifactId&gt;
+    &lt;version&gt;5.0.0&lt;/version&gt;
+    &lt;scope&gt;provided&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+<p>注意到<scope>指定为provided，表示编译时使用，但不会打包到.war文件中，因为运行期Web服务器本身已经提供了Servlet API相关的jar包。</p>
+<h3 id="servlet版本"><a class="markdownIt-Anchor" href="#servlet版本"></a> servlet版本</h3>
+<p>要务必注意servlet-api的版本。4.0及之前的servlet-api由Oracle官方维护，引入的依赖项是javax.servlet:javax.servlet-api，编写代码时引入的包名为：</p>
+<pre><code class="highlight plaintext">import javax.servlet.*;</code></pre>
+<p>而5.0及以后的servlet-api由Eclipse开源社区维护，引入的依赖项是jakarta.servlet:jakarta.servlet-api，编写代码时引入的包名为：</p>
+<pre><code class="highlight plaintext">import jakarta.servlet.*;</code></pre>
+<p>教程采用最新的jakarta.servlet:5.0.0版本，但对于很多仅支持Servlet 4.0版本的框架来说，例如Spring 5，我们就只能使用javax.servlet:4.0.0版本，这一点针对不同项目要特别注意。</p>
+<p>整个工程结构如下：</p>
+<p>目录webapp目前为空，如果我们需要存放一些资源文件，则需要放入该目录。有的同学可能会问，webapp目录下是否需要一个/WEB-INF/web.xml配置文件？这个配置文件是低版本Servlet必须的，但是高版本Servlet已不再需要，所以无需该配置文件。</p>
+<p>运行Maven命令mvn clean package，在target目录下得到一个hello.war文件，这个文件就是我们编译打包后的Web应用程序。</p>
+<p>现在问题又来了：我们应该如何运行这个war文件？</p>
+<p>普通的Java程序是通过启动JVM，然后执行main()方法开始运行。但是Web应用程序有所不同，我们无法直接运行war文件，必须先启动Web服务器，再由Web服务器加载我们编写的HelloServlet，这样就可以让HelloServlet处理浏览器发送的请求。</p>
+<p>因此，我们首先要找一个支持Servlet API的Web服务器。常用的服务器有：</p>
+<ul>
+<li>Tomcat：由Apache开发的开源免费服务器；</li>
+<li>Jetty：由Eclipse开发的开源免费服务器；</li>
+<li>GlassFish：一个开源的全功能JavaEE服务器。</li>
+</ul>
+<p>还有一些收费的商用服务器，如Oracle的WebLogic，IBM的WebSphere。</p>
+<p>无论使用哪个服务器，只要它支持Servlet API 5.0（因为我们引入的Servlet版本是5.0），我们的war包都可以在上面运行。</p>
+<p>这里我们选择使用最广泛的开源免费的Tomcat服务器。要运行我们的hello.war，首先要下载Tomcat服务器，解压后，把hello.war复制到Tomcat的webapps目录下，然后切换到bin目录，执行startup.sh或startup.bat启动Tomcat服务器：</p>
+<pre><code class="highlight plaintext">$ ./startup.sh 
+Using CATALINA_BASE:   .../apache-tomcat-10.1.x
+Using CATALINA_HOME:   .../apache-tomcat-10.1.x
+Using CATALINA_TMPDIR: .../apache-tomcat-10.1.x/temp
+Using JRE_HOME:        .../jdk-17.jdk/Contents/Home
+Using CLASSPATH:       .../apache-tomcat-10.1.x/bin/bootstrap.jar:...
+Tomcat started.</code></pre>
+<p>在浏览器输入<a target="_blank" rel="noopener" href="http://localhost:8080/hello/%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0HelloServlet%E7%9A%84%E8%BE%93%E5%87%BA%EF%BC%9A">http://localhost:8080/hello/即可看到HelloServlet的输出：</a></p>
+<p>细心的童鞋可能会问，为啥路径是/hello/而不是/？因为一个Web服务器允许同时运行多个Web App，而我们的Web App叫hello，因此，第一级目录/hello表示Web App的名字，后面的/才是我们在HelloServlet中映射的路径。</p>
+<p>那能不能直接使用/而不是/hello/？毕竟/比较简洁。</p>
+<p>答案是肯定的。先关闭Tomcat（执行shutdown.sh或shutdown.bat），然后删除Tomcat的webapps目录下的所有文件夹和文件，最后把我们的hello.war复制过来，<strong>改名为ROOT.war</strong>，文件名为ROOT的应用程序将作为默认应用，启动后直接访问<a target="_blank" rel="noopener" href="http://localhost:8080/%E5%8D%B3%E5%8F%AF%E3%80%82">http://localhost:8080/即可。</a></p>
+<p>实际上，类似Tomcat这样的服务器也是Java编写的，启动Tomcat服务器实际上是启动Java虚拟机，执行Tomcat的main()方法，然后由Tomcat负责加载我们的.war文件，并创建一个HelloServlet实例，最后以多线程的模式来处理HTTP请求。如果Tomcat服务器收到的请求路径是/（假定部署文件为ROOT.war），就转发到HelloServlet并传入HttpServletRequest和HttpServletResponse两个对象。</p>
+<p>因为我们编写的Servlet并不是直接运行，而是由Web服务器加载后创建实例运行，所以，类似Tomcat这样的Web服务器也称为Servlet容器。</p>
+<h3 id="tomcat版本"><a class="markdownIt-Anchor" href="#tomcat版本"></a> tomcat版本</h3>
+<p>由于Servlet版本分为&lt;=4.0和&gt;=5.0两种，所以，要根据使用的Servlet版本选择正确的Tomcat版本。从Tomcat版本页可知：</p>
+<ul>
+<li>使用Servlet&lt;=4.0时，选择Tomcat 9.x或更低版本；</li>
+<li>使用Servlet&gt;=5.0时，选择Tomcat 10.x或更高版本。</li>
+</ul>
+<p>运行本节代码需要使用Tomcat 10.x版本。</p>
+<p>在Servlet容器中运行的Servlet具有如下特点：</p>
+<ul>
+<li>无法在代码中直接通过new创建Servlet实例，必须由Servlet容器自动创建Servlet实例；</li>
+<li>Servlet容器只会给每个Servlet类创建唯一实例；</li>
+<li>Servlet容器会使用多线程执行doGet()或doPost()方法。</li>
+</ul>
+<h2 id="servlet开发"><a class="markdownIt-Anchor" href="#servlet开发"></a> Servlet开发</h2>
+<p>许多初学者经常卡在如何在IDE中启动Tomcat并加载webapp，更不要说断点调试了。</p>
+<p>我们需要一种简单可靠，能直接在IDE中启动并调试webapp的方法。</p>
+<p>因为Tomcat实际上也是一个Java程序，我们看看Tomcat的启动流程：</p>
+<ol>
+<li>启动JVM并执行Tomcat的main()方法；</li>
+<li>加载war并初始化Servlet；</li>
+<li>正常服务。</li>
+</ol>
+<p>启动Tomcat无非就是设置好classpath并执行Tomcat某个jar包的main()方法，我们完全可以把Tomcat的jar包全部引入进来，然后自己编写一个main()方法，先启动Tomcat，然后让它加载我们的webapp就行。</p>
+<p>我们新建一个web-servlet-embedded工程，编写pom.xml如下：</p>
+<pre><code class="highlight plaintext">
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.itranswarp.learnjava&lt;/groupId&gt;
+    &lt;artifactId&gt;web-servlet-embedded&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;packaging&gt;war&lt;/packaging&gt;
+
+    &lt;properties&gt;
+        &lt;project.build.sourceEncoding&gt;UTF-8&lt;/project.build.sourceEncoding&gt;
+        &lt;project.reporting.outputEncoding&gt;UTF-8&lt;/project.reporting.outputEncoding&gt;
+        &lt;maven.compiler.source&gt;17&lt;/maven.compiler.source&gt;
+        &lt;maven.compiler.target&gt;17&lt;/maven.compiler.target&gt;
+        &lt;java.version&gt;17&lt;/java.version&gt;
+        &lt;tomcat.version&gt;10.1.1&lt;/tomcat.version&gt;
+    &lt;/properties&gt;
+
+    &lt;dependencies&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;
+            &lt;artifactId&gt;tomcat-embed-core&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;tomcat.version&#125;&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.apache.tomcat.embed&lt;/groupId&gt;
+            &lt;artifactId&gt;tomcat-embed-jasper&lt;/artifactId&gt;
+            &lt;version&gt;$&#123;tomcat.version&#125;&lt;/version&gt;
+            &lt;scope&gt;provided&lt;/scope&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;&lt;/project&gt;</code></pre>
+<p>其中，<packaging>类型仍然为war，引入依赖tomcat-embed-core和tomcat-embed-jasper，引入的Tomcat版本&lt;tomcat.version&gt;为10.1.1。</p>
+<p>不必引入Servlet API，因为引入Tomcat依赖后自动引入了Servlet API。因此，我们可以正常编写Servlet如下：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        resp.setContentType(&quot;text/html&quot;);
+        String name = req.getParameter(&quot;name&quot;);
+        if (name == null) &#123;
+            name = &quot;world&quot;;
+        &#125;
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;h1&gt;Hello, &quot; + name + &quot;!&lt;/h1&gt;&quot;);
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>然后，我们编写一个main()方法，启动Tomcat服务器：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 启动Tomcat:
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(Integer.getInteger(&quot;port&quot;, 8080));
+        tomcat.getConnector();
+        // 创建webapp:
+        Context ctx = tomcat.addWebapp(&quot;&quot;, new File(&quot;src/main/webapp&quot;).getAbsolutePath());
+        WebResourceRoot resources = new StandardRoot(ctx);
+        resources.addPreResources(
+                new DirResourceSet(resources, &quot;/WEB-INF/classes&quot;, new File(&quot;target/classes&quot;).getAbsolutePath(), &quot;/&quot;));
+        ctx.setResources(resources);
+        tomcat.start();
+        tomcat.getServer().await();
+    &#125;
+&#125;</code></pre>
+<p>这样，我们直接运行main()方法，即可启动嵌入式Tomcat服务器，然后，通过预设的tomcat.addWebapp(“”, new File(“src/main/webapp”)，Tomcat会自动加载当前工程作为根webapp，可直接在浏览器访问<a target="_blank" rel="noopener" href="http://localhost:8080/%EF%BC%9A">http://localhost:8080/：</a></p>
+<p>通过main()方法启动Tomcat服务器并加载我们自己的webapp有如下好处：</p>
+<ul>
+<li>启动简单，无需下载Tomcat或安装任何IDE插件；</li>
+<li>调试方便，可在IDE中使用断点调试；</li>
+<li>使用Maven创建war包后，也可以正常部署到独立的Tomcat服务器中。</li>
+</ul>
+<h3 id="生成可执行war包"><a class="markdownIt-Anchor" href="#生成可执行war包"></a> 生成可执行war包</h3>
+<p>如果要生成可执行的war包，用java -jar xxx.war启动，则需要把Tomcat的依赖项的<scope>去掉，然后配置maven-war-plugin如下：</p>
+<pre><code class="highlight plaintext">
+&lt;project ...&gt;
+    ...
+        &lt;build&gt;
+                &lt;finalName&gt;hello&lt;/finalName&gt;
+                &lt;plugins&gt;
+                        &lt;plugin&gt;
+                                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                                &lt;artifactId&gt;maven-war-plugin&lt;/artifactId&gt;
+                                &lt;version&gt;3.3.2&lt;/version&gt;
+                                &lt;configuration&gt;
+                                        &lt;!-- 复制classes到war包根目录 --&gt;
+                                        &lt;webResources&gt;
+                                                &lt;resource&gt;
+                                                        &lt;directory&gt;$&#123;project.build.directory&#125;/classes&lt;/directory&gt;
+                                                &lt;/resource&gt;
+                                        &lt;/webResources&gt;
+                                        &lt;archiveClasses&gt;true&lt;/archiveClasses&gt;
+                                        &lt;archive&gt;
+                                                &lt;manifest&gt;
+                                                        &lt;!-- 添加Class-Path --&gt;
+                                                        &lt;addClasspath&gt;true&lt;/addClasspath&gt;
+                                                        &lt;!-- Classpath前缀 --&gt;
+                                                        &lt;classpathPrefix&gt;tmp-webapp/WEB-INF/lib/&lt;/classpathPrefix&gt;
+                                                        &lt;!-- main启动类 --&gt;
+                                                        &lt;mainClass&gt;com.itranswarp.learnjava.Main&lt;/mainClass&gt;
+                                                &lt;/manifest&gt;
+                                        &lt;/archive&gt;
+                                &lt;/configuration&gt;
+                        &lt;/plugin&gt;
+                &lt;/plugins&gt;
+        &lt;/build&gt;&lt;/project&gt;</code></pre>
+<p>生成的war包结构如下：</p>
+<p>之所以要把编译后的classes复制到war包根目录，是因为用java -jar hello.war启动时，JVM的Class Loader不会查找WEB-INF/lib的jar包，而是直接从hello.war的根目录查找。MANIFEST.MF生成的内容如下：</p>
+<pre><code class="highlight plaintext">Main-Class: com.itranswarp.learnjava.Main
+Class-Path: tmp-webapp/WEB-INF/lib/tomcat-embed-core-10.1.1.jar tmp-weba
+ pp/WEB-INF/lib/tomcat-annotations-api-10.1.1.jar tmp-webapp/WEB-INF/lib
+ /tomcat-embed-jasper-10.1.1.jar tmp-webapp/WEB-INF/lib/tomcat-embed-el-
+ 10.1.1.jar tmp-webapp/WEB-INF/lib/ecj-3.18.0.jar</code></pre>
+<p>注意到Class-Path的路径，这里定义的Class-Path相当于java -cp指定的Classpath，JVM不会在一个jar包中查找jar包内的jar包，它只会在文件系统中搜索，因此，我们要修改main()方法，在执行main()方法时，先自解压war包，再启动Tomcat：</p>
+<pre><code class="highlight plaintext">
+public class Main &#123;
+    public static void main(String[] args) throws Exception &#123;
+        // 判定是否从jar/war启动:
+        String jarFile = Main.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+        boolean isJarFile = jarFile.endsWith(&quot;.war&quot;) || jarFile.endsWith(&quot;.jar&quot;);
+        // 定位webapp根目录:
+        String webDir = isJarFile ? &quot;tmp-webapp&quot; : &quot;src/main/webapp&quot;;
+        if (isJarFile) &#123;
+            // 解压到tmp-webapp:
+            Path baseDir = Paths.get(webDir).normalize().toAbsolutePath();
+            if (Files.isDirectory(baseDir)) &#123;
+                Files.delete(baseDir);
+            &#125;
+            Files.createDirectories(baseDir);
+            System.out.println(&quot;extract to: &quot; + baseDir);
+            try (JarFile jar = new JarFile(jarFile)) &#123;
+                List&lt;JarEntry&gt; entries = jar.stream().sorted(Comparator.comparing(JarEntry::getName))
+                        .collect(Collectors.toList());
+                for (JarEntry entry : entries) &#123;
+                    Path res = baseDir.resolve(entry.getName());
+                    if (!entry.isDirectory()) &#123;
+                        System.out.println(res);
+                        Files.createDirectories(res.getParent());
+                        Files.copy(jar.getInputStream(entry), res);
+                    &#125;
+                &#125;
+            &#125;
+            // JVM退出时自动删除tmp-webapp:
+            Runtime.getRuntime().addShutdownHook(new Thread(() -&gt; &#123;
+                try &#123;
+                    Files.walk(baseDir).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+                &#125; catch (IOException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;));
+        &#125;
+        // 启动Tomcat:
+        TomcatRunner.run(webDir, isJarFile ? &quot;tmp-webapp&quot; : &quot;target/classes&quot;);
+    &#125;
+&#125;
+
+// Tomcat启动类:class TomcatRunner &#123;
+    public static void run(String webDir, String baseDir) throws Exception &#123;
+        Tomcat tomcat = new Tomcat();
+        tomcat.setPort(Integer.getInteger(&quot;port&quot;, 8080));
+        tomcat.getConnector();
+        Context ctx = tomcat.addWebapp(&quot;&quot;, new File(webDir).getAbsolutePath());
+        WebResourceRoot resources = new StandardRoot(ctx);
+        resources.addPreResources(new DirResourceSet(resources, &quot;/WEB-INF/classes&quot;, new File(baseDir).getAbsolutePath(), &quot;/&quot;));
+        ctx.setResources(resources);
+        tomcat.start();
+        tomcat.getServer().await();
+    &#125;
+&#125;</code></pre>
+<p>现在，执行java -jar hello.war时，JVM先定位hello.war的Main类，运行main()，自动解压后，文件系统目录如下：</p>
+<p>解压后的目录结构和我们在MANIFEST.MF中设定的Class-Path一致，因此，JVM能顺利加载Tomcat的jar包，然后运行Tomcat，启动Web App。</p>
+<p>编写可执行的jar或者war需要注意的几点：</p>
+<ul>
+<li>必须在MANIFEST.MF中指定Main-Class和Class-Path；</li>
+<li>Main必须能在jar/war包的根目录下被JVM的Class Loader加载；</li>
+<li>Main负责解压jar/war，解压后的目录结构与MANIFEST.MF中设定的Class-Path一致；</li>
+<li>Main不能引用任何解压后才能被加载的类，例如org.apache.catalina.startup.Tomcat。<br />
+对SpringBoot有所了解的童鞋可能知道，SpringBoot也支持在main()方法中一行代码直接启动Tomcat，并且还能方便地更换成Jetty等其他服务器。它的启动方式和我们介绍的是基本一样的，后续涉及到SpringBoot的部分我们还会详细讲解。</li>
+</ul>
+<h2 id="servlet进阶"><a class="markdownIt-Anchor" href="#servlet进阶"></a> servlet进阶</h2>
+<p>一个Web App就是由一个或多个Servlet组成的，每个Servlet通过注解说明自己能处理的路径。例如：</p>
+<pre><code class="highlight plaintext">
+@WebServlet(urlPatterns = &quot;/hello&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    ...
+&#125;</code></pre>
+<p>上述HelloServlet能处理/hello这个路径的请求。</p>
+<blockquote>
+<p>早期的Servlet需要在web.xml中配置映射路径，但最新Servlet版本只需要通过注解就可以完成映射。</p>
+</blockquote>
+<p>因为浏览器发送请求的时候，还会有请求方法（HTTP Method）：即GET、POST、PUT等不同类型的请求。因此，要处理GET请求，我们要覆写doGet()方法：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/hello&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        ...
+    &#125;
+&#125;</code></pre>
+<p>类似的，要处理POST请求，就需要覆写doPost()方法。</p>
+<p>如果没有覆写doPost()方法，那么HelloServlet能不能处理POST /hello请求呢？</p>
+<p>我们查看一下HttpServlet的doPost()方法就一目了然了：它会直接返回405或400错误。</p>
+<p>因此，一个Servlet如果映射到/hello，那么所有请求方法都会由这个Servlet处理，至于能不能返回200成功响应，要看有没有覆写对应的请求方法。</p>
+<p>一个Webapp完全可以有多个Servlet，分别映射不同的路径。例如：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/hello&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    ...
+&#125;
+@WebServlet(urlPatterns = &quot;/signin&quot;)
+public class SignInServlet extends HttpServlet &#123;
+    ...
+&#125;
+@WebServlet(urlPatterns = &quot;/&quot;)
+public class IndexServlet extends HttpServlet &#123;
+    ...
+&#125;</code></pre>
+<p>浏览器发出的HTTP请求总是由Web Server先接收，然后，根据Servlet配置的映射，不同的路径转发到不同的Servlet：</p>
+<p>这种根据路径转发的功能我们一般称为Dispatch。映射到/的IndexServlet比较特殊，它实际上会接收所有未匹配的路径，相当于<code>/*</code>，因为Dispatcher的逻辑可以用伪代码实现如下：</p>
+<pre><code class="highlight plaintext">String path = ...
+if (path.equals(&quot;/hello&quot;)) &#123;
+    dispatchTo(helloServlet);
+&#125; else if (path.equals(&quot;/signin&quot;)) &#123;
+    dispatchTo(signinServlet);
+&#125; else &#123;
+    // 所有未匹配的路径均转发到&quot;/&quot;
+    dispatchTo(indexServlet);
+&#125;</code></pre>
+<p>所以我们在浏览器输入一个<a target="_blank" rel="noopener" href="http://localhost:8080/abc%E4%B9%9F%E4%BC%9A%E7%9C%8B%E5%88%B0IndexServlet%E7%94%9F%E6%88%90%E7%9A%84%E9%A1%B5%E9%9D%A2%E3%80%82">http://localhost:8080/abc也会看到IndexServlet生成的页面。</a></p>
+<h3 id="httpservletrequest"><a class="markdownIt-Anchor" href="#httpservletrequest"></a> HttpServletRequest</h3>
+<p>HttpServletRequest封装了一个HTTP请求，它实际上是从ServletRequest继承而来。最早设计Servlet时，设计者希望Servlet不仅能处理HTTP，也能处理类似SMTP等其他协议，因此，单独抽出了ServletRequest接口，但实际上除了HTTP外，并没有其他协议会用Servlet处理，所以这是一个过度设计。</p>
+<p>我们通过HttpServletRequest提供的接口方法可以拿到HTTP请求的几乎全部信息，常用的方法有：</p>
+<ul>
+<li>getMethod()：返回请求方法，例如，“GET”，“POST”；</li>
+<li>getRequestURI()：返回请求路径，但不包括请求参数，例如，“/hello”；</li>
+<li>getQueryString()：返回请求参数，例如，“name=Bob&amp;a=1&amp;b=2”；</li>
+<li>getParameter(name)：返回请求参数，GET请求从URL读取参数，POST请求从Body中读取参数；</li>
+<li>getContentType()：获取请求Body的类型，例如，“application/x-www-form-urlencoded”；</li>
+<li>getContextPath()：获取当前Webapp挂载的路径，对于ROOT来说，总是返回空字符串&quot;&quot;；</li>
+<li>getCookies()：返回请求携带的所有Cookie；</li>
+<li>getHeader(name)：获取指定的Header，对Header名称不区分大小写；</li>
+<li>getHeaderNames()：返回所有Header名称；</li>
+<li>getInputStream()：如果该请求带有HTTP Body，该方法将打开一个输入流用于读取Body；</li>
+<li>getReader()：和getInputStream()类似，但打开的是Reader；</li>
+<li>getRemoteAddr()：返回客户端的IP地址；</li>
+<li>getScheme()：返回协议类型，例如，“http”，“https”；</li>
+</ul>
+<p>此外，HttpServletRequest还有两个方法：setAttribute()和getAttribute()，可以给当前HttpServletRequest对象附加多个Key-Value，相当于把HttpServletRequest当作一个Map&lt;String, Object&gt;使用。</p>
+<p>调用HttpServletRequest的方法时，注意务必阅读接口方法的文档说明，因为有的方法会返回null，例如getQueryString()的文档就写了：</p>
+<pre><code class="highlight plaintext">... This method returns null if the URL does not have a query string...</code></pre>
+<h3 id="httpservletresponse"><a class="markdownIt-Anchor" href="#httpservletresponse"></a> HttpServletResponse</h3>
+<p>HttpServletResponse封装了一个HTTP响应。由于HTTP响应必须先发送Header，再发送Body，所以，操作HttpServletResponse对象时，必须先调用设置Header的方法，最后调用发送Body的方法。</p>
+<p>常用的设置Header的方法有：</p>
+<ul>
+<li>setStatus(sc)：设置响应代码，默认是200；</li>
+<li>setContentType(type)：设置Body的类型，例如，“text/html”；</li>
+<li>setCharacterEncoding(charset)：设置字符编码，例如，“UTF-8”；</li>
+<li>setHeader(name, value)：设置一个Header的值；</li>
+<li>addCookie(cookie)：给响应添加一个Cookie；</li>
+<li>addHeader(name, value)：给响应添加一个Header，因为HTTP协议允许有多个相同的Header；</li>
+</ul>
+<p>写入响应时，需要通过getOutputStream()获取写入流，或者通过getWriter()获取字符流，二者只能获取其中一个。</p>
+<p>写入响应前，无需设置setContentLength()，因为底层服务器会根据写入的字节数自动设置，如果写入的数据量很小，实际上会先写入缓冲区，如果写入的数据量很大，服务器会自动采用Chunked编码让浏览器能识别数据结束符而不需要设置Content-Length头。但是，写入完毕后调用flush()却是必须的，因为大部分Web服务器都基于HTTP/1.1协议，会复用TCP连接。如果没有调用flush()，将导致缓冲区的内容无法及时发送到客户端。</p>
+<p>此外，写入完毕后千万不要调用close()，原因同样是因为会复用TCP连接，如果关闭写入流，将关闭TCP连接，使得Web服务器无法复用此TCP连接。</p>
+<blockquote>
+<p>写入完毕后对输出流调用flush()而不是close()方法！</p>
+</blockquote>
+<p>有了HttpServletRequest和HttpServletResponse这两个高级接口，我们就不需要直接处理HTTP协议。注意到具体的实现类是由各服务器提供的，而我们编写的Web应用程序只关心接口方法，并不需要关心具体实现的子类。</p>
+<h3 id="servlet多线程模型"><a class="markdownIt-Anchor" href="#servlet多线程模型"></a> servlet多线程模型</h3>
+<p>一个Servlet类在服务器中只有一个实例，但对于每个HTTP请求，Web服务器会使用多线程执行请求。因此，一个Servlet的doGet()、doPost()等处理请求的方法是多线程并发执行的。如果Servlet中定义了字段，要注意多线程并发访问的问题：</p>
+<pre><code class="highlight plaintext">public class HelloServlet extends HttpServlet &#123;
+    private Map&lt;String, String&gt; map = new ConcurrentHashMap&lt;&gt;();
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 注意读写map字段是多线程并发的:
+        this.map.put(key, value);
+    &#125;
+&#125;</code></pre>
+<p>对于每个请求，Web服务器会创建唯一的HttpServletRequest和HttpServletResponse实例，因此，HttpServletRequest和HttpServletResponse实例只有在当前处理线程中有效，它们总是局部变量，不存在多线程共享的问题。</p>
+<h2 id="重定向与转发"><a class="markdownIt-Anchor" href="#重定向与转发"></a> 重定向与转发</h2>
+<h3 id="redirect"><a class="markdownIt-Anchor" href="#redirect"></a> Redirect</h3>
+<p>重定向是指当浏览器请求一个URL时，服务器返回一个重定向指令，告诉浏览器地址已经变了，麻烦使用新的URL再重新发送新请求。</p>
+<p>例如，我们已经编写了一个能处理/hello的HelloServlet，如果收到的路径为/hi，希望能重定向到/hello，可以再编写一个RedirectServlet：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/hi&quot;)
+public class RedirectServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 构造重定向的路径:
+        String name = req.getParameter(&quot;name&quot;);
+        String redirectToUrl = &quot;/hello&quot; + (name == null ? &quot;&quot; : &quot;?name=&quot; + name);
+        // 发送重定向响应:
+        resp.sendRedirect(redirectToUrl);
+    &#125;
+&#125;</code></pre>
+<p>如果浏览器发送GET /hi请求，RedirectServlet将处理此请求。由于RedirectServlet在内部又发送了重定向响应，因此，浏览器会收到如下响应：</p>
+<pre><code class="highlight plaintext">HTTP/1.1 302 Found
+Location: /hello</code></pre>
+<p>当浏览器收到302响应后，它会立刻根据Location的指示发送一个新的GET /hello请求，这个过程就是重定向：</p>
+<p>观察Chrome浏览器的网络请求，可以看到两次HTTP请求：</p>
+<p>并且浏览器的地址栏路径自动更新为/hello。</p>
+<p>重定向有两种：一种是302响应，称为临时重定向，一种是301响应，称为永久重定向。两者的区别是，如果服务器发送301永久重定向响应，浏览器会缓存/hi到/hello这个重定向的关联，下次请求/hi的时候，浏览器就直接发送/hello请求了。</p>
+<p>重定向有什么作用？重定向的目的是当Web应用升级后，如果请求路径发生了变化，可以将原来的路径重定向到新路径，从而避免浏览器请求原路径找不到资源。</p>
+<p>HttpServletResponse提供了快捷的redirect()方法实现302重定向。如果要实现301永久重定向，可以这么写：</p>
+<pre><code class="highlight plaintext">resp.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY); // 301
+resp.setHeader(&quot;Location&quot;, &quot;/hello&quot;);</code></pre>
+<h3 id="forward"><a class="markdownIt-Anchor" href="#forward"></a> Forward</h3>
+<p>Forward是指内部转发。当一个Servlet处理请求的时候，它可以决定自己不继续处理，而是转发给另一个Servlet处理。</p>
+<p>例如，我们已经编写了一个能处理/hello的HelloServlet，继续编写一个能处理/morning的ForwardServlet：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/morning&quot;)
+public class ForwardServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        req.getRequestDispatcher(&quot;/hello&quot;).forward(req, resp);
+    &#125;
+&#125;</code></pre>
+<p>ForwardServlet在收到请求后，它并不自己发送响应，而是把请求和响应都转发给路径为/hello的Servlet，即下面的代码：</p>
+<p>req.getRequestDispatcher(“/hello”).forward(req, resp);</p>
+<p>后续请求的处理实际上是由HelloServlet完成的。这种处理方式称为转发（Forward），我们用流程图画出来如下：</p>
+<p>转发和重定向的区别在于，转发是在Web服务器内部完成的，对浏览器来说，它只发出了一个HTTP请求：</p>
+<p>注意到使用转发的时候，浏览器的地址栏路径仍然是/morning，浏览器并不知道该请求在Web服务器内部实际上做了一次转发。</p>
+<h2 id="使用session和cookie"><a class="markdownIt-Anchor" href="#使用session和cookie"></a> 使用Session和Cookie</h2>
+<p>在Web应用程序中，我们经常要跟踪用户身份。当一个用户登录成功后，如果他继续访问其他页面，Web程序如何才能识别出该用户身份？</p>
+<p>因为HTTP协议是一个无状态协议，即Web应用程序无法区分收到的两个HTTP请求是否是同一个浏览器发出的。为了跟踪用户状态，服务器可以向浏览器分配一个唯一ID，并以Cookie的形式发送到浏览器，浏览器在后续访问时总是附带此Cookie，这样，服务器就可以识别用户身份。</p>
+<h3 id="session"><a class="markdownIt-Anchor" href="#session"></a> Session</h3>
+<p>我们把这种基于唯一ID识别用户身份的机制称为Session。每个用户第一次访问服务器后，会自动获得一个Session ID。如果用户在一段时间内没有访问服务器，那么Session会自动失效，下次即使带着上次分配的Session ID访问，服务器也认为这是一个新用户，会分配新的Session ID。</p>
+<p>JavaEE的Servlet机制内建了对Session的支持。我们以登录为例，当一个用户登录成功后，我们就可以把这个用户的名字放入一个HttpSession对象，以便后续访问其他页面的时候，能直接从HttpSession取出用户名：</p>
+<pre><code class="highlight plaintext">
+@WebServlet(urlPatterns = &quot;/signin&quot;)
+public class SignInServlet extends HttpServlet &#123;
+    // 模拟一个数据库:
+    private Map&lt;String, String&gt; users = Map.of(&quot;bob&quot;, &quot;bob123&quot;, &quot;alice&quot;, &quot;alice123&quot;, &quot;tom&quot;, &quot;tomcat&quot;);
+
+    // GET请求时显示登录页:
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        resp.setContentType(&quot;text/html&quot;);
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;h1&gt;Sign In&lt;/h1&gt;&quot;);
+        pw.write(&quot;&lt;form action=\&quot;/signin\&quot; method=\&quot;post\&quot;&gt;&quot;);
+        pw.write(&quot;&lt;p&gt;Username: &lt;input name=\&quot;username\&quot;&gt;&lt;/p&gt;&quot;);
+        pw.write(&quot;&lt;p&gt;Password: &lt;input name=\&quot;password\&quot; type=\&quot;password\&quot;&gt;&lt;/p&gt;&quot;);
+        pw.write(&quot;&lt;p&gt;&lt;button type=\&quot;submit\&quot;&gt;Sign In&lt;/button&gt; &lt;a href=\&quot;/\&quot;&gt;Cancel&lt;/a&gt;&lt;/p&gt;&quot;);
+        pw.write(&quot;&lt;/form&gt;&quot;);
+        pw.flush();
+    &#125;
+
+    // POST请求时处理用户登录:
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        String name = req.getParameter(&quot;username&quot;);
+        String password = req.getParameter(&quot;password&quot;);
+        String expectedPassword = users.get(name.toLowerCase());
+        if (expectedPassword != null &amp;&amp; expectedPassword.equals(password)) &#123;
+            // 登录成功:
+            req.getSession().setAttribute(&quot;user&quot;, name);
+            resp.sendRedirect(&quot;/&quot;);
+        &#125; else &#123;
+            resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>上述SignInServlet在判断用户登录成功后，立刻将用户名放入当前HttpSession中：</p>
+<pre><code class="highlight plaintext">HttpSession session = req.getSession();
+session.setAttribute(&quot;user&quot;, name);</code></pre>
+<p>在IndexServlet中，可以从HttpSession取出用户名：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/&quot;)
+public class IndexServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 从HttpSession获取当前用户名:
+        String user = (String) req.getSession().getAttribute(&quot;user&quot;);
+        resp.setContentType(&quot;text/html&quot;);
+        resp.setCharacterEncoding(&quot;UTF-8&quot;);
+        resp.setHeader(&quot;X-Powered-By&quot;, &quot;JavaEE Servlet&quot;);
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;h1&gt;Welcome, &quot; + (user != null ? user : &quot;Guest&quot;) + &quot;&lt;/h1&gt;&quot;);
+        if (user == null) &#123;
+            // 未登录，显示登录链接:
+            pw.write(&quot;&lt;p&gt;&lt;a href=\&quot;/signin\&quot;&gt;Sign In&lt;/a&gt;&lt;/p&gt;&quot;);
+        &#125; else &#123;
+            // 已登录，显示登出链接:
+            pw.write(&quot;&lt;p&gt;&lt;a href=\&quot;/signout\&quot;&gt;Sign Out&lt;/a&gt;&lt;/p&gt;&quot;);
+        &#125;
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>如果用户已登录，可以通过访问/signout登出。登出逻辑就是从HttpSession中移除用户相关信息：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/signout&quot;)
+public class SignOutServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 从HttpSession移除用户名:
+        req.getSession().removeAttribute(&quot;user&quot;);
+        resp.sendRedirect(&quot;/&quot;);
+    &#125;
+&#125;</code></pre>
+<p>对于Web应用程序来说，我们总是通过HttpSession这个高级接口访问当前Session。如果要深入理解Session原理，可以认为Web服务器在内存中自动维护了一个ID到HttpSession的映射表，我们可以用下图表示：</p>
+<p>而服务器识别Session的关键就是依靠一个名为JSESSIONID的Cookie。在Servlet中第一次调用req.getSession()时，Servlet容器自动创建一个Session ID，然后通过一个名为JSESSIONID的Cookie发送给浏览器：</p>
+<p>这里要注意的几点是：</p>
+<ul>
+<li>JSESSIONID是由Servlet容器自动创建的，目的是维护一个浏览器会话，它和我们的登录逻辑没有关系；</li>
+<li>登录和登出的业务逻辑是我们自己根据HttpSession是否存在一个&quot;user&quot;的Key判断的，登出后，Session ID并不会改变；</li>
+<li>即使没有登录功能，仍然可以使用HttpSession追踪用户，例如，放入一些用户配置信息等。</li>
+</ul>
+<p>除了使用Cookie机制可以实现Session外，还可以通过隐藏表单、URL末尾附加ID来追踪Session。这些机制很少使用，最常用的Session机制仍然是Cookie。</p>
+<p>使用Session时，由于服务器把所有用户的Session都存储在内存中，如果遇到内存不足的情况，就需要把部分不活动的Session序列化到磁盘上，这会大大降低服务器的运行效率，因此，放入Session的对象要小，通常我们放入一个简单的User对象就足够了：</p>
+<pre><code class="highlight plaintext">public class User &#123;
+    public long id; // 唯一标识
+    public String email;
+    public String name;
+&#125;</code></pre>
+<p>在使用多台服务器构成集群时，使用Session会遇到一些额外的问题。通常，多台服务器集群使用反向代理作为网站入口：</p>
+<p>如果多台Web Server采用无状态集群，那么反向代理总是以轮询方式将请求依次转发给每台Web Server，这会造成一个用户在Web Server 1存储的Session信息，在Web Server 2和3上并不存在，即从Web Server 1登录后，如果后续请求被转发到Web Server 2或3，那么用户看到的仍然是未登录状态。</p>
+<p>要解决这个问题，方案一是在所有Web Server之间进行Session复制，但这样会严重消耗网络带宽，并且，每个Web Server的内存均存储所有用户的Session，内存使用率很低。</p>
+<p>另一个方案是采用粘滞会话（Sticky Session）机制，即反向代理在转发请求的时候，总是根据JSESSIONID的值判断，相同的JSESSIONID总是转发到固定的Web Server，但这需要反向代理的支持。</p>
+<p>无论采用何种方案，使用Session机制，会使得Web Server的集群很难扩展，因此，<strong>Session适用于中小型Web应用程序。对于大型Web应用程序来说，通常需要避免使用Session机制</strong>。</p>
+<h3 id="cookie"><a class="markdownIt-Anchor" href="#cookie"></a> Cookie</h3>
+<p>实际上，Servlet提供的HttpSession本质上就是通过一个名为JSESSIONID的Cookie来跟踪用户会话的。除了这个名称外，其他名称的Cookie我们可以任意使用。</p>
+<p>如果我们想要设置一个Cookie，例如，记录用户选择的语言，可以编写一个LanguageServlet：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/pref&quot;)
+public class LanguageServlet extends HttpServlet &#123;
+
+    private static final Set&lt;String&gt; LANGUAGES = Set.of(&quot;en&quot;, &quot;zh&quot;);
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        String lang = req.getParameter(&quot;lang&quot;);
+        if (LANGUAGES.contains(lang)) &#123;
+            // 创建一个新的Cookie:
+            Cookie cookie = new Cookie(&quot;lang&quot;, lang);
+            // 该Cookie生效的路径范围:
+            cookie.setPath(&quot;/&quot;);
+            // 该Cookie有效期:
+            cookie.setMaxAge(8640000); // 8640000秒=100天
+            // 将该Cookie添加到响应:
+            resp.addCookie(cookie);
+        &#125;
+        resp.sendRedirect(&quot;/&quot;);
+    &#125;
+&#125;</code></pre>
+<p>创建一个新Cookie时，除了指定名称和值以外，通常需要设置setPath(“/”)，浏览器根据此前缀决定是否发送Cookie。如果一个Cookie调用了setPath(“/user/”)，那么浏览器只有在请求以/user/开头的路径时才会附加此Cookie。通过setMaxAge()设置Cookie的有效期，单位为秒，最后通过resp.addCookie()把它添加到响应。</p>
+<p>如果<strong>访问的是https网页</strong>，还需要调用setSecure(true) ，否则浏览器不会发送该Cookie。</p>
+<p>因此，务必注意：浏览器在请求某个URL时，是否携带指定的Cookie，取决于Cookie是否满足以下所有要求：</p>
+<ul>
+<li>URL前缀是设置Cookie时的Path；</li>
+<li>
+<ul>
+<li>Cookie在有效期内；</li>
+</ul>
+</li>
+<li>
+<ul>
+<li>Cookie设置了secure时必须以https访问。</li>
+</ul>
+</li>
+</ul>
+<p>我们可以在浏览器看到服务器发送的Cookie：</p>
+<p>如果我们要读取Cookie，例如，在IndexServlet中，读取名为lang的Cookie以获取用户设置的语言，可以写一个方法如下：</p>
+<pre><code class="highlight plaintext">private String parseLanguageFromCookie(HttpServletRequest req) &#123;
+    // 获取请求附带的所有Cookie:
+    Cookie[] cookies = req.getCookies();
+    // 如果获取到Cookie:
+    if (cookies != null) &#123;
+        // 循环每个Cookie:
+        for (Cookie cookie : cookies) &#123;
+            // 如果Cookie名称为lang:
+            if (cookie.getName().equals(&quot;lang&quot;)) &#123;
+                // 返回Cookie的值:
+                return cookie.getValue();
+            &#125;
+        &#125;
+    &#125;
+    // 返回默认值:
+    return &quot;en&quot;;
+&#125;</code></pre>
+<p>可见，读取Cookie主要依靠遍历HttpServletRequest附带的所有Cookie。</p>
+<h3 id="分布式"><a class="markdownIt-Anchor" href="#分布式"></a> 分布式</h3>
+<p>分布式一般不使用session机制，一般使用jwt机制</p>
+<h2 id="mvc"><a class="markdownIt-Anchor" href="#mvc"></a> MVC</h2>
+<p>在UserServlet中，我们可以从数据库读取User、School等信息，然后，把读取到的JavaBean先放到HttpServletRequest中，再通过forward()传给user.jsp处理：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/user&quot;)
+public class UserServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 假装从数据库读取:
+        School school = new School(&quot;No.1 Middle School&quot;, &quot;101 South Street&quot;);
+        User user = new User(123, &quot;Bob&quot;, school);
+        // 放入Request中:
+        req.setAttribute(&quot;user&quot;, user);
+        // forward给user.jsp:
+        req.getRequestDispatcher(&quot;/WEB-INF/user.jsp&quot;).forward(req, resp);
+    &#125;
+&#125;</code></pre>
+<p>在user.jsp中，我们只负责展示相关JavaBean的信息，不需要编写访问数据库等复杂逻辑：</p>
+<pre><code class="highlight plaintext">&lt;%@ page import=&quot;com.itranswarp.learnjava.bean.*&quot;%&gt;
+&lt;%
+    User user = (User) request.getAttribute(&quot;user&quot;);
+%&gt;
+&lt;html&gt;&lt;head&gt;
+    &lt;title&gt;Hello World - JSP&lt;/title&gt;&lt;/head&gt;&lt;body&gt;
+    &lt;h1&gt;Hello &lt;%= user.name %&gt;!&lt;/h1&gt;
+    &lt;p&gt;School Name:
+    &lt;span style=&quot;color:red&quot;&gt;
+        &lt;%= user.school.name %&gt;
+    &lt;/span&gt;
+    &lt;/p&gt;
+    &lt;p&gt;School Address:
+    &lt;span style=&quot;color:red&quot;&gt;
+        &lt;%= user.school.address %&gt;
+    &lt;/span&gt;
+    &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p>请注意几点：</p>
+<p>我们在浏览器访问<a target="_blank" rel="noopener" href="http://localhost:8080/user%EF%BC%8C%E8%AF%B7%E6%B1%82%E9%A6%96%E5%85%88%E7%94%B1UserServlet%E5%A4%84%E7%90%86%EF%BC%8C%E7%84%B6%E5%90%8E%E4%BA%A4%E7%BB%99user.jsp%E6%B8%B2%E6%9F%93%EF%BC%9A">http://localhost:8080/user，请求首先由UserServlet处理，然后交给user.jsp渲染：</a></p>
+<p>我们把UserServlet看作业务逻辑处理，把User看作模型，把user.jsp看作渲染，这种设计模式通常被称为MVC：Model-View-Controller，即UserServlet作为控制器（Controller），User作为模型（Model），user.jsp作为视图（View），整个MVC架构如下：</p>
+<p>使用MVC模式的好处是，Controller专注于业务处理，它的处理结果就是Model。Model可以是一个JavaBean，也可以是一个包含多个对象的Map，Controller只负责把Model传递给View，View只负责把Model给“渲染”出来，这样，三者职责明确，且开发更简单，因为开发Controller时无需关注页面，开发View时无需关心如何创建Model。</p>
+<p>MVC模式广泛地应用在Web页面和传统的桌面程序中，我们在这里通过Servlet和JSP实现了一个简单的MVC模型，但它还不够简洁和灵活，后续我们会介绍更简单的Spring MVC开发。</p>
+<h2 id="手写简单spring-mvc"><a class="markdownIt-Anchor" href="#手写简单spring-mvc"></a> 手写简单Spring MVC</h2>
+<h3 id="引入"><a class="markdownIt-Anchor" href="#引入"></a> 引入</h3>
+<p>通过结合Servlet和JSP的MVC模式，我们可以发挥二者各自的优点：</p>
+<ul>
+<li>Servlet实现业务逻辑；</li>
+<li>JSP实现展示逻辑。</li>
+</ul>
+<p>但是，直接把MVC搭在Servlet和JSP之上还是不太好，原因如下：</p>
+<ul>
+<li>Servlet提供的接口仍然偏底层，需要实现Servlet调用相关接口；</li>
+<li>JSP对页面开发不友好，更好的替代品是模板引擎；</li>
+<li>业务逻辑最好由纯粹的Java类实现，而不是强迫继承自Servlet。</li>
+</ul>
+<p>能不能通过普通的Java类实现MVC的Controller？类似下面的代码：</p>
+<pre><code class="highlight plaintext">public class UserController &#123;
+    @GetMapping(&quot;/signin&quot;)
+    public ModelAndView signin() &#123;
+        ...
+    &#125;
+
+    @PostMapping(&quot;/signin&quot;)
+    public ModelAndView doSignin(SignInBean bean) &#123;
+        ...
+    &#125;
+
+    @GetMapping(&quot;/signout&quot;)
+    public ModelAndView signout(HttpSession session) &#123;
+        ...
+    &#125;
+&#125;</code></pre>
+<p>上面的这个Java类每个方法都对应一个GET或POST请求，方法返回值是ModelAndView，它包含一个View的路径以及一个Model，这样，再由MVC框架处理后返回给浏览器。</p>
+<p>如果是GET请求，我们希望MVC框架能直接把URL参数按方法参数对应起来然后传入：</p>
+<pre><code class="highlight plaintext">@GetMapping(&quot;/hello&quot;)
+public ModelAndView hello(String name) &#123;
+    ...
+&#125;</code></pre>
+<p>如果是POST请求，我们希望MVC框架能直接把Post参数变成一个JavaBean后通过方法参数传入：</p>
+<pre><code class="highlight plaintext">@PostMapping(&quot;/signin&quot;)
+public ModelAndView doSignin(SignInBean bean) &#123;
+    ...
+&#125;</code></pre>
+<p>为了增加灵活性，如果Controller的方法在处理请求时需要访问HttpServletRequest、HttpServletResponse、HttpSession这些实例时，只要方法参数有定义，就可以自动传入：</p>
+<pre><code class="highlight plaintext">@GetMapping(&quot;/signout&quot;)
+public ModelAndView signout(HttpSession session) &#123;
+    ...
+&#125;</code></pre>
+<p>以上就是我们在设计MVC框架时，上层代码所需要的一切信息</p>
+<h3 id="设计mvc框架"><a class="markdownIt-Anchor" href="#设计mvc框架"></a> 设计MVC框架</h3>
+<p>如何设计一个MVC框架？在上文中，我们已经定义了上层代码编写Controller的一切接口信息，并且并不要求实现特定接口，只需返回ModelAndView对象，该对象包含一个View和一个Model。实际上View就是模板的路径，而Model可以用一个Map&lt;String, Object&gt;表示，因此，ModelAndView定义非常简单：</p>
+<pre><code class="highlight plaintext">public class ModelAndView &#123;
+    Map&lt;String, Object&gt; model;
+    String view;
+&#125;</code></pre>
+<p>比较复杂的是我们<strong>需要在MVC框架中创建一个接收所有请求的Servlet，通常我们把它命名为DispatcherServlet</strong>，它总是映射到/，然后，根据不同的Controller的方法定义的@Get或@Post的Path决定调用哪个方法，最后，获得方法返回的ModelAndView后，渲染模板，写入HttpServletResponse，即完成了整个MVC的处理。</p>
+<p>这个MVC的架构如下：</p>
+<p>其中，DispatcherServlet以及如何渲染均由MVC框架实现，在MVC框架之上只需要编写每一个Controller。</p>
+<p>我们来看看如何编写最复杂的DispatcherServlet。首先，我们需要存储请求路径到某个具体方法的映射：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/&quot;)
+public class DispatcherServlet extends HttpServlet &#123;
+    private Map&lt;String, GetDispatcher&gt; getMappings = new HashMap&lt;&gt;();
+    private Map&lt;String, PostDispatcher&gt; postMappings = new HashMap&lt;&gt;();
+&#125;</code></pre>
+<p>处理一个GET请求是通过GetDispatcher对象完成的，它需要如下信息：</p>
+<pre><code class="highlight plaintext">class GetDispatcher &#123;
+    Object instance; // Controller实例
+    Method method; // Controller方法
+    String[] parameterNames; // 方法参数名称
+    Class&lt;?&gt;[] parameterClasses; // 方法参数类型
+&#125;</code></pre>
+<p>有了以上信息，就可以定义invoke()来处理真正的请求：</p>
+<pre><code class="highlight plaintext">
+class GetDispatcher &#123;
+    ...
+    public ModelAndView invoke(HttpServletRequest request, HttpServletResponse response) &#123;
+        Object[] arguments = new Object[parameterClasses.length];
+        for (int i = 0; i &lt; parameterClasses.length; i++) &#123;
+            String parameterName = parameterNames[i];
+            Class&lt;?&gt; parameterClass = parameterClasses[i];
+            if (parameterClass == HttpServletRequest.class) &#123;
+                arguments[i] = request;
+            &#125; else if (parameterClass == HttpServletResponse.class) &#123;
+                arguments[i] = response;
+            &#125; else if (parameterClass == HttpSession.class) &#123;
+                arguments[i] = request.getSession();
+            &#125; else if (parameterClass == int.class) &#123;
+                arguments[i] = Integer.valueOf(getOrDefault(request, parameterName, &quot;0&quot;));
+            &#125; else if (parameterClass == long.class) &#123;
+                arguments[i] = Long.valueOf(getOrDefault(request, parameterName, &quot;0&quot;));
+            &#125; else if (parameterClass == boolean.class) &#123;
+                arguments[i] = Boolean.valueOf(getOrDefault(request, parameterName, &quot;false&quot;));
+            &#125; else if (parameterClass == String.class) &#123;
+                arguments[i] = getOrDefault(request, parameterName, &quot;&quot;);
+            &#125; else &#123;
+                throw new RuntimeException(&quot;Missing handler for type: &quot; + parameterClass);
+            &#125;
+        &#125;
+        //反射
+        return (ModelAndView) this.method.invoke(this.instance, arguments);
+    &#125;
+
+    private String getOrDefault(HttpServletRequest request, String name, String defaultValue) &#123;
+        String s = request.getParameter(name);
+        return s == null ? defaultValue : s;
+    &#125;
+&#125;</code></pre>
+<p>上述代码比较繁琐，但逻辑非常简单，即通过构造某个方法需要的所有参数列表，<strong>使用反射调用该方法</strong>后返回结果。</p>
+<p>类似的，PostDispatcher需要如下信息：</p>
+<pre><code class="highlight plaintext">class PostDispatcher &#123;
+    Object instance; // Controller实例
+    Method method; // Controller方法
+    Class&lt;?&gt;[] parameterClasses; // 方法参数类型
+    ObjectMapper objectMapper; // JSON映射
+&#125;</code></pre>
+<p>和GET请求不同，POST请求严格地来说不能有URL参数，所有数据都应当从Post Body中读取。这里我们为了简化处理，只支持JSON格式的POST请求，这样，把Post数据转化为JavaBean就非常容易。</p>
+<pre><code class="highlight plaintext">class PostDispatcher &#123;
+    ...
+    public ModelAndView invoke(HttpServletRequest request, HttpServletResponse response) &#123;
+        Object[] arguments = new Object[parameterClasses.length];
+        for (int i = 0; i &lt; parameterClasses.length; i++) &#123;
+            Class&lt;?&gt; parameterClass = parameterClasses[i];
+            if (parameterClass == HttpServletRequest.class) &#123;
+                arguments[i] = request;
+            &#125; else if (parameterClass == HttpServletResponse.class) &#123;
+                arguments[i] = response;
+            &#125; else if (parameterClass == HttpSession.class) &#123;
+                arguments[i] = request.getSession();
+            &#125; else &#123;
+                // 读取JSON并解析为JavaBean:
+                BufferedReader reader = request.getReader();
+                arguments[i] = this.objectMapper.readValue(reader, parameterClass);
+            &#125;
+        &#125;
+        return (ModelAndView) this.method.invoke(instance, arguments);
+    &#125;
+&#125;</code></pre>
+<p>最后，我们来实现整个DispatcherServlet的处理流程，以doGet()为例：</p>
+<pre><code class="highlight plaintext">public class DispatcherServlet extends HttpServlet &#123;
+    ...
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        resp.setContentType(&quot;text/html&quot;);
+        resp.setCharacterEncoding(&quot;UTF-8&quot;);
+        String path = req.getRequestURI().substring(req.getContextPath().length());
+        // 根据路径查找GetDispatcher:
+        GetDispatcher dispatcher = this.getMappings.get(path);
+        if (dispatcher == null) &#123;
+            // 未找到返回404:
+            resp.sendError(404);
+            return;
+        &#125;
+        // 调用Controller方法获得返回值:
+        ModelAndView mv = dispatcher.invoke(req, resp);
+        // 允许返回null:
+        if (mv == null) &#123;
+            return;
+        &#125;
+        // 允许返回`redirect:`开头的view表示重定向:
+        if (mv.view.startsWith(&quot;redirect:&quot;)) &#123;
+            resp.sendRedirect(mv.view.substring(9));
+            return;
+        &#125;
+        // 将模板引擎渲染的内容写入响应:
+        PrintWriter pw = resp.getWriter();
+        this.viewEngine.render(mv, pw);
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>这里有几个小改进：</p>
+<ul>
+<li>允许Controller方法返回null，表示内部已自行处理完毕；</li>
+<li>允许Controller方法返回以redirect:开头的view名称，表示一个重定向。</li>
+</ul>
+<p>这样使得上层代码编写更灵活。例如，一个显示用户资料的请求可以这样写：</p>
+<pre><code class="highlight plaintext">@GetMapping(&quot;/user/profile&quot;)
+public ModelAndView profile(HttpServletResponse response, HttpSession session) &#123;
+    User user = (User) session.getAttribute(&quot;user&quot;);
+    if (user == null) &#123;
+        // 未登录，跳转到登录页:
+        return new ModelAndView(&quot;redirect:/signin&quot;);
+    &#125;
+    if (!user.isManager()) &#123;
+        // 权限不够，返回403:
+        response.sendError(403);
+        return null;
+    &#125;
+    return new ModelAndView(&quot;/profile.html&quot;, Map.of(&quot;user&quot;, user));
+&#125;</code></pre>
+<p>最后一步是在DispatcherServlet的init()方法中初始化所有Get和Post的映射，以及用于渲染的模板引擎：</p>
+<pre><code class="highlight plaintext">public class DispatcherServlet extends HttpServlet &#123;
+    private Map&lt;String, GetDispatcher&gt; getMappings = new HashMap&lt;&gt;();
+    private Map&lt;String, PostDispatcher&gt; postMappings = new HashMap&lt;&gt;();
+    private ViewEngine viewEngine;
+
+    @Override
+    public void init() throws ServletException &#123;
+        this.getMappings = scanGetInControllers();
+        this.postMappings = scanPostInControllers();
+        this.viewEngine = new ViewEngine(getServletContext());
+    &#125;
+    ...
+&#125;</code></pre>
+<p>如何扫描所有Controller以获取所有标记有@GetMapping和@PostMapping的方法？当然是使用反射了。虽然代码比较繁琐，但我们相信各位童鞋可以轻松实现。</p>
+<p>这样，整个MVC框架就搭建完毕。</p>
+<h3 id="实现渲染"><a class="markdownIt-Anchor" href="#实现渲染"></a> 实现渲染</h3>
+<p>有的童鞋对如何使用模板引擎进行渲染有疑问，即如何实现上述的ViewEngine？其实ViewEngine非常简单，只需要实现一个简单的render()方法：</p>
+<pre><code class="highlight plaintext">public class ViewEngine &#123;
+    public void render(ModelAndView mv, Writer writer) throws IOException &#123;
+        String view = mv.view;
+        Map&lt;String, Object&gt; model = mv.model;
+        // 根据view找到模板文件:
+        Template template = getTemplateByPath(view);
+        // 渲染并写入Writer:
+        template.write(writer, model);
+    &#125;
+&#125;</code></pre>
+<p>Java有很多开源的模板引擎，常用的有：</p>
+<ul>
+<li>Thymeleaf</li>
+<li>FreeMarker</li>
+<li>Velocity</li>
+</ul>
+<p>他们的用法都大同小异。这里我们推荐一个使用Jinja语法的模板引擎Pebble，它的特点是语法简单，支持模板继承，编写出来的模板类似：</p>
+<pre><code class="highlight plaintext">&lt;html&gt;&lt;body&gt;
+  &lt;ul&gt;
+  &#123;% for user in users %&#125;
+    &lt;li&gt;&lt;a href=&quot;&#123;&#123; user.url &#125;&#125;&quot;&gt;&#123;&#123; user.username &#125;&#125;&lt;/a&gt;&lt;/li&gt;
+  &#123;% endfor %&#125;
+  &lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</code></pre>
+<p>使用Pebble渲染只需要如下几行代码：</p>
+<pre><code class="highlight plaintext">public class ViewEngine &#123;
+    private final PebbleEngine engine;
+
+    public ViewEngine(ServletContext servletContext) &#123;
+        // 定义一个ServletLoader用于加载模板:
+        ServletLoader loader = new ServletLoader(servletContext);
+        // 模板编码:
+        loader.setCharset(&quot;UTF-8&quot;);
+        // 模板前缀，这里默认模板必须放在`/WEB-INF/templates`目录:
+        loader.setPrefix(&quot;/WEB-INF/templates&quot;);
+        // 模板后缀:
+        loader.setSuffix(&quot;&quot;);
+        // 创建Pebble实例:
+        this.engine = new PebbleEngine.Builder()
+            .autoEscaping(true) // 默认打开HTML字符转义，防止XSS攻击
+            .cacheActive(false) // 禁用缓存使得每次修改模板可以立刻看到效果
+            .loader(loader).build();
+    &#125;
+
+    public void render(ModelAndView mv, Writer writer) throws IOException &#123;
+        // 查找模板:
+        PebbleTemplate template = this.engine.getTemplate(mv.view);
+        // 渲染:
+        template.evaluate(writer, mv.model);
+    &#125;
+&#125;</code></pre>
+<p>最后我们来看看整个工程的结构：</p>
+<p>其中，framework包是MVC的框架，完全可以单独编译后作为一个Maven依赖引入，controller包才是我们需要编写的业务逻辑。</p>
+<p>我们还硬性规定模板必须放在webapp/WEB-INF/templates目录下，静态文件必须放在webapp/static目录下，因此，为了便于开发，我们还顺带实现一个FileServlet来处理静态文件：</p>
+<pre><code class="highlight plaintext">
+@WebServlet(urlPatterns = &#123; &quot;/favicon.ico&quot;, &quot;/static/*&quot; &#125;)
+public class FileServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 读取当前请求路径:
+        ServletContext ctx = req.getServletContext();
+        // RequestURI包含ContextPath,需要去掉:
+        String urlPath = req.getRequestURI().substring(ctx.getContextPath().length());
+        // 获取真实文件路径:
+        String filepath = ctx.getRealPath(urlPath);
+        if (filepath == null) &#123;
+            // 无法获取到路径:
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        &#125;
+        Path path = Paths.get(filepath);
+        if (!path.toFile().isFile()) &#123;
+            // 文件不存在:
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        &#125;
+        // 根据文件名猜测Content-Type:
+        String mime = Files.probeContentType(path);
+        if (mime == null) &#123;
+            mime = &quot;application/octet-stream&quot;;
+        &#125;
+        resp.setContentType(mime);
+        // 读取文件并写入Response:
+        OutputStream output = resp.getOutputStream();
+        try (InputStream input = new BufferedInputStream(new FileInputStream(filepath))) &#123;
+            input.transferTo(output);
+        &#125;
+        output.flush();
+    &#125;
+&#125;</code></pre>
+<p>运行代码，在浏览器中输入URLhttp://localhost:8080/hello?name=Bob可以看到如下页面：</p>
+<p>为了把方法参数的名称编译到class文件中，以便处理@GetMapping时使用，我们需要打开编译器的一个参数，在Eclipse中勾选Preferences-Java-Compiler-Store information about method parameters (usable via reflection)；在Idea中选择Preferences-Build, Execution, Deployment-Compiler-Java Compiler-Additional command line parameters，填入-parameters；在Maven的pom.xml添加一段配置如下：</p>
+<pre><code class="highlight plaintext">&lt;project ...&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+    ...
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;configuration&gt;
+                    &lt;compilerArgs&gt;
+                        &lt;arg&gt;-parameters&lt;/arg&gt;
+                    &lt;/compilerArgs&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;&lt;/project&gt;</code></pre>
+<p>有些用过Spring MVC的童鞋会发现，本节实现的这个MVC框架，上层代码使用的公共类如GetMapping、PostMapping和ModelAndView都和Spring MVC非常类似。实际上，我们这个MVC框架主要参考就是Spring MVC，通过实现一个“简化版”MVC，可以掌握Java Web MVC开发的核心思想与原理，对将来直接使用Spring MVC是非常有帮助的。</p>
+<h2 id="使用filter"><a class="markdownIt-Anchor" href="#使用filter"></a> 使用filter</h2>
+<p>在一个比较复杂的Web应用程序中，通常都有很多URL映射，对应的，也会有多个Servlet来处理URL。我们考察这样一个论坛应用程序：</p>
+<p>各个Servlet设计功能如下：</p>
+<ul>
+<li>IndexServlet：浏览帖子；</li>
+<li>SignInServlet：登录；</li>
+<li>SignOutServlet：登出；</li>
+<li>ProfileServlet：修改用户资料；</li>
+<li>PostServlet：发帖；</li>
+<li>ReplyServlet：回复。</li>
+</ul>
+<p>其中，ProfileServlet、PostServlet和ReplyServlet都需要用户登录后才能操作，否则，应当直接跳转到登录页面。</p>
+<p>我们可以直接把判断登录的逻辑写到这3个Servlet中，但是，同样的逻辑重复3次没有必要，并且，如果后续继续加Servlet并且也需要验证登录时，还需要继续重复这个检查逻辑。</p>
+<p>为了把一些公用逻辑从各个Servlet中抽离出来，JavaEE的Servlet规范还提供了一种Filter组件，即过滤器，它的作用是，在HTTP请求到达Servlet之前，可以被一个或多个Filter预处理，类似打印日志、登录检查等逻辑，完全可以放到Filter中。</p>
+<p>例如，我们编写一个最简单的EncodingFilter，它强制把输入和输出的编码设置为UTF-8：</p>
+<pre><code class="highlight plaintext">@WebFilter(urlPatterns = &quot;/*&quot;)
+public class EncodingFilter implements Filter &#123;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        System.out.println(&quot;EncodingFilter:doFilter&quot;);
+        request.setCharacterEncoding(&quot;UTF-8&quot;);
+        response.setCharacterEncoding(&quot;UTF-8&quot;);
+        chain.doFilter(request, response);
+    &#125;
+&#125;</code></pre>
+<p>编写Filter时，必须实现Filter接口，在doFilter()方法内部，要继续处理请求，必须调用chain.doFilter()。最后，用@WebFilter注解标注该Filter需要过滤的URL。这里的<code>/*</code>表示所有路径。</p>
+<p>添加了Filter之后，整个请求的处理架构如下：</p>
+<p>还可以继续添加其他Filter，例如LogFilter：</p>
+<pre><code class="highlight plaintext">@WebFilter(&quot;/*&quot;)
+public class LogFilter implements Filter &#123;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        System.out.println(&quot;LogFilter: process &quot; + ((HttpServletRequest) request).getRequestURI());
+        chain.doFilter(request, response);
+    &#125;
+&#125;</code></pre>
+<p>多个Filter会组成一个链，每个请求都被链上的Filter依次处理：</p>
+<p>有些细心的童鞋会问，有多个Filter的时候，Filter的顺序如何指定？</p>
+<p>多个Filter按不同顺序处理会造成处理结果不同吗？答案是Filter的顺序确实对处理的结果有影响。但遗憾的是，Servlet规范并没有对@WebFilter注解标注的Filter规定顺序。如果一定要给每个Filter指定顺序，就必须在web.xml文件中对这些Filter再配置一遍。</p>
+<p>注意到上述两个Filter的过滤路径都是<code>/*</code>，即它们会对所有请求进行过滤。也可以编写只对特定路径进行过滤的Filter，例如AuthFilter：</p>
+<pre><code class="highlight plaintext">@WebFilter(&quot;/user/*&quot;)
+public class AuthFilter implements Filter &#123;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        System.out.println(&quot;AuthFilter: check authentication&quot;);
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        if (req.getSession().getAttribute(&quot;user&quot;) == null) &#123;
+            // 未登录，自动跳转到登录页:
+            System.out.println(&quot;AuthFilter: not signin!&quot;);
+            resp.sendRedirect(&quot;/signin&quot;);
+        &#125; else &#123;
+            // 已登录，继续处理:
+            chain.doFilter(request, response);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>注意到AuthFilter只过滤以/user/开头的路径，因此：</p>
+<ul>
+<li>如果一个请求路径类似/user/profile，那么它会被上述3个Filter依次处理；</li>
+<li>如果一个请求路径类似/test，那么它会被上述2个Filter依次处理（不会被AuthFilter处理）。</li>
+</ul>
+<p>再注意观察AuthFilter，当用户没有登录时，在AuthFilter内部，直接调用resp.sendRedirect()发送重定向，且没有调用chain.doFilter()，因此，当用户没有登录时，请求到达AuthFilter后，不再继续处理，即后续的Filter和任何Servlet都没有机会处理该请求了。</p>
+<p>可见，Filter可以有针对性地拦截或者放行HTTP请求。</p>
+<p>如果一个Filter在当前请求中生效，但什么都没有做：</p>
+<pre><code class="highlight plaintext">@WebFilter(&quot;/*&quot;)
+public class MyFilter implements Filter &#123;
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        // TODO
+    &#125;
+&#125;</code></pre>
+<p>那么，用户将看到一个空白页，因为请求没有继续处理，默认响应是200+空白输出。</p>
+<blockquote>
+<p>如果Filter要使请求继续被处理，就一定要调用chain.doFilter()！</p>
+</blockquote>
+<p>如果我们使用上一节介绍的MVC模式，即一个统一的DispatcherServlet入口，加上多个Controller，这种模式下Filter仍然是正常工作的。例如，一个处理<code>/user/*</code>的Filter实际上作用于那些处理/user/开头的Controller方法之前。</p>
+<h3 id="修改请求"><a class="markdownIt-Anchor" href="#修改请求"></a> 修改请求</h3>
+<p>Filter可以对请求进行预处理，因此，我们可以把很多公共预处理逻辑放到Filter中完成。</p>
+<p>考察这样一种需求：我们在Web应用中经常需要处理用户上传文件，例如，一个UploadServlet可以简单地编写如下：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/upload/file&quot;)
+public class UploadServlet extends HttpServlet &#123;
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        // 读取Request Body:
+        InputStream input = req.getInputStream();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        for (;;) &#123;
+            int len = input.read(buffer);
+            if (len == -1) &#123;
+                break;
+            &#125;
+            output.write(buffer, 0, len);
+        &#125;
+        // TODO: 写入文件:
+        // 显示上传结果:
+        String uploadedText = output.toString(StandardCharsets.UTF_8);
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;h1&gt;Uploaded:&lt;/h1&gt;&quot;);
+        pw.write(&quot;&lt;pre&gt;&lt;code&gt;&quot;);
+        pw.write(uploadedText);
+        pw.write(&quot;&lt;/code&gt;&lt;/pre&gt;&quot;);
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>但是要保证文件上传的完整性怎么办？在哈希算法一节中，我们知道，如果在上传文件的同时，把文件的哈希也传过来，服务器端做一个验证，就可以确保用户上传的文件一定是完整的。</p>
+<p>这个验证逻辑非常适合写在ValidateUploadFilter中，因为它可以复用。</p>
+<p>我们先写一个简单的版本，快速实现ValidateUploadFilter的逻辑：</p>
+<pre><code class="highlight plaintext">@WebFilter(&quot;/upload/*&quot;)
+public class ValidateUploadFilter implements Filter &#123;
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        // 获取客户端传入的签名方法和签名:
+        String digest = req.getHeader(&quot;Signature-Method&quot;);
+        String signature = req.getHeader(&quot;Signature&quot;);
+        if (digest == null || digest.isEmpty() || signature == null || signature.isEmpty()) &#123;
+            sendErrorPage(resp, &quot;Missing signature.&quot;);
+            return;
+        &#125;
+        // 读取Request的Body并验证签名:
+        MessageDigest md = getMessageDigest(digest);
+        InputStream input = new DigestInputStream(request.getInputStream(), md);
+        byte[] buffer = new byte[1024];
+        for (;;) &#123;
+            int len = input.read(buffer);
+            if (len == -1) &#123;
+                break;
+            &#125;
+        &#125;
+        String actual = toHexString(md.digest());
+        if (!signature.equals(actual)) &#123;
+            sendErrorPage(resp, &quot;Invalid signature.&quot;);
+            return;
+        &#125;
+        // 验证成功后继续处理:
+        chain.doFilter(request, response);
+    &#125;
+    // 将byte[]转换为hex string:
+    private String toHexString(byte[] digest) &#123;
+        StringBuilder sb = new StringBuilder();
+        for (byte b : digest) &#123;
+            sb.append(String.format(&quot;%02x&quot;, b));
+        &#125;
+        return sb.toString();
+    &#125;
+    // 根据名称创建MessageDigest:
+    private MessageDigest getMessageDigest(String name) throws ServletException &#123;
+        try &#123;
+            return MessageDigest.getInstance(name);
+        &#125; catch (NoSuchAlgorithmException e) &#123;
+            throw new ServletException(e);
+        &#125;
+    &#125;
+    // 发送一个错误响应:
+    private void sendErrorPage(HttpServletResponse resp, String errorMessage) throws IOException &#123;
+        resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;&quot;);
+        pw.write(errorMessage);
+        pw.write(&quot;&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;);
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>这个ValidateUploadFilter的逻辑似乎没有问题，我们可以用curl命令测试：</p>
+<pre><code class="highlight plaintext">$ curl http://localhost:8080/upload/file -v -d &#x27;test-data&#x27; \
+  -H &#x27;Signature-Method: SHA-1&#x27; \
+  -H &#x27;Signature: 7115e9890f5b5cc6914bdfa3b7c011db1cdafedb&#x27; \
+  -H &#x27;Content-Type: application/octet-stream&#x27;
+*   Trying ::1...
+* TCP_NODELAY set
+* Connected to localhost (::1) port 8080 (#0)
+&gt; POST /upload/file HTTP/1.1
+&gt; Host: localhost:8080
+&gt; User-Agent: curl/7.64.1
+&gt; Accept: */*
+&gt; Signature-Method: SHA-1
+&gt; Signature: 7115e9890f5b5cc6914bdfa3b7c011db1cdafedb
+&gt; Content-Type: application/octet-stream
+&gt; Content-Length: 9
+&gt;
+* upload completely sent off: 9 out of 9 bytes
+&lt; HTTP/1.1 200
+&lt; Transfer-Encoding: chunked
+&lt; Date: Thu, 30 Jan 2020 13:56:39 GMT
+&lt;
+* Connection #0 to host localhost left intact
+&lt;h1&gt;Uploaded:&lt;/h1&gt;&lt;pre&gt;&lt;code&gt;&lt;/code&gt;&lt;/pre&gt;
+* Closing connection 0</code></pre>
+<p>ValidateUploadFilter对签名进行验证的逻辑是没有问题的，但是，细心的童鞋注意到，UploadServlet并未读取到任何数据！</p>
+<p>这里的原因是对HttpServletRequest进行读取时，只能读取一次。如果Filter调用getInputStream()读取了一次数据，后续Servlet处理时，再次读取，将无法读到任何数据。怎么办？</p>
+<p>这个时候，我们需要一个“伪造”的HttpServletRequest，具体做法是使用代理模式，对getInputStream()和getReader()返回一个新的流：</p>
+<pre><code class="highlight plaintext">class ReReadableHttpServletRequest extends HttpServletRequestWrapper &#123;
+    private byte[] body;
+    private boolean open = false;
+    public ReReadableHttpServletRequest(HttpServletRequest request, byte[] body) &#123;
+        super(request);
+        this.body = body;
+    &#125;
+    // 返回InputStream:
+    public ServletInputStream getInputStream() throws IOException &#123;
+        if (open) &#123;
+            throw new IllegalStateException(&quot;Cannot re-open input stream!&quot;);
+        &#125;
+        open = true;
+        return new ServletInputStream() &#123;
+            private int offset = 0;
+            public boolean isFinished() &#123;
+                return offset &gt;= body.length;
+            &#125;
+            public boolean isReady() &#123;
+                return true;
+            &#125;
+            public void setReadListener(ReadListener listener) &#123;
+            &#125;
+            public int read() throws IOException &#123;
+                if (offset &gt;= body.length) &#123;
+                    return -1;
+                &#125;
+                int n = body[offset] &amp; 0xff;
+                offset++;
+                return n;
+            &#125;
+        &#125;;
+    &#125;
+    // 返回Reader:
+    public BufferedReader getReader() throws IOException &#123;
+        if (open) &#123;
+            throw new IllegalStateException(&quot;Cannot re-open reader!&quot;);
+        &#125;
+        open = true;
+        return new BufferedReader(new InputStreamReader(new ByteArrayInputStream(body), &quot;UTF-8&quot;));
+    &#125;
+&#125;</code></pre>
+<p>注意观察ReReadableHttpServletRequest的构造方法，它保存了ValidateUploadFilter读取的byte[]内容，并在调用getInputStream()时通过byte[]构造了一个新的ServletInputStream。</p>
+<p>然后，我们在ValidateUploadFilter中，把doFilter()调用时传给下一个处理者的HttpServletRequest替换为我们自己“伪造”的ReReadableHttpServletRequest：</p>
+<pre><code class="highlight plaintext">public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+        throws IOException, ServletException &#123;
+    ...
+    chain.doFilter(new ReReadableHttpServletRequest(req, output.toByteArray()), response);
+&#125;</code></pre>
+<p>再注意到我们编写ReReadableHttpServletRequest时，是从HttpServletRequestWrapper继承，而不是直接实现HttpServletRequest接口。这是因为，Servlet的每个新版本都会对接口增加一些新方法，从HttpServletRequestWrapper继承可以确保新方法被正确地覆写了，因为HttpServletRequestWrapper是由Servlet的jar包提供的，目的就是为了让我们方便地实现对HttpServletRequest接口的代理。</p>
+<p>我们总结一下对HttpServletRequest接口进行代理的步骤：</p>
+<ul>
+<li>从HttpServletRequestWrapper继承一个XxxHttpServletRequest，需要传入原始的HttpServletRequest实例；</li>
+<li>覆写某些方法，使得新的XxxHttpServletRequest实例看上去“改变”了原始的HttpServletRequest实例；</li>
+<li>在doFilter()中传入新的XxxHttpServletRequest实例。<br />
+虽然整个Filter的代码比较复杂，但它的好处在于：这个Filter在整个处理链中实现了灵活的“可插拔”特性，即是否启用对Web应用程序的其他组件（Filter、Servlet）完全没有影响。</li>
+</ul>
+<h3 id="修改响应"><a class="markdownIt-Anchor" href="#修改响应"></a> 修改响应</h3>
+<p>既然我们能通过Filter修改HttpServletRequest，自然也能修改HttpServletResponse，因为这两者都是接口。</p>
+<p>我们来看一下在什么情况下我们需要修改HttpServletResponse。</p>
+<p>假设我们编写了一个Servlet，但由于业务逻辑比较复杂，处理该请求需要耗费很长的时间：</p>
+<pre><code class="highlight plaintext">@WebServlet(urlPatterns = &quot;/slow/hello&quot;)
+public class HelloServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        resp.setContentType(&quot;text/html&quot;);
+        // 模拟耗时1秒:
+        try &#123;
+            Thread.sleep(1000);
+        &#125; catch (InterruptedException e) &#123;
+        &#125;
+        PrintWriter pw = resp.getWriter();
+        pw.write(&quot;&lt;h1&gt;Hello, world!&lt;/h1&gt;&quot;);
+        pw.flush();
+    &#125;
+&#125;</code></pre>
+<p>好消息是每次返回的响应内容是固定的，因此，如果我们能使用缓存将结果缓存起来，就可以大大提高Web应用程序的运行效率。</p>
+<p>缓存逻辑最好不要在Servlet内部实现，因为我们希望能复用缓存逻辑，所以，编写一个CacheFilter最合适：</p>
+<pre><code class="highlight plaintext">@WebFilter(&quot;/slow/*&quot;)
+public class CacheFilter implements Filter &#123;
+    // Path到byte[]的缓存:
+    private Map&lt;String, byte[]&gt; cache = new ConcurrentHashMap&lt;&gt;();
+
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException &#123;
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        // 获取Path:
+        String url = req.getRequestURI();
+        // 获取缓存内容:
+        byte[] data = this.cache.get(url);
+        resp.setHeader(&quot;X-Cache-Hit&quot;, data == null ? &quot;No&quot; : &quot;Yes&quot;);
+        if (data == null) &#123;
+            // 缓存未找到,构造一个伪造的Response:
+            CachedHttpServletResponse wrapper = new CachedHttpServletResponse(resp);
+            // 让下游组件写入数据到伪造的Response:
+            chain.doFilter(request, wrapper);
+            // 从伪造的Response中读取写入的内容并放入缓存:
+            data = wrapper.getContent();
+            cache.put(url, data);
+        &#125;
+        // 写入到原始的Response:
+        ServletOutputStream output = resp.getOutputStream();
+        output.write(data);
+        output.flush();
+    &#125;
+&#125;</code></pre>
+<p>实现缓存的关键在于，调用doFilter()时，我们不能传入原始的HttpServletResponse，因为这样就会写入Socket，我们也就无法获取下游组件写入的内容。如果我们传入的是“伪造”的HttpServletResponse，让下游组件写入到我们预设的ByteArrayOutputStream，我们就“截获”了下游组件写入的内容，于是，就可以把内容缓存起来，再通过原始的HttpServletResponse实例写入到网络。</p>
+<p>这个CachedHttpServletResponse实现如下：</p>
+<pre><code class="highlight plaintext">class CachedHttpServletResponse extends HttpServletResponseWrapper &#123;
+    private boolean open = false;
+    private ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+    public CachedHttpServletResponse(HttpServletResponse response) &#123;
+        super(response);
+    &#125;
+
+    // 获取Writer:
+    public PrintWriter getWriter() throws IOException &#123;
+        if (open) &#123;
+            throw new IllegalStateException(&quot;Cannot re-open writer!&quot;);
+        &#125;
+        open = true;
+        return new PrintWriter(output, false, StandardCharsets.UTF_8);
+    &#125;
+
+    // 获取OutputStream:
+    public ServletOutputStream getOutputStream() throws IOException &#123;
+        if (open) &#123;
+            throw new IllegalStateException(&quot;Cannot re-open output stream!&quot;);
+        &#125;
+        open = true;
+        return new ServletOutputStream() &#123;
+            public boolean isReady() &#123;
+                return true;
+            &#125;
+
+            public void setWriteListener(WriteListener listener) &#123;
+            &#125;
+
+            // 实际写入ByteArrayOutputStream:
+            public void write(int b) throws IOException &#123;
+                output.write(b);
+            &#125;
+        &#125;;
+    &#125;
+
+    // 返回写入的byte[]:
+    public byte[] getContent() &#123;
+        return output.toByteArray();
+    &#125;
+&#125;</code></pre>
+<p>可见，如果我们想要修改响应，就可以通过HttpServletResponseWrapper构造一个“伪造”的HttpServletResponse，这样就能拦截到写入的数据。</p>
+<p>修改响应时，最后不要忘记把数据写入原始的HttpServletResponse实例。</p>
+<p>这个CacheFilter同样是一个“可插拔”组件，它是否启用不影响Web应用程序的其他组件（Filter、Servlet）。</p>
+<h2 id="使用listener"><a class="markdownIt-Anchor" href="#使用listener"></a> 使用Listener</h2>
+<p>除了Servlet和Filter外，JavaEE的Servlet规范还提供了第三种组件：Listener。</p>
+<p>Listener顾名思义就是监听器，有好几种Listener，其中最常用的是ServletContextListener，我们编写一个实现了ServletContextListener接口的类如下：</p>
+<pre><code class="highlight plaintext">@WebListener
+public class AppListener implements ServletContextListener &#123;
+    // 在此初始化WebApp,例如打开数据库连接池等:
+    public void contextInitialized(ServletContextEvent sce) &#123;
+        System.out.println(&quot;WebApp initialized.&quot;);
+    &#125;
+    // 在此清理WebApp,例如关闭数据库连接池等:
+    public void contextDestroyed(ServletContextEvent sce) &#123;
+        System.out.println(&quot;WebApp destroyed.&quot;);
+    &#125;
+&#125;</code></pre>
+<p>任何标注为@WebListener，且实现了特定接口的类会被Web服务器自动初始化。上述AppListener实现了ServletContextListener接口，它会在整个Web应用程序初始化完成后，以及Web应用程序关闭后获得回调通知。我们可以把初始化数据库连接池等工作放到contextInitialized()回调方法中，把清理资源的工作放到contextDestroyed()回调方法中，因为Web服务器保证在contextInitialized()执行后，才会接受用户的HTTP请求。</p>
+<p>很多第三方Web框架都会通过一个ServletContextListener接口初始化自己。</p>
+<p>除了ServletContextListener外，还有几种Listener：</p>
+<ul>
+<li>HttpSessionListener：监听HttpSession的创建和销毁事件；</li>
+<li>ServletRequestListener：监听ServletRequest请求的创建和销毁事件；</li>
+<li>ServletRequestAttributeListener：监听ServletRequest请求的属性变化事件（即调用ServletRequest.setAttribute()方法）；</li>
+<li>ServletContextAttributeListener：监听ServletContext的属性变化事件（即调用ServletContext.setAttribute()方法）；</li>
+</ul>
+<h3 id="servletcontext"><a class="markdownIt-Anchor" href="#servletcontext"></a> ServletContext</h3>
+<p>一个Web服务器可以运行一个或多个WebApp，对于每个WebApp，Web服务器都会为其创建一个全局唯一的ServletContext实例，我们在AppListener里面编写的两个回调方法实际上对应的就是ServletContext实例的创建和销毁：</p>
+<pre><code class="highlight plaintext">public void contextInitialized(ServletContextEvent sce) &#123;
+    System.out.println(&quot;WebApp initialized: ServletContext = &quot; + sce.getServletContext());
+&#125;</code></pre>
+<p>ServletRequest、HttpSession等很多对象也提供getServletContext()方法获取到同一个ServletContext实例。ServletContext实例最大的作用就是设置和共享全局信息。</p>
+<p>此外，ServletContext还提供了动态添加Servlet、Filter、Listener等功能，它允许应用程序在运行期间动态添加一个组件，虽然这个功能不是很常用。</p>
+<h2 id="部署"><a class="markdownIt-Anchor" href="#部署"></a> 部署</h2>
+<p>对一个Web应用程序来说，除了Servlet、Filter这些逻辑组件，还需要JSP这样的视图文件，外加一堆静态资源文件，如CSS、JS等。合理组织文件结构非常重要。我们以一个具体的Web应用程序为例：</p>
+<p>我们把所有的静态资源文件放入/static/目录，在开发阶段，有些Web服务器会自动为我们加一个专门负责处理静态文件的Servlet，但如果IndexServlet映射路径为/，会屏蔽掉处理静态文件的Servlet映射。因此，我们需要自己编写一个处理静态文件的FileServlet：</p>
+<pre><code class="highlight plaintext">
+@WebServlet(urlPatterns = &quot;/static/*&quot;)
+public class FileServlet extends HttpServlet &#123;
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        ServletContext ctx = req.getServletContext();
+        // RequestURI包含ContextPath,需要去掉:
+        String urlPath = req.getRequestURI().substring(ctx.getContextPath().length());
+        // 获取真实文件路径:
+        String filepath = ctx.getRealPath(urlPath);
+        if (filepath == null) &#123;
+            // 无法获取到路径:
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        &#125;
+        Path path = Paths.get(filepath);
+        if (!path.toFile().isFile()) &#123;
+            // 文件不存在:
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        &#125;
+        // 根据文件名猜测Content-Type:
+        String mime = Files.probeContentType(path);
+        if (mime == null) &#123;
+            mime = &quot;application/octet-stream&quot;;
+        &#125;
+        resp.setContentType(mime);
+        // 读取文件并写入Response:
+        OutputStream output = resp.getOutputStream();
+        try (InputStream input = new BufferedInputStream(new FileInputStream(filepath))) &#123;
+            input.transferTo(output);
+        &#125;
+        output.flush();
+    &#125;
+&#125;</code></pre>
+<p>这样一来，在开发阶段，我们就可以方便地高效开发。</p>
+<p>类似Tomcat这样的Web服务器，运行的Web应用程序通常都是业务系统，因此，这类服务器也被称为应用服务器。应用服务器并不擅长处理静态文件，也不适合直接暴露给用户。通常，我们在生产环境部署时，总是使用类似Nginx这样的服务器充当反向代理和静态服务器，只有动态请求才会放行给应用服务器，所以，部署架构如下：</p>
+<p>实现上述功能的Nginx配置文件如下：</p>
+<pre><code class="highlight plaintext">
+server &#123;
+    listen 80;
+
+    server_name www.local.liaoxuefeng.com;
+
+    # 静态文件根目录:
+    root /path/to/src/main/webapp;
+
+    access_log /var/log/nginx/webapp_access_log;
+    error_log  /var/log/nginx/webapp_error_log;
+
+    # 处理静态文件请求:
+    location /static &#123;
+    &#125;
+
+    # 处理静态文件请求:
+    location /favicon.ico &#123;
+    &#125;
+
+    # 不允许请求/WEB-INF:
+    location /WEB-INF &#123;
+        return 404;
+    &#125;
+
+    # 其他请求转发给Tomcat:
+    location / &#123;
+        proxy_pass       http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    &#125;
+&#125;</code></pre>
+<p>使用Nginx配合Tomcat服务器，可以充分发挥Nginx作为网关的优势，既可以高效处理静态文件，也可以把https、防火墙、限速、反爬虫等功能放到Nginx中，使得我们自己的WebApp能专注于业务逻辑。</p>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    IO流 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">IO流</div>
+  <div class="post-meta">
+    <div class="date">2020 二月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="io流"><a class="markdownIt-Anchor" href="#io流"></a> $IO流</h1>
+<h1 id="io流-2"><a class="markdownIt-Anchor" href="#io流-2"></a> IO流</h1>
+<ul>
+<li><a href="">IO流</a>
+<ul>
+<li><a href="">概念</a></li>
+<li><a href="">流</a></li>
+<li><a href="">File</a>
+<ul>
+<li><a href="">两个常量</a></li>
+<li><a href="">两种创建方法</a></li>
+<li><a href="">File常用方法</a>
+<ul>
+<li><a href="">文件名</a></li>
+<li><a href="">判断信息</a></li>
+<li><a href="">创建/删除文件</a></li>
+<li><a href="">操作目录</a></li>
+</ul>
+</li>
+<li><a href="">Path</a></li>
+<li><a href="">通过Java IO读文件</a></li>
+<li><a href="">通过Java IO写文件</a></li>
+<li><a href="">通过Java IO随机读取文件</a></li>
+<li><a href="">文件和目录信息的获取</a></li>
+</ul>
+</li>
+<li><a href="">管道</a>
+<ul>
+<li><a href="">通过Java IO创建管道</a></li>
+<li><a href="">Java IO管道示例</a></li>
+<li><a href="">管道和线程</a></li>
+<li><a href="">管道的替代</a></li>
+</ul>
+</li>
+<li><a href="">网络</a></li>
+<li><a href="">并发IO</a></li>
+<li><a href="">IO流分类</a></li>
+<li><a href="">Filter模式</a>
+<ul>
+<li><a href="">编写FilterInputStream</a></li>
+</ul>
+</li>
+<li><a href="">节点流</a>
+<ul>
+<li><a href="">字节流</a>
+<ul>
+<li><a href="">InputStream 输入流</a>
+<ul>
+<li><a href="">FileInputStream</a></li>
+<li><a href="">缓冲</a></li>
+<li><a href="">阻塞</a></li>
+</ul>
+</li>
+<li><a href="">OutputStream 输出流</a>
+<ul>
+<li><a href="">FileOutPutStream</a></li>
+<li><a href="">阻塞</a></li>
+<li><a href="">OutputStream实现类</a></li>
+</ul>
+</li>
+<li><a href="">案例</a></li>
+</ul>
+</li>
+<li><a href="">字符流</a>
+<ul>
+<li><a href="">Reader 输入流</a>
+<ul>
+<li><a href="">FileReader</a></li>
+<li><a href="">InputStreamReader</a></li>
+<li><a href="">CharArrayReader</a></li>
+<li><a href="">StringReader</a></li>
+</ul>
+</li>
+<li><a href="">Writer 输出流</a>
+<ul>
+<li><a href="">CharArrayWriter</a></li>
+<li><a href="">StringWriter</a></li>
+<li><a href="">OutputStreamWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">字节数组流</a>
+<ul>
+<li><a href="">ByteArrayOutputStream</a></li>
+<li><a href="">ByteArrayInputStream</a></li>
+</ul>
+</li>
+<li><a href="">RandomAccessFile</a></li>
+<li><a href="">文件字符读取流</a>
+<ul>
+<li><a href="">FileReader</a></li>
+<li><a href="">FileWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">处理流</a>
+<ul>
+<li><a href="">缓冲流</a>
+<ul>
+<li><a href="">字节缓冲流</a>
+<ul>
+<li><a href="">BufferedInputStream</a></li>
+<li><a href="">BufferedOutputStream</a></li>
+</ul>
+</li>
+<li><a href="">字符缓冲流</a></li>
+</ul>
+</li>
+<li><a href="">转换流</a>
+<ul>
+<li><a href="">InputStreamReader</a></li>
+<li><a href="">OutputStreamWriter</a></li>
+</ul>
+</li>
+<li><a href="">基本类型处理流</a>
+<ul>
+<li><a href="">DataInputStream</a></li>
+<li><a href="">DataOutputStream</a></li>
+<li><a href="">案例：从字节数组读取</a></li>
+</ul>
+</li>
+<li><a href="">序列化（引用类型处理流）</a>
+<ul>
+<li><a href="">transient关键字</a></li>
+<li><a href="">ObjectInputStream</a></li>
+<li><a href="">ObjectOutputStream</a></li>
+<li><a href="">安全性</a></li>
+</ul>
+</li>
+<li><a href="">PrintStream 打印流</a></li>
+<li><a href="">Scanner 处理流</a></li>
+<li><a href="">管道流</a>
+<ul>
+<li><a href="">PipedOutputStream</a></li>
+<li><a href="">PipedInputStream</a></li>
+</ul>
+</li>
+<li><a href="">合并流</a></li>
+</ul>
+</li>
+<li><a href="">操作Zip</a></li>
+<li><a href="">读取classpath资源</a></li>
+<li><a href="">System.in/out/err</a></li>
+<li><a href="">关闭方法</a></li>
+<li><a href="">案例：文件分割合并</a></li>
+<li><a href="">总结</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h2>
+<p>Java IO 是一套Java用来读写数据（输入和输出）的API。大部分程序都要处理一些输入，并由输入产生一些输出。Java为此提供了java.io包</p>
+<p>在Java IO中，<strong>流</strong>是一个核心的概念。流从概念上来说是一个连续的数据流。你既可以从流中读取数据，也可以往流中写数据。流与数据源或者数据流向的媒介相关联。在Java IO中流既可以是字节流(以字节为单位进行读写)，也可以是字符流(以字符为单位进行读写)</p>
+<ol>
+<li>流：流动，流向，从一端移动到另一端/源头于目的地</li>
+<li>程序 &lt;–&gt; 文件|数组|网络连接|数据库   之间流动，以<strong>程序为中心</strong></li>
+</ol>
+<h2 id="流"><a class="markdownIt-Anchor" href="#流"></a> 流</h2>
+<p>Java IO流是既可以从中读取，也可以写入到其中的数据流。正如这个系列教程之前提到过的，流通常会与数据源、数据流向目的地相关联，比如文件、网络等等。</p>
+<p>流和数组不一样，不能通过索引读写数据。在流中，你也不能像数组那样前后移动读取数据，除非使用RandomAccessFile 处理文件。<strong>流仅仅只是一个连续的数据流</strong></p>
+<p>某些类似PushbackInputStream 流的实现允许你将数据重新推回到流中，以便重新读取。然而你只能把有限的数据推回流中，并且你不能像操作数组那样随意读取数据。<strong>流中的数据只能够顺序访问</strong></p>
+<p>Java IO流通常是基于字节或者基于字符的</p>
+<ul>
+<li>字节流通常以“<strong>stream</strong>”命名，比如InputStream和OutputStream。除了DataInputStream 和DataOutputStream 还能够读写int, long, float和double类型的值以外，其他流在一个操作时间内只能读取或者写入一个原始字节</li>
+<li>字符流通常以“<strong>Reader</strong>”或者“Writer”命名。字符流能够读写字符(比如Latin1或者Unicode字符)。可以浏览Java Readers and Writers获取更多关于字符流输入输出的信息</li>
+</ul>
+<h2 id="file"><a class="markdownIt-Anchor" href="#file"></a> File</h2>
+<h3 id="两个常量"><a class="markdownIt-Anchor" href="#两个常量"></a> 两个常量</h3>
+<p><strong>File.pathSeparator</strong>：路径分隔符，实现跨平台</p>
+<p><strong>File.srparator</strong>：文件分隔符，实现跨平台，windows路径文件用\分割，其他系统用/分割</p>
+<blockquote>
+<p>一般路径表示  path=F:\test\google-guava    因为在ide中&quot;&quot;为转义字符，所以路径使用双斜杠</p>
+</blockquote>
+<blockquote>
+<p>推荐使用path=F:/test/google-guava</p>
+</blockquote>
+<h3 id="两种创建方法"><a class="markdownIt-Anchor" href="#两种创建方法"></a> 两种创建方法</h3>
+<p>并不会实际建立一个文件，只是建立一种联系   既可以表示文件，也可以表示文件夹</p>
+<p><strong>new File(String parent,String child)</strong></p>
+<pre><code class="highlight plaintext">new File(&quot;F:\File\Demo&quot;,&quot;test.txt&quot;);</code></pre>
+<p><strong>File(File parent,String child)</strong></p>
+<pre><code class="highlight plaintext">new File(new File(F:\File\Demo),new File(&quot;test.txt&quot;));</code></pre>
+<p>构造File对象时，既可以传入绝对路径，也可以传入相对路径。绝对路径是以根目录开头的完整路径，例如：</p>
+<pre><code class="highlight plaintext">File f = new File(&quot;C:\\Windows\\notepad.exe&quot;);</code></pre>
+<blockquote>
+<p>注意Windows平台使用\作为路径分隔符，在Java字符串中需要用\表示一个\。Linux平台使用/作为路径分隔符：</p>
+</blockquote>
+<pre><code class="highlight plaintext">File f = new File(&quot;/usr/bin/javac&quot;);</code></pre>
+<p>传入相对路径时，相对路径前面加上当前目录就是绝对路径：</p>
+<pre><code class="highlight plaintext">// 假设当前目录是C:\Docs
+File f1 = new File(&quot;sub\\javac&quot;); // 绝对路径是C:\Docs\sub\javac
+File f3 = new File(&quot;.\\sub\\javac&quot;); // 绝对路径是C:\Docs\sub\javac
+File f3 = new File(&quot;..\\sub\\javac&quot;); // 绝对路径是C:\sub\javac</code></pre>
+<blockquote>
+<p>可以用.表示当前目录，…表示上级目录</p>
+</blockquote>
+<p>File对象有3种形式表示的路径，一种是getPath()，返回构造方法传入的路径，一种是getAbsolutePath()，返回绝对路径，一种是getCanonicalPath，它和绝对路径类似，但是返回的是规范路径。</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        File f = new File(&quot;..&quot;);
+        System.out.println(f.getPath());
+        System.out.println(f.getAbsolutePath());
+        System.out.println(f.getCanonicalPath());
+    &#125;
+&#125;
+
+输出：
+
+..
+/app/..
+/</code></pre>
+<blockquote>
+<p>绝对路径可以表示成C:\Windows\System32…\notepad.exe，而规范路径就是把.和…转换成标准的绝对路径后的路径：C:\Windows\notepad.exe</p>
+</blockquote>
+<p>因为Windows和Linux的路径分隔符不同，File对象有一个静态变量用于表示<strong>当前平台的系统分隔符</strong>：</p>
+<pre><code class="highlight plaintext">System.out.println(File.separator); // 根据当前平台打印&quot;\&quot;或&quot;/&quot;</code></pre>
+<h3 id="file常用方法"><a class="markdownIt-Anchor" href="#file常用方法"></a> File常用方法</h3>
+<p>File对象既可以表示文件，也可以表示目录。特别要注意的是，构造一个File对象，即使传入的文件或目录不存在，代码也不会出错，因为构造一个File对象，并不会导致任何磁盘操作。只有当我们调用File对象的某些方法的时候，才真正进行磁盘操作</p>
+<h4 id="文件名"><a class="markdownIt-Anchor" href="#文件名"></a> 文件名</h4>
+<ul>
+<li><strong>getName</strong>();    //返回文件名</li>
+<li><strong>getPath</strong>();     //如果是绝对路径返回绝对路径，如果是相对路径返回相对路径</li>
+<li><strong>getAbsolutePath</strong>();     //返回绝对路径</li>
+<li><strong>getPatent</strong>();     //返回上级目录，如果没有上一级，返回null</li>
+</ul>
+<h4 id="判断信息"><a class="markdownIt-Anchor" href="#判断信息"></a> 判断信息</h4>
+<ul>
+<li><strong>exists</strong>();     //判断文件是否存在</li>
+<li><strong>canWrite</strong>();     //判断文件是否可写</li>
+<li><strong>canRead</strong>();     //判断文件是否可读</li>
+<li><strong>canExecute()</strong> //普安段是否可执行</li>
+<li><strong>isFIle</strong>();       //是否为文件</li>
+<li><strong>isDirectory</strong>();     //是否为文件夹</li>
+<li><strong>isAbsolute</strong>();       //消除平台差异，ie以盘符开头，其他以/开头 //判断是绝对路径还是相对路径</li>
+<li><strong>length</strong>();     //返回文件长度，即占用大小，以字节为单位，文件夹无法盘断</li>
+</ul>
+<blockquote>
+<p>对目录而言，是否可执行表示能否列出它包含的文件和子目录</p>
+</blockquote>
+<h4 id="创建删除文件"><a class="markdownIt-Anchor" href="#创建删除文件"></a> 创建/删除文件</h4>
+<ul>
+<li><strong>createNewFile</strong>()      //不存在则创建文件 ,存在返回false,创建失败返回False</li>
+<li><strong>delete</strong>()       //删除文件</li>
+<li>static <strong>createTempFile</strong>(前缀3个字节长，后缀默认.temp)      // 默认临时空间 //创建临时文件</li>
+<li>static <strong>createTempFile</strong>(前缀3个字节长，后缀默认.temp,目录)</li>
+<li><strong>deleteOnExit</strong>()      //退出虚拟机删除，常用于删除零时文件</li>
+</ul>
+<p>有些时候，程序需要读写一些临时文件，File对象提供了createTempFile()来创建一个临时文件，以及deleteOnExit()在JVM退出时自动删除该文件。</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        File f = File.createTempFile(&quot;tmp-&quot;, &quot;.txt&quot;); // 提供临时文件的前缀和后缀
+        f.deleteOnExit(); // JVM退出时自动删除
+        System.out.println(f.isFile());
+        System.out.println(f.getAbsolutePath());
+    &#125;
+&#125;</code></pre>
+<h4 id="操作目录"><a class="markdownIt-Anchor" href="#操作目录"></a> 操作目录</h4>
+<ul>
+<li><strong>mkdir</strong>();     //创建目录，必须确保父目录存在，如果不存在，创建失败</li>
+<li><strong>mkdirs</strong>();     //创建目录，父目录链若不存在则一并创建</li>
+<li><strong>delete</strong>(): //</li>
+<li><strong>list</strong>();          //返回此文件夹下的文件目录，返回一个String[]</li>
+<li><strong>list</strong>(new FilenameFilter());     //使用匿名FilenameFilter()对文件进行过滤</li>
+<li><strong>listFiles</strong>();     //返回此文件夹下的目录，包装为File对象</li>
+<li><strong>listFIles</strong>(new FilenameFilter());    //使用匿名FilenameFilter()筛选目录</li>
+<li><strong>listFiles</strong>(new FileFilter());     //使用匿名FileFilter()筛选目录</li>
+<li>static <strong>listRoot</strong>();      //输出所有根路径</li>
+</ul>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        File f = new File(&quot;C:\\Windows&quot;);
+        File[] fs1 = f.listFiles(); // 列出所有文件和子目录
+        printFiles(fs1);
+        File[] fs2 = f.listFiles(new FilenameFilter() &#123; // 仅列出.exe文件
+            public boolean accept(File dir, String name) &#123;
+                return name.endsWith(&quot;.exe&quot;); // 返回true表示接受该文件
+            &#125;
+        &#125;);
+        printFiles(fs2);
+    &#125;
+
+    static void printFiles(File[] files) &#123;
+        System.out.println(&quot;==========&quot;);
+        if (files != null) &#123;
+            for (File f : files) &#123;
+                System.out.println(f);
+            &#125;
+        &#125;
+        System.out.println(&quot;==========&quot;);
+    &#125;
+&#125;</code></pre>
+<h3 id="path"><a class="markdownIt-Anchor" href="#path"></a> Path</h3>
+<p>Java标准库还提供了一个Path对象，它位于java.nio.file包。Path对象和File对象类似，但操作更加简单：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        Path p1 = Paths.get(&quot;.&quot;, &quot;project&quot;, &quot;study&quot;); // 构造一个Path对象
+        System.out.println(p1);
+        Path p2 = p1.toAbsolutePath(); // 转换为绝对路径
+        System.out.println(p2);
+        Path p3 = p2.normalize(); // 转换为规范路径
+        System.out.println(p3);
+        File f = p3.toFile(); // 转换为File对象
+        System.out.println(f);
+        for (Path p : Paths.get(&quot;..&quot;).toAbsolutePath()) &#123; // 可以直接遍历Path
+            System.out.println(&quot;  &quot; + p);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>如果需要对目录进行复杂的拼接、遍历等操作，使用Path对象更方便。</p>
+</blockquote>
+<h3 id="通过java-io读文件"><a class="markdownIt-Anchor" href="#通过java-io读文件"></a> 通过Java IO读文件</h3>
+<p>如果你需要在不同端之间读取文件，你可以根据该文件是二进制文件还是文本文件来选择使用<strong>FileInputStream</strong>或者<strong>FileReader</strong>。这两个类允许你从文件开始到文件末尾一次读取一个字节或者字符，或者将读取到的字节写入到字节数组或者字符数组。你不必一次性读取整个文件，相反你可以按顺序地读取文件中的字节和字符。</p>
+<p>如果你需要跳跃式地读取文件其中的某些部分，可以使用<strong>RandomAccessFile</strong></p>
+<h3 id="通过java-io写文件"><a class="markdownIt-Anchor" href="#通过java-io写文件"></a> 通过Java IO写文件</h3>
+<p>如果你需要在不同端之间进行文件的写入，你可以根据你要写入的数据是二进制型数据还是字符型数据选用<strong>FileOutputStream</strong>或者<strong>FileWriter</strong>。你可以一次写入一个字节或者字符到文件中，也可以直接写入一个字节数组或者字符数据。数据按照写入的顺序存储在文件当中。</p>
+<h3 id="通过java-io随机读取文件"><a class="markdownIt-Anchor" href="#通过java-io随机读取文件"></a> 通过Java IO随机读取文件</h3>
+<p>正如我所提到的，你可以通过<strong>RandomAccessFile</strong>对文件进行随机存取。随机存取并不意味着你可以在真正随机的位置进行读写操作，它只是意味着你可以跳过文件中某些部分进行操作，并且支持同时读写，不要求特定的存取顺序。这使得RandomAccessFile可以覆盖一个文件的某些部分、或者追加内容到它的末尾、或者删除它的某些内容，当然它也可以从文件的任何位置开始读取文件。</p>
+<h3 id="文件和目录信息的获取"><a class="markdownIt-Anchor" href="#文件和目录信息的获取"></a> 文件和目录信息的获取</h3>
+<p>有时候你可能需要读取文件的信息而不是文件的内容，举个例子，如果你需要知道文件的大小和文件的属性。对于目录来说也是一样的，比如你需要获取某个目录下的文件列表。通过<strong>File</strong>类可以获取文件和目录的信息。</p>
+<h2 id="管道"><a class="markdownIt-Anchor" href="#管道"></a> 管道</h2>
+<p>Java IO中的管道为运行在同一个JVM中的两个线程提供了通信的能力。所以管道也可以作为数据源以及目标媒介。你不能利用管道与不同的JVM中的线程通信(不同的进程)。在概念上，Java的管道不同于Unix/Linux系统中的管道。在Unix/Linux中，运行在不同地址空间的两个进程可以通过管道通信。在Java中，通信的双方应该是运行在同一进程中的不同线程。</p>
+<h3 id="通过java-io创建管道"><a class="markdownIt-Anchor" href="#通过java-io创建管道"></a> 通过Java IO创建管道</h3>
+<p>可以通过Java IO中的<strong>PipedOutputStream</strong>和<strong>PipedInputStream</strong>创建管道。一个PipedInputStream流应该和一个PipedOutputStream流相<strong>关联</strong>。一个线程通过PipedOutputStream写入的数据可以被另一个线程通过相关联的PipedInputStream读取出来</p>
+<h3 id="java-io管道示例"><a class="markdownIt-Anchor" href="#java-io管道示例"></a> Java IO管道示例</h3>
+<blockquote>
+<p>注：本例忽略了流的关闭。请在处理流的过程中，务必保证关闭流，或者使用jdk7引入的try-resources代替显示地调用close方法的方式。</p>
+</blockquote>
+<blockquote>
+<p>你也可以使用两个管道共有的connect()方法使之相关联。PipedInputStream和PipedOutputStream都拥有一个可以互相关联的connect()方法</p>
+</blockquote>
+<h3 id="管道和线程"><a class="markdownIt-Anchor" href="#管道和线程"></a> 管道和线程</h3>
+<p>请记得，当使用两个相关联的管道流时，务必将它们分配给不同的线程。read()方法和write()方法调用时会导致流阻塞，这意味着如果你尝试在一个线程中同时进行读和写，可能会导致线程死锁</p>
+<h3 id="管道的替代"><a class="markdownIt-Anchor" href="#管道的替代"></a> 管道的替代</h3>
+<p>除了管道之外，一个JVM中不同线程之间还有许多通信的方式。实际上，线程在大多数情况下会传递完整的对象信息而非原始的字节数据。但是，如果你需要在线程之间传递字节数据，Java IO的管道是一个不错的选择。</p>
+<h2 id="网络"><a class="markdownIt-Anchor" href="#网络"></a> 网络</h2>
+<p>当两个进程之间建立了网络连接之后，他们通信的方式如同操作文件一样：利用InputStream读取数据，利用OutputStream写入数据。换句话来说，Java网络API用来在不同进程之间建立网络连接，而Java IO则用来在建立了连接之后的进程之间交换数据</p>
+<p>基本上意味着如果你有一份能够对文件进行写入某些数据的代码，那么这些数据也可以很容易地写入到网络连接中去。你所需要做的仅仅只是在代码中利用InputStream替代FileInputStream进行数据的写入。因为FileInputStream是InputStream的子类，所以这么做并没有什么问题。</p>
+<pre><code class="highlight plaintext">
+public class MyClass &#123;
+
+    public static void main(String[] args) &#123;
+        InputStream inputStream = new FileInputStream(&quot;c:\\myfile.txt&quot;);
+        process(inputStream);
+    &#125;
+
+    public static void process(InputStream input) throws IOException &#123;
+        //do something with the InputStream
+    &#125;
+
+&#125;</code></pre>
+<blockquote>
+<p>在这个例子中，process()方法并不关心InputStream参数的输入流，是来自于文件还是网络(例子只展示了输入流来自文件的版本)。process()方法只会对InputStream进行操作</p>
+</blockquote>
+<h2 id="并发io"><a class="markdownIt-Anchor" href="#并发io"></a> 并发IO</h2>
+<p>有时候你可能需要并发地处理输入和输出。换句话说，你可能有超过一个线程处理输入和产生输出。比如，你有一个程序需要处理磁盘上的大量文件，这个任务可以通过并发操作提高性能。又比如，你有一个web服务器或者聊天服务器，接收许多连接和请求，这些任务都可以通过并发获得性能的提升。</p>
+<p>如果你需要并发处理IO，这里有几个问题可能需要注意一下：</p>
+<ul>
+<li>在同一时刻不能有多个线程同时从InputStream或者Reader中读取数据，也不能同时往OutputStream或者Writer里写数据。你没有办法保证每个线程读取多少数据，以及多个线程写数据时的顺序。</li>
+<li>如果线程之间能够保证操作的顺序，它们可以使用同一个stream、reader、writer。比如，你有一个线程判断当前的输入流来自哪种类型的请求，然后将流数据传递给其他合适的线程做后续处理。当有序存取流、reader、writer时，这种做法是可行的。请注意，在线程之间传递流数据的代码应当是同步的。</li>
+</ul>
+<blockquote>
+<p>注意：在Java NIO中，你可以让一个线程读写多个“channel”。比如，你有很多网络连接处于开启状态，但是每个连接中都只有少量数据，类似于聊天服务器，可以让一个线程监视多个频道(连接)。Java NIO是另一个话题了，会后续教程中介绍。</p>
+</blockquote>
+<h2 id="io流分类"><a class="markdownIt-Anchor" href="#io流分类"></a> IO流分类</h2>
+<p>流的方向：</p>
+<ul>
+<li><strong>输入流</strong>：数据源到程序（InputStream，Reader）（读进来）</li>
+<li><strong>输出流</strong>：程序到目的地（OutPutStream，Writer）（写出去）</li>
+</ul>
+<p>处理数据单元：</p>
+<ul>
+<li><strong>字节流</strong>：按照字节读取数据，二进制，可以处理一切文件  包括  纯文本，doc，音频，视屏等（InputStream，OutputStream）</li>
+<li><strong>字符流</strong>：按照字符读取数据，文本文件，只能处理纯文本（Reader，Wirter）</li>
+</ul>
+<p>功能不同：</p>
+<ul>
+<li><strong>字节流</strong>：可以直接从数据源或目的地读写数据，包裹源头</li>
+<li><strong>处理流</strong>：不直接连接到数据源或者目的地，是处理流的流，通过对其他流的处理提高程序的性能，增强功能</li>
+</ul>
+<blockquote>
+<p>节点流处于io操作的第一线，所有操作都必须通过他们进行，处理流可以对其他流进行处理（提高效率或操作灵活性）</p>
+</blockquote>
+<h2 id="filter模式"><a class="markdownIt-Anchor" href="#filter模式"></a> Filter模式</h2>
+<p>Java的IO标准库提供的InputStream根据来源可以包括：</p>
+<ul>
+<li>FileInputStream：从文件读取数据，是最终数据源；</li>
+<li>ServletInputStream：从HTTP请求读取数据，是最终数据源；</li>
+<li>Socket.getInputStream()：从TCP连接读取数据，是最终数据源；</li>
+<li>…</li>
+</ul>
+<p>如果我们要给FileInputStream添加缓冲功能，则可以从FileInputStream派生一个类：</p>
+<pre><code class="highlight plaintext">BufferedFileInputStream extends FileInputStream</code></pre>
+<p>如果要给FileInputStream添加计算签名的功能，类似的，也可以从FileInputStream派生一个类：</p>
+<pre><code class="highlight plaintext">DigestFileInputStream extends FileInputStream</code></pre>
+<p>如果要给FileInputStream添加加密/解密功能，还是可以从FileInputStream派生一个类：</p>
+<pre><code class="highlight plaintext">CipherFileInputStream extends FileInputStream</code></pre>
+<p>如果要给FileInputStream添加缓冲和签名的功能，那么我们还需要派生BufferedDigestFileInputStream。如果要给FileInputStream添加缓冲和加解密的功能，则需要派生BufferedCipherFileInputStream。</p>
+<p>我们发现，给FileInputStream添加3种功能，至少需要3个子类。这3种功能的组合，又需要更多的子类：</p>
+<p>这还只是针对FileInputStream设计，如果针对另一种InputStream设计，很快会出现子类爆炸的情况。</p>
+<p>因此，直接使用继承，为各种InputStream附加更多的功能，根本无法控制代码的复杂度，很快就会失控。</p>
+<p>为了解决依赖继承会导致子类数量失控的问题，JDK首先将InputStream分为两大类：</p>
+<p>一类是直接提供数据的基础InputStream，例如：</p>
+<ul>
+<li>FileInputStream</li>
+<li>ByteArrayInputStream</li>
+<li>ServletInputStream…</li>
+</ul>
+<p>一类是提供额外附加功能的InputStream，例如：</p>
+<ul>
+<li>BufferedInputStream</li>
+<li>DigestInputStream</li>
+<li>CipherInputStream</li>
+<li>…</li>
+</ul>
+<p>当我们需要给一个“基础”InputStream附加各种功能时，我们先确定这个能提供数据源的InputStream，因为我们需要的数据总得来自某个地方，例如，FileInputStream，数据来源自文件：</p>
+<pre><code class="highlight plaintext">InputStream file = new FileInputStream(&quot;test.gz&quot;);</code></pre>
+<p>紧接着，我们希望FileInputStream能提供缓冲的功能来提高读取的效率，因此我们用BufferedInputStream包装这个InputStream，得到的包装类型是BufferedInputStream，但它仍然被视为一个InputStream：</p>
+<pre><code class="highlight plaintext">InputStream buffered = new BufferedInputStream(file);</code></pre>
+<p>最后，假设该文件已经用gzip压缩了，我们希望直接读取解压缩的内容，就可以再包装一个GZIPInputStream：</p>
+<pre><code class="highlight plaintext">InputStream gzip = new GZIPInputStream(buffered);</code></pre>
+<p>无论我们包装多少次，得到的对象始终是InputStream，我们直接用InputStream来引用它，就可以正常读取：</p>
+<p>上述这种通过一个“基础”组件再叠加各种“附加”功能组件的模式，称之为<strong>Filter模式</strong>（或者装饰器模式：Decorator）。它可以让我们通过少量的类来实现各种功能的组合：</p>
+<p>类似的，OutputStream也是以这种模式来提供各种功能：</p>
+<h3 id="编写filterinputstream"><a class="markdownIt-Anchor" href="#编写filterinputstream"></a> 编写FilterInputStream</h3>
+<p>我们也可以自己编写FilterInputStream，以便可以把自己的FilterInputStream“叠加”到任何一个InputStream中。</p>
+<p>下面的例子演示了如何编写一个CountInputStream，它的作用是对输入的字节进行计数：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        byte[] data = &quot;hello, world!&quot;.getBytes(&quot;UTF-8&quot;);
+        try (CountInputStream input = new CountInputStream(new ByteArrayInputStream(data))) &#123;
+            int n;
+            while ((n = input.read()) != -1) &#123;
+                System.out.println((char)n);
+            &#125;
+            System.out.println(&quot;Total read &quot; + input.getBytesRead() + &quot; bytes&quot;);
+        &#125;
+    &#125;
+&#125;
+
+class CountInputStream extends FilterInputStream &#123;
+    private int count = 0;
+
+    CountInputStream(InputStream in) &#123;
+        super(in);
+    &#125;
+
+    public int getBytesRead() &#123;
+        return this.count;
+    &#125;
+
+    public int read() throws IOException &#123;
+        int n = in.read();
+        if (n != -1) &#123;
+            this.count ++;
+        &#125;
+        return n;
+    &#125;
+
+    public int read(byte[] b, int off, int len) throws IOException &#123;
+        int n = in.read(b, off, len);
+        this.count += n;
+        return n;
+    &#125;</code></pre>
+<blockquote>
+<p>注意到在叠加多个FilterInputStream，我们只需要持有最外层的InputStream，并且，当最外层的InputStream关闭时（在try(resource)块的结束处自动关闭），内层的InputStream的close()方法也会被自动调用，并最终调用到最核心的“基础”InputStream，因此不存在资源泄露</p>
+</blockquote>
+<h2 id="节点流"><a class="markdownIt-Anchor" href="#节点流"></a> 节点流</h2>
+<p>离数据源程序最近的流</p>
+<h3 id="字节流"><a class="markdownIt-Anchor" href="#字节流"></a> 字节流</h3>
+<p><strong>字节流：可以处理一切文件</strong></p>
+<ul>
+<li>从InputStream或者Reader中读入数组</li>
+<li>从OutputStream或者Writer中写数组</li>
+</ul>
+<h4 id="inputstream-输入流"><a class="markdownIt-Anchor" href="#inputstream-输入流"></a> InputStream 输入流</h4>
+<p><strong>InputStream</strong>就是Java标准库提供的最基本的输入流。它位于java.io这个包里。java.io包提供了所有同步IO的功能。</p>
+<p>要特别注意的一点是，InputStream并不是一个接口，而是一个抽象类，它是所有输入流的超类。这个抽象类定义的一个最重要的方法就是int read()，签名如下：</p>
+<pre><code class="highlight plaintext">public abstract int read() throws IOException;</code></pre>
+<blockquote>
+<p>这个方法会读取输入流的下一个字节，并返回字节表示的int值（0~255）。如果已读到末尾，返回-1表示不能继续读取了</p>
+</blockquote>
+<h5 id="fileinputstream"><a class="markdownIt-Anchor" href="#fileinputstream"></a> FileInputStream</h5>
+<p><strong>FileInputStream</strong>是InputStream的一个子类。顾名思义，FileInputStream就是从文件流中读取数据。下面的代码演示了如何完整地读取一个FileInputStream的所有字节：</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    // 创建一个FileInputStream对象:
+    InputStream input = new FileInputStream(&quot;src/readme.txt&quot;);
+    for (;;) &#123;
+        int n = input.read(); // 反复调用read()方法，直到返回-1
+        if (n == -1) &#123;
+            break;
+        &#125;
+        System.out.println(n); // 打印byte的值
+    &#125;
+    input.close(); // 关闭流
+&#125;</code></pre>
+<blockquote>
+<p>在计算机中，类似文件、网络端口这些资源，都是由操作系统统一管理的。应用程序在运行的过程中，如果打开了一个文件进行读写，完成后要及时地关闭，以便让操作系统把资源释放掉，否则，应用程序占用的资源会越来越多，不但白白占用内存，还会影响其他应用程序的运行</p>
+</blockquote>
+<blockquote>
+<p>InputStream和OutputStream都是通过<strong>close</strong>()方法来关闭流。关闭流就会释放对应的底层资源</p>
+</blockquote>
+<p>我们还要注意到在读取或写入IO流的过程中，可能会发生错误，例如，文件不存在导致无法读取，没有写权限导致写入失败，等等，这些底层错误由Java虚拟机自动封装成IOException异常并抛出。因此，所有与IO操作相关的代码都必须正确处理IOException</p>
+<p>仔细观察上面的代码，会发现一个潜在的问题：如果读取过程中发生了IO错误，InputStream就没法正确地关闭，资源也就没法及时释放。因此，我们需要用try … finally来保证InputStream在无论是否发生IO错误的时候都能够正确地关闭：</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    InputStream input = null;
+    try &#123;
+        input = new FileInputStream(&quot;src/readme.txt&quot;);
+        int n;
+        while ((n = input.read()) != -1) &#123; // 利用while同时读取并判断
+            System.out.println(n);
+        &#125;
+    &#125; finally &#123;
+        if (input != null) &#123; input.close(); &#125;
+    &#125;
+&#125;</code></pre>
+<p>用try … finally来编写上述代码会感觉比较复杂，更好的写法是利用Java 7引入的<strong>新的try(resource)的语法</strong>，只需要编写try语句，让编译器自动为我们关闭资源。推荐的写法如下：</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    try (InputStream input = new FileInputStream(&quot;src/readme.txt&quot;)) &#123;
+        int n;
+        while ((n = input.read()) != -1) &#123;
+            System.out.println(n);
+        &#125;
+    &#125; // 编译器在此自动为我们写入finally并调用close()
+&#125;</code></pre>
+<blockquote>
+<p>实际上，编译器并不会特别地为InputStream加上自动关闭。编译器只看try(resource = …)中的对象是否实现了<strong>java.lang.AutoCloseable</strong>接口，如果实现了，就<strong>自动加上finally语句并调用close()方法</strong>。InputStream和OutputStream都实现了这个接口，因此，都可以用在try(resource)中</p>
+</blockquote>
+<h5 id="缓冲"><a class="markdownIt-Anchor" href="#缓冲"></a> 缓冲</h5>
+<p>在读取流的时候，一次读取一个字节并不是最高效的方法。很多流支持一次性读取多个字节到缓冲区，对于文件和网络流来说，利用缓冲区一次性读取多个字节效率往往要高很多。InputStream提供了两个重载方法来支持读取多个字节：</p>
+<ul>
+<li><strong>int read</strong>(byte[] b)：读取若干字节并填充到byte[]数组，返回读取的字节数</li>
+<li><strong>int read</strong>(byte[] b, int off, int len)：指定byte[]数组的偏移量和最大填充数
+<ul>
+<li>一次性读取一个字节数组的方式，比一次性读取一个字节的方式快的多，所以，尽可能使用这两个方法代替read()方法</li>
+<li>read(byte, int offset, int length)方法同样将数据读取到字节数组中，不同的是，该方法从数组的offset位置开始，并且最多将length个字节写入到数组中。同样地，read(byte, int offset, int length)方法返回一个int变量，告诉你已经有多少字节已经被写入到字节数组中，所以请记得在读取数据前检查上一次调用read(byte, int offset, int length)的返回值</li>
+</ul>
+</li>
+</ul>
+<p>利用上述方法一次读取多个字节时，需要先定义一个byte[]数组作为缓冲区，read()方法会尽可能多地读取字节到缓冲区， 但不会超过缓冲区的大小。read()方法的返回值不再是字节的int值，而是返回实际读取了多少个字节。如果返回-1，表示没有更多的数据了。</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    try (InputStream input = new FileInputStream(&quot;src/readme.txt&quot;)) &#123;
+        // 定义1000个字节大小的缓冲区:
+        byte[] buffer = new byte[1000];
+        int n;
+        while ((n = input.read(buffer)) != -1) &#123; // 读取到缓冲区
+            System.out.println(&quot;read &quot; + n + &quot; bytes.&quot;);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h5 id="阻塞"><a class="markdownIt-Anchor" href="#阻塞"></a> 阻塞</h5>
+<p>在调用InputStream的read()方法读取数据时，我们说read()方法是阻塞（Blocking）的。它的意思是，对于下面的代码：</p>
+<pre><code class="highlight plaintext">int n;
+n = input.read(); // 必须等待read()方法返回才能执行下一行代码
+int m = n;</code></pre>
+<blockquote>
+<p>执行到第二行代码时，必须等read()方法返回后才能继续。因为读取IO流相比执行普通代码，速度会慢很多，因此，无法确定read()方法调用到底要花费多长时间</p>
+</blockquote>
+<p>用FileInputStream可以从文件获取输入流，这是InputStream常用的一个实现类。此外，<strong>ByteArrayInputStream</strong>可以在内存中模拟一个InputStream：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        byte[] data = &#123; 72, 101, 108, 108, 111, 33 &#125;;
+        try (InputStream input = new ByteArrayInputStream(data)) &#123;
+            int n;
+            while ((n = input.read()) != -1) &#123;
+                System.out.println((char)n);
+            &#125;
+        &#125;
+    &#125;
+&#125;
+
+输出：
+H
+e
+l
+l
+o
+!</code></pre>
+<blockquote>
+<p>ByteArrayInputStream实际上是把一个byte[]数组在内存中变成一个InputStream，虽然实际应用不多，但测试的时候，可以用它来构造一个InputStream</p>
+</blockquote>
+<p>java.io.InputStream类是<strong>所有Java IO输入流的基类</strong></p>
+<p>通常使用输入流中的read()方法读取数据。read()方法返回一个整数，代表了读取到的字节的内容(0 ~ 255)。当达到<strong>流末尾没有更多数据可以读取的时候</strong>，<strong>read()方法返回-1</strong></p>
+<hr />
+<p>案例：</p>
+<pre><code class="highlight plaintext">public static void main(String args[])&#123;
+	String path = &quot;F:/File/Demo/test.txt&quot;;
+	//1.建立联系
+	File file = new File(path);  
+	// 构造器中可以写File对象，也可以直接写path,构造器内部自动包装为File;
+	// 2.选择流
+	InputStream is = new FileInputStream(file);                      
+	//操作不断读取 相当于缓冲数组
+	//不断的读10个字节给car,不断重复，直到没有数据为止
+	byte[] car = new byte[10];
+	//接收 定义实际读取大小
+	int len = 0; 
+	 //read方法当没有数据时返回-1         
+	while(-1!=(len = is.read(car)))&#123;                                                                                                  3.读取
+		//输出 把字节数组转为字符串
+		String str = new String(car,0,len);
+		System.out.print(str);
+	 &#125;
+	is.close(); 
+&#125;</code></pre>
+<h4 id="outputstream-输出流"><a class="markdownIt-Anchor" href="#outputstream-输出流"></a> OutputStream 输出流</h4>
+<p>和InputStream相反，OutputStream是Java标准库提供的最基本的输出流。</p>
+<p>和InputStream类似，OutputStream也是抽象类，它是所有输出流的超类。这个抽象类定义的一个最重要的方法就是void write(int b)，签名如下：</p>
+<pre><code class="highlight plaintext">public abstract void write(int b) throws IOException;</code></pre>
+<blockquote>
+<p>这个方法会写入一个字节到输出流。要注意的是，虽然传入的是int参数，但只会写入一个字节，即只写入int最低8位表示字节的部分（相当于b &amp; 0xff）</p>
+</blockquote>
+<p>和InputStream类似，OutputStream也提供了close()方法关闭输出流，以便释放系统资源。要特别注意：OutputStream还提供了一个<strong>flush</strong>()方法，它的目的是<strong>将缓冲区的内容真正输出到目的地</strong></p>
+<ul>
+<li><strong>write(byte)</strong>
+<ul>
+<li>write(byte)方法用于把单个字节写入到输出流中。OutputStream的write(byte)方法将一个包含了待写入数据的int变量作为参数进行写入。只有int类型的第一个字节会被写入，其余位会被忽略。(译者注：写入低8位，忽略高24位)</li>
+</ul>
+</li>
+<li><strong>wirte(byte[],int off,int len)</strong>
+<ul>
+<li>OutputStream同样包含了将字节数据中全部或者部分数据写入到输出流中的方法，分别是write(byte[])和write(byte[], int offset, int length)</li>
+</ul>
+</li>
+<li><strong>flush()</strong>
+<ul>
+<li>OutputStream的flush()方法将所有写入到OutputStream的数据冲刷到相应的目标媒介中。比如，如果输出流是FileOutputStream，那么写入到其中的数据可能并没有真正写入到磁盘中。即使所有数据都写入到了FileOutputStream，这些数据还是有可能保留在内存的缓冲区中。通过调用flush()方法，可以把缓冲区内的数据刷新到磁盘(或者网络，以及其他任何形式的目标媒介)中</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p>为什么要有flush()？</p>
+<ul>
+<li>因为向磁盘、网络写入数据的时候，出于效率的考虑，操作系统并不是输出一个字节就立刻写入到文件或者发送到网络，而是把输出的字节先放到内存的一个缓冲区里（本质上就是一个byte[]数组），等到缓冲区写满了，再一次性写入文件或者网络。对于很多IO设备来说，一次写一个字节和一次写1000个字节，花费的时间几乎是完全一样的，所以OutputStream有个flush()方法，能强制把缓冲区内容输出</li>
+<li>通常情况下，我们不需要调用这个flush()方法，因为缓冲区写满了OutputStream会自动调用它，并且，在调用close()方法关闭OutputStream之前，也会自动调用flush()方法。</li>
+</ul>
+<p>但是，在某些情况下，我们必须手动调用flush()方法。</p>
+<p>举个栗子：小明正在开发一款在线聊天软件，当用户输入一句话后，就通过OutputStream的write()方法写入网络流。小明测试的时候发现，发送方输入后，接收方根本收不到任何信息，怎么肥四？</p>
+<p>原因就在于写入网络流是先写入内存缓冲区，等缓冲区满了才会一次性发送到网络。如果缓冲区大小是4K，则发送方要敲几千个字符后，操作系统才会把缓冲区的内容发送出去，这个时候，接收方会一次性收到大量消息。解决办法就是每输入一句话后，立刻调用flush()，不管当前缓冲区是否已满，强迫操作系统把缓冲区的内容立刻发送出去。</p>
+<hr />
+<p>实际上，InputStream也有缓冲区。例如，从FileInputStream读取一个字节时，操作系统往往会一次性读取若干字节到缓冲区，并维护一个指针指向未读的缓冲区。然后，每次我们调用int read()读取下一个字节时，可以直接返回缓冲区的下一个字节，避免每次读一个字节都导致IO操作。当缓冲区全部读完后继续调用read()，则会触发操作系统的下一次读取并再次填满缓冲区。</p>
+<h5 id="fileoutputstream"><a class="markdownIt-Anchor" href="#fileoutputstream"></a> FileOutPutStream</h5>
+<p>我们以FileOutputStream为例，演示如何将若干个字节写入文件流：</p>
+<pre><code class="highlight plaintext">public void writeFile() throws IOException &#123;
+    OutputStream output = new FileOutputStream(&quot;out/readme.txt&quot;);
+    output.write(72); // H
+    output.write(101); // e
+    output.write(108); // l
+    output.write(108); // l
+    output.write(111); // o
+    output.close();
+&#125;</code></pre>
+<p>每次写入一个字节非常麻烦，更常见的方法是一次性写入若干字节。这时，可以用OutputStream提供的重载方法void write(byte[])来实现：</p>
+<pre><code class="highlight plaintext">public void writeFile() throws IOException &#123;
+    OutputStream output = new FileOutputStream(&quot;out/readme.txt&quot;);
+    output.write(&quot;Hello&quot;.getBytes(&quot;UTF-8&quot;)); // Hello
+    output.close();
+&#125;</code></pre>
+<p>和InputStream一样，上述代码没有考虑到在发生异常的情况下如何正确地关闭资源。写入过程也会经常发生IO错误，例如，磁盘已满，无权限写入等等。我们需要用try(resource)来保证OutputStream在无论是否发生IO错误的时候都能够正确地关闭：</p>
+<pre><code class="highlight plaintext">public void writeFile() throws IOException &#123;
+    try (OutputStream output = new FileOutputStream(&quot;out/readme.txt&quot;)) &#123;
+        output.write(&quot;Hello&quot;.getBytes(&quot;UTF-8&quot;)); // Hello
+    &#125; // 编译器在此自动为我们写入finally并调用close()
+&#125;</code></pre>
+<h5 id="阻塞-2"><a class="markdownIt-Anchor" href="#阻塞-2"></a> 阻塞</h5>
+<p>和InputStream一样，OutputStream的write()方法也是阻塞的。</p>
+<h5 id="outputstream实现类"><a class="markdownIt-Anchor" href="#outputstream实现类"></a> OutputStream实现类</h5>
+<p>用FileOutputStream可以从文件获取输出流，这是OutputStream常用的一个实现类。此外，ByteArrayOutputStream可以在内存中模拟一个OutputStream：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        byte[] data;
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) &#123;
+            output.write(&quot;Hello &quot;.getBytes(&quot;UTF-8&quot;));
+            output.write(&quot;world!&quot;.getBytes(&quot;UTF-8&quot;));
+            data = output.toByteArray();
+        &#125;
+        System.out.println(new String(data, &quot;UTF-8&quot;));
+    &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p>OutputStream的子类可能会包含write()方法的替代方法。比如，DataOutputStream允许你利用writeBoolean()，writeDouble()等方法将基本类型int，long，float，double，boolean等变量写入</p>
+</blockquote>
+<h4 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h4>
+<pre><code class="highlight plaintext">public static void main(String args[])&#123;
+	Stringpath=&quot;F:/File/Demo/test1.txt&quot;;
+	//1.建立联系
+	File file = new File(path);
+	OutputStream os = null;
+	//true表示追加，false表示覆盖
+	//2.选择流
+	os = new FileOutputStream(file,true);                                                
+	//操作
+	String str = &quot;bjsxt is very good!&quot;;
+	//字符串转字节数组
+	byte[] date = str.getBytes();
+	//3.写出
+	os.write(date,0,date.length);
+	//强制刷新出出去，因为这个相当于一根管道，管道没有满就不出去，flush()就是没有满也把他推出去
+	os.flush();
+	//4.关闭
+	os.close();
+&#125;</code></pre>
+<p><strong>文件/文件 copy</strong></p>
+<pre><code class="highlight plaintext"> public static void copyFile(File inFile,File outFile)&#123;
+	//如果outFile为已经存在的文件夹，不能建立与之同名的文件
+	if(outFile.isDirectory())&#123;
+		System.out.println(&quot;不能建立于文件夹同名的文件&quot;);
+		throw new IOException(&quot;不能建立于文件夹同名的文件&quot;);
+	&#125;
+	InputStream is = null;
+	OutputStream os = null;
+	//选择文件流
+	is = new FileInputStream(inFile);
+	os = new FileOutputStream(outFile,false);
+	//文件拷贝
+	int len = 0;
+	byte[] flush = new byte[1024];
+	if(inFile.isFile())&#123;
+	      while(-1!=(len=is.read(flush)))&#123;  //把inFile文件中的数据一段一段的传给flush字节数组
+		   if(outFile.isFile())&#123;
+			 os.write(flush, 0, len);  //把数组内数据用os.write();写入outFile
+		   &#125;else&#123;
+			 outFile.createNewFile();
+			 os.write(flush, 0, len);
+		   &#125;
+
+	      &#125;
+	os.flush();
+	&#125;else&#123;
+	      System.out.println(&quot;请选择文件进行拷贝&quot;);
+	&#125;
+	is.close();
+	os.close();
+&#125;</code></pre>
+<p><strong>文件夹/文件夹copy</strong></p>
+<pre><code class="highlight plaintext">public static void copyDir(File inFile,File outFile)&#123;
+	if(inFile.isDirectory())&#123;//如果是文件夹
+		outFile = new File(outFile,inFile.getName());
+	&#125;
+	copyDirDetail(inFile,outFile);
+&#125;
+/**
+* 拷贝文件夹细节
+* @param 源文件inFile
+* @param 目标文件outFile
+*/
+public static void copyDirDetail(File inFile,File outFile)&#123;
+	if(inFile.isFile())&#123;
+		FileUtils.copyFile(inFile, outFile);
+	&#125;else if(inFile.isDirectory())&#123;
+		//确保目录文件存在
+		outFile.mkdirs();
+		//获取下一级目录|文件
+		for(File temp:inFile.listFiles())&#123;
+		copyDirDetail(temp,new File(outFile,temp.getName()));
+		&#125;
+	&#125;
+&#125;</code></pre>
+<h3 id="字符流"><a class="markdownIt-Anchor" href="#字符流"></a> 字符流</h3>
+<p>字符流：只能处理纯文本</p>
+<p>Java IO的<strong>Reader和Writer</strong>除了基于<strong>字符</strong>之外，其他方面都与InputStream和OutputStream非常类似。他们被用于读写文本。InputStream和OutputStream是基于字节的</p>
+<h4 id="reader-输入流"><a class="markdownIt-Anchor" href="#reader-输入流"></a> Reader 输入流</h4>
+<ul>
+<li>read(char[] cbuf);</li>
+<li>read(char[] cbuf,int off,int len)+close;</li>
+</ul>
+<p>Reader类是Java IO中所有字符输入流的<strong>基类</strong>，主要方法是：</p>
+<pre><code class="highlight plaintext">public int read() throws IOException;</code></pre>
+<blockquote>
+<p>这个方法读取字符流的下一个字符，并返回字符表示的int，范围是0~65535。如果已读到末尾，返回-1</p>
+</blockquote>
+<p>Reader与InputStream类似，不同点在于，Reader基于字符而非基于字节。换句话说，Reader用于读取文本，而InputStream用于读取原始字节。</p>
+<table>
+<thead>
+<tr>
+<th>InputStream</th>
+<th>Reader</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字节流，以byte为单位</td>
+<td>字符流，以char为单位</td>
+</tr>
+<tr>
+<td>读取字节（-1，0~255）：int read()</td>
+<td>读取字符（-1，0~65535）：int read()</td>
+</tr>
+<tr>
+<td>读到字节数组：int read(byte[] b)</td>
+<td>读到字符数组：int read(char[] c)</td>
+</tr>
+</tbody>
+</table>
+<p>子类包括BufferedReader，PushbackReader，InputStreamReader，StringReader和其他Reader</p>
+<h5 id="filereader"><a class="markdownIt-Anchor" href="#filereader"></a> FileReader</h5>
+<p>一般使用FileReader()读取文件</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    // 创建一个FileReader对象:
+    Reader reader = new FileReader(&quot;src/readme.txt&quot;); // 字符编码是???
+    for (;;) &#123;
+        int n = reader.read(); // 反复调用read()方法，直到返回-1
+        if (n == -1) &#123;
+            break;
+        &#125;
+        System.out.println((char)n); // 打印char
+    &#125;
+    reader.close(); // 关闭流
+&#125;</code></pre>
+<p>Reader还提供了一次性读取若干字符并填充到char[]数组的方法：</p>
+<pre><code class="highlight plaintext">public int read(char[] c) throws IOException</code></pre>
+<blockquote>
+<p>它返回实际读入的字符个数，最大不超过char[]数组的长度。返回-1表示流结束。</p>
+</blockquote>
+<p>利用这个方法，我们可以先设置一个缓冲区，然后，每次尽可能地填充缓冲区：</p>
+<pre><code class="highlight plaintext">public void readFile() throws IOException &#123;
+    try (Reader reader = new FileReader(&quot;src/readme.txt&quot;, StandardCharsets.UTF_8)) &#123;
+        char[] buffer = new char[1000];
+        int n;
+        while ((n = reader.read(buffer)) != -1) &#123;
+            System.out.println(&quot;read &quot; + n + &quot; chars.&quot;);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>如果我们读取一个纯ASCII编码的文本文件，上述代码工作是没有问题的。但如果文件中包含中文，就会出现乱码，因为FileReader默认的编码与系统相关，例如，Windows系统的默认编码可能是GBK，打开一个UTF-8编码的文本文件就会出现乱码。</p>
+<p>要避免乱码问题，我们需要在创建FileReader时指定编码：</p>
+<pre><code class="highlight plaintext">try (Reader reader = new FileReader(&quot;src/readme.txt&quot;, StandardCharsets.UTF_8) &#123;
+    // TODO
+&#125;</code></pre>
+<p>请记住，Java内部使用UTF8编码表示字符串。<strong>输入流中一个字节可能并不等同于一个UTF8字符</strong>。如果你从输入流中以字节为单位读取UTF8编码的文本，并且尝试将读取到的字节转换成字符，你可能会得不到预期的结果</p>
+<pre><code class="highlight plaintext">Reader reader = new FileReader(&quot;c:\\data\\myfile.txt&quot;);
+
+int data = reader.read();
+
+while(data != -1)&#123;
+    char dataChar = (char) data;
+    System.out.println(dataChar);
+    data = reader.read();
+&#125;</code></pre>
+<blockquote>
+<p>请注意，InputStream的read()方法返回一个字节，意味着这个返回值的范围在0到255之间(当达到流末尾时，返回-1)</p>
+</blockquote>
+<blockquote>
+<p>Reader的read()方法返回一个字符</p>
+<p>内容的int类型变量，意味着这个返回值的范围在0到65535之间(当达到流末尾时，同样返回-1)。这并不意味着Reade只会从数据源中一次读取2个字节，<strong>Reader会根据文本的编码，一次读取一个或者多个字节</strong></p>
+</blockquote>
+<hr />
+<h5 id="inputstreamreader"><a class="markdownIt-Anchor" href="#inputstreamreader"></a> InputStreamReader</h5>
+<p>普通的Reader实际上是基于InputStream构造的，因为Reader需要从InputStream中读入字节流（byte），然后，根据编码设置，再转换为char就可以实现字符流。如果我们查看FileReader的源码，它在内部实际上持有一个FileInputStream</p>
+<p>既然Reader本质上是一个基于InputStream的byte到char的转换器，那么，如果我们已经有一个InputStream，想把它转换为Reader，是完全可行的。InputStreamReader就是这样一个转换器，它可以把任何InputStream转换为Reader</p>
+<p>一个Reader可以和一个InputStream相结合。如果你有一个InputStream输入流，并且想从其中读取字符，可以把这个InputStream包装到InputStreamReader中。把InputStream传递到InputStreamReader的构造函数中：</p>
+<pre><code class="highlight plaintext">// 持有InputStream:
+InputStream input = new FileInputStream(&quot;src/readme.txt&quot;);
+// 变换为Reader:
+Reader reader = new InputStreamReader(input, &quot;UTF-8&quot;);</code></pre>
+<h5 id="chararrayreader"><a class="markdownIt-Anchor" href="#chararrayreader"></a> CharArrayReader</h5>
+<p>CharArrayReader可以在内存中模拟一个Reader，它的作用实际上是把一个char[]数组变成一个Reader，这和ByteArrayInputStream非常类似：</p>
+<pre><code class="highlight plaintext">try (Reader reader = new CharArrayReader(&quot;Hello&quot;.toCharArray())) &#123;
+&#125;</code></pre>
+<h5 id="stringreader"><a class="markdownIt-Anchor" href="#stringreader"></a> StringReader</h5>
+<p>StringReader可以直接把String作为数据源，它和CharArrayReader几乎一样：</p>
+<pre><code class="highlight plaintext">try (Reader reader = new StringReader(&quot;Hello&quot;)) &#123;
+&#125;</code></pre>
+<h4 id="writer-输出流"><a class="markdownIt-Anchor" href="#writer-输出流"></a> Writer 输出流</h4>
+<p>Reader是带编码转换器的InputStream，它把byte转换为char，而Writer就是带编码转换器的OutputStream，它把char转换为byte并输出。</p>
+<p>Writer类是Java IO中所有Writer的基类。</p>
+<ul>
+<li>writer(char[] cbuf); 写入一个字符（0~65535）</li>
+<li>writer(char[] cbuf,int off,int len); 写入字符属组所有字符串</li>
+<li>write(String s) 写入String表示的所有字符串</li>
+</ul>
+<p>Writer基于字符而非基于字节，Writer用于写入文本，OutputStream用于写入字节</p>
+<table>
+<thead>
+<tr>
+<th>OutputStream</th>
+<th>Writer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>字节流，以byte为单位</td>
+<td>字符流，以char为单位</td>
+</tr>
+<tr>
+<td>写入字节（0~255）：void write(int b)</td>
+<td>写入字符（0~65535）：void write(int c)</td>
+</tr>
+<tr>
+<td>写入字节数组：void write(byte[] b)</td>
+<td>写入字符数组：void write(char[] c)</td>
+</tr>
+<tr>
+<td>无对应方法</td>
+<td>写入String：void write(String s)</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>子类包括BufferedWriter和PrintWriter等</p>
+</blockquote>
+<blockquote>
+<p>一般使用FileWriter()读取文件</p>
+</blockquote>
+<pre><code class="highlight plaintext">Writer writer = new FileWriter(&quot;c:\\data\\file-output.txt&quot;); 
+writer.write(&#x27;H&#x27;); // 写入单个字符
+writer.write(&quot;Hello&quot;.toCharArray()); // 写入char[]
+writer.write(&quot;Hello World Writer&quot;); 
+writer.close();</code></pre>
+<blockquote>
+<p>同样，你最好使用Writer的子类，不需要直接使用Writer，因为子类的实现更加明确，更能表现你的意图。常用子类包括OutputStreamWriter，CharArrayWriter，FileWriter等。Writer的write(int c)方法，<strong>会将传入参数的低16位写入到Writer中，忽略高16位的数据</strong></p>
+</blockquote>
+<h5 id="chararraywriter"><a class="markdownIt-Anchor" href="#chararraywriter"></a> CharArrayWriter</h5>
+<p>CharArrayWriter可以在内存中创建一个Writer，它的作用实际上是构造一个缓冲区，可以写入char，最后得到写入的char[]数组，这和ByteArrayOutputStream非常类似：</p>
+<pre><code class="highlight plaintext">try (CharArrayWriter writer = new CharArrayWriter()) &#123;
+    writer.write(65);
+    writer.write(66);
+    writer.write(67);
+    char[] data = writer.toCharArray(); // &#123; &#x27;A&#x27;, &#x27;B&#x27;, &#x27;C&#x27; &#125;
+&#125;</code></pre>
+<h5 id="stringwriter"><a class="markdownIt-Anchor" href="#stringwriter"></a> StringWriter</h5>
+<p>StringWriter也是一个基于内存的Writer，它和CharArrayWriter类似。实际上，StringWriter在内部维护了一个StringBuffer，并对外提供了Writer接口</p>
+<h5 id="outputstreamwriter"><a class="markdownIt-Anchor" href="#outputstreamwriter"></a> OutputStreamWriter</h5>
+<p>除了CharArrayWriter和StringWriter外，普通的Writer实际上是基于OutputStream构造的，它接收char，然后在内部自动转换成一个或多个byte，并写入OutputStream。因此，OutputStreamWriter就是一个将任意的OutputStream转换为Writer的转换器：</p>
+<pre><code class="highlight plaintext">try (Writer writer = new OutputStreamWriter(new FileOutputStream(&quot;readme.txt&quot;), &quot;UTF-8&quot;)) &#123;
+    // TODO:
+&#125;</code></pre>
+<p>与Reader和InputStream类似，一个Writer可以和一个OutputStream相结合。把OutputStream包装到OutputStreamWriter中，所有写入到OutputStreamWriter的字符都将会传递给OutputStream。这是一个OutputStreamWriter的例子：</p>
+<pre><code class="highlight plaintext">Writer writer = new OutputStreamWriter(outputStream);</code></pre>
+<h3 id="字节数组流"><a class="markdownIt-Anchor" href="#字节数组流"></a> 字节数组流</h3>
+<ul>
+<li>字节数组流，也是一个节点流</li>
+<li>数组长度有限，数据量不会很大</li>
+<li>节点流就是最底层的流</li>
+</ul>
+<p><strong>ByteArrayOutputStream()一般用于缓存数据，最后一次性获取</strong>。</p>
+<p>ByteArrayStream：用于操作字节数组的流对象 ByteArrayInputStream : 在构造的时候，需要接收数据源，而且数据源是一个字节数组。</p>
+<p>ByteArrayOutputStream : 在构造的时候，不用定义数据目的，因为该对象中已经内部封装了可变长度的字节数组。 这就是数据目的地。 因为这两个流对象都操作的数组，并没有使用系统资源，所以，不用进行close关闭。 不会发生IO异常</p>
+<blockquote>
+<p>此类实现了一个输出流，其中的数据被写入一个 byte 数组。缓冲区会随着数据的不断写入而自动增长。可使用 toByteArray()和 toString()获取数据。关闭 ByteArrayOutputStream 无效。此类中的方法在关闭此流后仍可被调用，而不会产生任何IOException。</p>
+</blockquote>
+<blockquote>
+<p>我的个人理解是ByteArrayOutputStream是用来缓存数据的（数据写入的目标（output stream原义）），向它的内部缓冲区写入数据，缓冲区自动增长，当写入完成时可以从中提取数据。由于这个原因，ByteArrayOutputStream常用于存储数据以用于一次写入</p>
+</blockquote>
+<h4 id="bytearrayoutputstream"><a class="markdownIt-Anchor" href="#bytearrayoutputstream"></a> ByteArrayOutputStream</h4>
+<p>ByteArrayOutputStream允许你以数组的形式获取写入到该输出流中的数据</p>
+<p><strong>文件—&gt;FileInputStream—&gt;ByteArrayOutputStream(使用write()写道字节管道中)—&gt;字节数组</strong></p>
+<p>文件内容 -程序-&gt;字节数组(使用write()写道字节管道中)</p>
+<pre><code class="highlight plaintext">/*
+ * 文件--FileInputStream---ByteArrayOutputStream--&gt;字节数组
+ */
+public static byte[] getBytesFromFile(String str) throws IOException&#123;
+   //创建文件源
+   File inFile = new File(str);
+   //选择流，文件输入流
+   InputStream is = new BufferedInputStream(new FileInputStream(inFile));
+   //字节输出流，不能使用多态
+   ByteArrayOutputStream bs = new ByteArrayOutputStream();
+   //创建字节数组目的地
+   byte[] dest = null;
+   int len = 0;
+   byte[] flush = new byte[1024];
+   //不断读取文件，输出到字节数组中
+   while(-1!=(len = is.read(flush)))&#123;
+    	//写到字节数组流中
+    	bs.write(flush, 0, len);
+   &#125;
+   bs.flush();
+   dest = bs.toByteArray();
+   is.close();
+   bs.close();
+   return dest;
+&#125;</code></pre>
+<h4 id="bytearrayinputstream"><a class="markdownIt-Anchor" href="#bytearrayinputstream"></a> ByteArrayInputStream</h4>
+<p>ByteArrayInputStream允许你从字节数组中读取字节流数据</p>
+<p><strong>字节数组—&gt;(使用read()读取字节数组(管道)的内容)ByteArrayInputStream----&gt;FileOutputStream----&gt;文件</strong></p>
+<p>(使用read()读取字节管道的内容)字节数组-程序-&gt;文件</p>
+<pre><code class="highlight plaintext">byte[] bytes = ... //get byte array from somewhere.
+InputStream input = new ByteArrayInputStream(bytes);
+int data = input.read();
+while(data != -1) &#123;
+    //do something with data
+    data = input.read();
+&#125;
+input.close();</code></pre>
+<blockquote>
+<p>如果数据存储在数组中，ByteArrayInputStream可以很方便地读取数据。如果你有一个InputStream变量，又想从数组中读取数据呢？很简单，只需要把字节数组传递给ByteArrayInputStream的构造函数，在把这个ByteArrayInputStream赋值给InputStream变量就可以了</p>
+</blockquote>
+<pre><code class="highlight plaintext">/*
+ *  字节数组---ByteArrayInputStream----FileOutputStream----&gt;文件
+ */
+public static void toFileFromByteArray(byte[] bt,String str) throws IOException&#123;
+   //字节数组输入流
+   InputStream is = new BufferedInputStream(
+	      new ByteArrayInputStream(bt)
+	      );
+   //文件输出流
+   OutputStream os = new BufferedOutputStream(new FileOutputStream(new File(str)));
+   int len = 0;
+   byte[] flush = new byte[1024];
+   //不断读取字节数组   写入文件
+   while(-1!=(len = is.read(flush)))&#123;
+	//写到文件中
+	os.write(flush, 0, len);
+   &#125;
+   os.flush();
+   is.close();
+   os.close();
+
+&#125;</code></pre>
+<h3 id="randomaccessfile"><a class="markdownIt-Anchor" href="#randomaccessfile"></a> RandomAccessFile</h3>
+<p>指针输入输出流<strong>RandomAccessFile</strong></p>
+<ul>
+<li>此类的实例支持对随机访问文件的读取和写入</li>
+<li>这个流有一个指针，可以指定文件输入输出的位置</li>
+<li>RandomAccessFile允许你来回读写文件，也可以替换文件中的某些部分</li>
+</ul>
+<p>初始化一个RandomAccessFile</p>
+<pre><code class="highlight plaintext">RandomAccessFile file = new RandomAccessFile(&quot;c:\\data\\file.txt&quot;, &quot;rw&quot;);</code></pre>
+<blockquote>
+<p>构造函数的第二个参数：“rw”，表明你以读写方式打开文件</p>
+</blockquote>
+<hr />
+<p><strong>在RandomAccessFile中来回读写</strong></p>
+<p>在RandomAccessFile的某个位置读写之前，必须把文件指针指向该位置。通过seek()方法可以达到这一目标。可以通过调用getFilePointer()获得当前文件指针的位置。</p>
+<pre><code class="highlight plaintext">
+RandomAccessFile file = new RandomAccessFile(&quot;c:\\data\\file.txt&quot;, &quot;rw&quot;);
+file.seek(200);
+long pointer = file.getFilePointer();
+file.close();</code></pre>
+<hr />
+<p><strong>读取RandomAccessFile</strong></p>
+<p>RandomAccessFile中的任何一个read()方法都可以读取RandomAccessFile的数据。例子如下：</p>
+<pre><code class="highlight plaintext">
+RandomAccessFile file = new RandomAccessFile(&quot;c:\\data\\file.txt&quot;, &quot;rw&quot;);
+int aByte = file.read();
+file.close();</code></pre>
+<blockquote>
+<p>read()方法返回当前RandomAccessFile实例的文件指针指向的位置中包含的字节内容。Java文档中遗漏了一点：read()方法在读取完一个字节之后，会自动把指针移动到下一个可读字节。这意味着使用者在调用完read()方法之后不需要手动移动文件指针</p>
+</blockquote>
+<hr />
+<p><strong>写入RandomAccessFile</strong></p>
+<p>RandomAccessFile中的任何一个write()方法都可以往RandomAccessFile中写入数据。例子如下：</p>
+<pre><code class="highlight plaintext">
+RandomAccessFile file = new RandomAccessFile(&quot;c:\\data\\file.txt&quot;, &quot;rw&quot;);
+file.write(&quot;Hello World&quot;.getBytes());
+file.close();</code></pre>
+<blockquote>
+<p>与read()方法类似，write()方法在调用结束之后自动移动文件指针，所以你不需要频繁地把指针移动到下一个将要写入数据的位置</p>
+</blockquote>
+<p>案例：</p>
+<pre><code class="highlight plaintext">public class RandomAccess &#123;
+     public static void main(String[] args) throws IOException &#123;
+           //r 表示只读  w表示只写
+           RandomAccessFile ra = new RandomAccessFile(new File(&quot;F:/File/Demo/test1.txt&quot;),&quot;r&quot;);
+           //从第十个字节开始读
+           ra.seek(10);
+          //定义缓冲大小
+
+           byte[] flush = new byte[1024];
+           int len = 0;
+           while(-1!=(len=ra.read(flush)))&#123;
+                
+                System.out.println(new String(flush,0,len));
+           &#125;
+           ra.close();
+           
+     &#125;</code></pre>
+<h3 id="文件字符读取流"><a class="markdownIt-Anchor" href="#文件字符读取流"></a> 文件字符读取流</h3>
+<p>FileReader和FileWriter。与FileInputStream和FileOutputStream类似，FileReader与FileWriter用于处理文件内容。</p>
+<h4 id="filereader-2"><a class="markdownIt-Anchor" href="#filereader-2"></a> FileReader</h4>
+<p>FileReader能够以字符流的形式读取文件内容。除了读取的单位不同之外(译者注：FileReader读取字符，FileInputStream读取字节)，FileReader与FileInputStream并无太大差异，也就是说，FileReader用于读取文本。根据不同的编码方案，一个字符可能会相当于一个或者多个字节。代码如下：</p>
+<pre><code class="highlight plaintext">Reader reader = new FileReader(&quot;c:\\data\\input-text.txt&quot;);
+int data = reader.read();
+while(data != -1) &#123;
+    //do something with data...
+    doSomethingWithData(data);
+    data = reader.read();
+&#125;
+reader.close();</code></pre>
+<blockquote>
+<p>read()方法返回一个包含了读取到的字符内容的int类型变量(译者注：0~65535)。如果方法返回-1，表明FileReader中已经没有剩余可读取字符，此时可以关闭FileReader。-1是一个int类型，不是byte或者char类型，这是不一样的</p>
+</blockquote>
+<blockquote>
+<p>FileReader会假设你想使用你所使用的JVM的版本的默认编码处理字节流，但是这通常不是你想要的，如果想指定编码方案，就不要使用该类</p>
+</blockquote>
+<h4 id="filewriter"><a class="markdownIt-Anchor" href="#filewriter"></a> FileWriter</h4>
+<p>FileWriter能够把数据以字符流的形式写入文件。同样是处理文件，FileWriter处理字符，FileOutputStream处理字节。根据不同的编码方案，一个字符可能会相当于一个或者多个字节。代码如下：</p>
+<pre><code class="highlight plaintext">Writer writer = new FileWriter(&quot;c:\\data\\output.txt&quot;);
+while(moreData) &#123;
+    String data = getMoreData();
+    write.write(data);
+&#125;
+writer.close();</code></pre>
+<p>处理文件都会碰到的一个问题是，当前写入的数据是覆盖原文件内容还是追加到文件末尾。当你创建一个FileWriter之后，你可以通过使用不同构造函数实现你的不同目的</p>
+<p>以下的构造函数取文件名作为参数，将会新写入的内容将会覆盖该文件：</p>
+<pre><code class="highlight plaintext">Writer writer = new FileWriter(&quot;c:\\data\\output.txt&quot;);</code></pre>
+<p>以下的构造函数取文件名和一个布尔变量作为参数，布尔值表明你是想追加还是覆盖该文件。例子如下：</p>
+<pre><code class="highlight plaintext">
+Writer writer = new FileWriter(&quot;c:\\data\\output.txt&quot;, true); //appends to file
+
+Writer writer = new FileWriter(&quot;c:\\data\\output.txt&quot;, false); //overwrites file</code></pre>
+<blockquote>
+<p>同样，FileWriter不能指定编码</p>
+</blockquote>
+<h2 id="处理流"><a class="markdownIt-Anchor" href="#处理流"></a> 处理流</h2>
+<p>处理流：对原有的流，增强功能，性能的提升，节点流之上</p>
+<h3 id="缓冲流"><a class="markdownIt-Anchor" href="#缓冲流"></a> 缓冲流</h3>
+<p>作用：提高效率</p>
+<h4 id="字节缓冲流"><a class="markdownIt-Anchor" href="#字节缓冲流"></a> 字节缓冲流</h4>
+<ul>
+<li><strong>BufferedInputStream</strong>();</li>
+<li><strong>BufferedOutputStream</strong>();</li>
+</ul>
+<p>你可以将流整合起来以便实现更高级的输入和输出操作。比如，一次读取一个字节是很慢的，所以可以从磁盘中一次读取一大块数据，然后从读到的数据块中获取字节。为了实现缓冲，可以把InputStream包装到BufferedInputStream中</p>
+<p>缓冲同样可以应用到OutputStream中。你可以实现将大块数据批量地写入到磁盘(或者相应的流)中，这个功能由BufferedOutputStream实现</p>
+<h5 id="bufferedinputstream"><a class="markdownIt-Anchor" href="#bufferedinputstream"></a> BufferedInputStream</h5>
+<p>BufferedInputStream能为输入流提供缓冲区，能提高很多IO的速度。你可以一次读取一大块的数据，而不需要每次从网络或者磁盘中一次读取一个字节。特别是在访问大量磁盘数据时，缓冲通常会让IO快上许多。</p>
+<p>为了给你的输入流加上缓冲，你需要把输入流包装到BufferedInputStream中，代码如下：</p>
+<pre><code class="highlight plaintext">InputStream input = new BufferedInputStream(new FileInputStream(&quot;c:\\data\\input-file.txt&quot;));</code></pre>
+<p>你可以给BufferedInputStream的构造函数传递一个值，设置内部使用的缓冲区设置大小(默认缓冲区大小8 * 1024B)，就像这样：</p>
+<pre><code class="highlight plaintext">InputStream input = new BufferedInputStream(new FileInputStream(&quot;c:\\data\\input-file.txt&quot;), 8 * 1024);</code></pre>
+<blockquote>
+<p>这个例子设置了8KB的缓冲区。最好把缓冲区大小设置成1024字节的整数倍，这样能更高效地利用内置缓冲区的磁盘</p>
+</blockquote>
+<blockquote>
+<p>除了能够为输入流提供缓冲区以外，其余方面BufferedInputStream基本与InputStream类似</p>
+</blockquote>
+<h5 id="bufferedoutputstream"><a class="markdownIt-Anchor" href="#bufferedoutputstream"></a> BufferedOutputStream</h5>
+<p>与BufferedInputStream类似，BufferedOutputStream可以为输出流提供缓冲区。可以构造一个使用默认大小缓冲区的BufferedOutputStream(默认缓冲区大小8 * 1024B)，代码如下：</p>
+<pre><code class="highlight plaintext">OutputStream output = new BufferedOutputStream(new FileOutputStream(&quot;c:\\data\\output-file.txt&quot;));</code></pre>
+<p>也可以手动设置缓冲区大小，代码如下：</p>
+<pre><code class="highlight plaintext">OutputStream output = new BufferedOutputStream(new FileOutputStream(&quot;c:\\data\\output-file.txt&quot;), 8 * 1024);</code></pre>
+<blockquote>
+<p>为了更好地使用内置缓冲区的磁盘，同样建议把缓冲区大小设置成1024的整数倍。</p>
+<p>除了能够为输出流提供缓冲区以外，其余方面BufferedOutputStream基本与OutputStream类似。唯一不同的时，你需要手动flush()方法确保写入到此输出流的数据真正写入到磁盘或者网络中</p>
+</blockquote>
+<h4 id="字符缓冲流"><a class="markdownIt-Anchor" href="#字符缓冲流"></a> 字符缓冲流</h4>
+<ul>
+<li><strong>BufferedReader</strong>();
+<ul>
+<li>//新增方法     readLine() /读取一行</li>
+</ul>
+</li>
+<li><strong>BufferedWriter</strong>();
+<ul>
+<li>//新增方法     newLine() /写入一个换行符</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">//因为有新增方法，不使用多态
+BufferedReader rd = new BufferedReader(new FileReader(inFile));          
+BufferedWriter wt = new BufferedWriter(new FileWriter(outFile));
+String str = null;    
+while(null!=(str=rd.readLine()))&#123;   //读取一行
+      wt.write(str);
+      wt.append(&quot;\r\n&quot;);  //也可以使用这个进行换行
+      wt.newLine();  //换行
+
+&#125;</code></pre>
+<h3 id="转换流"><a class="markdownIt-Anchor" href="#转换流"></a> 转换流</h3>
+<p>简单来说，转换路的这两个类把字节流转换成字符流，中间做了数据的转换，类似适配器模式的思想</p>
+<ul>
+<li>输出流 OutputStreamWriter</li>
+<li>输入流 InputStreamReader</li>
+</ul>
+<pre><code class="highlight plaintext">public static void main()&#123;
+	//指定字符集
+	//在FileInputStream字节流上面包装一个转换流
+	String inStr = &quot;&quot;;
+	String outStr = &quot;&quot;;
+	//两种应该都可以，包装顺序不一样
+	//InputStreamReader br = new InputStreamReader(new BufferedInputStream(new FileInputStream(new File(inStr))),&quot;utf-8&quot;);
+	//在FileInputStream()上包装一个BufferedReader转换流
+	BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(new File(inStr) ) ,&quot;utf-8&quot;));
+	//写出
+	BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outStr)),&quot;utf-8&quot;));
+	String str = null;
+	while(null!=(str=br.readLine()))&#123;
+		bw.append(str);
+		System.out.println(str);
+	&#125;
+	bw.flush();
+	br.close();
+	bw.close();
+&#125;</code></pre>
+<h4 id="inputstreamreader-2"><a class="markdownIt-Anchor" href="#inputstreamreader-2"></a> InputStreamReader</h4>
+<p>InputStreamReader会包含一个InputStream，从而可以将该输入字节流转换成字符流，代码例子：</p>
+<pre><code class="highlight plaintext">InputStream inputStream = new FileInputStream(&quot;c:\\data\\input.txt&quot;);
+Reader reader = new InputStreamReader(inputStream);
+int data = reader.read();
+while(data != -1)&#123;
+    char theChar = (char) data;
+    data = reader.read();
+&#125;
+reader.close();</code></pre>
+<p>InputStreamReader同样拥有其他可选的构造函数，能够让你指定将底层字节流解释成何种编码的字符流。例子如下：</p>
+<pre><code class="highlight plaintext">InputStream inputStream = new FileInputStream(&quot;c:\\data\\input.txt&quot;);
+
+Reader reader = new InputStreamReader(inputStream, &quot;UTF-8&quot;);</code></pre>
+<h4 id="outputstreamwriter-2"><a class="markdownIt-Anchor" href="#outputstreamwriter-2"></a> OutputStreamWriter</h4>
+<p>OutputStreamWriter会包含一个OutputStream，从而可以将该输出字节流转换成字符流，代码如下：</p>
+<pre><code class="highlight plaintext">
+OutputStream outputStream = new FileOutputStream(&quot;c:\\data\\output.txt&quot;);
+Writer writer = new OutputStreamWriter(outputStream);
+writer.write(&quot;Hello World&quot;);
+writer.close();</code></pre>
+<blockquote>
+<p>OutputStreamWriter同样拥有将输出字节流转换成指定编码的字符流的构造函数。</p>
+</blockquote>
+<h3 id="基本类型处理流"><a class="markdownIt-Anchor" href="#基本类型处理流"></a> 基本类型处理流</h3>
+<p>功能：保留类型+数据</p>
+<h4 id="datainputstream"><a class="markdownIt-Anchor" href="#datainputstream"></a> DataInputStream</h4>
+<p>DataInputStream可以使你从输入流中读取Java基本类型数据，而不必每次读取字节数据。你可以把InputStream包装到DataInputStream中，然后就可以从此输入流中读取基本类型数据了，代码如下：</p>
+<pre><code class="highlight plaintext">
+/**
+      * 数据+数据类型  从文件读取
+      * @throws IOException
+      */
+     public static void read(String str) throws IOException&#123;
+           //创建源
+           File inFile = new File(str);
+           DataInputStream ds = new DataInputStream(
+                      new BufferedInputStream(new FileInputStream(inFile)));
+           //必须按照存的顺序读取，否则会出错
+           //内容必须为数据类型处理流生成的文件，否则回报错，没有读取到内容
+           int i = ds.readInt();
+           double d = ds.readDouble();
+           String s = ds.readUTF();
+           
+           System.out.println(i+&quot; &quot;+d+&quot; &quot;+s);
+     &#125;</code></pre>
+<blockquote>
+<p>当你要读取的数据中包含了int，long，float，double这样的基本类型变量时，DataInputStream可以很方便地处理这些数据。</p>
+</blockquote>
+<h4 id="dataoutputstream"><a class="markdownIt-Anchor" href="#dataoutputstream"></a> DataOutputStream</h4>
+<p>DataOutputStream可以往输出流中写入Java基本类型数据，例子如下：</p>
+<pre><code class="highlight plaintext">/**
+      * 数据+类型输出到文件
+      * @throws IOException
+      */
+     public static void write() throws IOException&#123;
+           int i = 25;
+           double d = 1234.23;
+           String s = &quot;数据类型&quot;;
+           //创建目的文件
+           File outFile = new File(&quot;F:/File/Demo/test1.txt&quot;);
+           //选择数据类型输出流     可以保存数据和其类型
+           DataOutputStream ds = new DataOutputStream(
+                      new BufferedOutputStream(new FileOutputStream(outFile)));
+           //输出的顺序必须要和输入的顺序一样，否则会报错
+           ds.writeInt(i);
+           ds.writeDouble(d);
+           ds.writeUTF(s);
+           
+           ds.flush();
+           //关闭资源
+           ds.close();
+     &#125;</code></pre>
+<h4 id="案例从字节数组读取"><a class="markdownIt-Anchor" href="#案例从字节数组读取"></a> 案例：从字节数组读取</h4>
+<pre><code class="highlight plaintext">
+/**
+      * 数据+数据类型  从字节数组读取
+      * @throws IOException
+      */
+     public static void read(byte[] bt) throws IOException&#123;
+           //创建源
+           DataInputStream ds = new DataInputStream(
+                      new BufferedInputStream(new ByteArrayInputStream(bt)));
+           //必须按照存的顺序读取，否则会出错
+           //内容必须为数据类型处理流生成的文件，否则回报错，没有读取到内容
+           int i = ds.readInt();
+           double d = ds.readDouble();
+           String s = ds.readUTF();
+           ds.close();
+           System.out.println(i+&quot; &quot;+d+&quot; &quot;+s);
+     &#125;
+     /**
+      * 数据+类型输出到字节数组中
+      * @throws IOException
+      */
+     public static byte[] write() throws IOException&#123;
+           //目标数组
+           byte[] dest = null;
+           int i = 25;
+           double d = 1234.23;
+           String s = &quot;数据类型&quot;;
+           //创建目的文件
+           //选择数据类型输出流     可以保存数据和其类型
+                     //因为ByteArrayOutputStream中有新增方法，所以不使用多态
+
+           ByteArrayOutputStream bs = new ByteArrayOutputStream();
+           DataOutputStream ds = new DataOutputStream(
+                      new BufferedOutputStream(bs));
+           //下面四句运行完已经写入到bs中
+
+           ds.writeInt(i);
+           ds.writeDouble(d);
+           ds.writeUTF(s);
+           ds.flush();
+           
+           bs.flush();
+           dest = bs.toByteArray();
+
+           //关闭资源
+           ds.close();  
+
+           return dest;
+     &#125;</code></pre>
+<h3 id="序列化引用类型处理流"><a class="markdownIt-Anchor" href="#序列化引用类型处理流"></a> 序列化（引用类型处理流）</h3>
+<p>序列化是指把一个Java对象变成二进制内容，本质上就是一个byte[]数组。</p>
+<p>为什么要把Java对象序列化呢？因为序列化后可以把byte[]保存到文件中，或者把byte[]通过网络传输到远程，这样，就相当于把Java对象存储到文件或者通过网络传输出去了。</p>
+<p>有序列化，就有反序列化，即把一个二进制内容（也就是byte[]数组）变回Java对象。有了反序列化，保存到文件中的byte[]数组又可以“变回”Java对象，或者从网络上读取byte[]并把它“变回”Java对象。</p>
+<hr />
+<p><strong>序列化</strong>，要序列化的对象必须实现<code>java.io.Serializable</code>接口，不是所有的属性需要序列化，不想序列化的属性使用<code>transient</code></p>
+<p>序列化有两种方式：</p>
+<ul>
+<li>实现Serializable接口</li>
+</ul>
+<pre><code class="highlight plaintext">public interface Serializable &#123;
+&#125;</code></pre>
+<blockquote>
+<p>Serializable接口没有定义任何方法，它是一个空接口。我们把这样的空接口称为“标记接口”（Marker Interface），实现了标记接口的类仅仅是给自身贴了个“标记”，并没有增加任何方法。</p>
+</blockquote>
+<blockquote>
+<p>注意:先序列化，后反序列化，序列化顺序必须和反序列化顺序一致</p>
+</blockquote>
+<hr />
+<ul>
+<li>实现Exteranlizable接口</li>
+</ul>
+<p>实现Exteranlizable接口。 需要重写writeExternal和readExternal方法，它的效率比Serializable高一些，并且可以决定哪些属性需要序列化（即使是transient修饰的），但是对大量对象，或者重复对象，则效率低。</p>
+<pre><code class="highlight plaintext">public class User implements Externalizable&#123;
+    private transient String name;
+    
+    public void writeExternal(ObjectOutput out) throws IOException&#123;
+        out.writeObject(name);
+    &#125;
+    
+    public void readExternal(ObjectInput in) throws IOException&#123;
+        name = (String) in.readObject();
+    &#125;
+&#125;</code></pre>
+<p>测试：</p>
+<pre><code class="highlight plaintext">public class Test&#123;
+    public static void main(String[] args) throws Exception,IOException&#123;
+        SerializeUser();
+        DeSerializeUser();
+    &#125;
+    
+    //序列化
+    private static void SerializeUser throws FileNotFoundException,IOException&#123;
+        User user = new User();
+        user.setName(&quot;Java架构师技术栈&quot;);
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(&quot;G://template&quot;));
+        oos.writeObject(user);
+        oos.close();
+        Systemctl.out.prinln(&quot;使用Externalzable接口，添加了transient关键字序列化之前：&quot;+user.toString());
+    &#125;
+    
+    //反序列化
+    private static void DeSerializeUser() throws IOException,ClassNotFoundException&#123;
+        File file = new File(&quot;G://template&quot;);
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+        User newUser = (User)ois.readObject();
+        System.out.println(&quot;使用Externalizable接口，添加了transient关键字序列化之后：&quot;+newUser.toString());
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>实现了Externalizable接口，哪一个属性被序列化使我们手动去指定的，即使是transient关键字修饰也不起作用</p>
+</blockquote>
+<blockquote>
+<p>静态变量不管是不是transient关键字修饰，都不会被序列化</p>
+</blockquote>
+<hr />
+<h4 id="transient关键字"><a class="markdownIt-Anchor" href="#transient关键字"></a> <strong>transient</strong>关键字</h4>
+<ol>
+<li><strong>transient底层实现原理是什么</strong>？</li>
+</ol>
+<p>java的serialization提供了一个非常棒的存储对象状态的机制，说白了serialization就是把对象的状态存储到硬盘上 去，等需要的时候就可以再把它读出来使用。有些时候像银行卡号这些字段是不希望在网络上传输的，transient的作用就是把这个字段的生命周期仅存于调用者的内存中而不会写到磁盘里持久化，意思是transient修饰的age字段，他的生命周期仅仅在内存中，不会被写到磁盘中。</p>
+<ol>
+<li><strong>被transient关键字修饰过得变量真的不能被序列化嘛</strong>？</li>
+</ol>
+<p>可以通过实现Externalizable接口，哪一个属性被序列化使我们手动去指定的，即使是transient关键字修饰也不起作用</p>
+<h4 id="objectinputstream"><a class="markdownIt-Anchor" href="#objectinputstream"></a> ObjectInputStream</h4>
+<p>反序列化</p>
+<p>ObjectInputStream能够让你从输入流中读取Java对象，而不需要每次读取一个字节。你可以把InputStream包装到ObjectInputStream中，然后就可以从中读取对象了。代码如下：</p>
+<pre><code class="highlight plaintext">try (ObjectInputStream input = new ObjectInputStream(...)) &#123;
+    int n = input.readInt();
+    String s = input.readUTF();
+    Double d = (Double) input.readObject();
+&#125;</code></pre>
+<blockquote>
+<p>除了能读取基本类型和String类型外，调用readObject()可以直接返回一个Object对象。要把它变成一个特定类型，必须强制转型</p>
+</blockquote>
+<pre><code class="highlight plaintext">/**
+      * 对象+类型  从文件读取
+      * @throws IOException
+      * @throws ClassNotFoundException
+      */
+     public static void read(String str) throws IOException, ClassNotFoundException&#123;
+           //创建源
+           File inFile = new File(str);
+           ObjectInputStream ds = new ObjectInputStream(new BufferedInputStream(new FileInputStream(inFile)));
+           //必须按照存的顺序读取，否则会出错
+           //内容必须为数据类型处理流生成的文件，否则回报错，没有读取到内容
+           Object obj = ds.readObject();
+           if(obj instanceof Emplyee)&#123;
+                Emplyee emp = (Emplyee)obj;
+                System.out.println(emp.getName()+&quot; &quot; +emp.getSalary());
+           &#125;
+           ds.close();
+           
+     &#125;</code></pre>
+<blockquote>
+<p>在这个例子中，你读取的对象必须是Emplyee</p>
+<p>的一个实例，并且必须事先通过ObjectOutputStream序列化到文件中。(ObjectInputStream和ObjectOutputStream还有许多read和write方法，比如readInt、writeLong等等)</p>
+</blockquote>
+<p>readObject()可能抛出的异常有：</p>
+<ul>
+<li>ClassNotFoundException：没有找到对应的Class；</li>
+<li>InvalidClassException：Class不匹配。</li>
+</ul>
+<p>对于ClassNotFoundException，这种情况常见于一台电脑上的Java程序把一个Java对象，例如，Person对象序列化以后，通过网络传给另一台电脑上的另一个Java程序，但是这台电脑的Java程序并没有定义Person类，所以无法反序列化。</p>
+<p>对于InvalidClassException，这种情况常见于序列化的Person对象定义了一个int类型的age字段，但是反序列化时，Person类定义的age字段被改成了long类型，所以导致class不兼容。</p>
+<p>为了避免这种class定义变动导致的不兼容，Java的序列化允许class定义一个特殊的serialVersionUID静态变量，用于标识Java类的序列化“版本”，通常可以由IDE自动生成。如果增加或修改了字段，可以改变serialVersionUID的值，这样就能自动阻止不匹配的class版本：</p>
+<pre><code class="highlight plaintext">public class Person implements Serializable &#123;
+    private static final long serialVersionUID = 2709425275741743919L;
+&#125;</code></pre>
+<blockquote>
+<p><strong>反序列化时，由JVM直接构造出Java对象，不调用构造方法，构造方法内部的代码，在反序列化时根本不可能执行</strong>。</p>
+</blockquote>
+<h4 id="objectoutputstream"><a class="markdownIt-Anchor" href="#objectoutputstream"></a> ObjectOutputStream</h4>
+<p>序列化</p>
+<p>ObjectOutputStream能够让你把对象写入到输出流中，而不需要每次写入一个字节。你可以把OutputStream包装到ObjectOutputStream中，然后就可以把对象写入到该输出流中了</p>
+<pre><code class="highlight plaintext">/**
+* 对象+类型输出到文件
+* @throws IOException
+*/
+public static void write(String str) throws IOException&#123;
+   Emplyee em = new Emplyee(&quot;李博&quot;,10200);
+   //创建目的文件&quot;F:/File/Demo/test1.txt&quot;
+   File outFile = new File(str);
+   //选择对象类型输出流     可以保存对象和其类型
+   ObjectOutputStream ds = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(outFile)));
+   ds.writeObject(em);
+   ds.flush();
+   //关闭资源
+   ds.close();
+&#125;</code></pre>
+<blockquote>
+<p>例子中序列化的对象object现在可以从ObjectInputStream中读取了</p>
+</blockquote>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) throws IOException &#123;
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        try (ObjectOutputStream output = new ObjectOutputStream(buffer)) &#123;
+            // 写入int:
+            output.writeInt(12345);
+            // 写入String:
+            output.writeUTF(&quot;Hello&quot;);
+            // 写入Object:
+            output.writeObject(Double.valueOf(123.456));
+        &#125;
+        System.out.println(Arrays.toString(buffer.toByteArray()));
+    &#125;
+&#125;</code></pre>
+<h4 id="安全性"><a class="markdownIt-Anchor" href="#安全性"></a> 安全性</h4>
+<p>因为Java的序列化机制可以导致一个实例能直接从byte[]数组创建，而不经过构造方法，因此，它存在一定的安全隐患。一个精心构造的byte[]数组被反序列化后可以执行特定的Java代码，从而导致严重的安全漏洞。</p>
+<p>实际上，Java本身提供的基于对象的序列化和反序列化机制既存在安全性问题，也存在兼容性问题。更好的序列化方法是通过JSON这样的通用数据结构来实现，只输出基本类型（包括String）的内容，而不存储任何与代码相关的信息。</p>
+<h3 id="printstream-打印流"><a class="markdownIt-Anchor" href="#printstream-打印流"></a> PrintStream 打印流</h3>
+<p>new PrintStream(OutputStream out)</p>
+<p>是一个 输出节点流 的处理流</p>
+<pre><code class="highlight plaintext">public class PrintStreamDemo &#123;
+     public static void main(String[] args) throws FileNotFoundException &#123;
+           System.out.println(&quot;test&quot;);
+           //System中的out就是一个PrintString声明的标准控制台(控制台其实也是一个文件)输出流
+           PrintStream ps = System.out;
+           ps.print(false);
+          
+           //输出到文件
+           File src = new File(&quot;F:/File/Demo/test1.txt&quot;);
+           ps = new PrintStream(new BufferedOutputStream(new FileOutputStream(src,true)));
+           ps.println(&quot;IO is so easy.....&quot;);
+           ps.flush();
+           ps.close();
+          
+     &#125;
+&#125;</code></pre>
+<h3 id="scanner-处理流"><a class="markdownIt-Anchor" href="#scanner-处理流"></a> Scanner 处理流</h3>
+<p>一个简单的文本扫描程序</p>
+<ul>
+<li>new Scanner(InputStream source)</li>
+<li>new Scanner(File inFile)</li>
+</ul>
+<pre><code class="highlight plaintext"> public static void test2() throws FileNotFoundException&#123;
+           InputStream is = System.in;    // System类中的in对象就是一个键盘输入流
+           Scanner sc = new Scanner(is);  //Scanner也是一个处理流   包装的比较好用
+           System.out.println(&quot;请输入&quot;);
+           System.out.println(sc.nextLine());
+           
+           //可以更改处理流Scanner的底层节点流,改为从文件读取
+           Scanner ss = new Scanner(new BufferedInputStream(new FileInputStream(&quot;F:/File/Demo/test1.txt&quot;)));
+           System.out.println(ss.nextLine());  //输入文件的第一句话
+     &#125;</code></pre>
+<p>编写一个类似于Scanner处理流的nextLine()方法:</p>
+<pre><code class="highlight plaintext">/*
+* 编写一个类似于Scanner处理流的nextLine()方法
+*/
+InputStream is = System.in;
+//给标准键盘输入流包装一个字符缓冲流
+BufferedReader br = new BufferedReader(new InputStreamReader(is));  
+System.out.println(&quot;请输入一行&quot;);
+String str = br.readLine();
+System.out.println(str);</code></pre>
+<pre><code class="highlight plaintext">public class inputInformation &#123;
+	public static void main(String args[]) &#123;
+		Scanner scan = new Scanner(System.in);	//构造Scanner类的对象scan，接收从控制台输入的信息
+		System.out.println(&quot;请输入你的姓名&quot;);
+		String name = scan.nextLine();//接收一个字符串，可以加除Enter以外的所有符号，包括空格和Tab
+		System.out.println(&quot;请输入你的ID&quot;);
+		String ID ;
+		while(scan.hasNextLine()) &#123;// hasNextLine()方法判断当前是否有输入，当键盘有输入后执行循环
+			if(scan.hasNextInt()) &#123;// 判断输入的值是否为整数类型，当为整数类型时执行循环
+				ID = scan.nextLine();
+				System.out.println(&quot;你输入的姓名为：&quot;+name);
+				System.out.println(&quot;你输入的ID为：&quot;+ID);
+				break;
+			&#125;else &#123;
+				System.out.println(&quot;请输入数字哦！&quot;);
+				ID = scan.nextLine();
+				continue;
+			&#125;
+		&#125;
+	&#125;
+&#125;
+</code></pre>
+<p><strong>hasNext()表示的意思</strong></p>
+<ul>
+<li>当执行到hasNext()时，它会先扫描缓冲区中是否有字符，有则返回true,继续扫描。直到扫描为空，这时并不返回false,而是将方法阻塞，等待你输入内容然后继续扫描</li>
+<li>如果不调用next()，就会陷入死循环，因为hasNext()指向的位置一直有值，调用next()，指针会往后移动，如果没值，hasNext()就返回false</li>
+</ul>
+<pre><code class="highlight plaintext">public static void main(String[] args)
+&#123;
+    System.out.println(&quot;请输入若干单词，以空格作为分隔&quot;);
+    Scanner sc = new Scanner(System.in);
+    while(sc.hasNext())
+    &#123;
+        System.out.println(&quot;键盘输入的内容是：&quot;+ sc.next());
+    &#125;
+    System.out.println(&quot;执行吗&quot;);
+&#125;</code></pre>
+<h3 id="管道流"><a class="markdownIt-Anchor" href="#管道流"></a> 管道流</h3>
+<p>一个PipedInputStream需要与一个PipedOutputStream相关联，当这两种流联系起来时，就形成了一条管道</p>
+<h4 id="pipedoutputstream"><a class="markdownIt-Anchor" href="#pipedoutputstream"></a> PipedOutputStream</h4>
+<p>PipedOutputStream可以往管道里写入读取字节流数据，代码如下：</p>
+<pre><code class="highlight plaintext">OutputStream output = new PipedOutputStream(pipedInputStream);
+while(moreData) &#123;
+    int data = getMoreData();
+    output.write(data);
+&#125;
+output.close();</code></pre>
+<blockquote>
+<p>PipedOutputStream的write()方法取一个包含了待写入字节的int类型变量作为参数进行写入</p>
+</blockquote>
+<h4 id="pipedinputstream"><a class="markdownIt-Anchor" href="#pipedinputstream"></a> PipedInputStream</h4>
+<p>PipedInputStream可以从管道中读取字节流数据，代码如下：</p>
+<pre><code class="highlight plaintext">
+InputStream input = new PipedInputStream(pipedOutputStream);
+int data = input.read();
+while(data != -1) &#123;
+    //do something with data...
+    doSomethingWithData(data);
+    data = input.read();
+&#125;
+input.close();</code></pre>
+<blockquote>
+<p>PipedInputStream的read()方法返回读取到的包含一个字节内容的int变量(译者注：0~255)。如果read()方法返回-1，意味着程序已经读到了流的末尾，此时流内已经没有多余的数据可供读取了，你可以关闭流。-1是一个int类型，不是byte类型，这是不一样的。</p>
+</blockquote>
+<h3 id="合并流"><a class="markdownIt-Anchor" href="#合并流"></a> 合并流</h3>
+<p>SequenceInputStream可以把两个或者多个输入流按顺序合并到一起。</p>
+<pre><code class="highlight plaintext">/**
+ * Created by liwei on 16/7/20.
+ * 测试流程:合并两个文本文件
+ *//*
+ * 以前的操作：
+ * a.txt -- b.txt
+ * c.txt -- d.txt
+ *
+ * 现在想要：
+ * a.txt+b.txt -- c.txt
+ */public class SequenceInputStreamDemo &#123;
+    public static void main(String[] args) throws FileNotFoundException,IOException &#123;
+        // SequenceInputStream(InputStream s1, InputStream s2)
+        InputStream s1 = new FileInputStream(&quot;se1.txt&quot;);
+        InputStream s2 = new FileInputStream(&quot;se2.txt&quot;);
+
+        SequenceInputStream sis = new SequenceInputStream(s1,s2);
+
+        // 封装一个输出流
+
+        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(&quot;merge.txt&quot;));
+        // 如何进行读写呢,其实很简单,以前怎么读写,现在就怎么读写
+
+        byte[] bys = new byte[1024];
+        int len = 0;
+        while ((len=sis.read(bys))!=-1)&#123;
+            bos.write(bys,0,len);
+        &#125;
+        bos.close();
+        sis.close();
+    &#125;
+&#125;</code></pre>
+<p>合并两个以上的文件</p>
+<pre><code class="highlight plaintext">/**
+ * Created by liwei on 16/7/20.
+ *
+ * 测试流程:合并三个文本文件
+ *//*
+ * 以前的操作：
+ * a.txt -- b.txt
+ * c.txt -- d.txt
+ * e.txt -- f.txt
+ *
+ * 现在想要：
+ * a.txt+b.txt+c.txt -- d.txt
+ */public class SequenceInputStreamDemo2 &#123;
+
+    public static void main(String[] args) throws IOException &#123;
+
+        // 需求：把下面的三个文件的内容复制到Copy.java中
+        // ByteArrayStreamDemo.java,CopyFileDemo.java,DataStreamDemo.java
+
+        // SequenceInputStream(Enumeration e)
+        // 通过简单的回顾我们知道了Enumeration是Vector中的一个方法的返回值类型。
+        // Enumeration&lt;E&gt; elements()
+        Vector&lt;InputStream&gt; v = new Vector&lt;&gt;();
+        InputStream s1 = new FileInputStream(&quot;se1.txt&quot;);
+        InputStream s2 = new FileInputStream(&quot;se2.txt&quot;);
+        InputStream s3 = new FileInputStream(&quot;merge.txt&quot;);
+
+        v.add(s1);
+        v.add(s2);
+        v.add(s3);
+
+        Enumeration&lt;InputStream&gt; en = v.elements();
+        SequenceInputStream sequenceInputStream = new SequenceInputStream(en);
+
+        // 封装一个输出流
+        BufferedOutputStream bos = new BufferedOutputStream(
+                new FileOutputStream(&quot;mergeMore.txt&quot;));
+        int len = 0;
+        byte[] bys = new byte[100];
+        while ((len=sequenceInputStream.read(bys))!=-1)&#123;
+            bos.write(bys,0,len);
+        &#125;
+
+        bos.close();
+        sequenceInputStream.close();
+    &#125;
+&#125;</code></pre>
+<h2 id="操作zip"><a class="markdownIt-Anchor" href="#操作zip"></a> 操作Zip</h2>
+<p>ZipInputStream是一种FilterInputStream，它可以直接读取zip包的内容：</p>
+<p>另一个JarInputStream是从ZipInputStream派生，它增加的主要功能是直接读取jar文件里面的MANIFEST.MF文件。因为本质上jar包就是zip包，只是额外附加了一些固定的描述文件。</p>
+<p><strong>读取Zip�</strong>�</p>
+<p>我们来看看ZipInputStream的基本用法。</p>
+<p>我们要创建一个ZipInputStream，通常是传入一个FileInputStream作为数据源，然后，循环调用getNextEntry()，直到返回null，表示zip流结束。</p>
+<p>一个ZipEntry表示一个压缩文件或目录，如果是压缩文件，我们就用read()方法不断读取，直到返回-1：</p>
+<pre><code class="highlight plaintext">try (ZipInputStream zip = new ZipInputStream(new FileInputStream(...))) &#123;
+    ZipEntry entry = null;
+    while ((entry = zip.getNextEntry()) != null) &#123;
+        String name = entry.getName();
+        if (!entry.isDirectory()) &#123;
+            int n;
+            while ((n = zip.read()) != -1) &#123;
+                ...
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p><strong>写入Zip�</strong>�</p>
+<p>ZipOutputStream是一种FilterOutputStream，它可以直接写入内容到zip包。我们要先创建一个ZipOutputStream，通常是包装一个FileOutputStream，然后，每写入一个文件前，先调用putNextEntry()，然后用write()写入byte[]数据，写入完毕后调用closeEntry()结束这个文件的打包。</p>
+<pre><code class="highlight plaintext">try (ZipOutputStream zip = new ZipOutputStream(new FileOutputStream(...))) &#123;
+    File[] files = ...
+    for (File file : files) &#123;
+        zip.putNextEntry(new ZipEntry(file.getName()));
+        zip.write(getFileDataAsBytes(file));
+        zip.closeEntry();
+    &#125;
+&#125;</code></pre>
+<h2 id="读取classpath资源"><a class="markdownIt-Anchor" href="#读取classpath资源"></a> 读取classpath资源</h2>
+<p>很多Java程序启动的时候，都需要读取配置文件。例如，从一个.properties文件中读取配置：</p>
+<pre><code class="highlight plaintext">String conf = &quot;C:\\conf\\default.properties&quot;;
+try (InputStream input = new FileInputStream(conf)) &#123;
+    // TODO:
+&#125;</code></pre>
+<p>这段代码要正常执行，必须在C盘创建conf目录，然后在目录里创建default.properties文件。但是，在Linux系统上，路径和Windows的又不一样。因此，从磁盘的固定目录读取配置文件，不是一个好的办法。</p>
+<p>我们知道，Java存放.class的目录或jar包也可以包含任意其他类型的文件，例如：</p>
+<ul>
+<li>配置文件，例如.properties；</li>
+<li>图片文件，例如.jpg；</li>
+<li>文本文件，例如.txt，.csv；</li>
+</ul>
+<p>从classpath读取文件就可以避免不同环境下文件路径不一致的问题：如果我们把default.properties文件放到classpath中，就不用关心它的实际存放路径。</p>
+<p>在classpath中的资源文件，路径总是以／开头，我们先获取当前的Class对象，然后调用getResourceAsStream()就可以直接从classpath读取任意的资源文件：</p>
+<pre><code class="highlight plaintext">try (InputStream input = getClass().getResourceAsStream(&quot;/default.properties&quot;)) &#123;
+    // TODO:
+&#125;</code></pre>
+<p>调用getResourceAsStream()需要特别注意的一点是，如果资源文件不存在，它将返回null。因此，我们需要检查返回的InputStream是否为null，如果为null，表示资源文件在classpath中没有找到：</p>
+<pre><code class="highlight plaintext">try (InputStream input = getClass().getResourceAsStream(&quot;/default.properties&quot;)) &#123;
+    if (input != null) &#123;
+        // TODO:
+    &#125;
+&#125;</code></pre>
+<p>如果我们把默认的配置放到jar包中，再从外部文件系统读取一个可选的配置文件，就可以做到既有默认的配置文件，又可以让用户自己修改配置：</p>
+<pre><code class="highlight plaintext">Properties props = new Properties();
+props.load(inputStreamFromClassPath(&quot;/default.properties&quot;));
+props.load(inputStreamFromFile(&quot;./conf.properties&quot;));</code></pre>
+<h2 id="systeminouterr"><a class="markdownIt-Anchor" href="#systeminouterr"></a> <a target="_blank" rel="noopener" href="http://System.in/out/err">System.in/out/err</a></h2>
+<p><a target="_blank" rel="noopener" href="http://System.in">System.in</a>, System.out, System.err这3个流同样是常见的数据来源和数据流目的地。使用最多的可能是在控制台程序里利用System.out将输出打印到控制台上。JVM启动的时候通过Java运行时初始化这3个流，所以你不需要初始化它们(尽管你可以在运行时替换掉它们)</p>
+<p><strong><a target="_blank" rel="noopener" href="http://System.in">System.in</a></strong>：InputStream  标准输入，键盘输入(键盘输入和文件输入本质相同)</p>
+<p><strong>System.out</strong>：PrintStream，标准输出，控制台（控制台实际上也就是一个文件）</p>
+<p><strong>System.err</strong>：PrintStream  与System.out基本一致  实质上没有任何区别(只是输出到控制台字体颜色为红色)</p>
+<hr />
+<p>重定向  修改in/out/err三个标准流  /修改完之后System.Xxx将都改为修改后的东西</p>
+<ul>
+<li>setErr(InputStream err )</li>
+<li>setIn(InputStream in)</li>
+<li>setOut(PrintStream out)</li>
+</ul>
+<pre><code class="highlight plaintext">//重定向，重写编写标准输出流，true是指自动刷新
+System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(&quot;F:/File/Demo/test1.txt&quot;)),true));
+ //输出到控制台-改为-&gt;输出到文件
+System.out.println(&quot;asdfsdfwqqqqqe&quot;); 
+System.out.flush();;
+/*
+* 如果要重回控制台
+*/
+System.setOut(new PrintStream(new BufferedOutputStream(new FileOutputStream(FileDescriptor.out)),true));
+System.out.println(&quot;asdffsd&quot;);</code></pre>
+<h2 id="关闭方法"><a class="markdownIt-Anchor" href="#关闭方法"></a> 关闭方法</h2>
+<pre><code class="highlight plaintext">public class CloseUtil &#123;
+     /*
+      * 工具类关闭流
+      * 可变参数：... 只能在参数的最后一个位置，处理方式与数组一样
+      * * */
+     public static void close(Closeable... io) throws IOException&#123;   //凡是实现了Cloeable接口的都有close方法
+           for(Closeable temp:io)&#123;
+                if(null!=temp)&#123;
+                      temp.close();
+                &#125;
+           &#125;
+     &#125;
+     /*
+      * 工具类关闭流
+      * 可变参数：... 只能在参数的最后一个位置，处理方式与数组一样
+      * 使用泛型方法
+      * * */
+     public static &lt;T extends Closeable&gt;void closeAll(T... io) throws IOException&#123;
+           for(T temp:io)&#123;
+                if(null!=temp)&#123;
+                      temp.close();
+                &#125;
+           &#125;
+     &#125;
+&#125;</code></pre>
+<h2 id="案例文件分割合并"><a class="markdownIt-Anchor" href="#案例文件分割合并"></a> 案例：文件分割合并</h2>
+<pre><code class="highlight plaintext">/**
+ * 文件分割/合并
+ * @author Mr
+ *
+ */
+public class SplitFile &#123;
+     //文件的路径
+     private String filePath;
+     //块数
+     private int size;
+     //每块大小
+     private long blockSize;
+     //每块名称
+     private List&lt;String&gt; blockPath;
+     //文件大小
+     private long length;
+     //文件名
+     private String fileName;
+     //目标地址
+     private String outName;
+     
+     public SplitFile() &#123;
+           blockPath = new ArrayList&lt;String&gt;();
+           blockSize = 1024;
+     &#125;
+     public SplitFile(String filePath,String outName)&#123;
+           this(filePath,outName,1024);
+     &#125;
+     public SplitFile(String filePath,String outName,int blockSize)&#123;
+           this();
+           this.filePath = filePath;
+           this.blockSize = blockSize;
+           this.outName = outName;
+           init();
+     &#125;
+     /**
+      * 初始化操作，计算块数，确定文件名
+      * @param args
+      */
+     public void init()&#123;
+           //健壮性
+           File src = null;
+           if(null ==filePath || !(src = new File(filePath)).exists())&#123;
+                return;
+           &#125;
+           //文件夹不可以分割
+           if(src.isDirectory())&#123;
+                return;
+           &#125;
+           //计算每块实际大小与每块大小
+           length = src.length();
+           //修正每块大小，防止出现实际大小小于要分文件的大小
+           if(length&lt;=blockSize)&#123;
+                blockSize = length;
+           &#125;
+           //初始化文件名
+           fileName = src.getName();
+           //确定块数
+           size = (int) Math.ceil(length*1.0/blockSize);//Math.ceil是计算此大于此整数的最小整数，乘1.0是为了防止出现0
+           initPathName(outName);
+     &#125;
+     /*
+      * 确定文件名
+      */
+     private void initPathName(String destPath)&#123;
+           for(int i=0;i&lt;size;i++)&#123;
+                blockPath.add(destPath+&quot;/&quot;+fileName+&quot;part&quot;+i+&quot;.txt&quot;);
+           &#125;
+     &#125;
+     /**
+      * 文件的分割
+      * 0.第几块
+      * 1。起始位置
+      * 2.实际大小
+      * @param destPath 分割文件的存放目录
+      * @throws IOException
+      */
+     private void split() throws IOException&#123;
+           long beginPos = 0;    //起始点
+           long actualBlockSize = blockSize;  //实际大小
+           //计算所有块的大小，位置
+           for(int i=0;i&lt;size;i++)&#123;
+                if(i==size-1)&#123;
+                      actualBlockSize = this.length-beginPos;
+                &#125;
+                splitDetail(i,beginPos,actualBlockSize);
+                beginPos += actualBlockSize; //本次的终点，下次的起点
+           &#125;
+     &#125;
+     /**
+      * 文件的具体分割
+      * @param idx  第几个
+      * @param beginPos  下次分割开始位置
+      * @param actualBlockSize        实际大小
+      * @throws IOException
+      */
+     private void splitDetail(int idx,long beginPos,long actualBlockSize) throws IOException&#123;
+           File inFile = new File(filePath);  //源文件
+           File outFile = new File(this.blockPath.get(idx));  //目标文件
+           RandomAccessFile ra = new RandomAccessFile(inFile,&quot;r&quot;);//选择输入流
+           OutputStream os = new BufferedOutputStream(new FileOutputStream(outFile));  //选择输出流
+           outFile.createNewFile(); //
+           ra.seek(beginPos);  //设置开始指针位置
+           byte[] flush = new byte[1024];
+           int len = 0;
+           while(-1!=(len=ra.read(flush)))&#123;
+                if(actualBlockSize&gt;len)&#123;  //看要分的大小是否大于缓冲数组大小
+                      //写出
+                      os.write(flush,0,len);
+                      actualBlockSize-=len;  //剩余量
+                &#125;else&#123;
+                      os.write(flush, 0, (int)actualBlockSize);
+                      break;
+                &#125;
+           &#125;
+           os.flush();
+           ra.close();
+           os.close();
+           
+     &#125;
+     /**
+      * 合并
+      * 另一种实现方法
+      * @param destPath
+      * @throws IOException
+      */
+     public void mergeFile(String destPath) throws IOException&#123;
+           //创建目标地址文件
+           File dest = new File(destPath);
+           dest.createNewFile();
+           
+           Vector&lt;InputStream&gt; vt = null;  //一个容器，线程安全
+           for(int i=0;i&lt;blockPath.size();i++)&#123;
+                vt.add(new BufferedInputStream(new FileInputStream(blockPath.get(i))));
+           &#125;
+           //选择输出流
+           BufferedOutputStream bos = null;
+           bos = new BufferedOutputStream(new FileOutputStream(dest,true));
+           //选择输入流
+           SequenceInputStream bis = null;//这个输入流可以把多个流合并为一个
+           bis = new SequenceInputStream(vt.elements());
+           byte[] flush = new byte[1024];
+           int len = 0;
+           while(-1!=(len = bis.read(flush)))&#123;
+                //System.out.println(new String(flush));
+                bos.write(flush, 0, len);
+           &#125;
+           bos.flush();
+           bis.close();
+           
+           
+           bos.close();
+           
+     &#125;
+     /**
+      * 文件的合并
+      * @param destPath
+      * @throws IOException
+      */
+     public void mergeFile1(String destPath) throws IOException&#123;
+           //创建目标地址文件
+           File dest = new File(destPath);
+           dest.createNewFile();
+           //选择输出流
+           BufferedOutputStream bos = null;
+           bos = new BufferedOutputStream(new FileOutputStream(dest,true));
+           //选择输入流
+           BufferedInputStream bis = null;
+           for(int i=0;i&lt;blockPath.size();i++)&#123;
+                 bis = new BufferedInputStream(new FileInputStream(blockPath.get(i)));
+                 byte[] flush = new byte[1024];
+                 int len = 0;
+                 while(-1!=(len = bis.read(flush)))&#123;
+                       //System.out.println(new String(flush));
+                       bos.write(flush, 0, len);
+                 &#125;
+                 bos.flush();
+                 bis.close();
+           &#125;
+           
+           bos.close();
+           
+     &#125;
+     public static void main(String[] args) throws IOException &#123;
+           SplitFile file = new SplitFile(&quot;F:/File/Demo/test1.txt&quot;,&quot;F:/File/Demo/asd&quot;,1);
+           file.split();
+           file.mergeFile1(&quot;F:/File/Demo/qwe/bolee.txt&quot;);
+           System.out.println(file.size);
+     &#125;
+&#125;
+</code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

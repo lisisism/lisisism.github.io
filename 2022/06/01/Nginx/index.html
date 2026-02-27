@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Nginx 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Nginx</div>
+  <div class="post-meta">
+    <div class="date">2022 六月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Nginx</div>
+      
+      <div class="tag-item">Linux</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="nginx反向代理服务器"><a class="markdownIt-Anchor" href="#nginx反向代理服务器"></a> Nginx反向代理服务器</h1>
+<p>[toc]</p>
+<h2 id="nginx概述"><a class="markdownIt-Anchor" href="#nginx概述"></a> Nginx概述</h2>
+<p><a target="_blank" rel="noopener" href="http://nginx.org">http://nginx.org</a></p>
+<p>Nginx是一个轻量级，高性能的基于HTTP的反向代理服务器，同时还是一个电子邮件服务器</p>
+<p>Nginx是由俄罗斯人lgor Sysoev使用c语言写的一款服务器</p>
+<h3 id="代理服务器"><a class="markdownIt-Anchor" href="#代理服务器"></a> 代理服务器</h3>
+<p><strong>代理服务器</strong></p>
+<p>代理服务器根据其代理对象的不同，可以分为正向代理服务器与反向代理服务器，这里的“正”“反”是站在客户端角度来说的</p>
+<p><strong>正向代理</strong></p>
+<p>翻墙就是一个典型的正向代理（我们访问Google，通过vpn，Google知道vpn的存在，但是并不知道我们的存在）</p>
+<p>正向代理是对客户端的代理。客户端C想要从服务端S获取资源，但由于某些原因不能直接访问服务端，而是通过另外一台主机P向服务端发送请求。当服务端处理完毕请求后，将响应发送给主机P,主机P在接收到来自服务端的响应后，将响应又转给了客户端C.此时的主机P,就称为客户端C的正向代理服务器。</p>
+<p>客户端在使用正向代理服务器时是知道其要访问的目标服务器的地址等信息的。</p>
+<p>正向代理服务器是服务器的用户(客户端)架设的主机，与服务端无关，正向代理服务器的出现，使服务端根本就不知道真正客户端的存在。</p>
+<h3 id="nginx的特点"><a class="markdownIt-Anchor" href="#nginx的特点"></a> Nginx的特点</h3>
+<ul>
+<li>高并发，默认1000，经过配置可以达到5-10W（tomcat默认150）
+<ul>
+<li><code>高并发就是指宏观上了并行，微观上的串行</code></li>
+</ul>
+</li>
+<li>低消耗
+<ul>
+<li><code>1W个非活跃的长连接，nginx占的内存只有2.5M</code></li>
+</ul>
+</li>
+<li>热部署
+<ul>
+<li><code>修改了配置文件，重启nginx，服务并不会停止，不会间断</code></li>
+</ul>
+</li>
+<li>高扩展</li>
+<li>高可用
+<ul>
+<li><code>因为nginx内部有两类进程，master和worker，即更换配置文件时只会停掉部分worker</code></li>
+</ul>
+</li>
+</ul>
+<h3 id="nginx的web请求处理"><a class="markdownIt-Anchor" href="#nginx的web请求处理"></a> nginx的web请求处理</h3>
+<p>Nginx结合多进程机制和异步机制对外提供服务，异步机制使用的是异步非阻塞方式。Nginx的master进程会生成多个worker进程，  master. 进程负责管理这些worker进程的生命周期、接受外部命令、解析perl脚本等。而worker进程则用于接收和处理客户端请求</p>
+<p>每个worker进程能够使用异步非阻塞方式处理多个客户端请求。当某个worker进程按收到客户端的请求以后，其会调用I0进行处理，如果不能立即得到结果，worker进程就去处理其他的请求。当1O返回结果后，就会通知worker进程，而worker进程得到通知后，就会挂起当前正在处理的事务,拿10返回结果去响应客户端请求.worker进程采用的是epoll事件驱动模型与10进行通信的。epoll 模型底层采用的是“回调callback替代了轮询，使效率要高于select模型</p>
+<h2 id="下载安装windows"><a class="markdownIt-Anchor" href="#下载安装windows"></a> 下载/安装（windows）</h2>
+<h3 id="启动方式"><a class="markdownIt-Anchor" href="#启动方式"></a> 启动方式</h3>
+<ul>
+<li>下载好nginx.rar并解压</li>
+<li><strong>启动方式有两种</strong></li>
+<li><strong>方式一：直接双击</strong>
+<ul>
+<li>直接双击nginx.exe会有一个屏幕一闪而过，就表示启动成功</li>
+<li>只需要打开访问地址，就可以看到如图所示的效果</li>
+<li>关闭方式，用任务管理器关闭</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">http://127.0.0.1</code></pre>
+<blockquote>
+<p>nginx启动后，在任务管理器有两个nginx进程，这个是正常的，一个是守护进程，一个是工作进程，分别手动关闭即可</p>
+</blockquote>
+<ul>
+<li><strong>方式二：命令行方式</strong>
+<ul>
+<li>假设nginx在d:/nginx目录下</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">cmd
+cd d:/software/nginx
+d:  start nginx
+
+关闭方式
+
+nginx -s stop</code></pre>
+<h3 id="端口号修改"><a class="markdownIt-Anchor" href="#端口号修改"></a> 端口号修改</h3>
+<ul>
+<li>可以修改为其他的端口号，打开nginx目录的conf/nginx.conf文件，然后找到listen 80，修改为9090，重启</li>
+</ul>
+<pre><code class="highlight plaintext">http://127.0.0.1:9090/</code></pre>
+<ul>
+<li><strong>重启命令</strong></li>
+</ul>
+<pre><code class="highlight plaintext">nginx -s reload</code></pre>
+<h3 id="nginxconf配置文件"><a class="markdownIt-Anchor" href="#nginxconf配置文件"></a> nginx.conf配置文件</h3>
+<ul>
+<li>
+<p>nginx.conf是nginx的核心配置文件</p>
+</li>
+<li>
+<p><strong>端口号</strong></p>
+<ul>
+<li>访问的端口号</li>
+</ul>
+</li>
+<li>
+<p><strong>页面存放位置</strong></p>
+<ul>
+<li>表示所有页面都存放在nginx的html目录下</li>
+</ul>
+</li>
+<li>
+<p><strong>欢迎页面</strong></p>
+<ul>
+<li>默认会访问index.html或者index.htm文件</li>
+</ul>
+</li>
+</ul>
+<h2 id="下载安装linux"><a class="markdownIt-Anchor" href="#下载安装linux"></a> 下载/安装（Linux）</h2>
+<p><a target="_blank" rel="noopener" href="http://nginx.org">http://nginx.org</a></p>
+<h3 id="nginx的下载"><a class="markdownIt-Anchor" href="#nginx的下载"></a> Nginx的下载</h3>
+<p>下载完毕后把包上传到Linux服务器</p>
+<h3 id="源码安装"><a class="markdownIt-Anchor" href="#源码安装"></a> 源码安装</h3>
+<p><strong>先安装c++编译环境</strong></p>
+<pre><code class="highlight plaintext">yum -y install gcc</code></pre>
+<p><strong>安装依赖的其他库：</strong></p>
+<ul>
+<li><code>pcre-devel</code>：perl脚本语言兼容正则表达式，为Nginx提供正则表达式</li>
+<li><code>openssl-devel</code>：为nginx提供ssl(安全套接字层)密码库，主要包含主要的密码算法，常用的密钥和证书封装管理功能及ssl协议，并提供丰富的应用程序供册数或其他目的使用</li>
+</ul>
+<pre><code class="highlight plaintext">yum -y install zlib zlib-devel pcre-devel openssl openssl-devel</code></pre>
+<blockquote>
+<p>在安装之前需要注意，很多库具有devel 库与非devel库两种。devel库表示development开发库，比非devel库会多出一些头文件、静态库、源码包等。而这些包在运行时不可能用到，但在开发时有可能用到。所以对于程序员来说，一般都是需要安装devel库的。不过，在yum安装devel库时，由于其依赖于非devel库，所以其会先自动安装非devel库，而后再安装devel库。所以真正在安装时，只需显示的安装devel库即可</p>
+</blockquote>
+<blockquote>
+<p>通过以下命令可以查看到，非devel库也被安装了</p>
+</blockquote>
+<p><strong>解压nginx包：</strong></p>
+<pre><code class="highlight plaintext">tar -zxvf nginx-1.14.0.tar.gz -C /usr/local/</code></pre>
+<p>进入解压目录<code>/usr/local/nginx-1.14.0</code></p>
+<p>运行下列语句可以看到一些配置信息：</p>
+<pre><code class="highlight plaintext">./configure --help</code></pre>
+<pre><code class="highlight plaintext">--prefix=PATH   表示安装路径
+--sbin-path=PATH  命令路径
+--modules-path =PATH   模块路径
+--conf-path=PATH  配置文件路径
+--error-loh-path=PATH  日志文件路径
+
+--with   表示未安装插件，可用该语句选安装
+--without  表示已安装插件，可用改语句选删除</code></pre>
+<p>该语句表示给nginx加入https的功能：</p>
+<pre><code class="highlight plaintext">--with-http_ssl_module             enable ngx_http_ssl_module</code></pre>
+<p><strong>生成Makefile文件</strong></p>
+<pre><code class="highlight plaintext">./configure \--prefix=/usr/local/nginx --with-http_ssl_module</code></pre>
+<pre><code class="highlight plaintext">nginx path prefix: &quot;/usr/local/nginxNew&quot;      nginx安装目录   
+nginx binary file: &quot;/usr/local/nginxNew/sbin/nginx&quot;       nginx命令文件
+nginx modules path: &quot;/usr/local/nginxNew/modules&quot;     nginx模块存放路径
+nginx configuration prefix: &quot;/usr/local/nginxNew/conf&quot;        nginx配置文件存放路径
+nginx configuration file: &quot;/usr/local/nginxNew/conf/nginx.conf&quot;       nginx配置文件名
+nginx pid file: &quot;/usr/local/nginxNew/logs/nginx.pid&quot;      nginx的进程id文件
+nginx error log file: &quot;/usr/local/nginxNew/logs/error.log&quot;        错误日志文件
+nginx http access log file: &quot;/usr/local/nginxNew/logs/access.log&quot;     http访问日志文件
+nginx http client request body temporary files: &quot;client_body_temp&quot;
+nginx http proxy temporary files: &quot;proxy_temp&quot;
+nginx http fastcgi temporary files: &quot;fastcgi_temp&quot;
+nginx http uwsgi temporary files: &quot;uwsgi_temp&quot;
+nginx http scgi temporary files: &quot;scgi_temp&quot;</code></pre>
+<blockquote>
+<p>配置成功后，再次查看nginx解压目录，发现其中多出了一个文件Makefile，后面的编译就是依靠该文件进行的</p>
+</blockquote>
+<blockquote>
+<p>注意：刚才指定的安装目录在make后 nake install才会安装到刚才指定的安装目录</p>
+</blockquote>
+<p><strong>make编译</strong></p>
+<pre><code class="highlight plaintext">make</code></pre>
+<p><strong>安装</strong></p>
+<pre><code class="highlight plaintext">make install</code></pre>
+<blockquote>
+<p>安装成功</p>
+</blockquote>
+<p>进入nginx安装目录</p>
+<pre><code class="highlight plaintext">cd /usr/local/nginxNew/</code></pre>
+<p>然后进入命令路径<code>cd sbin/</code>路径：</p>
+<blockquote>
+<p>该路径的 nginx就是可执行文件</p>
+</blockquote>
+<p><strong>nginx命令全局使用</strong></p>
+<ul>
+<li>一种是修改profile文件,怎加</li>
+</ul>
+<pre><code class="highlight plaintext">vim /etc/profile</code></pre>
+<ul>
+<li>一种是运行命令</li>
+</ul>
+<pre><code class="highlight plaintext">ln -n /usr/local/nginx/sbin/nginx /usr/local/sbin</code></pre>
+<h3 id="nginx命令"><a class="markdownIt-Anchor" href="#nginx命令"></a> Nginx命令</h3>
+<p>查看命令帮助：</p>
+<pre><code class="highlight plaintext">nginx -h</code></pre>
+<pre><code class="highlight plaintext">nginx -p prefix   启动命令+nginx安装目录
+nginx -c file   启动命令+conf文件
+nginx -t      测试配置文件是否正确，默认只测试默认的配置文件conf/nginx.conf
+nginx -T      测试配置文件是否正确，并显示配置文件内容
+nginx -tq      (修改完配置信息后，使用该命令检测)在配置文件测试过程中，静止显示非错误信息，即只显示错误信息
+nginx -s [...]  停止选项：stop/quit/reopen/reload   强制关闭/平滑关闭/重新打开/平滑重启</code></pre>
+<p><strong>启动nginx</strong></p>
+<pre><code class="highlight plaintext">nginx</code></pre>
+<p>查看nginx的进程</p>
+<pre><code class="highlight plaintext">ps aux|grep nginx</code></pre>
+<p>查看系统端口占用：</p>
+<pre><code class="highlight plaintext">netstat -tunlp</code></pre>
+<blockquote>
+<p>默认端口是80，80端口也是浏览器的默认访问端口</p>
+</blockquote>
+<h3 id="nginx访问测试"><a class="markdownIt-Anchor" href="#nginx访问测试"></a> nginx访问测试</h3>
+<pre><code class="highlight plaintext">localhost:80</code></pre>
+<h3 id="nginx配置"><a class="markdownIt-Anchor" href="#nginx配置"></a> nginx配置</h3>
+<p><strong>nginx配置文件</strong></p>
+<p>目录：</p>
+<pre><code class="highlight plaintext">vim /usr/local/nginx/conf/nginx.conf</code></pre>
+<pre><code class="highlight plaintext">:set nu 可以让vim显示行号</code></pre>
+<p>配置文件：</p>
+<ul>
+<li><strong>worker_processes</strong>：工作进程worker数量，一般为cpu内核的整数倍，或者填auto</li>
+</ul>
+<pre><code class="highlight properties"><span class="comment">#user  nobody;</span>
+<span class="comment">#工作进程</span>
+<span class="attr">worker_processes</span>  <span class="string">1;</span>
+<span class="comment"></span>
+<span class="comment">#error_log  logs/error.log;</span>
+<span class="comment">#error_log  logs/error.log  notice;</span>
+<span class="comment">#error_log  logs/error.log  info;</span>
+<span class="comment"></span>
+<span class="comment">#pid        logs/nginx.pid;</span>
+
+
+<span class="attr">events</span> <span class="string">&#123;</span>
+    <span class="attr">worker_connections</span>  <span class="string">1024;</span>
+<span class="attr">&#125;</span>
+
+
+<span class="attr">http</span> <span class="string">&#123;</span>
+    <span class="attr">include</span>       <span class="string">mime.types;</span>
+    <span class="attr">default_type</span>  <span class="string">application/octet-stream;</span>
+<span class="comment"></span>
+<span class="comment">    #log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span>
+<span class="comment">    #                  &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span>
+<span class="comment">    #                  &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span>
+<span class="comment"></span>
+<span class="comment">    #access_log  logs/access.log  main;</span>
+
+    <span class="attr">sendfile</span>        <span class="string">on;</span>
+<span class="comment">    #tcp_nopush     on;</span>
+<span class="comment"></span>
+<span class="comment">    #keepalive_timeout  0;</span>
+    <span class="attr">keepalive_timeout</span>  <span class="string">65;</span>
+<span class="comment"></span>
+<span class="comment">    #gzip  on;</span>
+
+    <span class="attr">server</span> <span class="string">&#123;</span>
+        <span class="attr">listen</span>       <span class="string">80;</span>
+        <span class="attr">server_name</span>  <span class="string">localhost;</span>
+<span class="comment"></span>
+<span class="comment">        #charset koi8-r;</span>
+<span class="comment"></span>
+<span class="comment">        #access_log  logs/host.access.log  main;</span>
+<span class="comment">        #默认访问目录</span>
+<span class="comment">        #表示默认访问html目录下的index.html，html表示相对路径，可以写绝对路径</span>
+<span class="comment">        #如果写成location /usr&#123; &#125; 就表示访问localhost/usr默认访问html目录下usr目录下的index.html</span>
+        <span class="attr">location</span> <span class="string">/ &#123;</span>
+            <span class="attr">root</span>   <span class="string">html;</span>
+            <span class="attr">index</span>  <span class="string">index.html index.htm;</span>
+        <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment">        #error_page  404              /404.html;</span>
+<span class="comment"></span>
+<span class="comment">        # redirect server error pages to the static page /50x.html</span>
+<span class="comment">        #</span>
+        <span class="attr">error_page</span>   <span class="string">500 502 503 504  /50x.html;</span>
+        <span class="attr">location</span> = <span class="string">/50x.html &#123;</span>
+            <span class="attr">root</span>   <span class="string">html;</span>
+        <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ \.php$ &#123;</span>
+<span class="comment">        #    proxy_pass   http://127.0.0.1;</span>
+<span class="comment">        #&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ \.php$ &#123;</span>
+<span class="comment">        #    root           html;</span>
+<span class="comment">        #    fastcgi_pass   127.0.0.1:9000;</span>
+<span class="comment">        #    fastcgi_index  index.php;</span>
+<span class="comment">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</span>
+<span class="comment">        #    include        fastcgi_params;</span>
+<span class="comment">        #&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # deny access to .htaccess files, if Apache&#x27;s document root</span>
+<span class="comment">        # concurs with nginx&#x27;s one</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ /\.ht &#123;</span>
+<span class="comment">        #    deny  all;</span>
+<span class="comment">        #&#125;</span>
+    <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">    # another virtual host using mix of IP-, name-, and port-based configuration</span>
+<span class="comment">    #</span>
+<span class="comment">    #server &#123;</span>
+<span class="comment">    #    listen       8000;</span>
+<span class="comment">    #    listen       somename:8080;</span>
+<span class="comment">    #    server_name  somename  alias  another.alias;</span>
+<span class="comment"></span>
+<span class="comment">    #    location / &#123;</span>
+<span class="comment">    #        root   html;</span>
+<span class="comment">    #        index  index.html index.htm;</span>
+<span class="comment">    #    &#125;</span>
+<span class="comment">    #&#125;</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">    # HTTPS server</span>
+<span class="comment">    #</span>
+<span class="comment">    #server &#123;</span>
+<span class="comment">    #    listen       443 ssl;</span>
+<span class="comment">    #    server_name  localhost;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_certificate      cert.pem;</span>
+<span class="comment">    #    ssl_certificate_key  cert.key;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_session_cache    shared:SSL:1m;</span>
+<span class="comment">    #    ssl_session_timeout  5m;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</span>
+<span class="comment">    #    ssl_prefer_server_ciphers  on;</span>
+<span class="comment"></span>
+<span class="comment">    #    location / &#123;</span>
+<span class="comment">    #        root   html;</span>
+<span class="comment">    #        index  index.html index.htm;</span>
+<span class="comment">    #    &#125;</span>
+<span class="comment">    #&#125;</span>
+
+<span class="attr">&#125;</span>
+</code></pre>
+<h2 id="请求定位"><a class="markdownIt-Anchor" href="#请求定位"></a> 请求定位</h2>
+<p><strong>如果location匹配到多个路径，就会报错</strong></p>
+<p>配置文件中的location:</p>
+<ul>
+<li>root：表示相对路径路径/绝对路径</li>
+<li>index：表示该路径的默认页面</li>
+</ul>
+<p>这段配置表示访问<u>localhost/</u> 就会在相对路径html目录下取找默认页面<code>index.html</code>或<code>index.htm</code></p>
+<pre><code class="highlight plaintext">location / &#123;
+    root   html;
+    index  index.html index.htm;
+&#125;</code></pre>
+<hr />
+<p>这段配置表示访问   <u> localhost/default</u>  就会在相对路径 html/default 目录下取找默认页面<code>index.html</code>或<code>index.htm</code></p>
+<p>访问 <u>localhost/default/login.html</u> 就会在相对路径html/default目录下去找 <code>login.html</code></p>
+<pre><code class="highlight plaintext">location /default &#123;
+    root   html;
+    index  index.html index.htm;
+&#125;</code></pre>
+<p>这段配置表示访问 <u>localhost/xxx/ooo</u> 就会在  /opt/static/xxx/ooo 目录去找默认页面 <code>default.html</code></p>
+<p>访问 <u>localhost/xxx/ooo/login.html</u> 就会在  /opt/static/xxx/ooo 目录去找<code> login.html</code></p>
+<pre><code class="highlight plaintext">location /xxx/ooo&#123;
+    root   /opt/static;
+    index  default.html;
+&#125;</code></pre>
+<h2 id="多个tomcat"><a class="markdownIt-Anchor" href="#多个tomcat"></a> 多个tomcat</h2>
+<p>为什么要提供多个tomcat</p>
+<ul>
+<li>在解释为什么要提供多个tomcat之前，首先解释一下为什么要额外提供tomcat</li>
+<li>Nginx是一个web服务器，很快速，但是不能作为servlet容器独立运行，所以通常的工作方式就是Nginx配合Tomcat来协同工作</li>
+<li>此时分别准备两个tomcat，后续的负载均衡，session共享需要使用，端口号分别为8333和8444</li>
+</ul>
+<h3 id="配置启动windows"><a class="markdownIt-Anchor" href="#配置启动windows"></a> 配置启动（Windows）</h3>
+<ul>
+<li>
+<p>启动bin目录下的startup.bat</p>
+</li>
+<li>
+<p>访问地址</p>
+<ul>
+<li>启动后访问地址</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">http://127.0.0.1:8333/</code></pre>
+<blockquote>
+<p>在这个login.jsp页面上有图片，图片是为了后续讲解<strong>动静分离</strong>做的铺垫，并且在tomcat里跟踪信息输出，用于观察图片静态资源的访问是否在当前的tomcat上发生</p>
+</blockquote>
+<blockquote>
+<p>这里准备了两个tomcat，因为要做<strong>负载均衡</strong>，只是端口号不同</p>
+</blockquote>
+<blockquote>
+<p>这个simple会把登陆的信息放在session中，方便后续的<strong>session共享</strong>使用</p>
+</blockquote>
+<h3 id="配置启动linux"><a class="markdownIt-Anchor" href="#配置启动linux"></a> 配置启动（Linux）</h3>
+<p>下载tomcat包上传到Linux服务器</p>
+<p>解压：</p>
+<pre><code class="highlight plaintext">tar -zxvf apache-tomcat-9.0.12.gz -C /usr/local/</code></pre>
+<p>解压完成后，tomcat就可以之间使用，我们把tomcat命令加入到全局PATH路径</p>
+<p>首先规避版本号，建立软连接</p>
+<pre><code class="highlight plaintext">ln -s apache-tomcat-9.0.12/ ./tomcat</code></pre>
+<hr />
+<p>注册bin目录，<code>vim /etc/profile</code></p>
+<pre><code class="highlight plaintext">export TOMCAT_HOME=/usr/local/tomcat
+export PATH=$TOMCAT_HOME/bin:$PATH</code></pre>
+<p>重新加载配置文件：</p>
+<pre><code class="highlight plaintext">source /etc/profile</code></pre>
+<blockquote>
+<p>如果<code>vim /etc/profile</code>配置文件写错了，可以写如下命令</p>
+</blockquote>
+<pre><code class="highlight plaintext">export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin</code></pre>
+<hr />
+<p><strong>配置tomcat端口</strong><br />
+配置文件路径</p>
+<pre><code class="highlight plaintext">vim tomcat/conf/server.xml</code></pre>
+<blockquote>
+<p>如果同一个服务器有多个tomcat，每个tomcat的端口都需要更改三个端口</p>
+</blockquote>
+<p>然后把war文件直接扔到tomcat/webapps目录下</p>
+<ul>
+<li>放到webapps后tomcat会自动解压加载</li>
+<li>放到webapps下的ROOT目录tomcat不会自动解压加载
+<ul>
+<li>可以使用<code>unzip demo.war</code>自己解压</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p><strong>启动tomcat</strong></p>
+<pre><code class="highlight plaintext">startup.sh</code></pre>
+<p>启动tomcat并查看输出日志：</p>
+<pre><code class="highlight plaintext">startup.sh | tail -f /usr/local/tomcat/logs/catalina.out</code></pre>
+<p><strong>关闭tomct</strong></p>
+<pre><code class="highlight plaintext">shutdown.sh</code></pre>
+<h2 id="反向代理"><a class="markdownIt-Anchor" href="#反向代理"></a> 反向代理</h2>
+<h3 id="反向代理概念"><a class="markdownIt-Anchor" href="#反向代理概念"></a> 反向代理概念</h3>
+<p>先说正向代理，比如要访问YouTube，但是不能直接访问，智能先找个翻墙软件，通过翻墙软件才能访问YouTube，翻墙软件就叫做正向代理</p>
+<p>所谓的反向代理，指的是用户要访问YouTube，但是YouTube悄悄的把这个请求交个bilibili来做，那么bilibili就是反向代理了</p>
+<p>当前就是访问nginx，但是nginx把亲求交给tomcat来做</p>
+<h3 id="结合nginx和tomcat"><a class="markdownIt-Anchor" href="#结合nginx和tomcat"></a> 结合nginx和tomcat</h3>
+<p>首先启动tomcat中端口号8333的tomcat</p>
+<p><strong>修改nginx.conf</strong></p>
+<ul>
+<li><code>location/</code>   ：表示处理所有请求</li>
+<li><code>proxy_pass http://127.0.0.1:8333</code>  ：表示把请求都交给http://127.0.0.1:8333来处理</li>
+</ul>
+<pre><code class="highlight plaintext">location / &#123;
+    proxy_pass http://127.0.0.1:8111;
+&#125;</code></pre>
+<p><strong>重启nginx并访问</strong></p>
+<ul>
+<li>发现此时已经反向代理到tomcat了</li>
+</ul>
+<h3 id="意义何在"><a class="markdownIt-Anchor" href="#意义何在"></a> 意义何在</h3>
+<p>既然直接通过127.0.0.1:8333/login.jsp可以访问，为社么要通过127.0.0.1/login.jsp反向代理到tomcat呢？为什么不直接使用tomcat呢？</p>
+<ul>
+<li>因为nginx在处理静态文件的吞吐量上面比tomcat好很多，通常他们两配合，不会把所有的请求都如本例交给tomcat，而是把静态请求交给nginx，动态请求，如jsp，servlet，ssm，struts等请求交给tomcat，从而达到动静分离的效果</li>
+</ul>
+<h2 id="静态代理"><a class="markdownIt-Anchor" href="#静态代理"></a> 静态代理</h2>
+<p><strong>如果location匹配到多个路径，就会报错</strong></p>
+<p>Nginx静态代理是指，将所有的静态资源，例如css js、html Jpg等资源存放到Ninx服务器，而不存放在应用服务器Tomcat中，当客户端发出的请求是对这些静态资源的请求时，Nginx直接将这些静态资源响应给客户端，而无需提交给应用服务器处理，这样就降低了应用服务器的压力。。</p>
+<p>同时，Nginx对于静态资源的处理较Tomcat, 性能更好，效率更高，所以，在实际生产环境下，会使用Nginx作为静态代理服务器，专门处理静态资源的响应。</p>
+<p>Nginx对于静态资源请求的拦截方式，可以通过静态资源名称的扩展名拦截，也可以通过静态资源所在的目录名称拦截。</p>
+<h3 id="扩展名拦截"><a class="markdownIt-Anchor" href="#扩展名拦截"></a> 扩展名拦截</h3>
+<p>location后面为正则表达式</p>
+<ul>
+<li><code>~</code>  表示正则开始（如果不写~，表示前面还有字符）</li>
+<li><code>$</code> 表示正则结束（即后面不能有字符，如果不写$，表示后面还有字符）</li>
+<li><code>.</code>  表示任意字符</li>
+<li><code>*</code>  表示多个</li>
+<li><code>.*</code>  表示多个任意字符</li>
+<li><code>\.</code>  表示转义，显示真正的点</li>
+</ul>
+<p>此配置表示凡是以 jpg/png/js/css/html 为后缀的访问都从 /opt/static 目录下去找</p>
+<p>例：让问 <u>localhost/img/man.jpg</u>  就会在 <u>/opt/static/img/man.jpg</u> 找到图片</p>
+<pre><code class="highlight plaintext">location ~.*\.(jpg|png|js|css|html)&#123;
+    root /opt/static;
+&#125;</code></pre>
+<p>配置完后使用该命令平滑重启</p>
+<pre><code class="highlight plaintext">nginx -s reload</code></pre>
+<h3 id="目录名拦截"><a class="markdownIt-Anchor" href="#目录名拦截"></a> 目录名拦截</h3>
+<ul>
+<li><code>.+</code> 表示后面必须有字符</li>
+</ul>
+<pre><code class="highlight plaintext">location ~.*(css|js|images).+&#123;
+    root /opt/static;
+&#125;</code></pre>
+<h2 id="动静分离"><a class="markdownIt-Anchor" href="#动静分离"></a> 动静分离</h2>
+<h3 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h3>
+<p>所谓的动静分离就是值图片，css，js之类的都交给nginx来处理，nginx处理不了的，比如jsp交给tomcat来处理</p>
+<p>好处就是nginx处理静态内容的吞吐量很高，比tomcat高多了，这样就无形中提升了性能</p>
+<h3 id="配置动静分离"><a class="markdownIt-Anchor" href="#配置动静分离"></a> 配置动静分离</h3>
+<p><strong>修改nginx.conf</strong></p>
+<ul>
+<li>在location下面添加一个新的location
+<ul>
+<li>表示所有的css js png访问都由nginx来做，访问的地址是<code>D:/apache/tomcat_test/tomcat_8333/webapps/ROOT</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">location ~\.(css|js|png)$ &#123;
+    root 
+    D:/apache/tomcat_test/tomcat_8333/webapps/ROOT;
+&#125;</code></pre>
+<p><strong>观察输入日志</strong></p>
+<ul>
+<li>再到tomcat的输出日志里观察，就会发现，只访问了jsp, 所有的css,js,png都不会经过 tomcat，而是由nginx自己负责处理了</li>
+</ul>
+<h3 id="动静分离负载"><a class="markdownIt-Anchor" href="#动静分离负载"></a> 动静分离+负载</h3>
+<p><strong>nginx也可以转到其他的nginx服务器</strong></p>
+<p>配置两台tomcat，负责动态文件</p>
+<ul>
+<li>192.168.1.1:8080</li>
+<li>192.168.1.2:8080</li>
+</ul>
+<p>配置两台nginx，负责静态文件</p>
+<ul>
+<li>192.168.1.3:80</li>
+<li>192.168.1.4:80</li>
+</ul>
+<pre><code class="highlight plaintext">location ~.*\.(jpg|png|js|gif|css|html)$&#123;
+    root /opt/static;
+&#125;</code></pre>
+<p>负载均衡服务器配置文件：</p>
+<pre><code class="highlight properties"><span class="comment">#两台tomcat，负责处理动态资源</span>
+<span class="attr">upstream</span> <span class="string">tomcat&#123;</span>
+    <span class="attr">server</span> <span class="string">192.168.1.1:8080 weight=1;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.2:8080 weight=1;</span>
+<span class="attr">&#125;</span>
+<span class="comment">#两台nginx，负责处理动静分离</span>
+<span class="attr">upstream</span> <span class="string">static&#123;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.3:80 weight=1;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.4:80 weight=1;</span>
+<span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">#拦截出了静态资源的其他访问</span>
+<span class="attr">location</span> <span class="string">/ &#123;</span>
+    <span class="attr">proxy_pass</span> <span class="string">http://tomcat;</span>
+<span class="attr">&#125;</span>
+<span class="comment">#拦截静态资源</span>
+<span class="attr">location</span> <span class="string">~.*\.(jpg|png|js|gif|css|html)$&#123;</span>
+    <span class="attr">proxy_pass</span> <span class="string">http://static;</span>
+<span class="attr">&#125;</span></code></pre>
+<h2 id="负载均衡"><a class="markdownIt-Anchor" href="#负载均衡"></a> 负载均衡</h2>
+<p>负载均衡，就是对请求的处理分摊到多个操作单元上进行，这个均衡是指在大批量访问前提下的一种基本均衡，并非是绝对的均衡。</p>
+<p>对于web工程的负载均衡，就是将相同的web应用部署到多个不同的web服务器上，形成多个web应用服务器，当请求到来时，由负载均衡服务器负责将请求按照实现设定好的比例向web应用服务器进行分发，从而增加系统的整体吞吐量</p>
+<h3 id="概念-2"><a class="markdownIt-Anchor" href="#概念-2"></a> 概念</h3>
+<p>负载均衡的概念就是访问量很大的时候，一个tomcat吃不消，这时候就准备了多个tomcat，由nginx按照权重来对请求进行分配，从而缓解单独一个tomcat受到的压力</p>
+<h3 id="启动两个tomcat"><a class="markdownIt-Anchor" href="#启动两个tomcat"></a> 启动两个tomcat</h3>
+<p><strong>修改start.bat文件</strong></p>
+<p>分别启动即可</p>
+<h3 id="修改nginxconf"><a class="markdownIt-Anchor" href="#修改nginxconf"></a> 修改nginx.conf</h3>
+<p>首先，增加一个upstream，用来指向两个tomcat</p>
+<pre><code class="highlight plaintext">upstream tomcat_8111_8222&#123;
+    server 127.0.0.1:8111 weight=1;
+    server 127.0.0.1:8222 weight=2;
+&#125;</code></pre>
+<p>然后修改location，反向代理到上述配置</p>
+<pre><code class="highlight plaintext">location / &#123;
+    proxy_pass http://tomcat_8111_8222;
+&#125;</code></pre>
+<blockquote>
+<p><code>weight</code>:表示权重，值越大，被分配到的几率越大</p>
+</blockquote>
+<p><strong>然后重启nginx并多次访问</strong></p>
+<p>会发现nginx会根据权重去访问两个服务器</p>
+<h2 id="session共享"><a class="markdownIt-Anchor" href="#session共享"></a> session共享</h2>
+<h3 id="负载均衡session问题"><a class="markdownIt-Anchor" href="#负载均衡session问题"></a> 负载均衡session问题</h3>
+<p>通过负载均衡，我们可以把请求分发到不同的tomcat来缓解服务器的压力，但是这里存在一个问题：当同一个用户第一次访问tomcat_8333并且登陆成功，而第二次访问却被分配到了tomcat_8444，这里没有记录他的登陆状态，那么就会呈现未登录的状态了，严重伤害了用户体验</p>
+<h3 id="方式一ip_hash"><a class="markdownIt-Anchor" href="#方式一ip_hash"></a> 方式一：ip_hash</h3>
+<p>通过IP地址标记用户，如果多次请求都是从同一个IP来的，那么就都分配到同一个tomcat</p>
+<p>这样就不会出现负载均衡session问题了，秩序在<strong>upstream最后加上ip_hash</strong>，就行了</p>
+<pre><code class="highlight plaintext">upstream tomcat_8333_8444&#123;
+ server  127.0.0.1:8333  weight=1;
+  server  127.0.0.1:8444 weight=2;
+     ip_hash;
+&#125;</code></pre>
+<p>不过这种方案并不完美，如下几种情况就有问题</p>
+<blockquote>
+<p>大量请求来之某个局域网，那么想断关于就没有负载均衡了</p>
+</blockquote>
+<blockquote>
+<p>如果tomcat_8333挂了，那么此时nginx只能把 请求交给了tomcat_8444，但是这里却没有记录session，用户体验依然受影响</p>
+</blockquote>
+<h3 id="方式二redistomcatsession-manager"><a class="markdownIt-Anchor" href="#方式二redistomcatsession-manager"></a> 方式二：redis+tomcat+session-manager</h3>
+<p>既然第一种解决方式有问题，那么就采用第二种解决办法：用redis来存取session</p>
+<p>redis就是独立的HashMap，用来存放键值对</p>
+<p>这样当tomcat1需要保存session值的时候，就可以把它放在redis上，需要取的时候，也是从redis上面取</p>
+<p><strong>场景</strong></p>
+<ul>
+<li>用户提交账号密码的行为被分配在了tomcat_8333上，登陆信息被存放在redis里</li>
+<li>当用户第二次访问的时候，被分配到了tomcat_8444上</li>
+<li>那么此时tomcat_8333就会从redis去获取相关信息，一看有对应信息，那么就会呈现出登陆状态</li>
+</ul>
+<h4 id="具体实现"><a class="markdownIt-Anchor" href="#具体实现"></a> 具体实现</h4>
+<ol>
+<li>启动redis</li>
+<li>给两个tomcat使用jar包</li>
+<li>配置两个tomcat</li>
+<li>重启两个tomcat</li>
+<li>测试</li>
+</ol>
+<h5 id="启动redis"><a class="markdownIt-Anchor" href="#启动redis"></a> 启动redis</h5>
+<p>在redis安装路劲点击<code>redis-server.exe</code>运行</p>
+<h5 id="jar包"><a class="markdownIt-Anchor" href="#jar包"></a> jar包</h5>
+<ul>
+<li>
+<p>所需要的jar包</p>
+</li>
+<li>
+<p>tomcat需要链接redis，所以需要专门的jar包</p>
+<ul>
+<li>下载好放在两个tomcat的lib目录下即可</li>
+</ul>
+</li>
+</ul>
+<h5 id="修改contextxml"><a class="markdownIt-Anchor" href="#修改contextxml"></a> 修改context.xml</h5>
+<p>修改tomcat/conf/context.xml，增加如下代码</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">Valve</span> <span class="attr">className</span>=<span class="string">&quot;com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve&quot;</span> /&gt;</span>
+<span class="tag">&lt;<span class="name">Manager</span> <span class="attr">className</span>=<span class="string">&quot;com.orangefunction.tomcat.redissessions.RedisSessionManager&quot;</span></span>
+<span class="tag"><span class="attr">host</span>=<span class="string">&quot;127.0.0.1&quot;</span></span>
+<span class="tag"><span class="attr">port</span>=<span class="string">&quot;6379&quot;</span></span>
+<span class="tag"><span class="attr">database</span>=<span class="string">&quot;0&quot;</span></span>
+<span class="tag"><span class="attr">maxInactiveInterval</span>=<span class="string">&quot;60&quot;</span> /&gt;</span></code></pre>
+<h5 id="重启tomcat"><a class="markdownIt-Anchor" href="#重启tomcat"></a> 重启tomcat</h5>
+<p>两个tomcat都需要重启</p>
+<h5 id="分别测试访问两个tomcat"><a class="markdownIt-Anchor" href="#分别测试访问两个tomcat"></a> 分别测试访问两个tomcat</h5>
+<p>Redis session共享机制和nginx其实无关，是发生在nginx之后的事情，所以直接访问login.jsp，然后登陆，并观察到已登陆状态</p>
+<p>即在tomcat1登陆成功后，登陆tomcat2，也是登陆成功状态</p>
+<h2 id="虚拟主机"><a class="markdownIt-Anchor" href="#虚拟主机"></a> 虚拟主机</h2>
+<p>虚拟主机，<strong>就是将一台物理服务器虚拟为多个服务器来使用</strong>，从而实现在一台服务器上配置多个站点，即可以在一台物理主机上配置多个域名。Nginx中，一个server标签就是一台虚拟主机，配置多个server标签就虚拟出了多台主机。</p>
+<p>Nginx虚拟主机的实现方式有两种:域名虚拟方式与端口虚拟方式。</p>
+<ul>
+<li><strong>域名虚拟</strong>方式是指不同的虑拟机使用不同的域名, 通过不同的域名虚拟出不同的主机</li>
+<li><strong>端口虚拟</strong>方式是指不同的虚拟机使用相同的域名不同的端口号，通过不同的端口号虚拟出不同的主机。 基于端口的虚拟方式不常用。</li>
+</ul>
+<h3 id="总体规划"><a class="markdownIt-Anchor" href="#总体规划"></a> 总体规划</h3>
+<p>现在很多生活服务类网络平台都具有这样的功能。不同城市的用户可以打开不同城市专属的站点。用户首先打开的是平台总的站点，然后允许用户切换到不同的城市。其实，不同的城市都是一个不同的站点。</p>
+<p>这里我们要实现的功能是为平台总站点北京、上海两个城市站点分别创建一个虚拟主机。每一个虚拟主机都具有两台Tomcat的负载均衡主机。由于有三个站点，所以共需六台Tomcat主机，克隆Tomcat主机太过麻烦，所以这六台Tomcat我们使用一台主机实现。在一台主机中安 装六个Tomcat，它们分别使用六个不同的端口号。</p>
+<p>首先要创建一个web工程，其中就一个index.jsp页面，页面除了显示当前城市外，还要显示城市切换的超链接。为了能够再明显的区分出当前访问的Tomcat,再在页面中显示出当前工程所在的主机名与端口号。</p>
+<h3 id="实现"><a class="markdownIt-Anchor" href="#实现"></a> 实现</h3>
+<p>在nginx中，一个server标签就是一个虚拟主机，如果需要虚拟多个主机，我们就可以配多个server标签</p>
+<h3 id="配置虚拟主机"><a class="markdownIt-Anchor" href="#配置虚拟主机"></a> 配置虚拟主机</h3>
+<p>对于虚拟主机的配置，可以写道两个地方，直接写入当前nginx.conf中，或者可以单独的写入一个文件，采用虚拟主机单独占用一个文件的方式，便于后期对于虚拟主机的维护</p>
+<p><strong>虚拟主机的配置文件配置方式：</strong></p>
+<ul>
+<li>server name 为虚拟服务器的识别路径。因此不同的域名会通过请求头中的HOST字段，匹配到特定的server块，转发到对应的应用服务器中去</li>
+</ul>
+<pre><code class="highlight properties"><span class="comment">#user  nobody;</span>
+<span class="comment">#工作进程</span>
+<span class="attr">worker_processes</span>  <span class="string">1;</span>
+<span class="comment"></span>
+<span class="comment">#error_log  logs/error.log;</span>
+<span class="comment">#error_log  logs/error.log  notice;</span>
+<span class="comment">#error_log  logs/error.log  info;</span>
+<span class="comment"></span>
+<span class="comment">#pid        logs/nginx.pid;</span>
+
+
+<span class="attr">events</span> <span class="string">&#123;</span>
+    <span class="attr">worker_connections</span>  <span class="string">1024;</span>
+<span class="attr">&#125;</span>
+
+
+<span class="attr">http</span> <span class="string">&#123;</span>
+    <span class="attr">include</span>       <span class="string">mime.types;</span>
+    <span class="attr">default_type</span>  <span class="string">application/octet-stream;</span>
+<span class="comment"></span>
+<span class="comment">    #log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span>
+<span class="comment">    #                  &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span>
+<span class="comment">    #                  &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span>
+<span class="comment"></span>
+<span class="comment">    #access_log  logs/access.log  main;</span>
+
+    <span class="attr">sendfile</span>        <span class="string">on;</span>
+<span class="comment">    #tcp_nopush     on;</span>
+<span class="comment"></span>
+<span class="comment">    #keepalive_timeout  0;</span>
+    <span class="attr">keepalive_timeout</span>  <span class="string">65;</span>
+<span class="comment"></span>
+<span class="comment">    #gzip  on;</span>
+    
+    <span class="attr">upstream</span> <span class="string">cent&#123;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8081 weight=1;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8082 eight=1;</span>
+    <span class="attr">&#125;</span>
+    <span class="attr">upstream</span> <span class="string">beijing</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8083 weight=1;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8084 weight=1;</span>
+    <span class="attr">&#125;</span>
+    
+    <span class="attr">upstream</span> <span class="string">shanghai</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8085 weight=1;</span>
+        <span class="attr">server</span> <span class="string">192.168.1.1:8086 weight=1;</span>
+    <span class="attr">&#125;</span>
+    
+    
+    <span class="attr">server&#123;</span>
+        <span class="attr">listen</span>       <span class="string">80;</span>
+        <span class="attr">server_name</span>  <span class="string">www.cent.com;</span>
+        
+        <span class="attr">location</span> <span class="string">/ &#123;</span>
+            <span class="attr">proxy_pass</span> <span class="string">http://cent;</span>
+        <span class="attr">&#125;</span>
+    <span class="attr">&#125;</span>
+
+    <span class="attr">server&#123;</span>
+        <span class="attr">listen</span>       <span class="string">80;</span>
+        <span class="attr">server_name</span>  <span class="string">www.beijing.com;</span>
+        
+        <span class="attr">location</span> <span class="string">/ &#123;</span>
+            <span class="attr">proxy_pass</span> <span class="string">http://beijing;</span>
+        <span class="attr">&#125;</span>
+    <span class="attr">&#125;</span>
+
+    <span class="attr">server&#123;</span>
+        <span class="attr">listen</span>       <span class="string">80;</span>
+        <span class="attr">server_name</span>  <span class="string">www.shanghai.com</span>
+        
+        <span class="attr">location</span> <span class="string">/ &#123;</span>
+            <span class="attr">proxy_pass</span> <span class="string">http://shagnhai;</span>
+        <span class="attr">&#125;</span>
+    <span class="attr">&#125;</span>
+
+    <span class="attr">server</span> <span class="string">&#123;</span>
+        <span class="attr">listen</span>       <span class="string">80;</span>
+        <span class="attr">server_name</span>  <span class="string">localhost;</span>
+<span class="comment"></span>
+<span class="comment">        #charset koi8-r;</span>
+<span class="comment"></span>
+<span class="comment">        #access_log  logs/host.access.log  main;</span>
+<span class="comment">        #默认访问目录</span>
+<span class="comment">        #表示默认访问html目录下的index.html，html表示相对路径，可以写绝对路径</span>
+<span class="comment">        #如果写成location /usr&#123; &#125; 就表示访问localhost/usr默认访问html目录下usr目录下的index.html</span>
+        <span class="attr">location</span> <span class="string">/ &#123;</span>
+            <span class="attr">root</span>   <span class="string">html;</span>
+            <span class="attr">index</span>  <span class="string">index.html index.htm;</span>
+        <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment">        #error_page  404              /404.html;</span>
+<span class="comment"></span>
+<span class="comment">        # redirect server error pages to the static page /50x.html</span>
+<span class="comment">        #</span>
+        <span class="attr">error_page</span>   <span class="string">500 502 503 504  /50x.html;</span>
+        <span class="attr">location</span> = <span class="string">/50x.html &#123;</span>
+            <span class="attr">root</span>   <span class="string">html;</span>
+        <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ \.php$ &#123;</span>
+<span class="comment">        #    proxy_pass   http://127.0.0.1;</span>
+<span class="comment">        #&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ \.php$ &#123;</span>
+<span class="comment">        #    root           html;</span>
+<span class="comment">        #    fastcgi_pass   127.0.0.1:9000;</span>
+<span class="comment">        #    fastcgi_index  index.php;</span>
+<span class="comment">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</span>
+<span class="comment">        #    include        fastcgi_params;</span>
+<span class="comment">        #&#125;</span>
+<span class="comment"></span>
+<span class="comment">        # deny access to .htaccess files, if Apache&#x27;s document root</span>
+<span class="comment">        # concurs with nginx&#x27;s one</span>
+<span class="comment">        #</span>
+<span class="comment">        #location ~ /\.ht &#123;</span>
+<span class="comment">        #    deny  all;</span>
+<span class="comment">        #&#125;</span>
+    <span class="attr">&#125;</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">    # another virtual host using mix of IP-, name-, and port-based configuration</span>
+<span class="comment">    #</span>
+<span class="comment">    #server &#123;</span>
+<span class="comment">    #    listen       8000;</span>
+<span class="comment">    #    listen       somename:8080;</span>
+<span class="comment">    #    server_name  somename  alias  another.alias;</span>
+<span class="comment"></span>
+<span class="comment">    #    location / &#123;</span>
+<span class="comment">    #        root   html;</span>
+<span class="comment">    #        index  index.html index.htm;</span>
+<span class="comment">    #    &#125;</span>
+<span class="comment">    #&#125;</span>
+<span class="comment"></span>
+<span class="comment"></span>
+<span class="comment">    # HTTPS server</span>
+<span class="comment">    #</span>
+<span class="comment">    #server &#123;</span>
+<span class="comment">    #    listen       443 ssl;</span>
+<span class="comment">    #    server_name  localhost;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_certificate      cert.pem;</span>
+<span class="comment">    #    ssl_certificate_key  cert.key;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_session_cache    shared:SSL:1m;</span>
+<span class="comment">    #    ssl_session_timeout  5m;</span>
+<span class="comment"></span>
+<span class="comment">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</span>
+<span class="comment">    #    ssl_prefer_server_ciphers  on;</span>
+<span class="comment"></span>
+<span class="comment">    #    location / &#123;</span>
+<span class="comment">    #        root   html;</span>
+<span class="comment">    #        index  index.html index.htm;</span>
+<span class="comment">    #    &#125;</span>
+<span class="comment">    #&#125;</span>
+
+<span class="attr">&#125;</span></code></pre>
+<p>匹配的就是我们访问的这个host字段，可以让不同的域名指向相同的ip，然后通过nginx的虚拟主机 匹配到不同的服务器上面去</p>
+<h2 id="nginx性能调优"><a class="markdownIt-Anchor" href="#nginx性能调优"></a> Nginx性能调优</h2>
+<h3 id="nginx进程"><a class="markdownIt-Anchor" href="#nginx进程"></a> Nginx进程</h3>
+<p>当nginx启动后，使用<code>ps -aux|grep nginx</code>命令查看当前系统运行的进程，我们发现有关Nginx的有两个进程：master与worker</p>
+<ul>
+<li><strong>master进程</strong>：用于管理worker进程，例如，对worker进程工作状态的监控，当请求到达时应该将请求交给那个worker进行处理等</li>
+<li><strong>worker进程</strong>：专门用于处理客户端请求的进程，其可以配置多个，但默认只有一个</li>
+</ul>
+<h3 id="worker_processes"><a class="markdownIt-Anchor" href="#worker_processes"></a> worker_processes</h3>
+<p>打开nginx.conf配置文件，可以看到<strong>worker_processes的默认值为1</strong></p>
+<p>worker_processes：工作进程，用于指定Nginx的工作进程数量，该数值一般设置为cpu的内核数量，或<strong>内核数量的整数倍</strong></p>
+<blockquote>
+<p>注意：现代的cpu一般都是多内核的</p>
+</blockquote>
+<p>若当前系统具有2块cpu，而每块cpu中包含2个内核，那么，worker_Processes的值一般可以设置为4或者8，也可以设置2</p>
+<p>不过，该值不仅仅取决于cpu内核数量，还有硬盘及负载均衡模式相关，<strong>在不确定时可以指定其值为auto</strong></p>
+<h3 id="worker_cpu_affinity"><a class="markdownIt-Anchor" href="#worker_cpu_affinity"></a> worker_cpu_affinity</h3>
+<p>为了进一步提高系统性能，我们会将worker进程与具体的内核进行绑定，该绑定操作是通过了worker_cpu_affinity属性进行设置的。</p>
+<p><strong>不过，若指定worker_processes的值为auto，则无法设置worker_cpu_affinity</strong>。</p>
+<p>该设置是通过二进制进行的，每个内核使用一个二进制为表示，0代表内核关闭，1代表内核开启，也就是说，有几个内核，就需要使用几个二进制位</p>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

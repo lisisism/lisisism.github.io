@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Json 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Json</div>
+  <div class="post-meta">
+    <div class="date">2020 四月 8日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Json</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="json"><a class="markdownIt-Anchor" href="#json"></a> $JSON</h1>
+<h1 id="json-2"><a class="markdownIt-Anchor" href="#json-2"></a> JSON</h1>
+<ul>
+<li><a href="">JSON</a>
+<ul>
+<li><a href="">概述</a></li>
+<li><a href="">FastJson</a>
+<ul>
+<li><a href="">配置maven</a></li>
+<li><a href="">Json转出</a>
+<ul>
+<li><a href="">到Java变量</a></li>
+<li><a href="">Java对象</a></li>
+</ul>
+</li>
+<li><a href="">转入Json</a>
+<ul>
+<li><a href="">Java变量</a></li>
+<li><a href="">Java对象</a></li>
+</ul>
+</li>
+<li><a href="">FastJson解析大文件</a>
+<ul>
+<li><a href="">示例1</a></li>
+<li><a href="">示例2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Gson</a>
+<ul>
+<li><a href="">maven</a></li>
+<li><a href="">Java对象到JSON</a></li>
+<li><a href="">JSON到Java对象</a></li>
+<li><a href="">格式化打印JSON</a>
+<ul>
+<li><a href="">流式读取</a>
+<ul>
+<li><a href="">JsonWriter</a></li>
+<li><a href="">JsonReader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">排除字段</a>
+<ul>
+<li><a href="">excludeFieldsWithModifiers</a></li>
+<li><a href="">@Expose</a></li>
+<li><a href="">ExclusionStrategies</a></li>
+</ul>
+</li>
+<li><a href="">null支持</a></li>
+<li><a href="">JSON字段重命名</a></li>
+<li><a href="">版本支持</a></li>
+<li><a href="">JSON数组转为对象列表TypeToken</a></li>
+<li><a href="">JSON转Map</a></li>
+</ul>
+</li>
+<li><a href="">Jackson</a>
+<ul>
+<li><a href="">maven</a></li>
+<li><a href="">Java对象到Json</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h2>
+<p>Java中并没有内置JSON的解析，因此使用JSON需要借助第三方类库。</p>
+<p>下面是几个常用的 JSON 解析类库：</p>
+<ul>
+<li>Gson: 谷歌开发的 JSON 库，功能十分全面。</li>
+<li>FastJson: 阿里巴巴开发的 JSON 库，性能十分优秀。</li>
+<li>Jackson: 社区十分活跃且更新速度很快。</li>
+</ul>
+<h2 id="fastjson"><a class="markdownIt-Anchor" href="#fastjson"></a> FastJson</h2>
+<h3 id="配置maven"><a class="markdownIt-Anchor" href="#配置maven"></a> 配置maven</h3>
+<p>在 Maven 构建的项目中，在 pom.xml 文件中加入以下依赖即可.</p>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+    &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+    &lt;version&gt;1.2.47&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<pre><code class="highlight plaintext">String text = JSON.toJSONString(obj); //序列化
+VO vo = JSON.parseObject(&quot;&#123;...&#125;&quot;, VO.class); //反序列化</code></pre>
+<h3 id="json转出"><a class="markdownIt-Anchor" href="#json转出"></a> Json转出</h3>
+<h4 id="到java变量"><a class="markdownIt-Anchor" href="#到java变量"></a> 到Java变量</h4>
+<p>从 JSON 对象到 Java 变量的解码过程如下：</p>
+<pre><code class="highlight plaintext"> &#123;
+    &quot;id&quot;: 1525490,
+    &quot;name&quot;: &quot;有缘网&quot;,
+    &quot;packageName&quot;: &quot;com.youyuan.yyhl&quot;,
+    &quot;iconUrl&quot;: &quot;app/com.youyuan.yyhl/icon.jpg&quot;,
+    &quot;stars&quot;: 4,
+    &quot;size&quot;: 3876203,
+    &quot;downloadUrl&quot;: &quot;app/com.youyuan.yyhl/com.youyuan.yyhl.apk&quot;,
+    &quot;des&quot;: &quot;产品介绍：有缘是时下最受大众单身男女亲睐的婚恋交友软件。有缘网专注于通过轻松、&quot;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">JSONObject object = new JSONObject(json);
+long id = object.getLong(&quot;id&quot;);
+String name = object.getString(&quot;name&quot;);
+String packageName = object.getString(&quot;packageName&quot;);
+String iconUrl = object.getString(&quot;iconUrl&quot;);
+float stars = Float.parseFloat(object.getString(&quot;stars&quot;));
+long size = object.getLong(&quot;size&quot;);
+String downloadUrl = object.getString(&quot;downloadUrl&quot;);
+String des = object.getString(&quot;des&quot;);
+</code></pre>
+<hr />
+<p><strong>数组到Java变量</strong></p>
+<pre><code class="highlight plaintext">[
+    &#123;
+        &quot;id&quot;: 1580615,
+        &quot;name&quot;: &quot;皮的嘛&quot;,
+        &quot;packageName&quot;: &quot;com.renren.mobile.android&quot;,
+        &quot;iconUrl&quot;: &quot;app/com.renren.mobile.android/icon.jpg&quot;,
+        &quot;stars&quot;: 2,
+        &quot;size&quot;: 21803987,
+        &quot;downloadUrl&quot;: &quot;app/com.renren.mobile.android/com.renren.mobile.android.apk&quot;,
+        &quot;des&quot;: &quot;2011-2017 你的铁头娃一直在这儿。中国最大的实名制SNS网络平台，嫩头青&quot;
+    &#125;,
+    &#123;
+        &quot;id&quot;: 1540629,
+        &quot;name&quot;: &quot;不存在的&quot;,
+        &quot;packageName&quot;: &quot;com.ct.client&quot;,
+        &quot;iconUrl&quot;: &quot;app/com.ct.client/icon.jpg&quot;,
+        &quot;stars&quot;: 2,
+        &quot;size&quot;: 4794202,
+        &quot;downloadUrl&quot;: &quot;app/com.ct.client/com.ct.client.apk&quot;,
+        &quot;des&quot;: &quot;斗鱼271934走过路过不要错过，这里有最好的鸡儿&quot;
+    &#125;
+]</code></pre>
+<pre><code class="highlight plaintext">JSONArray jsonArray=new JSONArray(json);
+for(int i=0;i&lt;jsonArray.length();i++)&#123;
+    JSONObject object=jsonArray.getJSONObject(i);
+    String id=object.getString(&quot;id&quot;);
+    String name=object.getString(&quot;name&quot;);
+    String packageName=object.getString(&quot;packageName&quot;);
+    String iconUrl = object.getString(&quot;iconUrl&quot;);
+    double stars=Double.parseDouble(object.getString(&quot;stars&quot;));
+    String size=object.getString(&quot;size&quot;);
+    String downloadUrl = object.getString(&quot;downloadUrl&quot;);
+    String des = object.getString(&quot;des&quot;);
+   //其他操作
+   ....
+&#125;</code></pre>
+<h4 id="java对象"><a class="markdownIt-Anchor" href="#java对象"></a> Java对象</h4>
+<pre><code class="highlight plaintext">package com.mkyong;
+
+import com.alibaba.fastjson.JSON;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class FastJsonExample2 &#123;
+
+    public static void main(String[] args) &#123;
+
+        // JSON string to Java object
+        String jsonString = &quot;&#123;\&quot;name\&quot;:38,\&quot;name\&quot;:\&quot;mkyong\&quot;&#125;&quot;;
+        Staff staff = JSON.parseObject(jsonString, Staff.class);
+
+        System.out.println(staff);
+
+        // JSON array to Java object
+        String jsonArray = &quot;[&#123;\&quot;name\&quot;:38,\&quot;name\&quot;:\&quot;mkyong\&quot;&#125;, &#123;\&quot;name\&quot;:39,\&quot;name\&quot;:\&quot;mkyong2\&quot;&#125;]&quot;;
+        List&lt;Staff&gt; staff1 = JSON.parseArray(jsonArray, Staff.class);
+
+        System.out.println(staff1);
+
+        // JSON array in File to Java object
+        // staff.json contain JSON array
+        try (Stream&lt;String&gt; lines = Files.lines(Paths.get(&quot;c:\\projects\\staff.json&quot;))) &#123;
+
+            String content = lines.collect(Collectors.joining());
+			// Hope parseArray() will support File or Reader in future.
+            List&lt;Staff&gt; list = JSON.parseArray(content, Staff.class);
+            System.out.println(list);
+
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+
+    &#125;
+&#125;</code></pre>
+<h3 id="转入json"><a class="markdownIt-Anchor" href="#转入json"></a> 转入Json</h3>
+<h4 id="java变量"><a class="markdownIt-Anchor" href="#java变量"></a> Java变量</h4>
+<p>从 Java 变量到 JSON 格式的编码过程如下：</p>
+<pre><code class="highlight plaintext">public void testJson() &#123;
+    JSONObject object = new JSONObject();
+    //string
+    object.put(&quot;string&quot;,&quot;string&quot;);
+    //int
+    object.put(&quot;int&quot;,2);
+    //boolean
+    object.put(&quot;boolean&quot;,true);
+    //array
+    List&lt;Integer&gt; integers = Arrays.asList(1,2,3);
+    object.put(&quot;list&quot;,integers);
+    //null
+    object.put(&quot;null&quot;,null);
+​
+    System.out.println(object);
+&#125;</code></pre>
+<p>在上例中，首先建立一个 JSON 对象，然后依次添加字符串、整数、布尔值以及数组，最后将其打印为字符串。</p>
+<p>输出结果如下：</p>
+<pre><code class="highlight plaintext">&#123;&quot;boolean&quot;:true,&quot;string&quot;:&quot;string&quot;,&quot;list&quot;:[1,2,3],&quot;int&quot;:2&#125;</code></pre>
+<h4 id="java对象-2"><a class="markdownIt-Anchor" href="#java对象-2"></a> Java对象</h4>
+<pre><code class="highlight plaintext">package com.mkyong;
+
+import com.alibaba.fastjson.JSON;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
+
+public class FastJsonExample1 &#123;
+
+    public static void main(String[] args) &#123;
+
+        Staff staff = createStaff();
+
+        // Java objects to JSON
+        String json = JSON.toJSONString(staff);
+        System.out.println(json);
+
+        // Java objects to JSON, pretty-print
+        String json2 = JSON.toJSONString(staff, true);
+        System.out.println(json2);
+
+        // Java objects to JSON, with formatted date
+        String json3 = JSON.toJSONStringWithDateFormat(staff, &quot;dd/MM/yyyy HH:mm:ss&quot;);
+        System.out.println(json3);
+
+        // List of Java objects to JSON Array
+        List&lt;Staff&gt; list = Arrays.asList(createStaff(), createStaff());
+        String json4 = JSON.toJSONStringWithDateFormat(list, &quot;dd/MM/yyyy HH:mm:ss&quot;);
+        System.out.println(json4);
+
+        try &#123;
+            // can&#x27;t find fastjson api to write files, np, just use the standard java.nio Files.write
+            Files.write(Paths.get(&quot;c:\\projects\\staff.json&quot;), json4.getBytes());
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+
+    &#125;
+
+    private static Staff createStaff() &#123;
+
+        Staff staff = new Staff();
+
+        staff.setName(&quot;mkyong&quot;);
+        staff.setAge(38);
+        staff.setPosition(new String[]&#123;&quot;Founder&quot;, &quot;CTO&quot;, &quot;Writer&quot;&#125;);
+        Map&lt;String, BigDecimal&gt; salary = new HashMap() &#123;&#123;
+            put(&quot;2010&quot;, new BigDecimal(10000));
+            put(&quot;2012&quot;, new BigDecimal(12000));
+            put(&quot;2018&quot;, new BigDecimal(14000));
+        &#125;&#125;;
+        staff.setSalary(salary);
+        staff.setSkills(Arrays.asList(&quot;java&quot;, &quot;python&quot;, &quot;node&quot;, &quot;kotlin&quot;));
+        staff.setJoinDate(new Date());
+
+        return staff;
+
+    &#125;
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">// json
+&#123;&quot;age&quot;:38,&quot;joinDate&quot;:1556870430099,&quot;name&quot;:&quot;mkyong&quot;,&quot;position&quot;:[&quot;Founder&quot;,&quot;CTO&quot;,&quot;Writer&quot;],
+&quot;salary&quot;:&#123;&quot;2018&quot;:14000,&quot;2012&quot;:12000,&quot;2010&quot;:10000&#125;,&quot;skills&quot;:[&quot;java&quot;,&quot;python&quot;,&quot;node&quot;,&quot;kotlin&quot;]&#125;
+
+// json2
+&#123;
+	&quot;age&quot;:38,
+	&quot;joinDate&quot;:1556870430099,
+	&quot;name&quot;:&quot;mkyong&quot;,
+	&quot;position&quot;:[&quot;Founder&quot;,&quot;CTO&quot;,&quot;Writer&quot;],
+	&quot;salary&quot;:&#123;
+		&quot;2018&quot;:14000,
+		&quot;2012&quot;:12000,
+		&quot;2010&quot;:10000
+	&#125;,
+	&quot;skills&quot;:[
+		&quot;java&quot;,
+		&quot;python&quot;,
+		&quot;node&quot;,
+		&quot;kotlin&quot;
+	]
+&#125;
+
+// json3 - format date
+&#123;&quot;age&quot;:38,&quot;joinDate&quot;:&quot;03/05/2019 16:00:30&quot;,&quot;name&quot;:&quot;mkyong&quot;,&quot;position&quot;:[&quot;Founder&quot;,&quot;CTO&quot;,&quot;Writer&quot;],
+&quot;salary&quot;:&#123;&quot;2018&quot;:14000,&quot;2012&quot;:12000,&quot;2010&quot;:10000&#125;,&quot;skills&quot;:[&quot;java&quot;,&quot;python&quot;,&quot;node&quot;,&quot;kotlin&quot;]&#125;
+
+// json4 - JSON Array
+[
+	&#123;
+		&quot;age&quot;:38,
+		&quot;joinDate&quot;:1556870630615,
+		&quot;name&quot;:&quot;mkyong&quot;,
+		&quot;position&quot;:[&quot;Founder&quot;,&quot;CTO&quot;,&quot;Writer&quot;],
+		&quot;salary&quot;:&#123;
+			&quot;2018&quot;:14000,
+			&quot;2012&quot;:12000,
+			&quot;2010&quot;:10000
+		&#125;,
+		&quot;skills&quot;:[
+			&quot;java&quot;,
+			&quot;python&quot;,
+			&quot;node&quot;,
+			&quot;kotlin&quot;
+		]
+	&#125;,
+	&#123;
+		&quot;age&quot;:38,
+		&quot;joinDate&quot;:1556870630615,
+		&quot;name&quot;:&quot;mkyong&quot;,
+		&quot;position&quot;:[&quot;Founder&quot;,&quot;CTO&quot;,&quot;Writer&quot;],
+		&quot;salary&quot;:&#123;
+			&quot;2018&quot;:14000,
+			&quot;2012&quot;:12000,
+			&quot;2010&quot;:10000
+		&#125;,
+		&quot;skills&quot;:[
+			&quot;java&quot;,
+			&quot;python&quot;,
+			&quot;node&quot;,
+			&quot;kotlin&quot;
+		]
+	&#125;
+]
+</code></pre>
+<h3 id="fastjson解析大文件"><a class="markdownIt-Anchor" href="#fastjson解析大文件"></a> FastJson解析大文件</h3>
+<h4 id="示例1"><a class="markdownIt-Anchor" href="#示例1"></a> 示例1</h4>
+<pre><code class="highlight plaintext">public class JsonTest &#123;
+    public static void main(String[] args) throws Exception &#123;
+        JSONReader reader=new JSONReader(new FileReader(new File(&quot;D:\\ztest\\json\\json2.txt&quot;)));
+        JSONWriter writer = new JSONWriter(new FileWriter(&quot;D:\\ztest\\json\\json2_copy.txt&quot;));
+
+        writer.startArray();
+        reader.startArray();
+        long l = 0;
+        while(reader.hasNext())&#123;
+            JSONObject jsonObjectReader = (JSONObject)reader.readObject();
+            test(jsonObjectReader);
+            writer.startObject();
+            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entrySet = jsonObjectReader.entrySet();
+            for (Map.Entry&lt;String, Object&gt; objectEntry : entrySet) &#123;
+                String key = objectEntry.getKey();
+                Object value = objectEntry.getValue();
+                writer.writeKey(key);
+                writer.writeObject(value);
+            &#125;
+            writer.endObject();
+            l++;
+            if(l%10000==0)&#123;
+                System.out.println(l);
+                writer.flush();
+            &#125;
+        &#125;
+        reader.endArray();
+        writer.endArray();
+        writer.close();
+        reader.close();
+//        writer.startArray();
+//        for (int i = 0; i &lt; 100; ++i) &#123;
+//            JSONObject jsonObjectReader = JSON.parseObject(&quot;&#123;\&quot;_id\&quot;: \&quot;127.0.0.1\&quot;,\&quot;__v\&quot;: [&#123;\&quot;name\&quot;: \&quot;zhangsan1\&quot;&#125;,&#123;\&quot;name\&quot;: \&quot;zhangsan2\&quot;&#125;],\&quot;name\&quot;: \&quot;张三\&quot;,\&quot;age\&quot;: &#123;\&quot;name\&quot;: \&quot;zhangsan\&quot;&#125;&#125;&quot;);
+//            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entries = jsonObjectReader.entrySet();
+//            writer.startObject();
+//            for (Map.Entry&lt;String, Object&gt; entry : entries) &#123;
+//                String key = entry.getKey();
+//                Object value = entry.getValue();
+//                writer.writeKey(key);
+//                writer.writeObject(value);
+//            &#125;
+//            writer.endObject();
+//        &#125;
+//        writer.endArray();
+//        writer.close();
+    &#125;
+
+    public static void test(Object value)&#123;
+        if(value instanceof JSONObject)&#123;
+            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entries1 = ((JSONObject) value).entrySet();
+            Iterator&lt;Map.Entry&lt;String, Object&gt;&gt; iterator = entries1.iterator();
+            while (iterator.hasNext()) &#123;
+                Map.Entry&lt;String, Object&gt; next = iterator.next();
+                String key = next.getKey();
+                Object val = next.getValue();
+                if(val instanceof String)&#123;
+                    if(val.equals(&quot;我才是测试文本哦,用于测试此次验证。&quot;))&#123;
+                        ((JSONObject) value).put(key, &quot;0.0.0.0&quot;);
+                    &#125;else&#123;
+                        ((JSONObject) value).put(key, val);
+                    &#125;
+                &#125;else&#123;
+                    test(val);
+                &#125;
+            &#125;
+        &#125;else if (value instanceof JSONArray)&#123;
+            Iterator&lt;Object&gt; iterator = ((JSONArray) value).iterator();
+            while (iterator.hasNext()) &#123;
+                Object next = iterator.next();
+                test(next);
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="示例2"><a class="markdownIt-Anchor" href="#示例2"></a> 示例2</h4>
+<pre><code class="highlight plaintext">public class JsonTest &#123;
+    public static void main(String[] args) throws Exception &#123;
+
+        JsonTest jsonTest = new JsonTest();
+        jsonTest.mainTest();
+//        JSONWriter writer = new JSONWriter(new BufferedWriter(new FileWriter(&quot;D:\\ztest\\json\\json2_copy.txt&quot;)));
+//        writer.startArray();
+//        for (int i = 0; i &lt; 100; ++i) &#123;
+//            JSONObject jsonObjectReader = JSON.parseObject(&quot;&#123;\&quot;_id\&quot;: \&quot;127.0.0.1\&quot;,\&quot;__v\&quot;: [&#123;\&quot;name\&quot;: \&quot;zhangsan1\&quot;&#125;,&#123;\&quot;name\&quot;: \&quot;zhangsan2\&quot;&#125;],\&quot;name\&quot;: \&quot;张三\&quot;,\&quot;age\&quot;: &#123;\&quot;name\&quot;: \&quot;zhangsan\&quot;&#125;&#125;&quot;);
+//            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entries = jsonObjectReader.entrySet();
+//            writer.startObject();
+//            for (Map.Entry&lt;String, Object&gt; entry : entries) &#123;
+//                String key = entry.getKey();
+//                Object value = entry.getValue();
+//                writer.writeKey(key);
+//                writer.writeObject(value);
+//            &#125;
+//            writer.endObject();
+//        &#125;
+//        writer.endArray();
+//        writer.close();
+    &#125;
+
+    public void mainTest() throws Exception &#123;
+        JSONReader reader=new JSONReader(new BufferedReader(new FileReader(&quot;D:\\ztest\\json\\json.txt&quot;)));
+
+        //writer.startArray();
+        reader.startArray();
+        long l = 0;
+        JSONWriter writer = new JSONWriter(new BufferedWriter(new FileWriter(&quot;D:\\ztest\\json\\json_copy.txt&quot;,true)));
+        while(reader.hasNext())&#123;
+//            JSONObject jsonObjectReader = (JSONObject)reader.readObject();
+//            test(jsonObjectReader);
+            reader.startObject();
+            writer.startObject();
+//            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entrySet = jsonObjectReader.entrySet();
+//            for (Map.Entry&lt;String, Object&gt; objectEntry : entrySet) &#123;
+//                String key = objectEntry.getKey();
+//                Object value = objectEntry.getValue();
+//                writer.writeKey(key);
+//                writer.writeObject(value);
+//            &#125;
+            while (reader.hasNext()) &#123;
+                String key = reader.readString();
+                Object value = reader.readObject();
+                test(value);
+                writer.writeKey(key);
+                writer.writeObject(value);
+            &#125;
+            writer.endObject();
+            reader.endObject();
+            l++;
+            if(l%10000==0)&#123;
+                System.out.println(l);
+                writer.flush();
+                writer.close();
+                writer = new JSONWriter(new BufferedWriter(new FileWriter(&quot;D:\\ztest\\json\\json_copy.txt&quot;,true)));
+                //writer.flush();
+            &#125;
+        &#125;
+        reader.endArray();
+        //writer.endArray();
+        writer.flush();
+        writer.close();
+        reader.close();
+    &#125;
+
+    public void test(Object value)&#123;
+        if(value instanceof JSONObject)&#123;
+            Set&lt;Map.Entry&lt;String, Object&gt;&gt; entries1 = ((JSONObject) value).entrySet();
+            Iterator&lt;Map.Entry&lt;String, Object&gt;&gt; iterator = entries1.iterator();
+            while (iterator.hasNext()) &#123;
+                Map.Entry&lt;String, Object&gt; next = iterator.next();
+                String key = next.getKey();
+                Object val = next.getValue();
+                if(val instanceof String)&#123;
+                    if(val.equals(&quot;我才是测试文本哦,用于测试此次验证。&quot;))&#123;
+                        ((JSONObject) value).put(key, &quot;0.0.0.0&quot;);
+                    &#125;else&#123;
+                        ((JSONObject) value).put(key, val);
+                    &#125;
+                &#125;else&#123;
+                    test(val);
+                &#125;
+            &#125;
+        &#125;else if (value instanceof JSONArray)&#123;
+            Iterator&lt;Object&gt; iterator = ((JSONArray) value).iterator();
+            while (iterator.hasNext()) &#123;
+                Object next = iterator.next();
+                test(next);
+            &#125;
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h2 id="gson"><a class="markdownIt-Anchor" href="#gson"></a> Gson</h2>
+<p>toJson() – Java object to JSON</p>
+<pre><code class="highlight plaintext">Gson gson = new Gson();
+
+// 1. Java object to JSON file
+gson.toJson(obj, new FileWriter(&quot;C:\\fileName.json&quot;));
+
+// 2. Java object to JSON string
+String json = gson.toJson(obj);</code></pre>
+<p>fromJson() – JSON to Java object</p>
+<pre><code class="highlight plaintext">Gson gson = new Gson();
+
+// 1. JSON file to Java object
+Object object = gson.fromJson(new FileReader(&quot;C:\\fileName.json&quot;), Object.class);
+
+// 2. JSON string to Java object
+String json = &quot;&#123;&#x27;name&#x27; : &#x27;mkyong&#x27;&#125;&quot;;Object object = gson.fromJson(json, Staff.class);</code></pre>
+<h3 id="maven"><a class="markdownIt-Anchor" href="#maven"></a> maven</h3>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+        &lt;groupId&gt;com.google.code.gson&lt;/groupId&gt;
+        &lt;artifactId&gt;gson&lt;/artifactId&gt;
+        &lt;version&gt;2.8.5&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h3 id="java对象到json"><a class="markdownIt-Anchor" href="#java对象到json"></a> Java对象到JSON</h3>
+<p>pojo类 Staff.java</p>
+<pre><code class="highlight plaintext">package com.mkyong;
+
+import java.math.BigDecimal;import java.util.Arrays;import java.util.List;import java.util.Map;
+
+public class Staff &#123;
+
+    private String name;
+    private int age;
+    private String[] position;              // array
+    private List&lt;String&gt; skills;            // list
+    private Map&lt;String, BigDecimal&gt; salary; // map
+
+    //getters and setters&#125;</code></pre>
+<pre><code class="highlight plaintext">import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class GsonExample1 &#123;
+
+    public static void main(String[] args) &#123;
+
+        // pretty print
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        Staff staff = createStaffObject();
+
+        // Java objects to String
+        String json = gson.toJson(staff);
+
+        //System.out.println(json);
+
+        // Java objects to File
+        try (FileWriter writer = new FileWriter(&quot;c:\\test\\staff.json&quot;)) &#123;
+            gson.toJson(staff, writer);
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+
+    &#125;
+
+    private static Staff createStaffObject() &#123;
+
+        Staff staff = new Staff();
+
+        staff.setName(&quot;mkyong&quot;);
+        staff.setAge(35);
+        staff.setPosition(new String[]&#123;&quot;Founder&quot;, &quot;CTO&quot;, &quot;Writer&quot;&#125;);
+        Map&lt;String, BigDecimal&gt; salary = new HashMap() &#123;&#123;
+            put(&quot;2010&quot;, new BigDecimal(10000));
+            put(&quot;2012&quot;, new BigDecimal(12000));
+            put(&quot;2018&quot;, new BigDecimal(14000));
+        &#125;&#125;;
+        staff.setSalary(salary);
+        staff.setSkills(Arrays.asList(&quot;java&quot;, &quot;python&quot;, &quot;node&quot;, &quot;kotlin&quot;));
+        return staff;
+    &#125;
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">&#123;
+  &quot;name&quot;: &quot;mkyong&quot;,
+  &quot;age&quot;: 35,
+  &quot;position&quot;: [
+    &quot;Founder&quot;,
+    &quot;CTO&quot;,
+    &quot;Writer&quot;
+  ],
+  &quot;skills&quot;: [
+    &quot;java&quot;,
+    &quot;python&quot;,
+    &quot;node&quot;,
+    &quot;kotlin&quot;
+  ],
+  &quot;salary&quot;: &#123;
+    &quot;2018&quot;: 14000,
+    &quot;2012&quot;: 12000,
+    &quot;2010&quot;: 10000
+  &#125;&#125;</code></pre>
+<h3 id="json到java对象"><a class="markdownIt-Anchor" href="#json到java对象"></a> JSON到Java对象</h3>
+<pre><code class="highlight plaintext">import java.io.FileReader;
+import java.io.IOException;import java.io.Reader;
+
+public class GsonExample2 &#123;
+    public static void main(String[] args) &#123;
+        Gson gson = new Gson();
+        try (Reader reader = new FileReader(&quot;c:\\test\\staff.json&quot;)) &#123;
+            // Convert JSON File to Java Object
+            Staff staff = gson.fromJson(reader, Staff.class);
+                        // print staff
+            System.out.println(staff);
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h3 id="格式化打印json"><a class="markdownIt-Anchor" href="#格式化打印json"></a> 格式化打印JSON</h3>
+<p>普通方式打印JSON：</p>
+<pre><code class="highlight plaintext">import com.google.gson.Gson;
+
+public class GsonExample3 &#123;
+    public static void main(String[] args) &#123;
+        // compact print
+        Gson gson = new Gson();
+        String[] lang = &#123;&quot;Java&quot;, &quot;Node&quot;, &quot;Kotlin&quot;, &quot;JavaScript&quot;&#125;;
+        String json = gson.toJson(lang);
+        System.out.println(json);
+    &#125;
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">[&quot;Java&quot;,&quot;Node&quot;,&quot;Kotlin&quot;,&quot;JavaScript&quot;]</code></pre>
+<p><strong>格式化打印JSON</strong>：</p>
+<pre><code class="highlight plaintext">import com.google.gson.Gson;import com.google.gson.GsonBuilder;
+
+public class GsonExample4 &#123;
+
+    public static void main(String[] args) &#123;
+
+        // pretty print
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        String[] lang = &#123;&quot;Java&quot;, &quot;Node&quot;, &quot;Kotlin&quot;, &quot;JavaScript&quot;&#125;;
+        String json = gson.toJson(lang);
+
+        System.out.println(json);
+
+    &#125;
+
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">[
+  &quot;Java&quot;,
+  &quot;Node&quot;,
+  &quot;Kotlin&quot;,
+  &quot;JavaScript&quot;
+]</code></pre>
+<h4 id="流式读取"><a class="markdownIt-Anchor" href="#流式读取"></a> 流式读取</h4>
+<h5 id="jsonwriter"><a class="markdownIt-Anchor" href="#jsonwriter"></a> JsonWriter</h5>
+<pre><code class="highlight plaintext">import com.google.gson.stream.JsonWriter;
+import java.io.FileWriter;import java.io.IOException;
+
+public class GsonExample1 &#123;
+    public static void main(String[] args) &#123;
+        try (JsonWriter writer = new JsonWriter(new FileWriter(&quot;c:\\projects\\user.json&quot;))) &#123;
+            writer.beginObject();                   // &#123;
+            writer.name(&quot;name&quot;).value(&quot;mkyong&quot;);    // &quot;name&quot; : &quot;mkyong&quot;
+            writer.name(&quot;age&quot;).value(29);           // &quot;age&quot; : 29
+            writer.name(&quot;messages&quot;);                // &quot;messages&quot; :
+            writer.beginArray();                    // [
+            writer.value(&quot;msg 1&quot;);                  // &quot;msg 1&quot;
+            writer.value(&quot;msg 2&quot;);                  // &quot;msg 2&quot;
+            writer.value(&quot;msg 3&quot;);                  // &quot;msg 3&quot;
+            writer.endArray();                      // ]
+            writer.endObject();                     // &#125;
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>输出到：c:\projects\user.json</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:&quot;mkyong&quot;,&quot;age&quot;:29,&quot;messages&quot;:[&quot;msg 1&quot;,&quot;msg 2&quot;,&quot;msg 3&quot;]&#125;</code></pre>
+<h5 id="jsonreader"><a class="markdownIt-Anchor" href="#jsonreader"></a> JsonReader</h5>
+<pre><code class="highlight plaintext">import com.google.gson.stream.JsonReader;
+import java.io.FileNotFoundException;import java.io.FileReader;import java.io.IOException;
+
+public class GsonExample2 &#123;
+    public static void main(String[] args) &#123;
+        try (JsonReader reader = new JsonReader(new FileReader(&quot;c:\\projects\\user.json&quot;))) &#123;
+            reader.beginObject();
+            while (reader.hasNext()) &#123;
+                String name = reader.nextName();
+                if (name.equals(&quot;name&quot;)) &#123;
+                    System.out.println(reader.nextString());
+                &#125; else if (name.equals(&quot;age&quot;)) &#123;
+                    System.out.println(reader.nextInt());
+                &#125; else if (name.equals(&quot;messages&quot;)) &#123;
+                    // read array
+                    reader.beginArray();
+                    while (reader.hasNext()) &#123;
+                        System.out.println(reader.nextString());
+                    &#125;
+                    reader.endArray();
+                &#125; else &#123;
+                    reader.skipValue(); //avoid some unhandle events
+                &#125;
+            &#125;
+            reader.endObject();
+        &#125; catch (FileNotFoundException e) &#123;
+            e.printStackTrace();
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">mkyong
+29
+msg 1
+msg 2
+msg 3</code></pre>
+<h3 id="排除字段"><a class="markdownIt-Anchor" href="#排除字段"></a> 排除字段</h3>
+<h4 id="excludefieldswithmodifiers"><a class="markdownIt-Anchor" href="#excludefieldswithmodifiers"></a> excludeFieldsWithModifiers</h4>
+<p>在Gson中，有很多方法可以排除某些字段。</p>
+<p>默认情况下，transient和static字段将被排除。我们可以通过覆盖默认值excludeFieldsWithModifiers</p>
+<p>如果我们只想排除static字段</p>
+<pre><code class="highlight plaintext">import java.lang.reflect.Modifier;
+
+Gson gson = new GsonBuilder()
+                        .excludeFieldsWithModifiers(Modifier.STATIC)
+                        .create();</code></pre>
+<p>如果我们要排除transient和static字段</p>
+<pre><code class="highlight plaintext">Gson gson = new GsonBuilder()
+                        .excludeFieldsWithModifiers(Modifier.STATIC, Modifier.TRANSIENT)
+                        .create();</code></pre>
+<blockquote>
+<p>如果什么都不写，则默认都包括</p>
+</blockquote>
+<h4 id="expose"><a class="markdownIt-Anchor" href="#expose"></a> @Expose</h4>
+<p>@Expose定义哪些字段序列化和反序列化时要被排除</p>
+<p>要想使用该注解，需调用</p>
+<p>excludeFieldsWithoutExposeAnnotation()方法启用</p>
+<pre><code class="highlight plaintext">Gson gson = new GsonBuilder()
+                        .excludeFieldsWithoutExposeAnnotation()
+                        .create();</code></pre>
+<pre><code class="highlight plaintext">public class Staff &#123;
+
+    @Expose(serialize = true, deserialize = true)
+    private String name;
+    @Expose
+    private int age;
+    @Expose(serialize = false, deserialize = true)
+        
+    private String[] position;              
+    private List&lt;String&gt; skills;            
+    private Map&lt;String, BigDecimal&gt; salary;</code></pre>
+<p>如果将上述Java对象转换为JSON，则输出将如下所示</p>
+<pre><code class="highlight plaintext">&#123;
+  &quot;name&quot;: &quot;mkyong&quot;,
+  &quot;age&quot;: 35
+&#125;</code></pre>
+<h4 id="exclusionstrategies"><a class="markdownIt-Anchor" href="#exclusionstrategies"></a> ExclusionStrategies</h4>
+<p>通过ExclusionStrategies，批注，类型，字段名称等排除字段</p>
+<p>自定义注释 @ExcludeField</p>
+<pre><code class="highlight plaintext">import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target(&#123;ElementType.FIELD&#125;)
+public @interface ExcludeField &#123;
+&#125;</code></pre>
+<p>一个ExclusionStrategy界定哪些领域应该被排除或跳过</p>
+<pre><code class="highlight plaintext">import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+
+public class CustomExclusionStrategy implements ExclusionStrategy &#123;
+
+    private final Class&lt;?&gt; typeToSkip;
+
+    public CustomExclusionStrategy(Class&lt;?&gt; typeToSkip) &#123;
+        this.typeToSkip = typeToSkip;
+    &#125;
+
+    @Override
+    public boolean shouldSkipField(FieldAttributes f) &#123;
+
+        // if field name &#x27;salary`, skip
+        if (&quot;salary&quot;.equals(f.getName())) &#123;
+            return true;
+        &#125;
+
+        // if found @ExcludeField, skip
+        if (f.getAnnotation(ExcludeField.class) != null) &#123;
+            return true;
+        &#125;
+
+        return false;
+    &#125;
+
+    @Override
+    public boolean shouldSkipClass(Class&lt;?&gt; clazz) &#123;
+        return (clazz == typeToSkip);
+    &#125;
+
+&#125;</code></pre>
+<p>定义到pojo对象中：</p>
+<pre><code class="highlight plaintext">public class Staff &#123;
+
+    private String name;
+    private int age;
+    @ExcludeField
+    private String[] position;
+    private List&lt;String&gt; skills;
+    private Map&lt;String, BigDecimal&gt; salary;</code></pre>
+<p>启用该模式：</p>
+<pre><code class="highlight plaintext">Gson gson = new GsonBuilder()
+                .setExclusionStrategies(new CustomExclusionStrategy(List.class)) // 排除所有list列
+                .create();</code></pre>
+<blockquote>
+<p>字段名称salary，@ExcludeField字段和List类型字段将被排除</p>
+</blockquote>
+<p>输出：</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:&quot;mkyong&quot;,&quot;age&quot;:35&#125;</code></pre>
+<h3 id="null支持"><a class="markdownIt-Anchor" href="#null支持"></a> null支持</h3>
+<p>null 对象字段将被忽略</p>
+<pre><code class="highlight plaintext">import com.google.gson.Gson;
+public class GsonExample5 &#123;
+    public static void main(String[] args) &#123;
+        Gson gson = new Gson();
+        Staff staff = createStaffObject();
+        String json = gson.toJson(staff);
+        System.out.println(json);
+    &#125;
+    private static Staff createStaffObject() &#123;
+        Staff staff = new Staff();
+        staff.setName(&quot;mkyong&quot;);
+        staff.setAge(35);
+  
+        return staff;
+    &#125;
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:&quot;mkyong&quot;,&quot;age&quot;:35&#125;</code></pre>
+<p><strong>显示空值</strong></p>
+<pre><code class="highlight plaintext">Gson gson = new GsonBuilder().serializeNulls().create();</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:&quot;mkyong&quot;,&quot;age&quot;:35,&quot;position&quot;:null,&quot;skills&quot;:null,&quot;salary&quot;:null&#125;</code></pre>
+<h3 id="json字段重命名"><a class="markdownIt-Anchor" href="#json字段重命名"></a> JSON字段重命名</h3>
+<p>默认</p>
+<pre><code class="highlight plaintext">public class Staff &#123;
+    private String name;</code></pre>
+<p>输出量</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:&quot;abc&quot;&#125;</code></pre>
+<p>自定义字段名称 @SerializedName</p>
+<pre><code class="highlight plaintext">public class Staff &#123;
+    @SerializedName(&quot;mkyong_name&quot;)
+    private String name;</code></pre>
+<p>输出量</p>
+<pre><code class="highlight plaintext">&#123;&quot;mkyong_name&quot;:&quot;abc&quot;&#125;</code></pre>
+<h3 id="版本支持"><a class="markdownIt-Anchor" href="#版本支持"></a> 版本支持</h3>
+<pre><code class="highlight plaintext">import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+public class Staff &#123;
+
+    @Since(1.0)
+    private String name;
+        
+    @Since(2.0)
+    private int age;
+        
+    @Since(3.0)
+    private String[] position;
+        
+    private List&lt;String&gt; skills;
+    private Map&lt;String, BigDecimal&gt; salary;</code></pre>
+<p>在此示例中，字段position（版本3）将被排除。</p>
+<pre><code class="highlight plaintext">Gson gson = new GsonBuilder()
+                .serializeNulls()
+                .setVersion(2.0) // version &lt;= 2.0 will be included.
+                .create();</code></pre>
+<p>输出量</p>
+<pre><code class="highlight plaintext">&#123;&quot;name&quot;:null,&quot;age&quot;:0,&quot;skills&quot;:null,&quot;salary&quot;:null&#125;</code></pre>
+<h3 id="json数组转为对象列表typetoken"><a class="markdownIt-Anchor" href="#json数组转为对象列表typetoken"></a> JSON数组转为对象列表TypeToken</h3>
+<pre><code class="highlight plaintext">import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
+public class GsonExample4 &#123;
+
+    public static void main(String[] args) &#123;
+
+        Gson gson = new Gson();
+        String json = &quot;[&#123;\&quot;name\&quot;:\&quot;mkyong\&quot;&#125;, &#123;\&quot;name\&quot;:\&quot;laplap\&quot;&#125;]&quot;;
+        List&lt;Staff&gt; list = gson.fromJson(json, new TypeToken&lt;List&lt;Staff&gt;&gt;() &#123;&#125;.getType());
+        list.forEach(x -&gt; System.out.println(x));
+
+    &#125;
+
+&#125;</code></pre>
+<p>输出：</p>
+<pre><code class="highlight plaintext">Staff&#123;name=&#x27;mkyong&#x27;, age=0, position=null, skills=null, salary=null&#125;
+Staff&#123;name=&#x27;laplap&#x27;, age=0, position=null, skills=null, salary=null&#125;</code></pre>
+<h3 id="json转map"><a class="markdownIt-Anchor" href="#json转map"></a> JSON转Map</h3>
+<pre><code class="highlight plaintext">
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.Map;
+
+public class GsonExample5 &#123;
+
+    public static void main(String[] args) &#123;
+
+        Gson gson = new Gson();
+
+        String json = &quot;&#123;\&quot;name\&quot;:\&quot;mkyong\&quot;, \&quot;age\&quot;:33&#125;&quot;;
+        Map&lt;String, Object&gt; map = gson.fromJson(json, new TypeToken&lt;Map&lt;String, Object&gt;&gt;() &#123;&#125;.getType());
+        map.forEach((x, y) -&gt; System.out.println(&quot;key : &quot; + x + &quot; , value : &quot; + y));
+
+    &#125;
+&#125;</code></pre>
+<h2 id="jackson"><a class="markdownIt-Anchor" href="#jackson"></a> Jackson</h2>
+<p>Java到Json</p>
+<pre><code class="highlight plaintext">ObjectMapper mapper = new ObjectMapper();
+
+// Java object to JSON file
+mapper.writeValue(new File(&quot;c:\\test\\staff.json&quot;), new Staff());
+
+// Java object to JSON string, default compact-print
+String jsonString = mapper.writeValueAsString(new Staff());
+
+// pretty-print
+String jsonString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(new Staff());
+</code></pre>
+<p>Json到Java</p>
+<pre><code class="highlight plaintext">ObjectMapper mapper = new ObjectMapper();
+
+//JSON file to Java object
+Staff obj = mapper.readValue(new File(&quot;c:\\test\\staff.json&quot;), Staff.class);
+
+//JSON URL to Java object
+Staff obj = mapper.readValue(new URL(&quot;http://some-domains/api/staff.json&quot;), Staff.class);
+
+//JSON string to Java Object
+Staff obj = mapper.readValue(&quot;&#123;&#x27;name&#x27; : &#x27;mkyong&#x27;&#125;&quot;, Staff.class);</code></pre>
+<h3 id="maven-2"><a class="markdownIt-Anchor" href="#maven-2"></a> maven</h3>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+        &lt;groupId&gt;com.fasterxml.jackson.core&lt;/groupId&gt;
+        &lt;artifactId&gt;jackson-databind&lt;/artifactId&gt;
+        &lt;version&gt;2.9.8&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<p>pojo类</p>
+<pre><code class="highlight plaintext">public class Staff &#123;
+
+    private String name;
+    private int age;
+    private String[] position;              //  Array
+    private List&lt;String&gt; skills;            //  List
+    private Map&lt;String, BigDecimal&gt; salary; //  Map
+
+        // getters , setters, some boring stuff
+&#125;</code></pre>
+<h3 id="java对象到json-2"><a class="markdownIt-Anchor" href="#java对象到json-2"></a> Java对象到Json</h3>
+<pre><code class="highlight plaintext">import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
+public class JacksonExample1 &#123;
+
+    public static void main(String[] args) &#123;
+
+        ObjectMapper mapper = new ObjectMapper();
+
+        Staff staff = createStaff();
+
+        try &#123;
+            // Java objects to JSON file
+            mapper.writeValue(new File(&quot;c:\\test\\staff.json&quot;), staff);
+            // Java objects to JSON string - compact-print
+            String jsonString = mapper.writeValueAsString(staff);
+            System.out.println(jsonString);
+            // Java objects to JSON string - pretty-print
+            String jsonInString2 = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(staff);
+            System.out.println(jsonInString2);
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+
+    private static Staff createStaff() &#123;
+        Staff staff = new Staff();
+        staff.setName(&quot;mkyong&quot;);
+        staff.setAge(38);
+        staff.setPosition(new String[]&#123;&quot;Founder&quot;, &quot;CTO&quot;, &quot;Writer&quot;&#125;);
+        Map&lt;String, BigDecimal&gt; salary = new HashMap() &#123;&#123;
+            put(&quot;2010&quot;, new BigDecimal(10000));
+            put(&quot;2012&quot;, new BigDecimal(12000));
+            put(&quot;2018&quot;, new BigDecimal(14000));
+        &#125;&#125;;
+        staff.setSalary(salary);
+        staff.setSkills(Arrays.asList(&quot;java&quot;, &quot;python&quot;, &quot;node&quot;, &quot;kotlin&quot;));
+
+        return staff;
+
+    &#125;
+
+&#125;</code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

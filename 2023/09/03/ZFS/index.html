@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    ZFS 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">ZFS</div>
+  <div class="post-meta">
+    <div class="date">2023 九月 3日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Linux</div>
+      
+      <div class="tag-item">ZFS</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="zfs"><a class="markdownIt-Anchor" href="#zfs"></a> zfs</h1>
+<p>ZFS（Zettabyte File System）是一种高级的文件系统和卷管理器，最初由Sun Microsystems开发。它具有许多先进的功能，旨在提供高性能、数据完整性、可扩展性和先进的存储管理功能。ZFS最初是为Solaris操作系统设计的，但现在也可在其他操作系统上使用，包括各种Linux发行版和FreeBSD。</p>
+<p>以下是ZFS的一些关键特点和功能：</p>
+<ol>
+<li><strong>数据完整性</strong>： ZFS以数据完整性为中心，可以检测和修复存储介质上的数据损坏。它使用称为校验和的技术来验证数据的完整性，并可以自动修复损坏的数据，以确保数据的一致性和可靠性。</li>
+<li><strong>快照</strong>： ZFS支持快照，允许您在不影响当前数据的情况下捕获文件系统的快照。这对于备份、版本控制和数据还原非常有用。</li>
+<li><strong>克隆</strong>： 您可以使用ZFS克隆功能创建文件系统的副本，这些副本与原始文件系统共享相同的数据块。这对于测试和开发环境非常有用。</li>
+<li><strong>自动扩展</strong>： ZFS可以动态增加存储池的大小，而无需离线或重新分区。这使得存储管理更加灵活。</li>
+<li><strong>数据压缩</strong>： ZFS支持数据压缩，可以减少存储空间的使用，并提高读取和写入性能。</li>
+<li><strong>快速快照和克隆</strong>： ZFS的快照和克隆操作非常快速，因为它们不涉及实际数据复制。</li>
+<li><strong>RAID-Z</strong>： 类似于RAID，ZFS提供了一种称为RAID-Z的数据保护机制，可以在硬件RAID的情况下提供更高的可靠性和性能。</li>
+<li><strong>灵活的存储池</strong>： ZFS允许您创建存储池，将多个磁盘组合在一起，以提供容错性和性能。总之，ZFS是一个强大的文件系统和存储管理系统，具有出色的数据完整性、快照、克隆和自动扩展等功能。它在大规模数据存储、虚拟化环境和高性能计算等领域广泛使用。许多操作系统和存储设备都支持ZFS，因此它在各种平台上都有广泛的应用。</li>
+</ol>
+<h2 id="zfs使用"><a class="markdownIt-Anchor" href="#zfs使用"></a> zfs使用</h2>
+<blockquote>
+<p>注意：在使用ZFS时，请小心谨慎，特别是在生产环境中。不正确的操作可能导致数据丢失。请根据您的需求和环境，调整这些命令。</p>
+</blockquote>
+<ol>
+<li>创建ZFS存储池：</li>
+</ol>
+<p>首先，让我们创建一个名为&quot;myzpool&quot;的ZFS存储池，并使用两个硬盘作为存储设备。</p>
+<pre><code class="highlight shell">sudo zpool create myzpool /dev/sdb /dev/sdc</code></pre>
+<ol start="2">
+<li>创建ZFS文件系统：</li>
+</ol>
+<p>在存储池上创建一个ZFS文件系统，命名为&quot;myfilesystem&quot;。</p>
+<pre><code class="highlight sh"><span class="built_in">sudo</span> zfs create myzpool/myfilesystem</code></pre>
+<ol start="3">
+<li>设置数据压缩：</li>
+</ol>
+<p>启用数据压缩以节省存储空间。</p>
+<pre><code class="highlight sh"><span class="built_in">sudo</span> zfs <span class="built_in">set</span> compression=on myzpool/myfilesystem</code></pre>
+<ol start="4">
+<li>创建快照：</li>
+</ol>
+<p>创建一个名为&quot;snapshot1&quot;的ZFS快照。</p>
+<pre><code class="highlight sh"><span class="built_in">sudo</span> zfs snapshot myzpool/myfilesystem@snapshot1
+
+<span class="comment">#回滚到快照</span>
+<span class="built_in">sudo</span> zfs rollback myzpool/myfilesystem@snapshot1</code></pre>
+<ol start="5">
+<li>查看快照列表：</li>
+</ol>
+<p>查看所有快照的列表。</p>
+<pre><code class="highlight plaintext">sudo zfs list -t snapshot</code></pre>
+<ol start="6">
+<li>创建克隆：</li>
+</ol>
+<p>创建一个名为&quot;clone1&quot;的克隆，基于&quot;snapshot1&quot;。</p>
+<pre><code class="highlight plaintext">sudo zfs clone myzpool/myfilesystem@snapshot1 myzpool/clone1</code></pre>
+<ol start="7">
+<li>扩展存储池：</li>
+</ol>
+<p>添加一个新的硬盘来扩展存储池。</p>
+<pre><code class="highlight plaintext">sudo zpool add myzpool /dev/sdd</code></pre>
+<ol start="8">
+<li>显示存储池信息：</li>
+</ol>
+<p>查看存储池的信息，包括使用量、可用空间等。</p>
+<pre><code class="highlight plaintext">sudo zpool status myzpool</code></pre>
+<ol start="9">
+<li>卸载存储池：</li>
+</ol>
+<p>在不再需要存储池时，可以卸载它。</p>
+<pre><code class="highlight plaintext">sudo zpool destroy myzpool</code></pre>
+<h2 id="共享挂载"><a class="markdownIt-Anchor" href="#共享挂载"></a> 共享挂载</h2>
+<p>要将ZFS文件系统目录挂载到另一台机器上，通常使用<strong>NFS</strong>（Network File System）来实现网络共享。您可以将ZFS文件系统目录导出为NFS共享，并在远程机器上挂载该共享。以下是一些简单的步骤来实现这一目标：</p>
+<h3 id="服务端"><a class="markdownIt-Anchor" href="#服务端"></a> 服务端</h3>
+<ol>
+<li>安装和配置NFS服务器：</li>
+</ol>
+<p>如果尚未安装NFS服务器，您需要在ZFS服务器上安装并配置它。具体安装方法取决于您使用的操作系统。例如，在Ubuntu上，您可以使用以下命令安装NFS服务器：</p>
+<pre><code class="highlight plaintext">sudo apt-get install nfs-kernel-server</code></pre>
+<ol start="2">
+<li>创建ZFS文件系统：</li>
+</ol>
+<p>如果还没有创建ZFS文件系统，可以使用以下命令创建它：</p>
+<pre><code class="highlight plaintext">sudo zfs create myzpool/myfilesystem</code></pre>
+<ol start="3">
+<li>配置NFS共享：</li>
+</ol>
+<p>编辑NFS服务器的配置文件以指定共享。<strong>打开/etc/exports</strong>文件并添加要共享的目录，例如：</p>
+<ul>
+<li><code>/myzpool/myfilesystem</code> 是您要共享的ZFS文件系统目录的路径。</li>
+<li><code>*</code> 允许所有主机访问共享。</li>
+<li><code>rw</code> 允许读写访问。</li>
+<li><code>sync</code> 使用同步写入模式。</li>
+<li><code>no_root_squash</code> 允许远程root用户访问。</li>
+<li><code>no_subtree_check</code> 禁用子目录检查。</li>
+<li><code>all_squash</code>：将所有远程客户端的用户映射为匿名用户。这意味着无论哪个客户端连接，都将以匿名用户的身份进行访问，而不会考虑其实际用户身份。</li>
+<li><code>insecure</code>：允许不安全的访问，通常用于允许非特权端口的客户端连接。这可以在某些情况下提高兼容性，但可能会降低安全性。</li>
+<li><code>anonuid=0</code>：将匿名用户的UID设置为0，即root用户。这意味着远程客户端以root用户的身份访问共享。</li>
+<li><code>anongid=0</code>：将匿名用户的GID设置为0，即root用户的组。</li>
+</ul>
+<pre><code class="highlight plaintext">/myzpool/myfilesystem *(rw,sync,no_root_squash,no_subtree_check)</code></pre>
+<ol start="4">
+<li>重新加载NFS配置： 在编辑完/etc/exports文件后，重新加载NFS服务器配置以使更改生效：</li>
+</ol>
+<pre><code class="highlight plaintext">sudo exportfs -ra</code></pre>
+<ol start="5">
+<li>启动NFS服务： 启动NFS服务器服务：</li>
+</ol>
+<pre><code class="highlight plaintext">sudo systemctl start nfs-kernel-server # 对于基于systemd的系统</code></pre>
+<h3 id="远端机器"><a class="markdownIt-Anchor" href="#远端机器"></a> 远端机器</h3>
+<ol>
+<li>安装NFS客户端：</li>
+</ol>
+<p>如果尚未安装NFS客户端，您需要在远程机器上安装它。具体安装方法取决于您使用的操作系统。例如，在Ubuntu上，您可以使用以下命令安装NFS客户端：bash</p>
+<pre><code class="highlight plaintext">sudo apt-get install nfs-common</code></pre>
+<ol start="2">
+<li>创建本地挂载点：</li>
+</ol>
+<p>在远程机器上创建一个本地挂载点，用于将ZFS共享挂载到远程机器上。例如：</p>
+<pre><code class="highlight plaintext">sudo mkdir /mnt/zfs_share # 替换成您喜欢的本地挂载点路径</code></pre>
+<ol start="3">
+<li>挂载ZFS共享：</li>
+</ol>
+<p>使用mount命令将ZFS共享挂载到本地挂载点。例如：</p>
+<pre><code class="highlight plaintext">sudo mount -t nfs &lt;ZFS服务器IP或主机名&gt;:/myzpool/myfilesystem /mnt/zfs_share</code></pre>
+<blockquote>
+<p>请替换&lt;ZFS服务器IP或主机名&gt;、/myzpool/myfilesystem和/mnt/zfs_share为实际的值。</p>
+</blockquote>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

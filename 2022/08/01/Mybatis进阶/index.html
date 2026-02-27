@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Mybatis高级特性 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Mybatis高级特性</div>
+  <div class="post-meta">
+    <div class="date">2022 八月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">Mybatis</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><p>[toc]</p>
+<h1 id="mybatis源码"><a class="markdownIt-Anchor" href="#mybatis源码"></a> Mybatis源码</h1>
+<h2 id="mybatis工作原理和工作流程"><a class="markdownIt-Anchor" href="#mybatis工作原理和工作流程"></a> MyBatis工作原理和工作流程</h2>
+<h3 id="概述"><a class="markdownIt-Anchor" href="#概述"></a> 概述</h3>
+<p><strong>我们使用mybatis来执行sql语句，实际mybaits底层封装的还是JDBC相关代码</strong></p>
+<p><em>mybatis启动的时候不会创建connection连接而是在真正使用connection的时候才会创建</em></p>
+<ol>
+<li>将sql语句和数据库配置信息保存在配置文件，加载到流中</li>
+</ol>
+<ul>
+<li>Resources.getResourceAsStream()该方法用来加载工程根目录的配置文件</li>
+</ul>
+<pre><code class="highlight java"><span class="type">InputStream</span> <span class="variable">is</span> <span class="operator">=</span> Resources.getResourceAsStream(<span class="string">&quot;mybatis-config.xml&quot;</span>);</code></pre>
+<ol start="2">
+<li>然后使用<strong>SqlSessionFactoryBuilder</strong>对象使用build()方法构建<strong>SqlSessionFactory</strong>对象(实际是DefaultSqlSessionFactory对象)，build()方法会调用XMLConfigBuilder对象的parse()方法生成<strong>Configuration</strong>对象(该对象的<strong>Environment对象</strong>解析存储xml文件中的配置信息</li>
+</ol>
+<ul>
+<li><strong>build()方法就会将mybatis-config.xml配置文件中的相关信息加载到Configuration对象中，然后创建sqlsessionFacotry对象</strong></li>
+</ul>
+<pre><code class="highlight java"><span class="type">SqlSessionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SqlSessionFactoryBuilder</span>().build(is);</code></pre>
+<ol start="3">
+<li>SqlSessionFactory对象根据Environment对象中的datasource来创建<strong>connect连接（连接交给Excutor执行器）</strong>，生成<strong>Executor执行器</strong>和autoCommit(自动提交)用来创建<strong>SqlSession对象</strong>(实际是DefaultSqlSession对象)</li>
+</ol>
+<ul>
+<li><strong>sqlSession对象本身没有什么用处，只是暴露给开发人员的接口，主要执行语句的是Executor执行器对象</strong></li>
+</ul>
+<pre><code class="highlight java"><span class="type">SqlSession</span> <span class="variable">session</span> <span class="operator">=</span> factory.openSession();</code></pre>
+<ol start="4">
+<li>
+<p>在创建SqlSession对象提供属性<br />
+1） Configuration对象：存储mybatis-config.xml配置信息<br />
+2） Executor执行器对象：<br />
+创建Statement对象，在创建过程中<br />
+依靠MapperStatement对象将赋值内容与sql占位符<br />
+进行绑定<br />
+3） AutoCommit对象：是否自动提交</p>
+</li>
+<li>
+<p>SqlSession.commit(): 根据此时dirty属性决定提交和回滚</p>
+</li>
+<li>
+<p>SqlSession.close();</p>
+</li>
+</ol>
+<blockquote>
+<p>SqlSessionFacoty中的Configuration对象：该对象用来从配置文件中解析加载配置信息</p>
+</blockquote>
+<blockquote>
+<p>SqlSession中的Executor对象：该对象封装了JDBC中的PreparedStatement等相关执行sql语句</p>
+</blockquote>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.beans;
+
+<span class="keyword">import</span> org.apache.ibatis.io.Resources;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSession;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.io.InputStream;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestMain</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;
+        <span class="type">Dept</span> <span class="variable">dept</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Dept</span>();
+        dept.setDeptno(<span class="number">1</span>);
+        dept.setDname(<span class="string">&quot;金融事业部&quot;</span>);
+        dept.setLoc(<span class="string">&quot;北京&quot;</span>);
+        <span class="comment">//首先将mybaits-config.xml配置文件加载到数据流当中</span>
+        <span class="type">InputStream</span> <span class="variable">is</span> <span class="operator">=</span> Resources.getResourceAsStream(<span class="string">&quot;mybatis-config.xml&quot;</span>);
+        <span class="comment">//使用SqlSessionFactoryBuilder对象给Configuration对象赋值，然后构建SqlSessionFactory对象</span>
+        <span class="comment">//</span>
+        <span class="type">SqlSessionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SqlSessionFactoryBuilder</span>().build(is);
+        <span class="comment">//SqlSessionFactory对象生成生成Executor(执行器)对象，创建sqlSession对象</span>
+        <span class="type">SqlSession</span> <span class="variable">session</span> <span class="operator">=</span> factory.openSession();
+        session.insert(<span class="string">&quot;insertOne&quot;</span>,dept);
+        session.commit();
+        session.close();
+    &#125;
+&#125;
+</code></pre>
+<h3 id="详解"><a class="markdownIt-Anchor" href="#详解"></a> 详解</h3>
+<h4 id="sqlsessionfactory-与-sqlsession"><a class="markdownIt-Anchor" href="#sqlsessionfactory-与-sqlsession"></a> SqlSessionFactory 与 SqlSession</h4>
+<p>（1）首先，SqlSessionFactoryBuilder去读取mybatis的配置文件，然后build一个DefaultSqlSessionFactory。源码如下：</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 一系列的构造方法最终都会调用本方法（配置文件为Reader时会调用本方法，还有一个InputStream方法与此对应）</span>
+<span class="comment">   * <span class="doctag">@param</span> reader</span>
+<span class="comment">   * <span class="doctag">@param</span> environment</span>
+<span class="comment">   * <span class="doctag">@param</span> properties</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="keyword">public</span> SqlSessionFactory <span class="title function_">build</span><span class="params">(Reader reader, String environment, Properties properties)</span> &#123;
+    <span class="keyword">try</span> &#123;
+        <span class="comment">//该类的主要作用是对核心xml配置文件进行相关读取</span>
+      <span class="comment">//通过XMLConfigBuilder解析配置文件，解析的配置相关信息都会封装为一个Configuration对象</span>
+      <span class="type">XMLConfigBuilder</span> <span class="variable">parser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">XMLConfigBuilder</span>(reader, environment, properties);
+      <span class="comment">//这儿创建DefaultSessionFactory对象</span>
+      <span class="keyword">return</span> build(parser.parse());
+    &#125; <span class="keyword">catch</span> (Exception e) &#123;
+      <span class="keyword">throw</span> ExceptionFactory.wrapException(<span class="string">&quot;Error building SqlSession.&quot;</span>, e);
+    &#125; <span class="keyword">finally</span> &#123;
+      ErrorContext.instance().reset();
+      <span class="keyword">try</span> &#123;
+        reader.close();
+      &#125; <span class="keyword">catch</span> (IOException e) &#123;
+        <span class="comment">// Intentionally ignore. Prefer previous error.</span>
+      &#125;
+    &#125;
+  &#125;
+
+  <span class="keyword">public</span> SqlSessionFactory <span class="title function_">build</span><span class="params">(Configuration config)</span> &#123;
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultSqlSessionFactory</span>(config);
+  &#125;</code></pre>
+<p>我们可以进入XMLConfigBuilder类去查看配置文件相关的解析过程</p>
+<pre><code class="highlight java"><span class="keyword">public</span> Configuration <span class="title function_">parse</span><span class="params">()</span> &#123;
+       <span class="keyword">if</span> (<span class="built_in">this</span>.parsed) &#123;
+           <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BuilderException</span>(<span class="string">&quot;Each XMLConfigBuilder can only be used once.&quot;</span>);
+       &#125; <span class="keyword">else</span> &#123;
+           <span class="built_in">this</span>.parsed = <span class="literal">true</span>;
+           <span class="comment">//节点定位，定位配置文件根目录标签&lt;configuration&gt;</span>
+           <span class="comment">//然后依次读取相关标签</span>
+           <span class="built_in">this</span>.parseConfiguration(<span class="built_in">this</span>.parser.evalNode(<span class="string">&quot;/configuration&quot;</span>));
+           <span class="keyword">return</span> <span class="built_in">this</span>.configuration;
+       &#125;
+   &#125;
+   <span class="comment">//读取其他相关子标签，依次将下列子标签读取到管理对象中</span>
+   <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">parseConfiguration</span><span class="params">(XNode root)</span> &#123;
+       <span class="keyword">try</span> &#123;
+           <span class="comment">//属性标签</span>
+           <span class="built_in">this</span>.propertiesElement(root.evalNode(<span class="string">&quot;properties&quot;</span>));
+           <span class="comment">//设置标签</span>
+           <span class="type">Properties</span> <span class="variable">settings</span> <span class="operator">=</span> <span class="built_in">this</span>.settingsAsProperties(root.evalNode(<span class="string">&quot;settings&quot;</span>));
+           <span class="built_in">this</span>.loadCustomVfs(settings);
+           <span class="comment">//别名标签</span>
+           <span class="built_in">this</span>.typeAliasesElement(root.evalNode(<span class="string">&quot;typeAliases&quot;</span>));
+           <span class="comment">//拦截器标签</span>
+           <span class="built_in">this</span>.pluginElement(root.evalNode(<span class="string">&quot;plugins&quot;</span>));
+           <span class="comment">//对象工厂标签</span>
+           <span class="built_in">this</span>.objectFactoryElement(root.evalNode(<span class="string">&quot;objectFactory&quot;</span>));
+           <span class="comment">//对象封装标签</span>
+           <span class="built_in">this</span>.objectWrapperFactoryElement(root.evalNode(<span class="string">&quot;objectWrapperFactory&quot;</span>));
+           <span class="comment">//反射标签</span>
+           <span class="built_in">this</span>.reflectorFactoryElement(root.evalNode(<span class="string">&quot;reflectorFactory&quot;</span>));
+           <span class="built_in">this</span>.settingsElement(settings);
+           <span class="comment">//环境标签</span>
+           <span class="built_in">this</span>.environmentsElement(root.evalNode(<span class="string">&quot;environments&quot;</span>));
+           <span class="comment">//数据源标签</span>
+           <span class="built_in">this</span>.databaseIdProviderElement(root.evalNode(<span class="string">&quot;databaseIdProvider&quot;</span>));
+           <span class="comment">//类型转换标签</span>
+           <span class="built_in">this</span>.typeHandlerElement(root.evalNode(<span class="string">&quot;typeHandlers&quot;</span>));
+           <span class="comment">//mapper标签</span>
+           <span class="built_in">this</span>.mapperElement(root.evalNode(<span class="string">&quot;mappers&quot;</span>));
+       &#125; <span class="keyword">catch</span> (Exception var3) &#123;
+           <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BuilderException</span>(<span class="string">&quot;Error parsing SQL Mapper Configuration. Cause: &quot;</span> + var3, var3);
+       &#125;
+   &#125;</code></pre>
+<blockquote>
+<p>mapper内部的解析过程这里不再概述，详见源代码</p>
+</blockquote>
+<p>（2）当我们获取到SqlSessionFactory之后，就可以通过SqlSessionFactory去获取SqlSession对象</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 通常一系列openSession方法最终都会调用本方法</span>
+<span class="comment">   * <span class="doctag">@param</span> execType </span>
+<span class="comment">   * <span class="doctag">@param</span> level</span>
+<span class="comment">   * <span class="doctag">@param</span> autoCommit</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="keyword">private</span> SqlSession <span class="title function_">openSessionFromDataSource</span><span class="params">(ExecutorType execType, TransactionIsolationLevel level, <span class="type">boolean</span> autoCommit)</span> &#123;
+    <span class="type">Transaction</span> <span class="variable">tx</span> <span class="operator">=</span> <span class="literal">null</span>;
+    <span class="keyword">try</span> &#123;
+      <span class="comment">//通过Confuguration对象去获取Mybatis相关配置信息, Environment对象包含了数据源和事务的配置</span>
+      <span class="keyword">final</span> <span class="type">Environment</span> <span class="variable">environment</span> <span class="operator">=</span> configuration.getEnvironment();
+      <span class="keyword">final</span> <span class="type">TransactionFactory</span> <span class="variable">transactionFactory</span> <span class="operator">=</span> getTransactionFactoryFromEnvironment(environment);
+      tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      <span class="comment">//之前说了，从表面上来看，咱们是用sqlSession在执行sql语句， 实际呢，其实是通过excutor执行， excutor是对于Statement的封装</span>
+      <span class="keyword">final</span> <span class="type">Executor</span> <span class="variable">executor</span> <span class="operator">=</span> configuration.newExecutor(tx, execType);
+      <span class="comment">//关键看这儿，创建了一个DefaultSqlSession对象</span>
+      <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultSqlSession</span>(configuration, executor, autoCommit);
+    &#125; <span class="keyword">catch</span> (Exception e) &#123;
+      closeTransaction(tx); <span class="comment">// may have fetched a connection so lets call close()</span>
+      <span class="keyword">throw</span> ExceptionFactory.wrapException(<span class="string">&quot;Error opening session.  Cause: &quot;</span> + e, e);
+    &#125; <span class="keyword">finally</span> &#123;
+      ErrorContext.instance().reset();
+    &#125;
+  &#125;</code></pre>
+<p>（3）通过上述步骤，我们就可以用sqlSession进行增删该查了</p>
+<h4 id="mapperproxy"><a class="markdownIt-Anchor" href="#mapperproxy"></a> MapperProxy</h4>
+<p>在mybatis中，通过MapperProxy动态代理咱们的dao， 也就是说， 当咱们执行自己写的dao里面的方法的时候，其实是对应的mapperProxy在代理。那么，咱们就看看怎么获取MapperProxy对象吧：</p>
+<p>（1）通过SqlSession从Configuration中获取。源码如下：</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 什么都不做，直接去configuration中找， 哥就是这么任性</span>
+<span class="comment">   */</span>
+  <span class="meta">@Override</span>
+  <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getMapper</span><span class="params">(Class&lt;T&gt; type)</span> &#123;
+    <span class="keyword">return</span> configuration.&lt;T&gt;getMapper(type, <span class="built_in">this</span>);
+  &#125;</code></pre>
+<p>（2）SqlSession把包袱甩给了Configuration, 接下来就看看Configuration。源码如下：</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 烫手的山芋，俺不要，你找mapperRegistry去要</span>
+<span class="comment">   * <span class="doctag">@param</span> type</span>
+<span class="comment">   * <span class="doctag">@param</span> sqlSession</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> &#123;
+    <span class="keyword">return</span> mapperRegistry.getMapper(type, sqlSession);
+  &#125;</code></pre>
+<p>（3）Configuration不要这烫手的山芋，接着甩给了MapperRegistry， 那咱看看MapperRegistry。 源码如下：</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 烂活净让我来做了，没法了，下面没人了，我不做谁来做</span>
+<span class="comment">   * <span class="doctag">@param</span> type</span>
+<span class="comment">   * <span class="doctag">@param</span> sqlSession</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span>
+  <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">getMapper</span><span class="params">(Class&lt;T&gt; type, SqlSession sqlSession)</span> &#123;
+    <span class="comment">//能偷懒的就偷懒，俺把粗活交给MapperProxyFactory去做</span>
+    <span class="keyword">final</span> MapperProxyFactory&lt;T&gt; mapperProxyFactory = (MapperProxyFactory&lt;T&gt;) knownMappers.get(type);
+    <span class="keyword">if</span> (mapperProxyFactory == <span class="literal">null</span>) &#123;
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BindingException</span>(<span class="string">&quot;Type &quot;</span> + type + <span class="string">&quot; is not known to the MapperRegistry.&quot;</span>);
+    &#125;
+    <span class="keyword">try</span> &#123;
+      <span class="comment">//关键在这儿</span>
+      <span class="keyword">return</span> mapperProxyFactory.newInstance(sqlSession);
+    &#125; <span class="keyword">catch</span> (Exception e) &#123;
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BindingException</span>(<span class="string">&quot;Error getting mapper instance. Cause: &quot;</span> + e, e);
+    &#125;
+  &#125;</code></pre>
+<p>(4)MapperProxyFactory是个苦B的人，粗活最终交给它去做了。咱们看看源码：</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 别人虐我千百遍，我待别人如初恋</span>
+<span class="comment">   * <span class="doctag">@param</span> mapperProxy</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span>
+  <span class="keyword">protected</span> T <span class="title function_">newInstance</span><span class="params">(MapperProxy&lt;T&gt; mapperProxy)</span> &#123;
+    <span class="comment">//动态代理我们写的dao接口</span>
+    <span class="keyword">return</span> (T) Proxy.newProxyInstance(mapperInterface.getClassLoader(), <span class="keyword">new</span> <span class="title class_">Class</span>[] &#123; mapperInterface &#125;, mapperProxy);
+  &#125;
+  
+  <span class="keyword">public</span> T <span class="title function_">newInstance</span><span class="params">(SqlSession sqlSession)</span> &#123;
+    <span class="keyword">final</span> MapperProxy&lt;T&gt; mapperProxy = <span class="keyword">new</span> <span class="title class_">MapperProxy</span>&lt;T&gt;(sqlSession, mapperInterface, methodCache);
+    <span class="keyword">return</span> newInstance(mapperProxy);
+  &#125;</code></pre>
+<p>通过以上的动态代理，咱们就可以方便地使用dao接口啦， 就像之前咱们写的demo那样：</p>
+<pre><code class="highlight java">
+<span class="type">UserDao</span> <span class="variable">userMapper</span> <span class="operator">=</span> sqlSession.getMapper(UserDao.class);  
+<span class="type">User</span> <span class="variable">insertUser</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>();</code></pre>
+<h4 id="excutor"><a class="markdownIt-Anchor" href="#excutor"></a> Excutor</h4>
+<p>接下来，咱们才要真正去看sql的执行过程了。上面，咱们拿到了MapperProxy, 每个MapperProxy对应一个dao接口， 那么咱们在使用的时候，MapperProxy是怎么做的呢？ 源码奉上：MapperProxy:</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * MapperProxy在执行时会触发此方法</span>
+<span class="comment">   */</span>
+  <span class="meta">@Override</span>
+  <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;
+    <span class="keyword">if</span> (Object.class.equals(method.getDeclaringClass())) &#123;
+      <span class="keyword">try</span> &#123;
+        <span class="keyword">return</span> method.invoke(<span class="built_in">this</span>, args);
+      &#125; <span class="keyword">catch</span> (Throwable t) &#123;
+        <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(t);
+      &#125;
+    &#125;
+    <span class="keyword">final</span> <span class="type">MapperMethod</span> <span class="variable">mapperMethod</span> <span class="operator">=</span> cachedMapperMethod(method);
+    <span class="comment">//二话不说，主要交给MapperMethod自己去管</span>
+    <span class="keyword">return</span> mapperMethod.execute(sqlSession, args);
+  &#125;</code></pre>
+<p>MapperMethod:</p>
+<pre><code class="highlight java"><span class="comment">/**</span>
+<span class="comment">   * 看着代码不少，不过其实就是先判断CRUD类型，然后根据类型去选择到底执行sqlSession中的哪个方法，绕了一圈，又转回sqlSession了</span>
+<span class="comment">   * <span class="doctag">@param</span> sqlSession</span>
+<span class="comment">   * <span class="doctag">@param</span> args</span>
+<span class="comment">   * <span class="doctag">@return</span></span>
+<span class="comment">   */</span>
+  <span class="keyword">public</span> Object <span class="title function_">execute</span><span class="params">(SqlSession sqlSession, Object[] args)</span> &#123;
+    Object result;
+    <span class="keyword">if</span> (SqlCommandType.INSERT == command.getType()) &#123;
+      <span class="type">Object</span> <span class="variable">param</span> <span class="operator">=</span> method.convertArgsToSqlCommandParam(args);
+      result = rowCountResult(sqlSession.insert(command.getName(), param));
+    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SqlCommandType.UPDATE == command.getType()) &#123;
+      <span class="type">Object</span> <span class="variable">param</span> <span class="operator">=</span> method.convertArgsToSqlCommandParam(args);
+      result = rowCountResult(sqlSession.update(command.getName(), param));
+    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SqlCommandType.DELETE == command.getType()) &#123;
+      <span class="type">Object</span> <span class="variable">param</span> <span class="operator">=</span> method.convertArgsToSqlCommandParam(args);
+      result = rowCountResult(sqlSession.delete(command.getName(), param));
+    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SqlCommandType.SELECT == command.getType()) &#123;
+      <span class="keyword">if</span> (method.returnsVoid() &amp;&amp; method.hasResultHandler()) &#123;
+        executeWithResultHandler(sqlSession, args);
+        result = <span class="literal">null</span>;
+      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.returnsMany()) &#123;
+        result = executeForMany(sqlSession, args);
+      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (method.returnsMap()) &#123;
+        result = executeForMap(sqlSession, args);
+      &#125; <span class="keyword">else</span> &#123;
+        <span class="type">Object</span> <span class="variable">param</span> <span class="operator">=</span> method.convertArgsToSqlCommandParam(args);
+        result = sqlSession.selectOne(command.getName(), param);
+      &#125;
+    &#125; <span class="keyword">else</span> &#123;
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BindingException</span>(<span class="string">&quot;Unknown execution method for: &quot;</span> + command.getName());
+    &#125;
+    <span class="keyword">if</span> (result == <span class="literal">null</span> &amp;&amp; method.getReturnType().isPrimitive() &amp;&amp; !method.returnsVoid()) &#123;
+      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">BindingException</span>(<span class="string">&quot;Mapper method &#x27;&quot;</span> + command.getName() 
+          + <span class="string">&quot; attempted to return null from a method with a primitive return type (&quot;</span> + method.getReturnType() + <span class="string">&quot;).&quot;</span>);
+    &#125;
+    <span class="keyword">return</span> result;
+  &#125;</code></pre>
+<p>既然又回到SqlSession了， 那么咱们就看看SqlSession的CRUD方法了，为了省事，还是就选择其中的一个方法来做分析吧。这儿，咱们选择了selectList方法：</p>
+<pre><code class="highlight java"><span class="keyword">public</span> &lt;E&gt; List&lt;E&gt; <span class="title function_">selectList</span><span class="params">(String statement, Object parameter, RowBounds rowBounds)</span> &#123;
+    <span class="keyword">try</span> &#123;
+      <span class="type">MappedStatement</span> <span class="variable">ms</span> <span class="operator">=</span> configuration.getMappedStatement(statement);
+      <span class="comment">//CRUD实际上是交给Excetor去处理， excutor其实也只是穿了个马甲而已，小样，别以为穿个马甲我就不认识你嘞！</span>
+      <span class="keyword">return</span> executor.query(ms, wrapCollection(parameter), rowBounds, Executor.NO_RESULT_HANDLER);
+    &#125; <span class="keyword">catch</span> (Exception e) &#123;
+      <span class="keyword">throw</span> ExceptionFactory.wrapException(<span class="string">&quot;Error querying database.  Cause: &quot;</span> + e, e);
+    &#125; <span class="keyword">finally</span> &#123;
+      ErrorContext.instance().reset();
+    &#125;
+  &#125;</code></pre>
+<p>然后，通过一层一层的调用，最终会来到doQuery方法， 这儿咱们就随便找个Excutor看看doQuery方法的实现吧，我这儿选择了SimpleExecutor:</p>
+<pre><code class="highlight java"><span class="keyword">public</span> &lt;E&gt; List&lt;E&gt; <span class="title function_">doQuery</span><span class="params">(MappedStatement ms, Object parameter, RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql)</span> <span class="keyword">throws</span> SQLException &#123;
+    <span class="type">Statement</span> <span class="variable">stmt</span> <span class="operator">=</span> <span class="literal">null</span>;
+    <span class="keyword">try</span> &#123;
+      <span class="type">Configuration</span> <span class="variable">configuration</span> <span class="operator">=</span> ms.getConfiguration();
+      <span class="type">StatementHandler</span> <span class="variable">handler</span> <span class="operator">=</span> configuration.newStatementHandler(wrapper, ms, parameter, rowBounds, resultHandler, boundSql);
+      stmt = prepareStatement(handler, ms.getStatementLog());
+      <span class="comment">//StatementHandler封装了Statement, 让 StatementHandler 去处理</span>
+      <span class="keyword">return</span> handler.&lt;E&gt;query(stmt, resultHandler);
+    &#125; <span class="keyword">finally</span> &#123;
+      closeStatement(stmt);
+    &#125;
+  &#125;</code></pre>
+<p>接下来，咱们看看StatementHandler 的一个实现类 PreparedStatementHandler（这也是我们最常用的，封装的是PreparedStatement）, 看看它使怎么去处理的：</p>
+<pre><code class="highlight java"><span class="keyword">public</span> &lt;E&gt; List&lt;E&gt; <span class="title function_">query</span><span class="params">(Statement statement, ResultHandler resultHandler)</span> <span class="keyword">throws</span> SQLException &#123;
+     <span class="comment">//到此，原形毕露， PreparedStatement, 这个大家都已经滚瓜烂熟了吧</span>
+    <span class="type">PreparedStatement</span> <span class="variable">ps</span> <span class="operator">=</span> (PreparedStatement) statement;
+    ps.execute();
+    <span class="comment">//结果交给了ResultSetHandler 去处理</span>
+    <span class="keyword">return</span> resultSetHandler.&lt;E&gt; handleResultSets(ps);
+  &#125;</code></pre>
+<h2 id="result自动赋值实体类原理"><a class="markdownIt-Anchor" href="#result自动赋值实体类原理"></a> result自动赋值实体类原理</h2>
+<pre><code class="highlight java">ResultSet =query();
+         <span class="keyword">while</span>(ResultSet.next)&#123;
+            Employee emp=  employee.class.newInstance();
+            Field fieldArray[]=employee.class.getDeclaredFields();
+            <span class="keyword">for</span>(i=<span class="number">0</span>;i&lt;fieldArray.length;i++)&#123;
+                  <span class="type">Field</span> <span class="variable">fieldObj</span> <span class="operator">=</span> fieldArray[i];
+                  String fieldName= fieldObj.getName();
+                  String value=ResultSet.getString(fieldName);
+                  Class fieldType= fieldObj.getType();
+                  <span class="keyword">if</span>(Integer.class == fieldType)&#123;
+                   fieldObj.set(emp,Integer.valueOf(value));<span class="comment">//之前类型转换</span>
+                  &#125;<span class="keyword">else</span> <span class="keyword">if</span>(Boolean.class == fieldType)&#123;
+                  
+                     fieldObj.set(emp,Boolean.valueOf(value));
+                  &#125;
+                  
+                 column :d_name = dName
+                 
+                 Dept类： dName
+            &#125;
+         &#125;</code></pre>
+<h1 id="mybatis配置文件核心标签"><a class="markdownIt-Anchor" href="#mybatis配置文件核心标签"></a> MyBatis配置文件核心标签</h1>
+<h2 id="typehandlers自定义类型转换器"><a class="markdownIt-Anchor" href="#typehandlers自定义类型转换器"></a> typeHandlers（自定义类型转换器）</h2>
+<p>每当MyBatis 设置参数到PreparedStatement 或者从ResultSet 结果集中取得值时，就会使用TypeHandler 来处理数据库类型与java 类型之间转换。下表描述了默认TypeHandlers</p>
+<p>假设表中字段是int类型,而实体类与之对应的属性是boolean类型,此时可以采用自定义类型转换器进行对应</p>
+<p><strong>实体类</strong></p>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dept</span> &#123;
+    <span class="keyword">private</span>  <span class="type">int</span> deptno;
+    <span class="keyword">private</span> String dname;
+    <span class="keyword">private</span> String loc;
+    <span class="keyword">private</span> Boolean flag;
+    
+    ... ...
+    &#125;</code></pre>
+<p><strong>数据库表</strong></p>
+<h3 id="开发自定义类型转换器"><a class="markdownIt-Anchor" href="#开发自定义类型转换器"></a> 开发自定义类型转换器</h3>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.util;
+
+<span class="keyword">import</span> org.apache.ibatis.type.JdbcType;
+<span class="keyword">import</span> org.apache.ibatis.type.TypeHandler;
+
+<span class="keyword">import</span> java.sql.CallableStatement;
+<span class="keyword">import</span> java.sql.PreparedStatement;
+<span class="keyword">import</span> java.sql.ResultSet;
+<span class="keyword">import</span> java.sql.SQLException;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyTypeHandler</span> <span class="keyword">implements</span> <span class="title class_">TypeHandler</span> &#123;
+    <span class="comment">//在生成sql语句时被调用</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setParameter</span><span class="params">(PreparedStatement preparedStatement, <span class="type">int</span> i, Object o, JdbcType jdbcType)</span> <span class="keyword">throws</span> SQLException &#123;
+        <span class="keyword">if</span> (o==<span class="literal">null</span>)&#123;
+            preparedStatement.setInt(i,<span class="number">0</span>);
+            <span class="keyword">return</span>;
+        &#125;
+        <span class="type">Boolean</span> <span class="variable">flag</span> <span class="operator">=</span> (Boolean) o;
+        <span class="keyword">if</span> (flag == <span class="literal">true</span>)&#123;
+            preparedStatement.setInt(i,<span class="number">1</span>);
+        &#125;<span class="keyword">else</span> &#123;
+            preparedStatement.setInt(i,<span class="number">0</span>);
+        &#125;
+    &#125;
+    <span class="comment">//查询结束后，在将ResultSet数据行转换为实体类对象时，通知TypeHandler将当前数据行某个字段转换为何种类型</span>
+    <span class="keyword">public</span> Object <span class="title function_">getResult</span><span class="params">(ResultSet resultSet, String s)</span> <span class="keyword">throws</span> SQLException &#123;
+        <span class="type">int</span> <span class="variable">flag</span> <span class="operator">=</span> resultSet.getInt(s);
+        <span class="type">Boolean</span> <span class="variable">myFlag</span> <span class="operator">=</span> Boolean.FALSE;
+        <span class="keyword">if</span> (flag == <span class="number">1</span>)&#123;
+            myFlag=Boolean.TRUE;
+        &#125;
+        <span class="keyword">return</span> myFlag;
+    &#125;
+
+    <span class="keyword">public</span> Object <span class="title function_">getResult</span><span class="params">(ResultSet resultSet, <span class="type">int</span> i)</span> <span class="keyword">throws</span> SQLException &#123;
+        <span class="keyword">return</span> <span class="literal">null</span>;
+    &#125;
+
+    <span class="keyword">public</span> Object <span class="title function_">getResult</span><span class="params">(CallableStatement callableStatement, <span class="type">int</span> i)</span> <span class="keyword">throws</span> SQLException &#123;
+        <span class="keyword">return</span> <span class="literal">null</span>;
+    &#125;
+&#125;
+</code></pre>
+<h3 id="在mybatis配置文件中配置"><a class="markdownIt-Anchor" href="#在mybatis配置文件中配置"></a> 在mybatis配置文件中配置</h3>
+<p>mybatis配置文件</p>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">configuration</span></span>
+<span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span>
+<span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span>
+<span class="comment">&lt;!--mybatis配置文件核心根标签--&gt;</span>
+<span class="tag">&lt;<span class="name">configuration</span>&gt;</span>
+    <span class="comment">&lt;!--属性--&gt;</span>
+    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;config.properties&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置实体类的别名，配置这个后，在mapper.xml中的result中就不用写全名了--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;com.lee.entity&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置自定义Java实体类类型与数据库类型转换--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeHandlers</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">typeHandler</span> <span class="attr">handler</span>=<span class="string">&quot;com.lee.util.MyTypeHandler&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Boolean&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;NUMERIC&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeHandlers</span>&gt;</span>
+
+    <span class="comment">&lt;!--环境--&gt;</span>
+    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span>
+            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span>
+            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span>
+    <span class="comment">&lt;!--映射,定位当前项目中所有映射文件的位置--&gt;</span>
+    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span>
+        <span class="comment">&lt;!--两种方法二选一--&gt;</span>
+        <span class="comment">&lt;!--mapper中可以通过class,resource,url来定义一个具体的映射文件--&gt;</span>
+        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;mapper/DeptMapper.xml&quot;</span>/&gt;</span>
+        <span class="comment">&lt;!--可以指向具体的包路径,该路径的所有映射文件和接口将产生对应的连接关系--&gt;</span>
+<span class="comment">&lt;!--        &lt;package name=&quot;mapper&quot;/&gt;--&gt;</span>
+    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></code></pre>
+<p>datasource相关配置值</p>
+<pre><code class="highlight properties"><span class="attr">jdbc.driver</span>=<span class="string">com.mysql.jdbc.Driver</span>
+<span class="attr">jdbc.url</span>=<span class="string">jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8</span>
+<span class="attr">jdbc.username</span>=<span class="string">root</span>
+<span class="attr">jdbc.password</span>=<span class="string">123456</span></code></pre>
+<h3 id="mapperxml"><a class="markdownIt-Anchor" href="#mapperxml"></a> mapper.xml</h3>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span>
+<span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span>
+<span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span>
+<span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;DeptMapper&quot;</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;insertOne&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Dept&quot;</span>&gt;</span>
+    insert into dept values (#&#123;deptno&#125;,#&#123;dname&#125;,#&#123;loc&#125;,#&#123;flag&#125;)
+    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAll&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dept&quot;</span>&gt;</span>
+        select * from dept
+    <span class="tag">&lt;/<span class="name">select</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></code></pre>
+<h3 id="测试使用"><a class="markdownIt-Anchor" href="#测试使用"></a> 测试使用</h3>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.beans;
+
+<span class="keyword">import</span> com.lee.entity.Dept;
+<span class="keyword">import</span> org.apache.ibatis.io.Resources;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSession;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactory;
+<span class="keyword">import</span> org.apache.ibatis.session.SqlSessionFactoryBuilder;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.io.InputStream;
+<span class="keyword">import</span> java.util.List;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">TestMain</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;
+        <span class="type">Dept</span> <span class="variable">dept</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Dept</span>();
+        dept.setDeptno(<span class="number">1</span>);
+        dept.setDname(<span class="string">&quot;金融事业部&quot;</span>);
+        dept.setLoc(<span class="string">&quot;北京222&quot;</span>);
+        dept.setFlag(<span class="literal">true</span>);
+        <span class="type">InputStream</span> <span class="variable">is</span> <span class="operator">=</span> Resources.getResourceAsStream(<span class="string">&quot;mybatis-config.xml&quot;</span>);
+        <span class="type">SqlSessionFactory</span> <span class="variable">factory</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SqlSessionFactoryBuilder</span>().build(is);
+        <span class="type">SqlSession</span> <span class="variable">session</span> <span class="operator">=</span> factory.openSession();
+        session.insert(<span class="string">&quot;DeptMapper.insertOne&quot;</span>,dept);
+
+        List&lt;Dept&gt; list = session.selectList(<span class="string">&quot;selectAll&quot;</span>);
+        <span class="keyword">for</span> (Dept d : list)&#123;
+            System.out.println(d.getDeptno()+<span class="string">&quot;##&quot;</span>+d.getFlag()+<span class="string">&quot;##&quot;</span>+d.getDname());
+        &#125;
+        session.commit();
+        session.close();
+    &#125;
+&#125;
+</code></pre>
+<blockquote>
+<p><strong>经过上述转换，即可将数据库中的int类型和Java中的Boolean类型进行关联，实现自定义转换</strong></p>
+</blockquote>
+<h3 id="非全局配置"><a class="markdownIt-Anchor" href="#非全局配置"></a> 非全局配置</h3>
+<p>上述的自定义类型转换时全局的，如果不想全局使用，只想使某一个查询结果或者更新语句使用自定义类型转换，可以使用下述方法</p>
+<h4 id="在mapperxml文件中指定使用自定义类型转换器场合"><a class="markdownIt-Anchor" href="#在mapperxml文件中指定使用自定义类型转换器场合"></a> 在Mapper.xml文件中指定使用自定义类型转换器场合</h4>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;dept&quot;</span> <span class="attr">id</span>=<span class="string">&quot;DeptResultMap&quot;</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;flag&quot;</span> <span class="attr">property</span>=<span class="string">&quot;flag&quot;</span> <span class="attr">typeHandler</span>=<span class="string">&quot;com.lee.util.MyTypeHandler&quot;</span>/&gt;</span>
+<span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span>
+
+<span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectAll&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;DeptResultMap&quot;</span>&gt;</span>
+    select * from dept
+<span class="tag">&lt;/<span class="name">select</span>&gt;</span></code></pre>
+<h2 id="objectfactory创建对象工厂"><a class="markdownIt-Anchor" href="#objectfactory创建对象工厂"></a> objectFactory（创建对象工厂）</h2>
+<p>MyBatis每次创建结果对象的新实例时，他都会使用一个对象工厂（ObjectFactory）实例完成，默认的对象工厂需要做的是实例化目标类，要么通过默认构造方法，要么在参数映射存在的时候通过参数构造方法来实例化</p>
+<p><strong>如果我们想覆盖对象工厂的默认行为，则可以创建自己的对象工厂来实现</strong></p>
+<h3 id="自定义对象工厂"><a class="markdownIt-Anchor" href="#自定义对象工厂"></a> 自定义对象工厂</h3>
+<h4 id="继承defaultobjectfactory"><a class="markdownIt-Anchor" href="#继承defaultobjectfactory"></a> 继承DefaultObjectFactory</h4>
+<p><strong>注意</strong>：使用过程中要注意两点</p>
+<ol>
+<li>必须要判断我们要改变创建规则的类</li>
+<li>这里赋值后如果数据库查询到值会覆盖</li>
+</ol>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.util;
+
+<span class="keyword">import</span> com.lee.entity.Dept;
+<span class="keyword">import</span> org.apache.ibatis.reflection.factory.DefaultObjectFactory;
+
+<span class="comment">/**</span>
+<span class="comment"> * 自定义工厂对象</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MyObjectFactory</span> <span class="keyword">extends</span> <span class="title class_">DefaultObjectFactory</span> &#123;
+
+    <span class="comment">//重新定义Dept实例对象创建规则，其他类实例对象创建规则不改变</span>
+    <span class="keyword">public</span> &lt;T&gt; T <span class="title function_">create</span><span class="params">(Class&lt;T&gt; type)</span> &#123;
+        <span class="comment">//判断是否是我们要自己创建的dept类</span>
+        <span class="keyword">if</span> (type == Dept.class)&#123;
+            <span class="comment">//用父类提供的方法创建该类，实际就是用反射调用改类默认的构造器创建该方法</span>
+            <span class="type">Dept</span> <span class="variable">dept</span> <span class="operator">=</span> (Dept) <span class="built_in">super</span>.create(type);
+            <span class="comment">//设置自定义的规矩，让每一个部门的国家变为china</span>
+            dept.setCountry(<span class="string">&quot;China&quot;</span>);
+            <span class="comment">//注意，这里创建的dept是一个空对象，在这进行赋值后，如果后续在数据库中查到字段相关数据，则会覆盖这里的赋值</span>
+            <span class="comment">//否则则沿用这里的赋值</span>
+            <span class="keyword">return</span> (T) dept;
+        &#125;<span class="keyword">else</span>&#123;
+            <span class="keyword">return</span> <span class="built_in">super</span>.create(type);
+        &#125;
+
+    &#125;
+&#125;
+</code></pre>
+<h4 id="配置文件"><a class="markdownIt-Anchor" href="#配置文件"></a> 配置文件</h4>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">configuration</span></span>
+<span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span>
+<span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span>
+<span class="comment">&lt;!--mybatis配置文件核心根标签--&gt;</span>
+<span class="tag">&lt;<span class="name">configuration</span>&gt;</span>
+    <span class="comment">&lt;!--属性--&gt;</span>
+    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;config.properties&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置实体类的别名，配置这个后，在mapper.xml中的result中就不用写全名了--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;com.lee.entity&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置自定义Java实体类类型与数据库类型转换--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeHandlers</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">typeHandler</span> <span class="attr">handler</span>=<span class="string">&quot;com.lee.util.MyTypeHandler&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Boolean&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;NUMERIC&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeHandlers</span>&gt;</span>
+    <span class="comment">&lt;!--配置自定义对象工厂--&gt;</span>
+    <span class="tag">&lt;<span class="name">objectFactory</span> <span class="attr">type</span>=<span class="string">&quot;com.lee.util.MyObjectFactory&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">objectFactory</span>&gt;</span>
+    <span class="comment">&lt;!--环境--&gt;</span>
+    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span>
+            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span>
+            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span>
+    <span class="comment">&lt;!--映射,定位当前项目中所有映射文件的位置--&gt;</span>
+    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span>
+        <span class="comment">&lt;!--两种方法二选一--&gt;</span>
+        <span class="comment">&lt;!--mapper中可以通过class,resource,url来定义一个具体的映射文件--&gt;</span>
+        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;mapper/DeptMapper.xml&quot;</span>/&gt;</span>
+        <span class="comment">&lt;!--可以指向具体的包路径,该路径的所有映射文件和接口将产生对应的连接关系--&gt;</span>
+<span class="comment">&lt;!--        &lt;package name=&quot;mapper&quot;/&gt;--&gt;</span>
+    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></code></pre>
+<h4 id="测试"><a class="markdownIt-Anchor" href="#测试"></a> 测试</h4>
+<ul>
+<li>数据库中没有country相关字段</li>
+</ul>
+<p>运行结果：</p>
+<ul>
+<li>所有的country都已经赋值成功</li>
+</ul>
+<h2 id="plugins拦截器"><a class="markdownIt-Anchor" href="#plugins拦截器"></a> Plugins（拦截器）</h2>
+<p><strong>拦截器/插件</strong> 实际就是 <strong>代理模式</strong></p>
+<p>拦截器的一个作用就是我们可以拦截某些方法的调用，我们可以选择在这些被拦截的方法<strong>执行前后加上某些逻辑</strong>，也可以在执行这些拦截的方法时<strong>执行自己的方法</strong>而不使用mybatis定义的方法</p>
+<p>Mybatis拦截器的设计的一个初衷就是为了提供用户在某些时候可以实现自己的逻辑而不必去改变mybatis固有的逻辑</p>
+<ul>
+<li>比如：对于Executor（执行器），mybatis中有几个实现：BatchExecutor，ReuseExecutor，SimpleExecutor和CachingExecutor。</li>
+<li>这个时候如果你觉得这几种实现对于Executor接口的query方法都不能满足你的要求，我们也不用改变源码，我们可以建立一个mybatis拦截器用于拦截Executor接口的query方法，在拦截之后实现自己的query方法逻辑，之后可以选择是否继续执行原来的query方法</li>
+</ul>
+<p>对于拦截器mybatis为我们提供了一个interceptor接口，通过实现该接口就可以定义我们自己的拦截器</p>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Interceptor</span> &#123;
+    Object <span class="title function_">intercept</span><span class="params">(Invocation var1)</span> <span class="keyword">throws</span> Throwable;
+
+    Object <span class="title function_">plugin</span><span class="params">(Object var1)</span>;
+
+    <span class="keyword">void</span> <span class="title function_">setProperties</span><span class="params">(Properties var1)</span>;
+&#125;</code></pre>
+<p>我们可以看到该接口中一共定义了三个方法，intercept，plugin和setProperties。</p>
+<p><strong>plugin方法</strong>是拦截器用于封装目标对象的，通过该方法我们可以返回目标对象本身，也可以返回一个它的代理。当返回的是代理的时候我们可以对其中的方法进行<strong>拦截调用intercept方法</strong>，当然也可以调用其他方法</p>
+<p><strong>setProperties方法</strong>用于在mybatis配置文件中制定一些属性</p>
+<p>定义自己的interceptor最重要的实现plugin方法和intercept方法，在plugin方法中我们可以决定是否要进行拦截而决定要返回一个什么样的目标对象，而intercept方法就是要进行拦截的时候要执行的方法。</p>
+<p>对于plugin方法而言，其他mybatis已经为我们提供了一个实现，mybatis中有一个叫做<strong>plugin的类</strong>，里面有一个静态方法<code>wrap(Object target,Interceptor interceptor)</code>，<strong>通过该方法</strong>可以<strong>决定要返回的对象是目标对象还是对应的代理</strong></p>
+<hr />
+<h3 id="实现自己的拦截器"><a class="markdownIt-Anchor" href="#实现自己的拦截器"></a> 实现自己的拦截器</h3>
+<h4 id="定义拦截器"><a class="markdownIt-Anchor" href="#定义拦截器"></a> 定义拦截器</h4>
+<p>对于实现自己的Interceptor而言有两个很重要的注解，一个是@<strong>Intercepts</strong>，其值是一个@Signature数据。@Intercepts用于表明当前的对象是一个Interceptor，而@<strong>Signature</strong>则表明要拦截的接口，方法以及对应的参数类型，来看一个自定义的简单的Interceptor</p>
+<pre><code class="highlight java"><span class="keyword">import</span> org.apache.ibatis.executor.Executor;
+<span class="keyword">import</span> org.apache.ibatis.mapping.MappedStatement;
+<span class="keyword">import</span> org.apache.ibatis.plugin.*;
+<span class="keyword">import</span> org.apache.ibatis.session.ResultHandler;
+<span class="keyword">import</span> org.apache.ibatis.session.RowBounds;
+
+<span class="keyword">import</span> java.util.Properties;
+
+<span class="comment">/**</span>
+<span class="comment"> * 实现拦截器</span>
+<span class="comment"> */</span>
+<span class="meta">@Intercepts(&#123;</span>
+<span class="meta">        @Signature(</span>
+<span class="meta">                type=Executor.class,    //要拦截的接口</span>
+<span class="meta">                method=&quot;query&quot;,   //要拦截接口的哪个方法</span>
+<span class="meta">                args=&#123;MappedStatement.class,Object.class, RowBounds.class, ResultHandler.class&#125;)    //哪个重载方法（参数类型）</span>
+<span class="meta">&#125;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SimpleInterceptor</span> <span class="keyword">implements</span> <span class="title class_">Interceptor</span> &#123;
+    <span class="comment">//拦截方法</span>
+    <span class="comment">//invocation表示被拦截的对象及方法  ，参数：Invocation&#123;代理对象，被监控的方法，当前被监控的实参运行时需要的实参&#125;</span>
+    <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Invocation invocation)</span> <span class="keyword">throws</span> Throwable &#123;
+        System.out.println(<span class="string">&quot;方法拦截之前...............&quot;</span>);
+        <span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> invocation.proceed();<span class="comment">//执行拦截方法</span>
+        System.out.println(<span class="string">&quot;方法拦截之后...............&quot;</span>);
+        <span class="keyword">return</span> obj;
+    &#125;
+    <span class="comment">/*</span>
+<span class="comment">        参数：o 表示被拦截的对象，本案例是Executor接口的实例对象</span>
+<span class="comment">        作用：如果被拦截的对象所在的类有实现接口，就为当前拦截对象生成一个代理对象【$Proxy】</span>
+<span class="comment">              如果被拦截的对象所在的类没有指定的接口，这个对象之后行为就不会被代理操作</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> Object <span class="title function_">plugin</span><span class="params">(Object o)</span> &#123;
+        <span class="comment">//该方法用来判断被代理对象是否有接口，如果没有接口则原样返回，有接口则返回代理对象（该代理对象的InvocationHandler实现就是Plugin）</span>
+        <span class="keyword">return</span> Plugin.wrap(o, <span class="built_in">this</span>);
+    &#125;
+
+    <span class="comment">//读取配置文件的属性信息</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setProperties</span><span class="params">(Properties properties)</span> &#123;
+
+    &#125;
+&#125;
+</code></pre>
+<h4 id="配置"><a class="markdownIt-Anchor" href="#配置"></a> 配置</h4>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">configuration</span></span>
+<span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Config 3.0//EN&quot;</span></span>
+<span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-config.dtd&quot;</span>&gt;</span>
+<span class="comment">&lt;!--mybatis配置文件核心根标签--&gt;</span>
+<span class="tag">&lt;<span class="name">configuration</span>&gt;</span>
+    <span class="comment">&lt;!--属性--&gt;</span>
+    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;config.properties&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置实体类的别名，配置这个后，在mapper.xml中的result中就不用写全名了--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;com.lee.entity&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span>
+
+    <span class="comment">&lt;!--配置自定义Java实体类类型与数据库类型转换--&gt;</span>
+    <span class="tag">&lt;<span class="name">typeHandlers</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">typeHandler</span> <span class="attr">handler</span>=<span class="string">&quot;com.lee.util.MyTypeHandler&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Boolean&quot;</span> <span class="attr">jdbcType</span>=<span class="string">&quot;NUMERIC&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">typeHandlers</span>&gt;</span>
+    <span class="comment">&lt;!--配置自定义对象工厂--&gt;</span>
+    <span class="tag">&lt;<span class="name">objectFactory</span> <span class="attr">type</span>=<span class="string">&quot;com.lee.util.MyObjectFactory&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">objectFactory</span>&gt;</span>
+
+    <span class="comment">&lt;!--拦截器--&gt;</span>
+    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">plugin</span> <span class="attr">interceptor</span>=<span class="string">&quot;com.lee.util.SimpleInterceptor&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span>
+
+    <span class="comment">&lt;!--环境--&gt;</span>
+    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span>
+            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span>
+            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span>
+                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span>
+            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span>
+        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span>
+
+
+    <span class="comment">&lt;!--映射,定位当前项目中所有映射文件的位置--&gt;</span>
+    <span class="tag">&lt;<span class="name">mappers</span>&gt;</span>
+        <span class="comment">&lt;!--两种方法二选一--&gt;</span>
+        <span class="comment">&lt;!--mapper中可以通过class,resource,url来定义一个具体的映射文件--&gt;</span>
+        <span class="tag">&lt;<span class="name">mapper</span> <span class="attr">resource</span>=<span class="string">&quot;mapper/DeptMapper.xml&quot;</span>/&gt;</span>
+        <span class="comment">&lt;!--可以指向具体的包路径,该路径的所有映射文件和接口将产生对应的连接关系--&gt;</span>
+<span class="comment">&lt;!--        &lt;package name=&quot;mapper&quot;/&gt;--&gt;</span>
+    <span class="tag">&lt;/<span class="name">mappers</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></code></pre>
+<h4 id="运行结果"><a class="markdownIt-Anchor" href="#运行结果"></a> 运行结果</h4>
+<p>测试代码</p>
+<pre><code class="highlight java"><span class="meta">@Test</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test1</span><span class="params">()</span>&#123;
+    <span class="type">Dept</span> <span class="variable">dept</span> <span class="operator">=</span> session.selectOne(<span class="string">&quot;selectOne&quot;</span>);
+    System.out.println(dept.toString());
+&#125;</code></pre>
+<blockquote>
+<p><strong>注意</strong>：mybaits中自定义的拦截器，可以拦截的接口只有四种：<br />
+<code>Executor</code> 执行器<br />
+<code>StatementHandler</code> 语句处理器<br />
+<code>ParameterHandler</code> 参数处理器<br />
+<code>ResultSetHandler</code> 结果集处理器</p>
+</blockquote>
+<h2 id="和的区别"><a class="markdownIt-Anchor" href="#和的区别"></a> #{}和${}的区别</h2>
+<h3 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> #{}案例</h3>
+<h4 id="实体类"><a class="markdownIt-Anchor" href="#实体类"></a> 实体类</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.entity;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Dept</span> &#123;
+    <span class="keyword">private</span>  <span class="type">int</span> deptno;
+    <span class="keyword">private</span> String dname;
+    <span class="keyword">private</span> String loc;
+    <span class="keyword">private</span> Boolean flag;
+    <span class="keyword">private</span> String country;
+
+    <span class="keyword">public</span> Boolean <span class="title function_">getFlag</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> flag;
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setFlag</span><span class="params">(Boolean flag)</span> &#123;
+        <span class="built_in">this</span>.flag = flag;
+    &#125;
+
+    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getDeptno</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> deptno;
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setDeptno</span><span class="params">(<span class="type">int</span> deptno)</span> &#123;
+        <span class="built_in">this</span>.deptno = deptno;
+    &#125;
+
+    <span class="keyword">public</span> String <span class="title function_">getDname</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> dname;
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setDname</span><span class="params">(String dname)</span> &#123;
+        <span class="built_in">this</span>.dname = dname;
+    &#125;
+
+    <span class="keyword">public</span> String <span class="title function_">getLoc</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> loc;
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setLoc</span><span class="params">(String loc)</span> &#123;
+        <span class="built_in">this</span>.loc = loc;
+    &#125;
+
+    <span class="keyword">public</span> String <span class="title function_">getCountry</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> country;
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setCountry</span><span class="params">(String country)</span> &#123;
+        <span class="built_in">this</span>.country = country;
+    &#125;
+
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> <span class="string">&quot;Dept&#123;&quot;</span> +
+                <span class="string">&quot;deptno=&quot;</span> + deptno +
+                <span class="string">&quot;, dname=&#x27;&quot;</span> + dname + <span class="string">&#x27;\&#x27;&#x27;</span> +
+                <span class="string">&quot;, loc=&#x27;&quot;</span> + loc + <span class="string">&#x27;\&#x27;&#x27;</span> +
+                <span class="string">&quot;, flag=&quot;</span> + flag +
+                <span class="string">&quot;, country=&#x27;&quot;</span> + country + <span class="string">&#x27;\&#x27;&#x27;</span> +
+                <span class="string">&#x27;&#125;&#x27;</span>;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="mapper接口和xml文件"><a class="markdownIt-Anchor" href="#mapper接口和xml文件"></a> Mapper接口和xml文件</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> com.lee.Mapper;
+
+<span class="keyword">import</span> com.lee.entity.Dept;
+
+<span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">DeptMapper</span> &#123;
+
+    <span class="keyword">public</span> Dept <span class="title function_">selectOne</span><span class="params">(String param)</span>;
+&#125;
+</code></pre>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span> ?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span>
+<span class="meta">        <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span>
+<span class="meta">        <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span>
+<span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.lee.Mapper.DeptMapper&quot;</span>&gt;</span>
+
+    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectOne&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dept&quot;</span>&gt;</span>
+        select * from dept where dname=#&#123;dname&#125;
+    <span class="tag">&lt;/<span class="name">select</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></code></pre>
+<h4 id="测试运行"><a class="markdownIt-Anchor" href="#测试运行"></a> 测试运行</h4>
+<pre><code class="highlight java"><span class="meta">@Test</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test2</span><span class="params">()</span>&#123;
+    <span class="type">DeptMapper</span> <span class="variable">deptMapper</span> <span class="operator">=</span> session.getMapper(DeptMapper.class);
+    <span class="type">Dept</span> <span class="variable">dept</span> <span class="operator">=</span> deptMapper.selectOne(<span class="string">&quot;金融事业部&quot;</span>);
+    System.out.println(dept.toString());
+&#125;</code></pre>
+<h3 id="案例-2"><a class="markdownIt-Anchor" href="#案例-2"></a> ${}案例</h3>
+<p><strong>默认使用方式为：${value}</strong></p>
+<p>现在把xml文件中的#{}改为${}符号</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;selectOne&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dept&quot;</span>&gt;</span>
+    select * from dept where dname=&#x27;$&#123;value&#125;&#x27;
+<span class="tag">&lt;/<span class="name">select</span>&gt;</span></code></pre>
+<p><strong>这里有个细节，用$符号需要单引号，而#不需要</strong></p>
+<p>运行结果</p>
+<p><strong>${}会有特殊的用法</strong></p>
+<pre><code class="highlight java">
+<span class="meta">@Select(&quot;select * from user where $&#123;column&#125; = #&#123;value&#125;&quot;)</span>User <span class="title function_">findByColumn</span><span class="params">(<span class="meta">@Param(&quot;column&quot;)</span> String column, <span class="meta">@Param(&quot;value&quot;)</span> String value)</span>;</code></pre>
+<p>其中 ${column} 会被直接替换，而 #{value} 会被使用 ? 预处理</p>
+<p>这个想法也同样适用于<strong>用来替换表名的情况</strong></p>
+<p>比如：<br />
+有两张表，分别为emp_2017和emp_2018，如果想在查询语句中动态指定表明，就只能使用${}</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">select</span>&gt;</span>
+    select * from emp_$&#123;year&#125;
+<span class="tag">&lt;/<span class="name">select</span>&gt;</span></code></pre>
+<p>或者动态指定排序字段：</p>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">select</span>&gt;</span>
+    select * from emp order by $&#123;name&#125;
+<span class="tag">&lt;/<span class="name">select</span>&gt;</span></code></pre>
+<blockquote>
+<p>用这种方式接受用户的输入，并将其用于语句中的参数是不安全的，会导致潜在的 SQL 注入攻击，因此要么不允许用户输入这些字段，要么自行转义并检验</p>
+</blockquote>
+<h3 id="区别"><a class="markdownIt-Anchor" href="#区别"></a> 区别</h3>
+<p><strong>#{}</strong> ：会被当做占位符来处理，安全</p>
+<p>默认情况下,使用 #{} 格式的语法会导致 MyBatis 创建 PreparedStatement 参数占位符并安全地设置参数（就像使用 ? 一样）。 这样做更安全，更迅速，通常也是首选做法</p>
+<p><strong>${}</strong> ：会直接替换，有SQL注入的风险</p>
+<p>不过有时你就是想直接在 SQL 语句中插入一个不转义的字符串</p>
+<p><strong>简单来说不支持使用#的地方都可以使用$符号，但是要防止sql注入的风险</strong></p>
+<h1 id="mybatis-xml映射文件补充"><a class="markdownIt-Anchor" href="#mybatis-xml映射文件补充"></a> mybatis xml映射文件补充</h1>
+<h2 id="resultmap"><a class="markdownIt-Anchor" href="#resultmap"></a> resultMap</h2>
+<p>当实体类中部分字段在数据库中没有，而是需要构造函数赋值<strong>或</strong>者需要数据库查询出的字段通过构造函数计算得出，则需要resultMap的相关功能</p>
+<h3 id="实体类-2"><a class="markdownIt-Anchor" href="#实体类-2"></a> 实体类</h3>
+<pre><code class="highlight java"><span class="keyword">import</span> java.text.SimpleDateFormat;
+<span class="keyword">import</span> java.util.Date;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Employee</span> &#123;
+       <span class="keyword">private</span> Integer empNo;
+       <span class="keyword">private</span> String  ename;
+       <span class="keyword">private</span> String  job;
+       <span class="keyword">private</span> Double  sal;
+       <span class="keyword">private</span> Date    hireDate;
+       <span class="comment">//职员工作年限</span>
+       <span class="keyword">private</span> <span class="type">int</span> workAge;
+       
+       <span class="comment">//构造函数</span>
+       <span class="keyword">public</span> <span class="title function_">Employee</span><span class="params">(Date tempDate)</span>&#123;
+    	    <span class="built_in">this</span>.hireDate = tempDate;
+    	    <span class="type">SimpleDateFormat</span> <span class="variable">sdf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SimpleDateFormat</span>(<span class="string">&quot;yyyy&quot;</span>);
+    	    <span class="built_in">this</span>.workAge = Integer.valueOf(sdf.format(<span class="keyword">new</span> <span class="title class_">Date</span>())) -  Integer.valueOf(sdf.format(tempDate));
+    	    
+       &#125;
+	<span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getWorkAge</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> workAge;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setWorkAge</span><span class="params">(<span class="type">int</span> workAge)</span> &#123;
+		<span class="built_in">this</span>.workAge = workAge;
+	&#125;
+	<span class="keyword">public</span> Integer <span class="title function_">getEmpNo</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> empNo;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setEmpNo</span><span class="params">(Integer empNo)</span> &#123;
+		<span class="built_in">this</span>.empNo = empNo;
+	&#125;
+	<span class="keyword">public</span> String <span class="title function_">getEname</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> ename;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setEname</span><span class="params">(String ename)</span> &#123;
+		<span class="built_in">this</span>.ename = ename;
+	&#125;
+	<span class="keyword">public</span> String <span class="title function_">getJob</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> job;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setJob</span><span class="params">(String job)</span> &#123;
+		<span class="built_in">this</span>.job = job;
+	&#125;
+	<span class="keyword">public</span> Double <span class="title function_">getSal</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> sal;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setSal</span><span class="params">(Double sal)</span> &#123;
+		<span class="built_in">this</span>.sal = sal;
+	&#125;
+	<span class="keyword">public</span> Date <span class="title function_">getHireDate</span><span class="params">()</span> &#123;
+		<span class="keyword">return</span> hireDate;
+	&#125;
+	<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setHireDate</span><span class="params">(Date hireDate)</span> &#123;
+		<span class="built_in">this</span>.hireDate = hireDate;
+	&#125;
+&#125;</code></pre>
+<h3 id="xml映射文件"><a class="markdownIt-Anchor" href="#xml映射文件"></a> xml映射文件</h3>
+<pre><code class="highlight xml"><span class="meta">&lt;?xml version=<span class="string">&quot;1.0&quot;</span> encoding=<span class="string">&quot;UTF-8&quot;</span>?&gt;</span>
+<span class="meta">&lt;!DOCTYPE <span class="keyword">mapper</span></span>
+<span class="meta">  <span class="keyword">PUBLIC</span> <span class="string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span>
+<span class="meta">  <span class="string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span>
+<span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.kaikeba.dao.EmpMapper&quot;</span>&gt;</span>
+ 
+  <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">type</span>=<span class="string">&quot;employee&quot;</span> <span class="attr">id</span>=<span class="string">&quot;empMap&quot;</span>&gt;</span>
+  <span class="comment">&lt;!--在查询结果返回的时候，会自动调用emp对象的带参构造函数，并把hireDate查询出来传递给构造函数--&gt;</span>
+    <span class="tag">&lt;<span class="name">constructor</span>&gt;</span>
+     <span class="tag">&lt;<span class="name">arg</span> <span class="attr">column</span>=<span class="string">&quot;hireDate&quot;</span>  <span class="attr">javaType</span>=<span class="string">&quot;java.util.Date&quot;</span>/&gt;</span>
+    <span class="tag">&lt;/<span class="name">constructor</span>&gt;</span>
+  <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span>
+
+   <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;empFind&quot;</span>  <span class="attr">resultType</span>=<span class="string">&quot;emploee&quot;</span>&gt;</span>
+      select * from emp2
+   <span class="tag">&lt;/<span class="name">select</span>&gt;</span>
+ 
+<span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></code></pre>
+<h3 id="数据库表"><a class="markdownIt-Anchor" href="#数据库表"></a> 数据库表</h3>
+<h4 id="mapper接口"><a class="markdownIt-Anchor" href="#mapper接口"></a> mapper接口</h4>
+<pre><code class="highlight java"><span class="keyword">import</span> java.util.List;
+
+<span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">EmpMapper</span> &#123;
+ <span class="keyword">public</span>  List <span class="title function_">empFind</span><span class="params">()</span>;
+&#125;</code></pre>
+<h3 id="测试运行-2"><a class="markdownIt-Anchor" href="#测试运行-2"></a> 测试运行</h3>
+<pre><code class="highlight java"><span class="meta">@Test</span>
+<span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">test01</span><span class="params">()</span>&#123;
+	EmpMapper dao=session.getMapper(EmpMapper.class);
+	List&lt;Employee&gt; list = dao.empFind();
+	System.out.println();
+&#125;</code></pre>
+<h1 id="mybatis原理-代理模式"><a class="markdownIt-Anchor" href="#mybatis原理-代理模式"></a> mybatis原理-代理模式</h1>
+<h2 id="业务分析"><a class="markdownIt-Anchor" href="#业务分析"></a> 业务分析</h2>
+<p>JDBC开发步骤</p>
+<ol>
+<li>加载驱动</li>
+<li>建立连接通道</li>
+<li>建立PreparedStament</li>
+<li>输送sql命令到数据库中执行，并带回运行结果</li>
+<li>销毁链接通道，PreparedStament</li>
+</ol>
+<p>JDBC主要业务与次要业务分析</p>
+<ol>
+<li>加载驱动【次要业务】</li>
+<li>建立连接通道【次要业务】</li>
+<li>建立PreparedStament【次要业务】</li>
+<li>输送sql命令到数据库中执行，并带回运行结果【主要业务】</li>
+<li>销毁链接通道， PreparedStament【次要业务】</li>
+</ol>
+<h2 id="自写一个简单的mybaits"><a class="markdownIt-Anchor" href="#自写一个简单的mybaits"></a> 自写一个简单的mybaits</h2>
+<h4 id="行为接口"><a class="markdownIt-Anchor" href="#行为接口"></a> 行为/接口</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> com.proxymodel.service;
+
+<span class="keyword">import</span> java.sql.SQLException;
+
+<span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">SqlSession</span> &#123;
+
+    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">save</span><span class="params">(String sql)</span> <span class="keyword">throws</span> SQLException;
+
+&#125;</code></pre>
+<h4 id="真实实例对象"><a class="markdownIt-Anchor" href="#真实实例对象"></a> 真实实例对象</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> com.proxymodel.serviceImpl;
+
+<span class="keyword">import</span> com.proxymodel.service.SqlSession;
+
+<span class="keyword">import</span> java.sql.PreparedStatement;
+<span class="keyword">import</span> java.sql.SQLException;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DeptMapper</span> <span class="keyword">implements</span> <span class="title class_">SqlSession</span> &#123;
+    PreparedStatement ps;
+
+    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">save</span><span class="params">(String sql)</span> <span class="keyword">throws</span> SQLException &#123;
+        <span class="type">int</span> <span class="variable">num</span> <span class="operator">=</span> ps.executeUpdate(sql);
+        <span class="keyword">return</span> num;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="通知类"><a class="markdownIt-Anchor" href="#通知类"></a> 通知类</h4>
+<p>这里绑定要执行的其他次要方法</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.proxymodel.util;
+
+<span class="keyword">import</span> com.proxymodel.service.SqlSession;
+<span class="keyword">import</span> com.proxymodel.serviceImpl.DeptMapper;
+
+<span class="keyword">import</span> java.lang.reflect.Field;
+<span class="keyword">import</span> java.lang.reflect.InvocationHandler;
+<span class="keyword">import</span> java.lang.reflect.Method;
+<span class="keyword">import</span> java.sql.Connection;
+<span class="keyword">import</span> java.sql.DriverManager;
+<span class="keyword">import</span> java.sql.PreparedStatement;
+<span class="keyword">import</span> java.sql.SQLException;
+
+<span class="keyword">class</span> <span class="title class_">Invocation</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span> &#123;
+    <span class="keyword">private</span> SqlSession obj;  <span class="comment">//具体的要被代理的实际对象</span>
+
+    <span class="keyword">private</span> Connection con;
+    <span class="keyword">private</span> PreparedStatement preparedStatement;
+    <span class="keyword">public</span> <span class="title function_">Invocation</span><span class="params">(SqlSession obj)</span>&#123;
+        <span class="built_in">this</span>.obj = obj;
+    &#125;
+    <span class="comment">/*</span>
+<span class="comment">     * invoke方法参数：</span>
+<span class="comment">     *      proxy:没用</span>
+<span class="comment">     *      method:实际对象的方法封装为Method类型对象</span>
+<span class="comment">     *      args:实际对象的方法实参</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;
+
+        Object value;
+        <span class="comment">//1.执行jdbc初始次要业务</span>
+        init();
+        <span class="comment">//2.执行jdbc主要业务</span>
+        <span class="type">Field</span> <span class="variable">filed</span> <span class="operator">=</span> obj.getClass().getDeclaredField(<span class="string">&quot;ps&quot;</span>);
+        filed.setAccessible(<span class="literal">true</span>);
+        filed.set(obj,preparedStatement);
+
+        value = method.invoke(obj,args);
+        <span class="comment">//3.执行jdbc结束次要业务</span>
+        close();
+        <span class="keyword">return</span> value;
+    &#125;
+
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;
+        Class.forName(<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>);
+        con = DriverManager.getConnection(<span class="string">&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;</span>, <span class="string">&quot;root&quot;</span>, <span class="string">&quot;123456&quot;</span>);
+        preparedStatement = con.prepareStatement(<span class="string">&quot;&quot;</span>);
+    &#125;
+
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> <span class="keyword">throws</span> SQLException &#123;
+        con.close();
+        preparedStatement.close();
+    &#125;
+&#125;
+</code></pre>
+<h4 id="代理角色生成工厂"><a class="markdownIt-Anchor" href="#代理角色生成工厂"></a> 代理角色生成工厂</h4>
+<pre><code class="highlight java"><span class="keyword">package</span> com.proxymodel.util;
+
+<span class="keyword">import</span> com.proxymodel.service.SqlSession;
+
+<span class="keyword">import</span> java.lang.reflect.InvocationHandler;
+<span class="keyword">import</span> java.lang.reflect.Proxy;
+
+<span class="comment">/**</span>
+<span class="comment"> * JDK动态代理模式下，代理对象的数据类型应该由监控行为来描述</span>
+<span class="comment"> * 参数：Class文件，监控类</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SqlSessionFactory</span> &#123;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> SqlSession <span class="title function_">Builder</span><span class="params">(Class classFile)</span> <span class="keyword">throws</span> Exception&#123;
+        <span class="comment">//1.创建被监控实例对象</span>
+        <span class="type">SqlSession</span> <span class="variable">baseService</span> <span class="operator">=</span> (SqlSession) classFile.newInstance();
+        <span class="comment">//2.创建一个通知对象</span>
+        <span class="type">InvocationHandler</span> <span class="variable">invocation</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Invocation</span>(baseService);
+        <span class="comment">//3.生成代理对象</span>
+        <span class="comment">/*</span>
+<span class="comment">            loader:被监控对象隶属的类文件在内存中的真实地址</span>
+<span class="comment">            interfacees:被监控对象隶属的类文件实现接口</span>
+<span class="comment">            handler:监控对象发现小明要执行被监控行为，应该由哪一个通知对象进行辅助</span>
+<span class="comment">         */</span>
+        <span class="type">SqlSession</span> <span class="variable">$proxy</span> <span class="operator">=</span> (SqlSession) Proxy.newProxyInstance(baseService.getClass().getClassLoader(), baseService.getClass().getInterfaces(), invocation);
+        <span class="keyword">return</span> $proxy;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="测试使用-2"><a class="markdownIt-Anchor" href="#测试使用-2"></a> 测试使用</h4>
+<p>Mybatis实现代理模式实现原理与之基本类似</p>
+<pre><code class="highlight java"><span class="keyword">package</span> com.proxymodel;
+
+<span class="keyword">import</span> com.proxymodel.service.SqlSession;
+<span class="keyword">import</span> com.proxymodel.serviceImpl.DeptMapper;
+<span class="keyword">import</span> com.proxymodel.util.SqlSessionFactory;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Test</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="comment">//获取的实际是代理角色</span>
+        <span class="type">SqlSession</span> <span class="variable">session</span> <span class="operator">=</span> SqlSessionFactory.Builder(DeptMapper.class);
+        session.save(<span class="string">&quot;insert into values(&#x27;&#x27;,&#x27;&#x27;,&#x27;&#x27;,)&quot;</span>);
+
+    &#125;
+&#125;
+</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

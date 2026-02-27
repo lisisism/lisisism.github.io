@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    部署web项目Linux 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">部署web项目Linux</div>
+  <div class="post-meta">
+    <div class="date">2020 六月 28日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Linux</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="部署web项目linux"><a class="markdownIt-Anchor" href="#部署web项目linux"></a> $部署web项目Linux</h1>
+<h1 id="部署web项目linux-2"><a class="markdownIt-Anchor" href="#部署web项目linux-2"></a> 部署web项目Linux</h1>
+<ul>
+<li><a href="">部署web项目Linux</a>
+<ul>
+<li><a href="">阿里云</a>
+<ul>
+<li><a href="">阿里云ECS服务器购买</a></li>
+</ul>
+</li>
+<li><a href="">使用xshell连接服务器</a></li>
+<li><a href="">配置FTP</a>
+<ul>
+<li><a href="">安装启动FTP</a></li>
+<li><a href="">配置liunx FTP用户</a></li>
+<li><a href="">配置FTP配置文件</a></li>
+<li><a href="">配置端口</a></li>
+<li><a href="">用户鉴权</a></li>
+<li><a href="">在阿里云开放端口</a></li>
+</ul>
+</li>
+<li><a href="">FTP客户端连接服务器</a></li>
+<li><a href="">Java</a>
+<ul>
+<li><a href="">安装Java</a></li>
+<li><a href="">安装Java（单机版）</a></li>
+</ul>
+</li>
+<li><a href="">MySQL</a>
+<ul>
+<li><a href="">部署到Linux安�</a>�</li>
+<li><a href="">创建密码并登陆</a></li>
+</ul>
+</li>
+<li><a href="">Tomcat</a>
+<ul>
+<li><a href="">Liunx Tomcat安装和启动</a></li>
+<li><a href="">开放端口访问</a></li>
+</ul>
+</li>
+<li><a href="">部署J2EE应用</a>
+<ul>
+<li><a href="">上传到Linux</a></li>
+<li><a href="">数据库准备</a></li>
+<li><a href="">tomcat配置</a></li>
+<li><a href="">war包部署步骤</a></li>
+</ul>
+</li>
+<li><a href="">自启动</a>
+<ul>
+<li><a href="">部署到Linux 自启动</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="阿里云"><a class="markdownIt-Anchor" href="#阿里云"></a> 阿里云</h2>
+<h3 id="阿里云ecs服务器购买"><a class="markdownIt-Anchor" href="#阿里云ecs服务器购买"></a> 阿里云ECS服务器购买</h3>
+<ul>
+<li>创建实例
+<ul>
+<li>ECS就是云服务器，进入阿里控制台，创建实例购买</li>
+<li></li>
+</ul>
+</li>
+<li>地域
+<ul>
+<li>随便选择一个</li>
+<li></li>
+</ul>
+</li>
+<li>网络
+<ul>
+<li>使用默认设置，安全组勾选默认安全组</li>
+<li>安全组就是可以开放的端口，默认只开放22和3389</li>
+</ul>
+</li>
+<li>实例
+<ul>
+<li>点击选择其他实例规格，选择最上面也就是最便宜的ecs.t5-lc2m1.nano</li>
+<li></li>
+</ul>
+</li>
+<li>公网带宽
+<ul>
+<li>选择默认的1M</li>
+<li></li>
+</ul>
+</li>
+<li>服务器-镜像
+<ul>
+<li>选择CentOS，版本选择7.4 64位</li>
+<li>注: 所谓的镜像就是相当于ghost，选择上述，那么拿到手的服务器就已经装好了7.4的Centos操作系统了。 除此之外，右边还有镜像市场，里面有java完整环境镜像，简单说就是选择镜像市场里面的内容，拿到手的服务器就是java,mysql,tomcat,ftp等等所有的配置安装好了的。 不过我们不会采用，因为我们恰恰需要自己去配置这个环境来学习，所以就放弃镜像市场了</li>
+<li></li>
+</ul>
+</li>
+<li>存储
+<ul>
+<li>选择40G就够了</li>
+<li></li>
+</ul>
+</li>
+<li>安全设置
+<ul>
+<li>设置root用户的密码</li>
+<li></li>
+</ul>
+</li>
+<li>创建完成
+<ul>
+<li>创建完成就可以查看实例，查看到公网IP了</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2 id="使用xshell连接服务器"><a class="markdownIt-Anchor" href="#使用xshell连接服务器"></a> 使用xshell连接服务器</h2>
+<ul>
+<li>
+<h2 id="使用公网ip和root用户直接连接服务器"><a class="markdownIt-Anchor" href="#使用公网ip和root用户直接连接服务器"></a> 使用公网ip和root用户直接连接服务器</h2>
+</li>
+</ul>
+<h2 id="配置ftp"><a class="markdownIt-Anchor" href="#配置ftp"></a> 配置FTP</h2>
+<h3 id="安装启动ftp"><a class="markdownIt-Anchor" href="#安装启动ftp"></a> 安装启动FTP</h3>
+<ul>
+<li>ftp是用来给服务器传输文件的，我们使用vsftpd</li>
+<li>使用yum命令安装，yum就是一个软件大杂库</li>
+</ul>
+<pre><code class="highlight plaintext">yum install vsftpd -y</code></pre>
+<ul>
+<li>
+<h2 id="ftp安装成功界面"><a class="markdownIt-Anchor" href="#ftp安装成功界面"></a> FTP安装成功界面</h2>
+</li>
+<li><strong>FTP启动命令</strong></li>
+</ul>
+<pre><code class="highlight plaintext">systemctl start vsftpd.service</code></pre>
+<ul>
+<li><strong>FTP关闭命令</strong></li>
+</ul>
+<pre><code class="highlight plaintext">systemctl start vsftpd.service</code></pre>
+<ul>
+<li><strong>FTP重启命令</strong></li>
+</ul>
+<pre><code class="highlight plaintext">systemctl restart vsftpd.service</code></pre>
+<ul>
+<li><strong>FTP查看服务启动状态命令</strong></li>
+</ul>
+<pre><code class="highlight plaintext">systemctl status vsftpd.service</code></pre>
+<ul>
+<li>
+<p>启动成功界面</p>
+</li>
+<li>
+<p>检查端口</p>
+<ul>
+<li>ftp服务启动的是21端口，使用如下命令应该观察到21端口正在处于监听状态，这也从侧面反应了ftp服务器启动成功了</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">netstat -anp|grep 21</code></pre>
+<h3 id="配置liunx-ftp用户"><a class="markdownIt-Anchor" href="#配置liunx-ftp用户"></a> 配置liunx FTP用户</h3>
+<ul>
+<li><strong>创建用户目录</strong>
+<ul>
+<li>在Linux中，不同用户是有不同目录访问权限的，所以首先创建一个目录，作为这个ftp用户所拥有的目录</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">mkdir -p /home/lee/leeftp</code></pre>
+<ul>
+<li><strong>创建用户</strong>
+<ul>
+<li>执行如下命令，创建用户leeftp,并且指定其目录为用户目录中创建的/home/lee/leeftp
+<ul>
+<li><code>-g ftp</code> ：表示该用户属于ftp分组（ftp分组时内置的，本来就存在，不需要自己创建）</li>
+<li><code>-s /sbin/nologin</code> ：表示这个用户不能用来登陆shell这样的客户端，这种不能登陆的用户叫做虚拟用户</li>
+<li></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">useradd -d /home/lee/leeftp -g ftp -s /sbin/nologin leeftp</code></pre>
+<ul>
+<li><strong>设置目录权限</strong>
+<ul>
+<li>把目录/home/lee/leeftp的拥有者设置为leeftp，组设置为leeftp，-R表示递归</li>
+<li>让leeftp这个用户拥有这个目录的读写权限</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">chown -R ftptest:ftptext /home/lee/leeftp
+chmod -R 775 /home/lee/leeftp</code></pre>
+<ul>
+<li><strong>设置密码</strong>
+<ul>
+<li>设置leeftp用户的密码</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">passwd leeftp</code></pre>
+<h3 id="配置ftp配置文件"><a class="markdownIt-Anchor" href="#配置ftp配置文件"></a> 配置FTP配置文件</h3>
+<ul>
+<li>FTP配置文件</li>
+</ul>
+<pre><code class="highlight plaintext">vim /etc/vsftpd/vsftpd.conf</code></pre>
+<ul>
+<li>配置用户
+<ul>
+<li>创建好了ftp用户，接下来要在vsftpd服务器中配置该用户</li>
+</ul>
+</li>
+<li>去掉匿名登陆
+<ul>
+<li>默认情况下vsftpd服务器时运行匿名登陆的，这样很不安全，把这个选项关掉</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">anonymous_enable=NO</code></pre>
+<ul>
+<li>限制用户访问
+<ul>
+<li>限制用户只能访问自己的所有目录，而不能访问其他目录，防止对系统造成破坏</li>
+<li>chroot_list_enable=YES： 表示对用户访问进行限制</li>
+<li>chroot_list_file=/etc/vsftpd/chroot_list 表示对chroot_list里面指定的用户进行限制 下一个步骤用户清单就会对chroot_list 这个文件进行编辑</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">#chroot_list_enable=YES
+# (default follows)
+#chroot_list_file=/etc/vsftpd.chroot_list
+
+修改为
+
+chroot_list_enable=YES
+# (default follows)
+chroot_list_file=/etc/vsftpd/chroot_list
+</code></pre>
+<ul>
+<li>添加用户清单
+<ul>
+<li>在chroot_list中添加leeftp用户</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">vi /etc/vsftpd/chroot_list
+
+添加一行
+
+leeftp</code></pre>
+<ul>
+<li>允许写权限
+<ul>
+<li>vsftpd服务器是这样的，一旦某个用户被限制访问了，那么默认情况下，该用户的写权限也被剥夺了。 这就导致ftp客户端连接上服务器之后无法上传文件。<br />
+这个时候，就需要打开此用户的写权限，请按照如下办法操作：</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">vi /etc/vsftpd/vsftpd.conf
+
+在最后面添加一行
+
+allow_writeable_chroot=YES</code></pre>
+<h3 id="配置端口"><a class="markdownIt-Anchor" href="#配置端口"></a> 配置端口</h3>
+<ul>
+<li>两种端口
+<ul>
+<li>vsftpd有两种端口，一个是21端口，用来监听客户端连接请求的。 这个一般说来是固定的，就一直使用21端口。</li>
+<li>另一种是，一旦获取到请求之后，再专门用户服务端和客户端传输数据的端口。本知识点就是用于指定第二种端口的获取范围</li>
+</ul>
+</li>
+<li>配置端口
+<ul>
+<li>这表示使用被动模式，用于传输数据的端口分配从30000-30010之间</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">打开配置文件：
+vi /etc/vsftpd/vsftpd.conf
+
+在最后添加：
+
+pasv_enable=YES
+pasv_min_port=30000
+pasv_max_port=30010
+</code></pre>
+<h3 id="用户鉴权"><a class="markdownIt-Anchor" href="#用户鉴权"></a> 用户鉴权</h3>
+<ul>
+<li>关于鉴权
+<ul>
+<li>因为用户 ftptest 是 nologin的，所以存在鉴权的问题，解决鉴权问题有两种问题</li>
+</ul>
+</li>
+<li>方式一：pam.d/vsftpd文件
+<ul>
+<li>打开<code>/etc/pam.d/vsftpd</code>文件</li>
+<li>注释掉<code>auth required pam_shells.so</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">vi /etc/pam.d/vsftpd</code></pre>
+<ul>
+<li>方式二：shells文件
+<ul>
+<li>打开<code>/tec/shells</code>文件</li>
+<li>添加一行<code>/sbin/nologin</code></li>
+<li>这样允许不能登录系统的用户通过鉴权</li>
+</ul>
+</li>
+<li>重启vsftpd服务器</li>
+</ul>
+<pre><code class="highlight plaintext">systemctl restart vsftpd.service</code></pre>
+<h3 id="在阿里云开放端口"><a class="markdownIt-Anchor" href="#在阿里云开放端口"></a> 在阿里云开放端口</h3>
+<ul>
+<li>安全组
+<ul>
+<li>既然用的是阿里云，那么我们就借助阿里云的安全组操作来实现端口的开放效果。登陆阿里云后，按照如下顺序选择：云服务器ECS-&gt;安全组-&gt;配置规则</li>
+<li></li>
+</ul>
+</li>
+<li>添加安全组规则/添加端口
+<ul>
+<li>端口范围： 21/21 表示从21开始，到21结束</li>
+<li>授权对象： 0.0.0.0/0 表示所有的ip地址都可以访问该端口</li>
+<li></li>
+<li>端口范围： 30000/30010 表示从30000开始，到30010结束</li>
+<li>授权对象： 0.0.0.0/0 表示所有的ip地址都可以访问该端口</li>
+<li></li>
+</ul>
+</li>
+</ul>
+<h2 id="ftp客户端连接服务器"><a class="markdownIt-Anchor" href="#ftp客户端连接服务器"></a> FTP客户端连接服务器</h2>
+<ul>
+<li>
+<h2 id="连接服务器"><a class="markdownIt-Anchor" href="#连接服务器"></a> 连接服务器</h2>
+</li>
+<li>
+<h2 id="上传文件"><a class="markdownIt-Anchor" href="#上传文件"></a> 上传文件</h2>
+</li>
+</ul>
+<h2 id="java"><a class="markdownIt-Anchor" href="#java"></a> Java</h2>
+<h3 id="安装java"><a class="markdownIt-Anchor" href="#安装java"></a> 安装Java</h3>
+<ul>
+<li>
+<h2 id="使用yum安装java"><a class="markdownIt-Anchor" href="#使用yum安装java"></a> 使用yum安装java</h2>
+</li>
+</ul>
+<pre><code class="highlight plaintext">yum -y install java-1.8.0-openjdk.x86_64</code></pre>
+<ul>
+<li>
+<h2 id="查看安装是否成功"><a class="markdownIt-Anchor" href="#查看安装是否成功"></a> 查看安装是否成功</h2>
+</li>
+</ul>
+<pre><code class="highlight plaintext">java -version</code></pre>
+<h3 id="安装java单机版"><a class="markdownIt-Anchor" href="#安装java单机版"></a> 安装Java（单机版）</h3>
+<ol>
+<li>上传Linux版 jdk到Linux</li>
+<li>解压</li>
+</ol>
+<pre><code class="highlight plaintext">tar -xf jdk-7u55-linux-i586.tar.gz</code></pre>
+<ol>
+<li>在vim /etc/profile最下面添加：</li>
+</ol>
+<pre><code class="highlight plaintext">export JAVA_HOME=/leeboer/jdk1.7.0_55
+export PATH=$JAVA_HOME/bin:$PATH</code></pre>
+<ol>
+<li>执行命令</li>
+</ol>
+<pre><code class="highlight plaintext">source /etc/</code></pre>
+<h2 id="mysql"><a class="markdownIt-Anchor" href="#mysql"></a> MySQL</h2>
+<h3 id="部署到linux安装"><a class="markdownIt-Anchor" href="#部署到linux安装"></a> 部署到Linux安装</h3>
+<ul>
+<li>下载
+<ul>
+<li>yum上的mysql资源有问题，所以不能仅仅之用yum。在使用yum之前还需要用其他命令获取mysql社区版</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">cd /tmp
+wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+rpm -ivh mysql-community-release-el7-5.noarch.rpm</code></pre>
+<ul>
+<li></li>
+<li>通过yum进行安装</li>
+</ul>
+<pre><code class="highlight plaintext">yum install mysql mysql-server mysql-devel -y</code></pre>
+<ul>
+<li></li>
+<li>启动
+<ul>
+<li>启动mysql服务器</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">systemctl start mysql.service</code></pre>
+<ul>
+<li>其他命令</li>
+</ul>
+<pre><code class="highlight plaintext">启动服务
+service mysql start　　　
+关闭服务
+service mysql stop　　
+重启服务
+service restart stop</code></pre>
+<ul>
+<li>验证
+<ul>
+<li>安装后会自动启动，启动后会占用3306端口，使用如下命令查看3306端口是否启动，如果启动了则表示mysql处于运行状态。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">netstat -anp|grep 3306</code></pre>
+<ul>
+<li></li>
+</ul>
+<h3 id="创建密码并登陆"><a class="markdownIt-Anchor" href="#创建密码并登陆"></a> 创建密码并登陆</h3>
+<ul>
+<li>通过yum安装的mysql的管理员账户是没有密码的，这里通过命令设置密码为admin</li>
+</ul>
+<pre><code class="highlight plaintext">mysqladmin -u root password admin</code></pre>
+<ul>
+<li></li>
+<li><strong>登陆验证</strong>
+<ul>
+<li>使用如下登陆命令</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">mysql -uroot -padmin</code></pre>
+<ul>
+<li>登陆成功后，输入以下命令查看数据库</li>
+</ul>
+<pre><code class="highlight plaintext">show databases;</code></pre>
+<ul>
+<li></li>
+</ul>
+<h2 id="tomcat"><a class="markdownIt-Anchor" href="#tomcat"></a> Tomcat</h2>
+<h3 id="liunx-tomcat安装和启动"><a class="markdownIt-Anchor" href="#liunx-tomcat安装和启动"></a> Liunx Tomcat安装和启动</h3>
+<ul>
+<li><strong>安�</strong>�
+<ul>
+<li>yum上没有tomcat的源，使用如下方式下载解压</li>
+<li>解压后把tomcat移动到<code>/usr/local/tomcat7</code>目录下方便以后访问</li>
+<li><code>wget [选项] URL</code> 命令是从网上下载资源，后面跟一个url</li>
+<li><code>tar -xzf 文件路径</code> 解压命令</li>
+<li><code>mv [选项] 源文件或目录 目标文件或目录</code> 用来移动文件或者将文件改名</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">cd /tmp
+wget http://mirrors.tuna.tsinghua.edu.cn/apache/tomcat/tomcat-7/v7.0.92/bin/apache-tomcat-7.0.92.tar.gz
+tar xzf apache-tomcat-7.0.92.tar.gz
+mv apache-tomcat-7.0.92 /usr/local/tomcat7</code></pre>
+<ul>
+<li>如果使用wget命令下载不下来，可以使用ftp自己上传，拷贝到tmp目录，然后重复上述命令</li>
+</ul>
+<pre><code class="highlight plaintext">cp /home/lee/leeftp/apache-tomcat-7.0.92.tar.gz /tmp/apache-tomcat-7.0.92.tar.gz</code></pre>
+<ul>
+<li><strong>启动</strong>
+<ul>
+<li>启动tomcat</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">/usr/local/tomcat7/bin/startup.sh</code></pre>
+<ul>
+<li></li>
+<li>验证是否启动</li>
+</ul>
+<pre><code class="highlight plaintext">netstat -anp|grep 8080</code></pre>
+<ul>
+<li></li>
+<li><strong>查看启动日志</strong>
+<ul>
+<li>通过如下命令可以查看tomcat的启动日志、</li>
+<li>-300表示查看最后300行，f表示动态查看有更新可以立即看到</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">tail -300f /usr/local/tomcat7/logs/catalina.out</code></pre>
+<ul>
+<li></li>
+</ul>
+<h3 id="开放端口访问"><a class="markdownIt-Anchor" href="#开放端口访问"></a> 开放端口访问</h3>
+<ul>
+<li>开放服务器8080端口</li>
+<li>使用公网ip和端口号访问tomcat</li>
+</ul>
+<pre><code class="highlight plaintext">http://47.104.95.212:8080/</code></pre>
+<ul>
+<li></li>
+</ul>
+<h2 id="部署j2ee应用"><a class="markdownIt-Anchor" href="#部署j2ee应用"></a> 部署J2EE应用</h2>
+<h3 id="上传到linux"><a class="markdownIt-Anchor" href="#上传到linux"></a> 上传到Linux</h3>
+<ul>
+<li>使用ftp上传web应用
+<ul>
+<li>使用tmall.rar和tmall.sql，解压后上传到ftp服务器</li>
+<li>注：Linux不能解压rar，只能解压zip和tar</li>
+</ul>
+</li>
+</ul>
+<h3 id="数据库准备"><a class="markdownIt-Anchor" href="#数据库准备"></a> 数据库准备</h3>
+<ul>
+<li>大小写敏感
+<ul>
+<li>Linux MySQL默认是大小写敏感的，但是模仿天猫在设计的时候是在windows上开发的，而windows上的Mysql默认是非大小写敏感的，所以JDBC代码有的表名是大写，有的是小写的，一旦运行起来就会因为大小写不一致导致无法识别表名。 为了解决这个矛盾，就需要把MySQL的大小写敏感修改为非敏感。 解决办法如下</li>
+<li>打开MySQL配置文件</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">vi /etc/my.cnf
+
+在[mysqld]后添加
+
+lower_case_table_names=1</code></pre>
+<ul>
+<li></li>
+<li>重启mysql</li>
+</ul>
+<pre><code class="highlight plaintext">systemctl restart mysqld.service</code></pre>
+<ul>
+<li><strong>创建数据库</strong>
+<ul>
+<li>连接进入数据库命令环境</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">mysql -uroot -padmin
+
+创建数据库：
+CREATE DATABASE tmall DEFAULT CHARACTER SET utf8;
+
+查看数据库：
+show databases;</code></pre>
+<ul>
+<li></li>
+<li>导入数据
+<ul>
+<li>使用<code>ctrl+c</code>退出控制台，在Linux环境输入命令导入数据</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">mysql -u root -padmin --default-character-set=utf8 tmall &lt; /home/lee/leeftp/tmall.sql</code></pre>
+<ul>
+<li></li>
+<li><strong>验证</strong>
+<ul>
+<li>重新登陆MySQL，查看是否导入成功</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">mysql -uroot -padmin
+
+use tmall;    --数据库作为默认（当前）数据库使用，用于后续语句。该数据库保持为默认数据库，直到语段的结尾，或者直到出现下一个不同的use语句
+show tables;
+select count(*) from product;</code></pre>
+<ul>
+<li></li>
+</ul>
+<h3 id="tomcat配置"><a class="markdownIt-Anchor" href="#tomcat配置"></a> tomcat配置</h3>
+<ul>
+<li><strong>修改server.xml</strong>
+<ul>
+<li>打开配置文件</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">vi /usr/local/tomcat7/conf/server.xml
+
+在&lt;host 下面增加一行
+&lt;Context path=&quot;/tmall&quot; docBase=&quot;/home/lee/leeftp/web&quot; debug=&quot;0&quot; reloadable=&quot;false&quot; /&gt;</code></pre>
+<ul>
+<li></li>
+<li><strong>重启tomcat</strong></li>
+</ul>
+<pre><code class="highlight plaintext">/usr/local/tomcat7/bin/shutdown.sh
+/usr/local/tomcat7/bin/startup.sh</code></pre>
+<ul>
+<li></li>
+<li><strong>观察日志</strong>
+<ul>
+<li>观察重启过程</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">tail -300f /usr/local/tomcat7/logs/catalina.out</code></pre>
+<ul>
+<li></li>
+<li><strong>访问公网地址</strong>
+<ul>
+<li>所有配置已就绪，可以访问了</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">http://47.104.95.212:8080/tmall</code></pre>
+<h3 id="war包部署步骤"><a class="markdownIt-Anchor" href="#war包部署步骤"></a> war包部署步骤</h3>
+<ul>
+<li>maven项目不可以像maven项目一样直接部署到tomcat上面去，一般来说要先通过maven生成对应的war文件，然后把war文件部署到tomcat上</li>
+<li><strong>导出war�</strong>�
+<ul>
+<li>选择一个maven项目，按如图1234步骤
+<ul>
+<li>项目路径\ssm\target\ssm.war</li>
+</ul>
+</li>
+<li></li>
+</ul>
+</li>
+<li><strong>如何部署war</strong>
+<ul>
+<li>两种方式
+<ol>
+<li>直接把war上传到tomcat/webapps下，tomcat就会自动解压了
+<ul>
+<li>或者想更改访问路径可以这样
+<ul>
+<li>修改tomcat的server.xml</li>
+<li><code>&lt;Host name=&quot;localhost&quot; appBase=&quot;webapps&quot; unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;&gt; &lt;Context path=&quot;/xxx&quot; docBase=&quot;/usr/local/tomcat7/webapps/xxx.war&quot; debug=&quot;0&quot; reloadable=&quot;false&quot; /&gt;</code></li>
+<li>重启tomcat</li>
+<li>访问<a target="_blank" rel="noopener" href="http://ip:8080/xxx">http://ip:8080/xxx</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>把war用解压软件打开，当作一个普通j2ee应用，按照之前的的教程一步一步操作就可以了</li>
+</ol>
+</li>
+<li>部署成功访问地址</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">http://server_ip:8080/ssm/listCategory</code></pre>
+<h2 id="自启动"><a class="markdownIt-Anchor" href="#自启动"></a> 自启动</h2>
+<h3 id="部署到linux-自启动"><a class="markdownIt-Anchor" href="#部署到linux-自启动"></a> 部署到Linux 自启动</h3>
+<ul>
+<li><strong>自启动概念</strong>
+<ul>
+<li>所谓的自启动，就是在 Linux 重启之后，会自动启动一些服务和程序。</li>
+<li>如上面的配置，在重启之后，vsftpd, mysql 都不会自动启动，mysql 也不会自动启动，这样在重启之后，服务就不可以使用了。</li>
+</ul>
+</li>
+<li>需要自启动的服务和脚本
+<ul>
+<li>需要自启动的服务有vsftpd和mysql</li>
+<li>需要自启动的脚本有tomcat</li>
+<li><strong>在centos7中，服务和脚本的自启动方式是不一样的</strong></li>
+</ul>
+</li>
+<li>服务自启动
+<ul>
+<li>开启vsftpd和mysql自启动</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">systemctl enable vsftpd.service
+systemctl enable mysqld.service
+
+关闭自启动方式
+
+systemctl disable vsftpd.service
+systemctl disable mysqld.service</code></pre>
+<ul>
+<li>脚本自启动
+<ul>
+<li>有个文件<code>rc.local</code>，把脚本放进去就可以了</li>
+<li>但是这个脚本在centos7中被降级了，不能被执行，所以要执行如下语句让其可以被执行</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">chmod +x /etc/rc.d/rc.local
+    
+
+然后修改 /etc/rc.d/rc.local, 放入 tomcat脚本即可
+vi /etc/rc.d/rc.local
+
+加入以下语句
+/usr/local/tomcat7/bin/startup.sh</code></pre>
+<ul>
+<li></li>
+</ul>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

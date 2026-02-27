@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    SCREW 生成数据库文档 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">SCREW 生成数据库文档</div>
+  <div class="post-meta">
+    <div class="date">2020 四月 28日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="screw-生成数据库文档"><a class="markdownIt-Anchor" href="#screw-生成数据库文档"></a> $SCREW 生成数据库文档</h1>
+<h1 id="screw"><a class="markdownIt-Anchor" href="#screw"></a> SCREW</h1>
+<h2 id="解决什么问题"><a class="markdownIt-Anchor" href="#解决什么问题"></a> 解决什么问题</h2>
+<p>数据库文档是我们在企业项目开发中需要交付的文档，通常需要开发人员去手工编写。编写完成后，数据库发生变更又需要手动的进行修改,从而浪费了大量的人力。并且这种文档并没有什么技术含量，被安排做这个工作的程序员往往自己心里会有抵触情绪，悲观的预期自己在团队的位置，造成离职也是可能的。如下面的这种文档的内容：</p>
+<blockquote>
+<p>该工具能够通过简单地配置，快速的根据数据库表结构进行逆向工程，将数据库表结构及字段逆向生成为文档。</p>
+</blockquote>
+<h2 id="特点"><a class="markdownIt-Anchor" href="#特点"></a> 特点</h2>
+<ul>
+<li>简洁、轻量、设计良好</li>
+<li>多数据库支持：MySQL、MariaDB、TIDB、Oracle、 SqlServer、PostgreSQL、Cache DB</li>
+<li>多种格式文档: html、word、 markdwon灵活扩展：</li>
+<li>支持用户自定义模板和展示样式修改（freemarker模板）</li>
+</ul>
+<h2 id="使用"><a class="markdownIt-Anchor" href="#使用"></a> 使用</h2>
+<p><strong>配置maven</strong>:</p>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+    &lt;groupId&gt;cn.smallbun.screw&lt;/groupId&gt;
+    &lt;artifactId&gt;screw-core&lt;/artifactId&gt;
+    &lt;version&gt;1.0.3&lt;/version&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>从maven仓库的编译依赖中可以看到，screw-core其实现依赖了如下的内容。重点关注freemarker，因为该项目是使用freemarker作为模板生成文档。</p>
+<p>除此之外，screw使用了HikariCP作为数据库连接池，所以：</p>
+<ul>
+<li>你的Spring Boot项目需要引入HikariCP数据库连接池。</li>
+<li>根据你的数据库类型及版本，引入正确的JDBC驱动</li>
+</ul>
+<p><strong>代码</strong>：</p>
+<pre><code class="highlight plaintext">
+import cn.smallbun.screw.core.Configuration;
+import cn.smallbun.screw.core.engine.EngineConfig;
+import cn.smallbun.screw.core.engine.EngineFileType;
+import cn.smallbun.screw.core.engine.EngineTemplateType;
+import cn.smallbun.screw.core.execute.DocumentationExecute;
+import cn.smallbun.screw.core.process.ProcessConfig;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
+import org.junit.jupiter.api.Test;
+
+import javax.sql.DataSource;
+import java.util.ArrayList;
+
+public class ScrewTest &#123;
+
+  @Test
+  void testScrew()  &#123;
+    //数据源
+    HikariConfig hikariConfig = new HikariConfig();
+    hikariConfig.setDriverClassName(&quot;com.mysql.cj.jdbc.Driver&quot;);
+    hikariConfig.setJdbcUrl(&quot;jdbc:mysql://127.0.0.1:3306/database&quot;);
+    hikariConfig.setUsername(&quot;db-username&quot;);
+    hikariConfig.setPassword(&quot;db-password&quot;);
+    //设置可以获取tables remarks信息
+    hikariConfig.addDataSourceProperty(&quot;useInformationSchema&quot;, &quot;true&quot;);
+    hikariConfig.setMinimumIdle(2);
+    hikariConfig.setMaximumPoolSize(5);
+    DataSource dataSource = new HikariDataSource(hikariConfig);
+
+    //生成配置
+    EngineConfig engineConfig = EngineConfig.builder()
+            //生成文件路径
+            .fileOutputDir(&quot;d://&quot;)
+            //打开目录
+            .openOutputDir(true)
+            //生成文件类型：HTML
+            .fileType(EngineFileType.HTML)
+            //生成模板实现
+            .produceType(EngineTemplateType.freemarker)
+            .build();
+
+    //忽略表
+    ArrayList&lt;String&gt; ignoreTableName = new ArrayList&lt;&gt;();
+    ignoreTableName.add(&quot;test_user&quot;);
+    ignoreTableName.add(&quot;test_group&quot;);
+    //忽略表前缀
+    ArrayList&lt;String&gt; ignorePrefix = new ArrayList&lt;&gt;();
+    ignorePrefix.add(&quot;test_&quot;);
+    //忽略表后缀
+    ArrayList&lt;String&gt; ignoreSuffix = new ArrayList&lt;&gt;();
+    ignoreSuffix.add(&quot;_test&quot;);
+    ProcessConfig processConfig = ProcessConfig.builder()
+            //指定生成逻辑、当存在指定表、指定表前缀、指定表后缀时，将生成指定表，其余表不生成、并跳过忽略表配置
+            //根据名称指定表生成
+            .designatedTableName(new ArrayList&lt;&gt;())
+            //根据表前缀生成
+            .designatedTablePrefix(new ArrayList&lt;&gt;())
+            //根据表后缀生成
+            .designatedTableSuffix(new ArrayList&lt;&gt;())
+            //忽略表名
+            .ignoreTableName(ignoreTableName)
+            //忽略表前缀
+            .ignoreTablePrefix(ignorePrefix)
+            //忽略表后缀
+            .ignoreTableSuffix(ignoreSuffix).build();
+    //配置
+    Configuration config = Configuration.builder()
+            //版本
+            .version(&quot;1.0.0&quot;)
+            //描述,文档名称
+            .description(&quot;数据库设计文档生成&quot;)
+            //数据源
+            .dataSource(dataSource)
+            //生成配置
+            .engineConfig(engineConfig)
+            //生成配置
+            .produceConfig(processConfig)
+            .build();
+    //执行生成
+    new DocumentationExecute(config).execute();
+
+  &#125;
+&#125;</code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

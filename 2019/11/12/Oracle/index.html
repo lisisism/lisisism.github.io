@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Oracle 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Oracle</div>
+  <div class="post-meta">
+    <div class="date">2019 十一月 12日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Oracle</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="oracle"><a class="markdownIt-Anchor" href="#oracle"></a> $Oracle</h1>
+<h1 id="oracle-2"><a class="markdownIt-Anchor" href="#oracle-2"></a> Oracle</h1>
+<ul>
+<li><a href="">Oracle</a>
+<ul>
+<li><a href="">登录</a></li>
+<li><a href="">表空间</a>
+<ul>
+<li><a href="">创建</a></li>
+<li><a href="">删除</a></li>
+<li><a href="">查询</a></li>
+</ul>
+</li>
+<li><a href="">用户</a>
+<ul>
+<li><a href="">创建</a></li>
+<li><a href="">删除</a></li>
+<li><a href="">赋权限</a></li>
+<li><a href="">修改密码</a></li>
+<li><a href="">查询用户</a></li>
+</ul>
+</li>
+<li><a href="">exp/imp方式</a>
+<ul>
+<li><a href="">导出</a></li>
+<li><a href="">导入</a></li>
+</ul>
+</li>
+<li><a href="">impdp/expdp</a>
+<ul>
+<li><a href="">导出</a></li>
+<li><a href="">导入</a></li>
+</ul>
+</li>
+<li><a href="">触发器</a>
+<ul>
+<li><a href="">禁用</a></li>
+<li><a href="">启用</a></li>
+</ul>
+</li>
+<li><a href="">查看锁表</a>
+<ul>
+<li><a href="">相关表</a></li>
+<li><a href="">查看被锁的表</a></li>
+<li><a href="">杀进程</a></li>
+</ul>
+</li>
+<li><a href="">其他</a>
+<ul>
+<li><a href="">查看历史执行语句</a></li>
+<li><a href="">shell中执行sql</a></li>
+<li><a href="">误删除找回</a>
+<ul>
+<li><a href="">delete误删除</a></li>
+<li><a href="">drop误删除</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="登录"><a class="markdownIt-Anchor" href="#登录"></a> 登录</h2>
+<pre><code class="highlight plaintext">#登录到控制台
+#如果用其他sid登录，先运行此命令
+export ORACLE_SID=sdmorcl）
+#方式登录时，采用的是操作系统验证的方式，所以用户名/密码输与不输入是一样的
+sqlplus / as sysdba
+
+#以操作系统权限认证的oracle sys管理员登陆
+sqlplus &quot;/as sysdba&quot;
+
+#不在cmd或者terminal当中暴露密码的登陆方式
+sqlplus /nolog
+SQL&gt; conn /as sysdba
+SQL&gt; conn sys/password as sysdba
+
+#非管理员用户登陆
+sqlplus scott/tiger
+
+#非管理员用户使用tns别名登陆
+sqlplus scott/tiger@orcl
+
+#管理员用户使用tns别名登陆
+sqlplus sys/password@orcl as sysdba
+
+#不显露密码的登陆方式
+sqlplus</code></pre>
+<h2 id="表空间"><a class="markdownIt-Anchor" href="#表空间"></a> 表空间</h2>
+<h3 id="创建"><a class="markdownIt-Anchor" href="#创建"></a> 创建</h3>
+<pre><code class="highlight plaintext">create tablespace libo
+datafile &#x27;/home/libo/lbo.DBF&#x27;
+size 5m
+autoextend on next 2m
+maxsize unlimited;</code></pre>
+<h3 id="删除"><a class="markdownIt-Anchor" href="#删除"></a> 删除</h3>
+<pre><code class="highlight plaintext">DROP TABLESPACE tablespace_name INCLUDING CONTENTS AND DATAFILES;</code></pre>
+<h3 id="查询"><a class="markdownIt-Anchor" href="#查询"></a> 查询</h3>
+<pre><code class="highlight plaintext">#查询所有表空间
+select * FROM dba_tablespaces
+
+#查询用户表空间
+select default_tablespace from dba_users where username=&#x27;LIBOB&#x27;</code></pre>
+<h2 id="用户"><a class="markdownIt-Anchor" href="#用户"></a> 用户</h2>
+<h3 id="创建-2"><a class="markdownIt-Anchor" href="#创建-2"></a> 创建</h3>
+<pre><code class="highlight plaintext">create user LIBOA identified by 123456 default tablespace libospc;</code></pre>
+<h3 id="删除-2"><a class="markdownIt-Anchor" href="#删除-2"></a> 删除</h3>
+<pre><code class="highlight plaintext">drop user BBB cascade;</code></pre>
+<h3 id="赋权限"><a class="markdownIt-Anchor" href="#赋权限"></a> 赋权限</h3>
+<pre><code class="highlight plaintext">GRANT CONNECT,RESOURCE,DBA TO LIBOA;</code></pre>
+<h3 id="修改密码"><a class="markdownIt-Anchor" href="#修改密码"></a> 修改密码</h3>
+<ul>
+<li>方式一</li>
+</ul>
+<pre><code class="highlight plaintext">alter user system identified by 123456</code></pre>
+<ul>
+<li>方式二：</li>
+</ul>
+<pre><code class="highlight plaintext">grant connect to sys identified by 123456</code></pre>
+<ul>
+<li>方式三：</li>
+</ul>
+<pre><code class="highlight plaintext">SQL&gt; password system</code></pre>
+<h3 id="查询用户"><a class="markdownIt-Anchor" href="#查询用户"></a> 查询用户</h3>
+<pre><code class="highlight plaintext">select * from dba_users</code></pre>
+<h2 id="expimp方式"><a class="markdownIt-Anchor" href="#expimp方式"></a> exp/imp方式</h2>
+<p>该种方式导入之前必须在目标数据库创建与源库相同的表空间/用户才可以导入成功。</p>
+<h3 id="导出"><a class="markdownIt-Anchor" href="#导出"></a> 导出</h3>
+<pre><code class="highlight plaintext">#全部导出
+exp system/123qweASD.@orcl file=/home/libo/dump_exp/dump_exp_full_y.dmp full=y log=/home/libo/dump_exp/dump_exp_full_y.log
+
+#指定用户导出
+exp system/123qweASD.@orcl file=/home/libo/dump_exp/dump_exp_owner.dmp owner=LIBOA,LIBOB log=/home/libo/dump_exp/dump_exp_owner.log</code></pre>
+<h3 id="导入"><a class="markdownIt-Anchor" href="#导入"></a> 导入</h3>
+<pre><code class="highlight plaintext">#修改用户具有对表空间的操作权限
+ALTER USER test5 QUOTA unlimited ON tb5;
+
+# 全部导入
+imp liboa/123456@orcl full=y file=/home/dump/dump_exp_owner.dmp  
+
+# 指定用户导入
+imp system/123qweASD.@orcl fromuser=LIBOA,LIBOB touser=LIBOA,LIBOB file=/home/dump/dump_exp_full_y.dmp ignore=y</code></pre>
+<h2 id="impdpexpdp"><a class="markdownIt-Anchor" href="#impdpexpdp"></a> impdp/expdp</h2>
+<p>该种方式导入之前必须在目标数据库中创建源库的同名表空间才可以导入成功。</p>
+<p><strong>导入导出之前需要先定义DIRECTORY</strong></p>
+<pre><code class="highlight plaintext">create DIRECTORY libo_dump_path as &#x27;/home/libo/dump_expdp&#x27;;</code></pre>
+<p><strong>查询路径</strong></p>
+<pre><code class="highlight plaintext">select * from dba_directories;</code></pre>
+<h3 id="导出-2"><a class="markdownIt-Anchor" href="#导出-2"></a> 导出</h3>
+<pre><code class="highlight plaintext">#全部导出
+expdp $source_user_name/$source_user_pwd  DIRECTORY=$taskname  DUMPFILE=$dumpfilename  LOGFILE=$EXPORT_LOG_FILE  full=y
+
+#指定用户
+expdp $source_user_name/$source_user_pwd  DIRECTORY=$taskname  DUMPFILE=$dumpfilename  LOGFILE=$EXPORT_LOG_FILE  SCHEMAS=$dump_dbname</code></pre>
+<h3 id="导入-2"><a class="markdownIt-Anchor" href="#导入-2"></a> 导入</h3>
+<pre><code class="highlight plaintext">#全部
+impdp $source_user_name/$source_user_pwd DIRECTORY=$taskname DUMPFILE=$dumpname LOGFILE=$IMPORT_LOG_FILE FULL=y TRANSFORM=segment_attributes:n table_exists_action=replace</code></pre>
+<h2 id="触发器"><a class="markdownIt-Anchor" href="#触发器"></a> 触发器</h2>
+<h3 id="禁用"><a class="markdownIt-Anchor" href="#禁用"></a> 禁用</h3>
+<pre><code class="highlight plaintext">#禁用 table_name 表的所有 trigger 
+alter table table_name disable all triggers;
+
+#禁用指定 trigger
+alter trigger trigger_name disable;</code></pre>
+<h3 id="启用"><a class="markdownIt-Anchor" href="#启用"></a> 启用</h3>
+<pre><code class="highlight plaintext">#启用 table_name 表的所有 trigger 
+alter table table_name enable all triggers;
+
+#启用指定 trigger
+alter trigger trigger_name enable;</code></pre>
+<h2 id="查看锁表"><a class="markdownIt-Anchor" href="#查看锁表"></a> 查看锁表</h2>
+<h3 id="相关表"><a class="markdownIt-Anchor" href="#相关表"></a> 相关表</h3>
+<pre><code class="highlight plaintext">SELECT * FROM v$lock;
+SELECT * FROM v$sqlarea;
+SELECT * FROM v$session;
+SELECT * FROM v$process ;
+SELECT * FROM v$locked_object;
+SELECT * FROM all_objects;
+SELECT * FROM v$session_wait;</code></pre>
+<h3 id="查看被锁的表"><a class="markdownIt-Anchor" href="#查看被锁的表"></a> 查看被锁的表</h3>
+<pre><code class="highlight plaintext">--查看被锁的表
+select b.owner,b.object_name,a.session_id,a.locked_mode from v$locked_object a,dba_objects b where b.object_id = a.object_id;
+
+--查看那个用户那个进程照成死锁
+select b.username,b.sid,b.serial#,logon_time from v$locked_object a,v$session b where a.session_id = b.sid order by b.logon_time;
+
+--查看连接的进程
+SELECT sid, serial#, username, osuser FROM v$session;
+
+--查出锁定表的sid, serial#,os_user_name, machine_name, terminal，锁的type,mode
+任何DML语句其实产生了两个锁，一个是表锁，一个是行锁。
+SELECT s.sid, s.serial#, s.username, s.schemaname, s.osuser, s.process, s.machine,
+s.terminal, s.logon_time, l.type
+FROM v$session s, v$lock l
+WHERE s.sid = l.sid
+AND s.username IS NOT NULL
+ORDER BY sid;
+--这个语句将查找到数据库中所有的DML语句产生的锁，还可以发现
+</code></pre>
+<h3 id="杀进程"><a class="markdownIt-Anchor" href="#杀进程"></a> 杀进程</h3>
+<pre><code class="highlight plaintext">--杀掉进程 sid,serial#
+alter system kill session&#x27;210,11562&#x27;;</code></pre>
+<h2 id="其他"><a class="markdownIt-Anchor" href="#其他"></a> 其他</h2>
+<h3 id="查看历史执行语句"><a class="markdownIt-Anchor" href="#查看历史执行语句"></a> 查看历史执行语句</h3>
+<pre><code class="highlight plaintext">SELECT * FROM v$sqlarea WHERE SQL_TEXT LIKE &#x27;%test_bug%&#x27; ORDER BY LAST_ACTIVE_TIME DESC</code></pre>
+<h3 id="shell中执行sql"><a class="markdownIt-Anchor" href="#shell中执行sql"></a> shell中执行sql</h3>
+<pre><code class="highlight plaintext">$ORACLE_HOME/bin/sqlplus  &#x27;/ as sysdba&#x27; &lt;&lt;EOF
+    drop user $user_name cascade;
+    whenever sqlerror exit 1;
+EOF
+
+user_names=`$ORACLE_HOME/bin/sqlplus  &#x27;/ as sysdba&#x27; &lt;&lt;EOF |  sed -n &#x27;/SQL&gt; SQL&gt;/,/SQL&gt;/p&#x27; | sed &#x27;1d;$d&#x27;
+    set echo off feedback off heading off underline off ; 
+    select username from dba_users where default_tablespace=&#x27;$tablespace_name&#x27; ;
+    exit ;
+EOF`</code></pre>
+<h3 id="误删除找回"><a class="markdownIt-Anchor" href="#误删除找回"></a> 误删除找回</h3>
+<h4 id="delete误删除"><a class="markdownIt-Anchor" href="#delete误删除"></a> delete误删除</h4>
+<p>利用oracle提供的闪回方法，如果在删除数据后还没做大量的操作（只要保证被删除数据的块没被覆写），就可以利用闪回方式直接找回删除的数据具体步骤为：</p>
+<ul>
+<li>确定删除数据的时间（在删除数据之前的时间就行，不过最好是删除数据的时间点）</li>
+<li>用以下语句找出删除的数据：</li>
+</ul>
+<pre><code class="highlight plaintext">select * from 表名 as of timestamp to_timestamp(&#x27;2022-03-03 14:00:00&#x27;,&#x27;yyyy-mm-dd hh24:mi:ss&#x27;)</code></pre>
+<ul>
+<li>把删除的数据重新插入原表（注意要保证主键不重复）：</li>
+</ul>
+<pre><code class="highlight plaintext">insert into 表名 (select * from 表名 as of timestamp to_timestamp(&#x27;2022-03-03 14:00:00&#x27;,&#x27;yyyy-mm-dd hh24:mi:ss&#x27;)</code></pre>
+<p>如果表结构没有发生改变，还可以直接使用闪回整个表的方式来恢复数据。具体步骤为：</p>
+<p>表闪回要求用户必须要有flash any table权限</p>
+<ul>
+<li>开启行移动功能</li>
+</ul>
+<pre><code class="highlight plaintext">alter table 表名 enable row movement</code></pre>
+<ul>
+<li>恢复表数据</li>
+</ul>
+<pre><code class="highlight plaintext">flashback table 表名 to timestamp to_timestamp(&#x27;2022-03-03 14:00:00&#x27;,&#x27;yyyy-mm-dd hh24:mi:ss&#x27;)</code></pre>
+<ul>
+<li>关闭行移动功能 ( 千万别忘记 )</li>
+</ul>
+<pre><code class="highlight plaintext">alter table 表名 disable row movement</code></pre>
+<h4 id="drop误删除"><a class="markdownIt-Anchor" href="#drop误删除"></a> drop误删除</h4>
+<p>drop误删除的解决方法原理：由于oracle在删除表时，没有直接清空表所占的块,oracle把这些已删除的表的信息放到了一个虚拟容器“回收站”中，而只是对该表的数据块做了可以被覆写的标志，所以在块未被重新使用前还可以恢复。具体步骤：</p>
+<ul>
+<li>查询这个“回收站”或者查询user_table视图来查找已被删除的表:</li>
+</ul>
+<pre><code class="highlight plaintext">select table_name,dropped from user_tables
+select object_name,original_name,type,droptime from user_recyclebin</code></pre>
+<p>在以上信息中，表名都是被重命名过的，字段table_name或者object_name就是删除后在回收站中的存放表名</p>
+<ul>
+<li>如果还能记住表名，则可以用下面语句直接恢复：</li>
+</ul>
+<pre><code class="highlight plaintext">flashback table 原表名 to before drop</code></pre>
+<p>如果记不住了，也可以直接使用回收站的表名进行恢复，然后再重命名，参照以下语句：</p>
+<pre><code class="highlight plaintext">flashback table &quot;回收站中的表名(如：Bin$DSbdfd4rdfdfdfegdfsf==$0)&quot; to before drop rename to 新表名</code></pre>
+<p>oracle的闪回功能除了以上基本功能外，还可以闪回整个数据库：</p>
+<p>使用数据库闪回功能，可以使数据库回到过去某一状态, 语法如下：</p>
+<pre><code class="highlight plaintext">alter database flashback on
+flashback database to scn SCNNO;
+flashback database to timestamp to_timestamp(&#x27;2007-2-12 12:00:00&#x27;,&#x27;yyyy-mm-dd hh24:mi:ss&#x27;);</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

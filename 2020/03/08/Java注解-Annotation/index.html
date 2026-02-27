@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java注解Annotation 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java注解Annotation</div>
+  <div class="post-meta">
+    <div class="date">2020 三月 8日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java注解annotation"><a class="markdownIt-Anchor" href="#java注解annotation"></a> $Java注解/Annotation</h1>
+<p><code>注解Annotation</code></p>
+<h1 id="注解annotation"><a class="markdownIt-Anchor" href="#注解annotation"></a> 注解/Annotation</h1>
+<ul>
+<li><a href="">注解/Annotation</a>
+<ul>
+<li><a href="">注解分类</a>
+<ul>
+<li><a href="">按照作用域分</a></li>
+<li><a href="">按照来源分</a></li>
+</ul>
+</li>
+<li><a href="">注解</a></li>
+<li><a href="">内置注解</a></li>
+<li><a href="">自定义注解</a>
+<ul>
+<li><a href="">自定义注解案例</a>
+<ul>
+<li><a href="">非注解方式DBUtil</a></li>
+<li><a href="">自定义注解@JDBCConfig</a>
+<ul>
+<li><a href="">案例</a></li>
+</ul>
+</li>
+<li><a href="">注解方式DBUtil</a></li>
+<li><a href="">解析注解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">元注解</a>
+<ul>
+<li><a href="">元注解(metadata)</a></li>
+<li><a href="">@Target</a></li>
+<li><a href="">@Retention</a></li>
+<li><a href="">@Inherited</a></li>
+<li><a href="">@Documented</a></li>
+<li><a href="">@Repeatable</a>
+<ul>
+<li><a href="">案例</a></li>
+<li><a href="">运用举例</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">仿Hibernate注解</a>
+<ul>
+<li><a href="">hibernate两种配置方式</a></li>
+<li><a href="">自定义hibernate注解</a>
+<ul>
+<li><a href="">源码如下</a></li>
+</ul>
+</li>
+<li><a href="">运用到对象上</a></li>
+<li><a href="">解析注解</a></li>
+</ul>
+</li>
+<li><a href="">反射机制读取注解</a>
+<ul>
+<li><a href="">属性与字段对应的注解</a></li>
+<li><a href="">类与表结构对应的注解</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="注解分类"><a class="markdownIt-Anchor" href="#注解分类"></a> 注解分类</h2>
+<h4 id="按照作用域分"><a class="markdownIt-Anchor" href="#按照作用域分"></a> 按照作用域分</h4>
+<ul>
+<li>根据注解的作用域@Retention，注解分为
+<ul>
+<li>RetentionPolicy.SOURCE： Java源文件上的注解</li>
+<li>RetentionPolicy.CLASS： Class类文件上的注解</li>
+<li>RetentionPolicy.RUNTIME： 运行时的注解</li>
+</ul>
+</li>
+</ul>
+<h4 id="按照来源分"><a class="markdownIt-Anchor" href="#按照来源分"></a> 按照来源分</h4>
+<ul>
+<li>按照注解的来源，也是分为3类
+<ol>
+<li>内置注解 如@Override ，@Deprecated 等等</li>
+<li>第三方注解，如Hibernate, Struts等等</li>
+<li>自定义注解，如仿hibernate的自定义注解</li>
+</ol>
+</li>
+</ul>
+<h2 id="注解"><a class="markdownIt-Anchor" href="#注解"></a> 注解</h2>
+<h2 id="内置注解"><a class="markdownIt-Anchor" href="#内置注解"></a> 内置注解</h2>
+<ul>
+<li><code>@Override</code>
+<ul>
+<li>用在方法上，表示这个方法重写了符类的方法，如toString()</li>
+<li>如果父类没有这个方法，那么就无法编译通过</li>
+</ul>
+</li>
+<li><code>@Deprecated</code>
+<ul>
+<li>表示这个方法已经过期，不建议开发者使用（按时将来某个不确定的版本，就有可能会取消掉）</li>
+<li>被标记的方法，在调用用时会受到提示</li>
+</ul>
+</li>
+<li><code>@SuppressWarnings</code>
+<ul>
+<li>这个注解的用处是忽略警告信息</li>
+<li><code>@SuppressWarnings(&#123; &quot;rawtypes&quot;, &quot;unused&quot; &#125;)</code>注解有常见的值
+<ol>
+<li>deprecation：使用了不赞成使用的类或方法时的警告(使用@Deprecated使得编译器产生的警告)；</li>
+<li>unchecked：执行了未检查的转换时的警告，例如当使用集合时没有用泛型 (Generics) 来指定集合保存的类型; 关闭编译器警告</li>
+<li>fallthrough：当 Switch 程序块直接通往下一种情况而没有 Break 时的警告;</li>
+<li>path：在类路径、源文件路径等中有不存在的路径时的警告;</li>
+<li>serial：当在可序列化的类上缺少 serialVersionUID 定义时的警告;</li>
+<li>finally：任何 finally 子句不能正常完成时的警告;</li>
+<li>rawtypes 泛型类型未指明</li>
+<li>unused 引用定义了，但是没有被使用</li>
+<li>all：关于以上所有情况的警告。</li>
+</ol>
+</li>
+</ul>
+</li>
+<li><code>@SafeVarargs</code>
+<ul>
+<li>当使用可变数量的参数的时候，而参数的类型又是泛型T的话，就会出现警告。 这个时候，就使用@SafeVarargs来去掉这个警告</li>
+<li>只能用在参数长度可变的方法或构造方法上，且方法必须声明为static或final，否则会出现编译错误。一个方法使用@SafeVarargs注解的前提是，开发人员必须确保这个方法的实现中对泛型类型参数的处理不会引发类型安全问题</li>
+</ul>
+</li>
+<li><code>@FunctionalInterface</code>
+<ul>
+<li>用于约定函数式接口，函数式接口概念： 如果接口中只有一个抽象方法（可以包含多个默认方法或多个static方法），该接口称为函数式接口。函数式接口其存在的意义，主要是配合Lambda 表达式 来使用</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+/*
+ * 此注解表明抑制该类中的所有警告信息
+ */
+@SuppressWarnings(&quot;all&quot;)
+public class Demo1 &#123;
+
+     /*
+        @ 符号后面就是注解
+        此注解的含义是标注此方法是重写的父类的方法，若父类没有该方法，编译器则报错
+      */
+     @Override
+     public String toString()&#123;
+           return &quot;&quot;;
+     &#125;
+     /*
+      * 此注解的含义是标注这个方法是遗弃的，不建议使用的，但可以使用，只是说明可能有更好的方法取代
+      */
+     @Deprecated
+     public int toInt()&#123;
+           return 1;
+     &#125;
+&#125;</code></pre>
+<h2 id="自定义注解"><a class="markdownIt-Anchor" href="#自定义注解"></a> 自定义注解</h2>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+
+/**
+ * 自定义注解
+ * @author Mr
+ *
+ */
+/*
+ * @Target  元注解表示负责注解其他注解
+ * 此注解用于标注其他注解的使用范围，如可以用于方法，类，属性等等
+ */
+@Target(value=&#123;ElementType.METHOD,ElementType.TYPE&#125;) //元注解
+/*
+ * @Retention
+ * 此注解用于描述其他注解的生命周期
+ * RUNRIME运行时有效    CLASS在class文件中有效     SOURCE在源文件中有效
+ * RUNTIME的注解可以被反射机制拿来使用
+ */
+@Retention(RetentionPolicy.RUNTIME)   //元注解
+
+public @interface MyAnnotation &#123;  //自定义注解
+
+     String studentName() default &quot;&quot;;
+     int age() default 0;
+     int id() default -1;
+
+     String[] schools() default&#123;&quot;清华大学&quot;,&quot;北京大学&quot;&#125;;
+&#125;
+
+package com.li.Annotation;
+//使用注解 
+
+@MyAnnotation
+public class Demo2 &#123;
+
+     //显式的定义注解属性
+     @MyAnnotation(age=19,studentName=&quot;老高&quot;,id=1001,schools=&#123;&quot;哈佛大学&quot;,&quot;麻神大学&quot;&#125;)
+     public void test()&#123;
+
+     &#125;
+     @MyAnnotation2(value=&#123;&quot;aaa&quot;&#125;)
+     public void test2()&#123;
+
+     &#125;
+&#125;</code></pre>
+<h3 id="自定义注解案例"><a class="markdownIt-Anchor" href="#自定义注解案例"></a> 自定义注解案例</h3>
+<h5 id="非注解方式dbutil"><a class="markdownIt-Anchor" href="#非注解方式dbutil"></a> 非注解方式DBUtil</h5>
+<ul>
+<li>通常来讲，在一个基于JDBC开发的项目里，都会有一个DBUtil这么一个类，在这个类里统一提供连接数据库的IP地址，端口，数据库名称， 账号，密码，编码方式等信息。如例所示，在这个DBUtil类里，这些信息，就是以属性的方式定义在类里的</li>
+</ul>
+<blockquote>
+<p>注： 运行需要用到连接mysql的jar包，如果没有，可在右侧下载</p>
+</blockquote>
+<pre><code class="highlight plaintext">package util;
+   
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+   
+public class DBUtil &#123;
+    static String ip = &quot;127.0.0.1&quot;;
+    static int port = 3306;
+    static String database = &quot;test&quot;;
+    static String encoding = &quot;UTF-8&quot;;
+    static String loginName = &quot;root&quot;;
+    static String password = &quot;admin&quot;;
+    static&#123;
+        try &#123;
+            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        &#125; catch (ClassNotFoundException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+   
+    public static Connection getConnection() throws SQLException &#123;
+        String url = String.format(&quot;jdbc:mysql://%s:%d/%s?characterEncoding=%s&quot;, ip, port, database, encoding);
+        return DriverManager.getConnection(url, loginName, password);
+    &#125;
+    public static void main(String[] args) throws SQLException &#123;
+        System.out.println(getConnection());
+    &#125;
+&#125;</code></pre>
+<h5 id="自定义注解jdbcconfig"><a class="markdownIt-Anchor" href="#自定义注解jdbcconfig"></a> 自定义注解@JDBCConfig</h5>
+<ul>
+<li><strong>创建注解</strong>
+<ul>
+<li>创建注解类型的时候使用<code>@interface</code>关键字</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">public @interface JDBCConfig</code></pre>
+<ul>
+<li><strong>元注解（用在定义注解上的注解）</strong>
+<ul>
+<li><code>@Target(&#123;METHOD,TYPE&#125;)</code>
+<ul>
+<li>表示这个注解可以用用在类/接口上，还可以用在方法上</li>
+</ul>
+</li>
+<li><code>@Retention(RetentionPolicy.RUNTIME)</code>
+<ul>
+<li>表示这是一个运行时注解，即运行起来之后，才获取注解中的相关信息，而不像基本注解如@Override 那种不用运行，在编译时eclipse就可以进行相关工作的编译时注解</li>
+</ul>
+</li>
+<li><code>@Inherited</code>
+<ul>
+<li>表示这个注解可以被子类继承</li>
+</ul>
+</li>
+<li><code>@Documented</code>
+<ul>
+<li>表示当执行javadoc的时候，本注解会生成相关文档</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>注解元�</strong>�
+<ul>
+<li>这些注解元素就用于存放注解信息，在解析的时候获取出来</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">String ip();
+int port() default 3306;
+String database();
+String encoding();
+String loginName();
+String password();</code></pre>
+<h6 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h6>
+<pre><code class="highlight plaintext">package anno;
+ 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+ 
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(&#123;METHOD,TYPE&#125;)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface JDBCConfig &#123;
+     String ip();
+     int port() default 3306;
+     String database();
+     String encoding();
+     String loginName();
+     String password();
+&#125;</code></pre>
+<h5 id="注解方式dbutil"><a class="markdownIt-Anchor" href="#注解方式dbutil"></a> 注解方式DBUtil</h5>
+<ul>
+<li>有了自定义注解@JDBCConfig之后，我们就把非注解方式DBUtil改造成为注解方式DBUtil。<br />
+如例所示，数据库相关配置信息本来是以属性的方式存放的，现在改为了以注解的方式，提供这些信息了</li>
+</ul>
+<pre><code class="highlight plaintext">package util;
+ 
+import anno.JDBCConfig;
+ 
+@JDBCConfig(ip = &quot;127.0.0.1&quot;, database = &quot;test&quot;, encoding = &quot;UTF-8&quot;, loginName = &quot;root&quot;, password = &quot;admin&quot;)
+public class DBUtil &#123;
+    static &#123;
+        try &#123;
+            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        &#125; catch (ClassNotFoundException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+ &#125;</code></pre>
+<h5 id="解析注解"><a class="markdownIt-Anchor" href="#解析注解"></a> 解析注解</h5>
+<ul>
+<li>获取DBUtil这个类上的注解对象</li>
+</ul>
+<pre><code class="highlight plaintext">JDBCConfig config = DBUtil.class.getAnnotation(JDBCConfig.class);</code></pre>
+<ul>
+<li>拿到注解对象，解析</li>
+</ul>
+<pre><code class="highlight plaintext">String ip = config.ip();
+int port = config.port();
+String database = config.database();
+String encoding = config.encoding();
+String loginName = config.loginName();
+String password = config.password();</code></pre>
+<pre><code class="highlight plaintext">package util;
+ 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+ 
+import anno.JDBCConfig;
+ 
+@JDBCConfig(ip = &quot;127.0.0.1&quot;, database = &quot;test&quot;, encoding = &quot;UTF-8&quot;, loginName = &quot;root&quot;, password = &quot;admin&quot;)
+public class DBUtil &#123;
+    static &#123;
+        try &#123;
+            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        &#125; catch (ClassNotFoundException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+ 
+    public static Connection getConnection() throws SQLException, NoSuchMethodException, SecurityException &#123;
+        JDBCConfig config = DBUtil.class.getAnnotation(JDBCConfig.class);
+ 
+        String ip = config.ip();
+        int port = config.port();
+        String database = config.database();
+        String encoding = config.encoding();
+        String loginName = config.loginName();
+        String password = config.password();
+ 
+        String url = String.format(&quot;jdbc:mysql://%s:%d/%s?characterEncoding=%s&quot;, ip, port, database, encoding);
+        return DriverManager.getConnection(url, loginName, password);
+    &#125;
+     
+    public static void main(String[] args) throws NoSuchMethodException, SecurityException, SQLException &#123;
+        Connection c = getConnection();
+        System.out.println(c);
+    &#125;
+&#125;</code></pre>
+<h2 id="元注解"><a class="markdownIt-Anchor" href="#元注解"></a> 元注解</h2>
+<h4 id="元注解metadata"><a class="markdownIt-Anchor" href="#元注解metadata"></a> 元注解(metadata)</h4>
+<ul>
+<li>
+<p>英文解释为<code>Metadata is data [information] that provides information about other data</code>意思为 为其他数据提供信息的数据</p>
+</li>
+<li>
+<p>元注解meta annotation用于注解自定义注解 的注解</p>
+</li>
+<li>
+<p>元注解有以下几种</p>
+</li>
+<li>
+<p>Target</p>
+</li>
+<li>
+<p>Retention</p>
+</li>
+<li>
+<p>Inherited</p>
+</li>
+<li>
+<p>Documented</p>
+</li>
+<li>
+<p>Repeatable</p>
+</li>
+</ul>
+<h4 id="target"><a class="markdownIt-Anchor" href="#target"></a> @Target</h4>
+<ul>
+<li><code>@Target(&#123;METHOD,TYPE&#125;)</code>，表示他可以用在方法和类型上（类和接口），但是不能放在属性等其他位置。 可以选择的位置列表如下：
+<ul>
+<li><code>ElementType.TYPE</code>：能修饰类、接口或枚举类型</li>
+<li><code>ElementType.FIELD</code>：能修饰成员变量</li>
+<li><code>ElementType.METHOD</code>：能修饰方法</li>
+<li><code>ElementType.PARAMETER</code>：能修饰参数</li>
+<li><code>ElementType.CONSTRUCTOR</code>：能修饰构造器</li>
+<li><code>ElementType.LOCAL_VARIABLE</code>：能修饰局部变量</li>
+<li><code>ElementType.ANNOTATION_TYPE</code>：能修饰注解</li>
+<li><code>ElementType.PACKAGE</code>：能修饰包</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package anno;
+  
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.TYPE;
+  
+import java.lang.annotation.Documented;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+  
+@Target(&#123;METHOD,TYPE&#125;)
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+public @interface JDBCConfig &#123;
+     String ip();
+     int port() default 3306;
+     String database();
+     String encoding();
+     String loginName();
+     String password();
+&#125;</code></pre>
+<h4 id="retention"><a class="markdownIt-Anchor" href="#retention"></a> @Retention</h4>
+<ul>
+<li>表示生命周期</li>
+<li>可选参数有3个
+<ul>
+<li><code>RetentionPolicy.SOURCE</code>： 注解只在源代码中存在，编译成class之后，就没了。@Override 就是这种注解。</li>
+<li><code>RetentionPolicy.CLASS</code>： 注解在java文件编程成.class文件后，依然存在，但是运行起来后就没了。@Retention的默认值，即当没有显式指定@Retention的时候，就会是这种类型。</li>
+<li><code>RetentionPolicy.RUNTIME</code>： 注解在运行起来之后依然存在，程序可以通过反射获取这些信息，自定义注解</li>
+</ul>
+</li>
+</ul>
+<h4 id="inherited"><a class="markdownIt-Anchor" href="#inherited"></a> @Inherited</h4>
+<ul>
+<li>@Inherited 表示该注解具有继承性。如例，设计一个DBUtil的子类，其getConnection2方法，可以获取到父类DBUtil上的注解信息</li>
+</ul>
+<pre><code class="highlight plaintext">package util;
+ 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+ 
+import anno.JDBCConfig;
+ 
+public class DBUtilChild extends DBUtil &#123;
+     
+    public static Connection getConnection2() throws SQLException, NoSuchMethodException, SecurityException &#123;
+        JDBCConfig config = DBUtilChild.class.getAnnotation(JDBCConfig.class);
+        String ip = config.ip();
+        int port = config.port();
+        String database = config.database();
+        String encoding = config.encoding();
+        String loginName = config.loginName();
+        String password = config.password();
+ 
+        String url = String.format(&quot;jdbc:mysql://%s:%d/%s?characterEncoding=%s&quot;, ip, port, database, encoding);
+        return DriverManager.getConnection(url, loginName, password);
+    &#125;
+     
+    public static void main(String[] args) throws NoSuchMethodException, SecurityException, SQLException &#123;
+        Connection c = getConnection2();
+        System.out.println(c);
+    &#125;
+&#125;</code></pre>
+<h4 id="documented"><a class="markdownIt-Anchor" href="#documented"></a> @Documented</h4>
+<ul>
+<li>@Documented 如图所示， 在用javadoc命令生成API文档后，DBUtil的文档里会出现该注解说明</li>
+<li></li>
+</ul>
+<blockquote>
+<p>注： 使用eclipse把项目中的.java文件导成API文档步骤：</p>
+<ol>
+<li>选中项目</li>
+<li>点开菜单File</li>
+<li>点击Export</li>
+<li>点开java-&gt;javadoc-&gt;点next</li>
+<li>点finish</li>
+</ol>
+</blockquote>
+<h4 id="repeatable"><a class="markdownIt-Anchor" href="#repeatable"></a> @Repeatable</h4>
+<ul>
+<li>使用@Repeatable之后，再配合一些其他动作，就可以在同一个地方使用多次注解了</li>
+</ul>
+<h5 id="案例-2"><a class="markdownIt-Anchor" href="#案例-2"></a> 案例</h5>
+<pre><code class="highlight plaintext">package util;
+ 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+ 
+import anno.JDBCConfig;
+ 
+@JDBCConfig(ip = &quot;127.0.0.1&quot;, database = &quot;test&quot;, encoding = &quot;UTF-8&quot;, loginName = &quot;root&quot;, password = &quot;admin&quot;)
+@JDBCConfig(ip = &quot;127.0.0.1&quot;, database = &quot;test&quot;, encoding = &quot;UTF-8&quot;, loginName = &quot;root&quot;, password = &quot;admin&quot;)
+public class DBUtil &#123;
+    static &#123;
+        try &#123;
+            Class.forName(&quot;com.mysql.jdbc.Driver&quot;);
+        &#125; catch (ClassNotFoundException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+ 
+    public static Connection getConnection() throws SQLException, NoSuchMethodException, SecurityException &#123;
+        JDBCConfig config = DBUtil.class.getAnnotation(JDBCConfig.class);
+        System.out.println(config);
+ 
+        String ip = config.ip();
+        int port = config.port();
+        String database = config.database();
+        String encoding = config.encoding();
+        String loginName = config.loginName();
+        String password = config.password();
+ 
+        String url = String.format(&quot;jdbc:mysql://%s:%d/%s?characterEncoding=%s&quot;, ip, port, database, encoding);
+        return DriverManager.getConnection(url, loginName, password);
+    &#125;
+     
+    public static void main(String[] args) throws NoSuchMethodException, SecurityException, SQLException &#123;
+        Connection c = getConnection();
+        System.out.println(c);
+    &#125;
+&#125;</code></pre>
+<h5 id="运用举例"><a class="markdownIt-Anchor" href="#运用举例"></a> 运用举例</h5>
+<pre><code class="highlight plaintext">package annotation;
+import static java.lang.annotation.ElementType.METHOD;
+ 
+import java.lang.annotation.Repeatable;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+public class FindFiles &#123;
+    @Target( METHOD)
+    @Retention( RetentionPolicy.RUNTIME )
+    public @interface FileTypes &#123;
+        FileType[] value();
+    &#125;
+ 
+    @Target(  METHOD )
+    @Retention( RetentionPolicy.RUNTIME )
+    @Repeatable( FileTypes.class )
+    public @interface FileType &#123;
+        String value();
+    &#125;;
+ 
+    @FileType( &quot;.java&quot; )
+    @FileType( &quot;.html&quot; )
+    @FileType( &quot;.css&quot; )
+    @FileType( &quot;.js&quot; )
+    public void work()&#123;
+         
+        try &#123;
+            FileType[] fileTypes= this.getClass().getMethod(&quot;work&quot;).getAnnotationsByType(FileType.class);
+            System.out.println(&quot;将从如下后缀名的文件中查找文件内容&quot;);
+            for (FileType fileType : fileTypes) &#123;
+                System.out.println(fileType.value());
+            &#125;
+            System.out.println(&quot;查找过程略。。。&quot;);
+        &#125; catch (NoSuchMethodException | SecurityException e) &#123;
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        &#125;
+    &#125;
+ 
+    public static void main(String[] args) &#123;
+        new FindFiles().work();
+    &#125;
+&#125;</code></pre>
+<h2 id="仿hibernate注解"><a class="markdownIt-Anchor" href="#仿hibernate注解"></a> 仿Hibernate注解</h2>
+<h4 id="hibernate两种配置方式"><a class="markdownIt-Anchor" href="#hibernate两种配置方式"></a> hibernate两种配置方式</h4>
+<ul>
+<li><strong>用.hbm.xml配置方式</strong></li>
+<li><strong>注解方式</strong></li>
+<li>解决以下问题
+<ul>
+<li>当前类是否是实体类</li>
+<li>对应的表名称</li>
+<li>主键对应哪个属性，自增长策略是什么，对应字段名称是什么</li>
+<li>非逐渐属性对应字段名是什么</li>
+</ul>
+</li>
+</ul>
+<h4 id="自定义hibernate注解"><a class="markdownIt-Anchor" href="#自定义hibernate注解"></a> 自定义hibernate注解</h4>
+<ul>
+<li>参考hibernate的注解配置方式，自定义5个注解，分别对应hibernate中用到的注解
+<ul>
+<li>hibernate_annotation.MyEntity 对应 javax.persistence.Entity</li>
+<li>hibernate_annotation.MyTable 对应 javax.persistence.Table</li>
+<li>hibernate_annotation.MyId 对应 <a target="_blank" rel="noopener" href="http://javax.persistence.Id">javax.persistence.Id</a></li>
+<li>hibernate_annotation.MyGeneratedValue 对应 javax.persistence.GeneratedValue</li>
+<li>hibernate_annotation.MyColumn 对应 javax.persistence.Column</li>
+</ul>
+</li>
+</ul>
+<h5 id="源码如下"><a class="markdownIt-Anchor" href="#源码如下"></a> 源码如下</h5>
+<pre><code class="highlight plaintext">MyEntity
+-------------------------------------------------------------------------------
+package hibernate_annotation;
+ 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyEntity &#123;
+ 
+&#125;
+
+MyTable
+-------------------------------------------------------------------------------
+package hibernate_annotation;
+ 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyTable &#123;
+ 
+    String name();
+&#125;
+
+MyId
+-------------------------------------------------------------------------------
+package hibernate_annotation;
+ 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyId &#123;
+ 
+&#125;
+
+MyGeneratedValue
+-------------------------------------------------------------------------------
+package hibernate_annotation;
+ 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyGeneratedValue &#123;
+    String strategy();
+&#125;
+
+MyColumn
+-------------------------------------------------------------------------------
+package hibernate_annotation;
+ 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+ 
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MyColumn &#123;
+    String value();
+&#125;</code></pre>
+<h4 id="运用到对象上"><a class="markdownIt-Anchor" href="#运用到对象上"></a> 运用到对象上</h4>
+<ul>
+<li>在hero类上运用这些自定义注解</li>
+<li>当注解方法是value的时候，给这个注解赋值时，可以把<code>@MyColumn(value=&quot;name_&quot;)</code>简写为<code>@MyColumn(&quot;name_&quot;)</code></li>
+</ul>
+<blockquote>
+<p>注：只有value名称可以简写</p>
+</blockquote>
+<pre><code class="highlight plaintext">package pojo;
+ 
+import hibernate_annotation.MyColumn;
+import hibernate_annotation.MyEntity;
+import hibernate_annotation.MyGeneratedValue;
+import hibernate_annotation.MyId;
+import hibernate_annotation.MyTable;
+ 
+@MyEntity
+@MyTable(name=&quot;hero_&quot;)
+public class Hero &#123;
+    private int id;
+    private String name;
+    private int damage;
+    private int armor;
+     
+    @MyId
+    @MyGeneratedValue(strategy = &quot;identity&quot;)
+    @MyColumn(&quot;id_&quot;)
+    public int getId() &#123;
+        return id;
+    &#125;
+    public void setId(int id) &#123;
+        this.id = id;
+    &#125;
+    @MyColumn(&quot;name_&quot;)
+    public String getName() &#123;
+        return name;
+    &#125;
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+    @MyColumn(&quot;damage_&quot;)
+    public int getDamage() &#123;
+        return damage;
+    &#125;
+    public void setDamage(int damage) &#123;
+        this.damage = damage;
+    &#125;
+    @MyColumn(&quot;armor_&quot;)
+    public int getArmor() &#123;
+        return armor;
+    &#125;
+    public void setArmor(int armor) &#123;
+        this.armor = armor;
+    &#125;
+     
+&#125;</code></pre>
+<h4 id="解析注解-2"><a class="markdownIt-Anchor" href="#解析注解-2"></a> 解析注解</h4>
+<ul>
+<li>创建一个解析类ParseHibernateAnnotation获取hero类上的注解信息</li>
+</ul>
+<pre><code class="highlight plaintext">package test;
+ 
+import java.lang.reflect.Method;
+import hibernate_annotation.MyColumn;
+import hibernate_annotation.MyEntity;
+import hibernate_annotation.MyGeneratedValue;
+import hibernate_annotation.MyId;
+import hibernate_annotation.MyTable;
+import pojo.Hero;
+ 
+public class ParseHibernateAnnotation &#123;
+ 
+    public static void main(String[] args) &#123;
+ 
+        Class&lt;Hero&gt; clazz = Hero.class;
+        MyEntity myEntity = (MyEntity) clazz.getAnnotation(MyEntity.class);
+        if (null == myEntity) &#123;
+            System.out.println(&quot;Hero类不是实体类&quot;);
+        &#125; else &#123;
+            System.out.println(&quot;Hero类是实体类&quot;);
+            MyTable myTable= (MyTable) clazz.getAnnotation(MyTable.class);
+            String tableName = myTable.name();
+            System.out.println(&quot;其对应的表名是:&quot; + tableName);
+            Method[] methods =clazz.getMethods();
+            Method primaryKeyMethod = null;
+            for (Method m: methods) &#123;
+                MyId myId = m.getAnnotation(MyId.class);
+                if(null!=myId)&#123;
+                    primaryKeyMethod = m;
+                    break;
+                &#125;
+            &#125;
+             
+            if(null!=primaryKeyMethod)&#123;
+                System.out.println(&quot;找到主键：&quot; + method2attribute( primaryKeyMethod.getName() ));
+                MyGeneratedValue myGeneratedValue =
+                primaryKeyMethod.getAnnotation(MyGeneratedValue.class);
+                System.out.println(&quot;其自增长策略是：&quot; +myGeneratedValue.strategy());
+                MyColumn myColumn = primaryKeyMethod.getAnnotation(MyColumn.class);
+                System.out.println(&quot;对应数据库中的字段是：&quot; +myColumn.value());
+            &#125;
+            System.out.println(&quot;其他非主键属性分别对应的数据库字段如下：&quot;);
+            for (Method m: methods) &#123;
+                if(m==primaryKeyMethod)&#123;
+                    continue;
+                &#125;
+                MyColumn myColumn = m.getAnnotation(MyColumn.class);
+                //那些setter方法上是没有MyColumn注解的
+                if(null==myColumn)
+                    continue;
+                System.out.format(&quot;属性： %s\t对应的数据库字段是:%s%n&quot;,method2attribute(m.getName()),myColumn.value());
+ 
+            &#125;  
+        &#125;
+    &#125;
+ 
+    private static String method2attribute(String methodName) &#123;
+        String result = methodName; ;
+        result = result.replaceFirst(&quot;get&quot;, &quot;&quot;);
+        result = result.replaceFirst(&quot;is&quot;, &quot;&quot;);
+        if(result.length()&lt;=1)&#123;
+            return result.toLowerCase();
+        &#125;
+        else&#123;
+            return result.substring(0,1).toLowerCase() + result.substring(1,result.length());
+        &#125; 
+    &#125;
+&#125;</code></pre>
+<ul>
+<li>输出</li>
+</ul>
+<h2 id="反射机制读取注解"><a class="markdownIt-Anchor" href="#反射机制读取注解"></a> 反射机制读取注解</h2>
+<ul>
+<li>模拟使用注解标注类属性鱼数据库表字段之间的转换</li>
+</ul>
+<h4 id="属性与字段对应的注解"><a class="markdownIt-Anchor" href="#属性与字段对应的注解"></a> 属性与字段对应的注解</h4>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+属性与字段对应注解
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(value=&#123;ElementType.FIELD&#125;)  //定义此注解只是用与类
+@Retention(RetentionPolicy.RUNTIME)  //定义此注解需在运行是有效
+/*
+ * 此注释作用：Java类与数据库表之间转换的说明
+ */
+public @interface SxtField &#123;
+
+    String columnName();  //数据库表中字段名
+    String type();    //数据库表中字段类型
+    int length();    //数据库表中字段长度
+&#125;</code></pre>
+<h3 id="类与表结构对应的注解"><a class="markdownIt-Anchor" href="#类与表结构对应的注解"></a> 类与表结构对应的注解</h3>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+//类与表结构对应注解
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target(value=&#123;ElementType.TYPE&#125;)  //定义此注解只是用与类
+@Retention(RetentionPolicy.RUNTIME)  //定义此注解需在运行是有效
+public @interface SxtTable &#123;
+
+    String value();
+&#125;</code></pre>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+/*
+ * tb_student表对应的Java bean 类
+ *
+ */
+@SxtTable(value=&quot;tb_student&quot;)   //注释此类对应数据库的tb_student表
+public class SxtStudent &#123;
+     @SxtField(columnName=&quot;id&quot;,type=&quot;int&quot;,length=10)  //注释此成员变量对应的数据库表字段的名字类型和长度
+     private int id;
+     @SxtField(columnName=&quot;sname&quot;,type=&quot;String&quot;,length=10)//同上
+     private String sname;
+     @SxtField(columnName=&quot;age&quot;,type=&quot;int&quot;,length=3)//同上
+     private int age;
+
+     public int getId() &#123;
+           return id;
+     &#125;
+     public void setId(int id) &#123;
+           this.id = id;
+     &#125;
+     public String getSname() &#123;
+           return sname;
+     &#125;
+     public void setSname(String sname) &#123;
+           this.sname = sname;
+     &#125;
+     public int getAge() &#123;
+           return age;
+     &#125;
+     public void setAge(int age) &#123;
+           this.age = age;
+     &#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">package com.li.Annotation;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+
+/**
+ * 使用反射读取注解的信息，模拟处理注解信息的流程
+ * @author Mr
+ *
+ */
+public class SetDemo &#123;
+
+    public static void main(String[] args) &#123;
+        //首先加载类
+        try &#123;
+            Class clazz = Class.forName(&quot;com.li.Annotation.SxtStudent&quot;); //Class类可以存一个类中的所有信息
+            /*
+             * 获取这个类在类上修饰的所有注解
+             */
+            Annotation[] annotation = clazz.getAnnotations();
+            for (Annotation a : annotation) &#123;
+                System.out.println(a);
+            &#125;
+            /*
+             * 直接获取一个指定的类注解
+             */
+            SxtTable st = (SxtTable) clazz.getAnnotation(SxtTable.class);
+            System.out.println(st.value());
+            /*
+             * 获得类属性的注解
+             */
+
+            Field field = clazz.getDeclaredField(&quot;sname&quot;); //获取属性sname的所有信息
+            SxtField sf = field.getAnnotation(SxtField.class);//获取此属性中名为SxtField的注解信息
+            System.out.println(sf.columnName()+&quot;--&quot;+sf.type()+&quot;--&quot;+sf.length());
+
+        &#125; catch (Exception e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+&#125;</code></pre>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

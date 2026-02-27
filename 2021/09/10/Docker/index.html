@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Docker 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Docker</div>
+  <div class="post-meta">
+    <div class="date">2021 九月 10日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Docker</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="docker"><a class="markdownIt-Anchor" href="#docker"></a> Docker</h1>
+<h2 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h2>
+<h3 id="传统部署项目方式"><a class="markdownIt-Anchor" href="#传统部署项目方式"></a> 传统部署项目方式</h3>
+<p>简单地说，我们手里有个 WEB 应用，叫做模仿天猫 J2EE版，现在站长把这个给大家用。 大家为了能够顺利地把这个 WEB应用跑起来，必须做如下工作：</p>
+<ol>
+<li>安装 FTP 服务器，配置它，配置FTP用户</li>
+<li>安装JAVA环境</li>
+<li>安装数据库，配置数据库</li>
+<li>安装TOMCAT</li>
+<li>开放FTP和TOMCAT端口</li>
+<li>上传站长给大家的 模仿天猫J2EE应用</li>
+<li>配置 TOMCAT</li>
+<li>上传站长给大家的 模仿天猫的 SQL语句</li>
+<li>导入这个 SQL 语句</li>
+<li>启动TOMCAT</li>
+</ol>
+<p>这么一系列的动作，才可以使用起来！</p>
+<p>原因只有一个，你没有运行模仿天猫的环境，得自己搭建这个环境才行。</p>
+<p>这个搭建环境的过程是如此之长， 不仅耗时耗力，而且只要有一步忘记了，或者做错了，都会卡在那里做不下去，无法得到最后想要的效果</p>
+<h3 id="docker方式"><a class="markdownIt-Anchor" href="#docker方式"></a> Docker方式</h3>
+<p>还是部署 J2EE 这个事情，下面用 Docker 来做。</p>
+<ol>
+<li>首先，要弄个 Linux 操作系统，这个是跑不掉的</li>
+<li>安装 Docker</li>
+<li>在Docker里， 装了个小的操作系统 Linux</li>
+<li>站长把 部署一个J2EE应用 里 列举出来的 10件事情都 由站长做了<br />
+4.1. <code>安装 FTP 服务器，配置它，配置FTP用户</code><br />
+4.2. <code>安装JAVA环境</code><br />
+4.3. <code>安装数据库，配置数据库</code><br />
+4.4. <code>安装TOMCAT</code><br />
+4.5. <code>开发FTP和TOMCAT端口</code><br />
+4.6. <code>上传站长给大家的 模仿天猫J2EE应用</code><br />
+4.7. <code>配置 TOMCAT</code><br />
+4.8. <code>上传站长给大家的 模仿天猫的 SQL语句</code><br />
+4.9. <code>导入这个 SQL 语句</code><br />
+4.10. <code>启动TOMCAT</code></li>
+<li>然后，站长直接把 Docker 里面这个，已经有环境，已经装好了J2EE应用，已经确保可以用<strong>的 &quot;Linux 操作系统” 整个儿扔给你</strong></li>
+</ol>
+<blockquote>
+<p>这就是 Docker</p>
+</blockquote>
+<h2 id="安装docker"><a class="markdownIt-Anchor" href="#安装docker"></a> 安装Docker</h2>
+<p>市面上的教程，安装 Docker 通常会分为</p>
+<ol>
+<li>Linux 里安装 Docker</li>
+<li>Mac 里安装 Docker</li>
+<li>Windows 里安装 Docker</li>
+</ol>
+<p>事实上呢，大家工作的时候90%的可能性，都是会在 Linux 上装 Docker,用 Docker. 所以 Mac安装和 Windows 安装就显得意义不大了，所以站长就直接带着大家撸 Linux 安装好了</p>
+<h3 id="安装启动docker"><a class="markdownIt-Anchor" href="#安装启动docker"></a> 安装/启动docker</h3>
+<p><strong>更新yum</strong></p>
+<p>我们会通过 yum 来安装 Docker, 所以首先更新 yum</p>
+<pre><code class="highlight plaintext">yum -y update</code></pre>
+<hr />
+<p><strong>安装docker</strong></p>
+<pre><code class="highlight plaintext">yum install docker -y</code></pre>
+<hr />
+<p><strong>启动docker</strong></p>
+<pre><code class="highlight plaintext">systemctl start docker.service
+systemctl status docker.service</code></pre>
+<blockquote>
+<p>看到那个 active 就表示已经在运行啦</p>
+</blockquote>
+<p>以下是docker 的生命周期管理常用命令：</p>
+<pre><code class="highlight plaintext">systemctl stop docker.service
+systemctl start docker.service
+systemctl restart docker.service
+systemctl status docker.service</code></pre>
+<h2 id="docker跑天猫项目"><a class="markdownIt-Anchor" href="#docker跑天猫项目"></a> Docker跑天猫项目</h2>
+<h3 id="常用工具"><a class="markdownIt-Anchor" href="#常用工具"></a> 常用工具</h3>
+<p>围绕 Docker 的正常使用，还需要一些配套工具。<br />
+刚装的 CentOS ， 有些工具有，有些没有，所以我会习惯性地装如下工具</p>
+<ul>
+<li><strong>iproute</strong> 用来执行 ip address 查看本机地址</li>
+<li><strong>ftp</strong> 用来测试ftp 服务器</li>
+<li><strong>bind_utils</strong> 用来运行 nslookup</li>
+<li><strong>net-tools</strong> 用来执行 netstate</li>
+<li><strong>wget</strong> 既是执行 wget的</li>
+</ul>
+<pre><code class="highlight plaintext">yum install iproute ftp bind-utils net-tools wget -y</code></pre>
+<blockquote>
+<p>这些工具都是比较常见的，尤其在检验某个服务是否正常工作的时候，会起到很好的作用</p>
+</blockquote>
+<h3 id="配置dns"><a class="markdownIt-Anchor" href="#配置dns"></a> 配置DNS</h3>
+<p>虚拟机的 dns 是宿主机，即同学用的台式电脑或者笔记本。 有时候会有问题，我们需要把它改成常用的 DNS。</p>
+<p>先运行</p>
+<pre><code class="highlight plaintext">nslookup www.baidu.com</code></pre>
+<p>会发现它使用的域名服务器地址是<br />
+192.168.84.2，这样是不行的，后面 docker 运行会出问题。<br />
+所以我们把它改为公用的 域名服务器地址</p>
+<pre><code class="highlight plaintext">vi /etc/resolv.conf</code></pre>
+<p>为如下</p>
+<pre><code class="highlight plaintext"># Generated by NetworkManager
+search www.tendawifi.com
+nameserver 119.29.29.29
+nameserver 182.254.116.116</code></pre>
+<pre><code class="highlight plaintext">nslookup www.baidu.com</code></pre>
+<p>可以看到 域名服务器地址已经是 119.29.29.29 了</p>
+<h3 id="配置镜像加速器"><a class="markdownIt-Anchor" href="#配置镜像加速器"></a> 配置镜像加速器</h3>
+<p>站长的 天猫是放在 <a target="_blank" rel="noopener" href="http://hub.docker.com">hub.docker.com</a> 的，系在国外滴，学员要拉到本机会比较卡。<br />
+为了提高网络速度，我们需要配置镜像加速器。<br />
+直接运行如下代码</p>
+<pre><code class="highlight plaintext">sudo mkdir -p /etc/docker
+sudo tee /etc/docker/daemon.json &lt;&lt;-&#x27;EOF&#x27;
+&#123;
+&quot;registry-mirrors&quot;: [&quot;https://hvmf8r55.mirror.aliyuncs.com&quot;]
+&#125;
+EOF
+sudo systemctl daemon-reload
+sudo systemctl restart docker</code></pre>
+<p>然后通过如下命令查看 daemon.json 是否已经生效了</p>
+<pre><code class="highlight plaintext">tail /etc/docker/daemon.json</code></pre>
+<h3 id="拉取运行镜像"><a class="markdownIt-Anchor" href="#拉取运行镜像"></a> 拉取/运行镜像</h3>
+<p><strong>拉取镜像</strong><br />
+站长把 可运行天猫的 Linux，做成了一个叫做 “镜像” 的东西。 经过以上的配置工作后，接下来，就要把它从 <a target="_blank" rel="noopener" href="http://hub.docker.com">hub.docker.com</a> 上拉下来</p>
+<pre><code class="highlight plaintext">docker pull how2j/tmall</code></pre>
+<hr />
+<p><strong>运行镜像</strong></p>
+<pre><code class="highlight plaintext">docker run -dit --privileged -p21:21 -p80:80 -p8080:8080 -p30000-30010:30000-30010 --name how2jtmall how2j/tmall:latest /usr/sbin/init</code></pre>
+<hr />
+<p><strong>检查是否启动</strong></p>
+<pre><code class="highlight plaintext">netstat -anp|grep 8080</code></pre>
+<p>可以发现8080端口已经启动了，而且是交给了docker在使用</p>
+<h3 id="访问"><a class="markdownIt-Anchor" href="#访问"></a> 访问</h3>
+<pre><code class="highlight plaintext">http://192.168.84.128:8080/tmall/</code></pre>
+<p>有的同学，跑起来之后，只有图片，没有数据，我研究了一下，发现是容器里数据库起慢了导致的，需要重启tomcat才可以解决。 解决步骤：</p>
+<ol>
+<li>先进入容器</li>
+</ol>
+<pre><code class="highlight plaintext">docker exec -it how2jtmall /bin/bash</code></pre>
+<ol start="2">
+<li>然后重启</li>
+</ol>
+<pre><code class="highlight plaintext">tomcat/usr/local/tomcat7/bin/shutdown.sh
+/usr/local/tomcat7/bin/startup.sh</code></pre>
+<hr />
+<p><strong>访问地址</strong></p>
+<p>在教程里使用的访问地址是站长虚拟机的地址，你的虚拟机地址肯定不是这个。 使用</p>
+<pre><code class="highlight plaintext">ip address</code></pre>
+<p>就可以获取你的地址了</p>
+<h2 id="docker概念理解"><a class="markdownIt-Anchor" href="#docker概念理解"></a> Docker概念理解</h2>
+<h3 id="概念"><a class="markdownIt-Anchor" href="#概念"></a> 概念</h3>
+<p><strong>仓库</strong>： 别人做好的现成的镜像，都放在仓库里<br />
+<strong>镜像</strong>： 自己要用哪个镜像，就先拉到本地来。镜像就相当于还没激活的容器。<br />
+<strong>容器</strong>： 容器就是跑起来的镜像，就是一个完整的工作环境</p>
+<h3 id="概念图"><a class="markdownIt-Anchor" href="#概念图"></a> 概念图</h3>
+<p>如图所示： 最上面是镜像仓库</p>
+<p>在 <strong>拉取镜像</strong> 中的语句：</p>
+<pre><code class="highlight plaintext">docker pull how2j/tmall</code></pre>
+<p>“how2j/tmall” 就是站长事先做好的一个镜像。 所谓的镜像，就是持久化后的，安装了各种工具，软件和服务的一个Linux 操作系统</p>
+<p>它是 站长事先就上传到 docker 的镜像仓库去的。 镜像仓库又在哪里呢？</p>
+<p>它就在这里啦：</p>
+<pre><code class="highlight plaintext">https://cloud.docker.com/u/how2j/repository/docker/how2j/tmall</code></pre>
+<p>通过pull 命令, pull 就是拉取的意思，指的是把镜像从服务器上拉到 Docker 本地。</p>
+<hr />
+<p>拉到本地之后，再把这个<strong>镜像激活</strong>，所谓的激活，就是把他 run 起来。 用的命令就是 运行镜像 中的 run 命令。</p>
+<ul>
+<li>docker run 表示运行一个镜像</li>
+<li>-dit 是 -d -i -t 的缩写。 -d ，表示 detach，即在后台运行。 -i 表示提供交互接口，这样才可以通过 docker 和 跑起来的操作系统交互。 -t 表示提供一个 tty (伪终端)，与 -i 配合就可以通过 ssh 工具连接到 这个容器里面去了</li>
+<li>–privileged 启动容器的时候，把权限带进去。 这样才可以在容器里进行完整的操作</li>
+<li>-p21:21 第一个21，表示在CentOS 上开放21端口。 第二个21 表示在容器里开放21端口。 这样当访问CentOS 的21端口的时候，就会间接地访问到容器里了</li>
+<li>-p8080:8080 和21 一个道理，在本例里，访问的地址是 <a target="_blank" rel="noopener" href="http://192.168.84.128:8080/tmall/%EF%BC%8C">http://192.168.84.128:8080/tmall/，</a> 这个 192.168.84.128 是CentOS 的ip地址，8080是 CentOS 的端口，但是通过-p8080:8080 这么一映射，就访问到容器里的8080端口上的 tomcat了</li>
+<li>-p30000-30010 和21也是一个道理，这个是ftp用来传输数据的</li>
+<li>–name how2jtmall 给容器取了个名字，叫做 how2jtmall，方便后续管理</li>
+<li>how2j/tmall:latest how2j/tmall就是镜像的名称， latest是版本号，即最新版本</li>
+<li>/usr/sbin/init: 表示启动后运行的程序，即通过这个命令做初始化</li>
+</ul>
+<pre><code class="highlight plaintext">docker run -dit --privileged -p21:21 -p80:80 -p8080:8080 -p30000-30010:30000-30010 --name how2jtmall how2j/tmall:latest /usr/sbin/init</code></pre>
+<h3 id="进入容器"><a class="markdownIt-Anchor" href="#进入容器"></a> 进入容器</h3>
+<p>所谓的进入容器，就是进入启动的 运行Tomcat的Linux。<br />
+进入办法：</p>
+<pre><code class="highlight plaintext">docker exec -it how2jtmall /bin/bash</code></pre>
+<p>进去之后，就可以像操作一个普通 linux 那样操作了，如图所示执行 ls 命令</p>
+<h2 id="docker镜像管理"><a class="markdownIt-Anchor" href="#docker镜像管理"></a> Docker镜像管理</h2>
+<p>镜像管理常见的有这么些：</p>
+<ol>
+<li>search 查看仓库里有些什么镜像</li>
+<li>pull 拉取镜像</li>
+<li>images 查看本地有些什么镜像</li>
+<li>rmi 删除本地镜像</li>
+<li>修改本地镜像名称</li>
+<li>push , 把镜像提交到仓库</li>
+</ol>
+<h3 id="search"><a class="markdownIt-Anchor" href="#search"></a> search</h3>
+<pre><code class="highlight plaintext">docker search how2j</code></pre>
+<p>如图所示仓库里通过关键字 找到一个 how2j 的镜像。<br />
+当然我们也可以找其他常见的，如 mysql, tomcat, nginx 等等。</p>
+<blockquote>
+<p>镜像名称前面会默认加上 <a target="_blank" rel="noopener" href="http://docker.io/">docker.io/</a></p>
+</blockquote>
+<h4 id="示例查找tomcat"><a class="markdownIt-Anchor" href="#示例查找tomcat"></a> 示例：查找tomcat</h4>
+<pre><code class="highlight plaintext">docker search tomcat</code></pre>
+<p>会出来很多，那么到底应该用哪个呢？<br />
+这时，就打开 <a target="_blank" rel="noopener" href="http://hub.docker.com">hub.docker.com</a> ，然后搜索 tomcat。 或者点击如下链接</p>
+<pre><code class="highlight plaintext">https://hub.docker.com/search?q=tomcat&amp;type=image</code></pre>
+<p>可以看到更多的 tomcat了。<br />
+而第一个，就是docker 官网提供的 tomcat了，一般就用他了吧</p>
+<hr />
+<p><strong>选择版本</strong></p>
+<p>tomcat 又有很多版本，到底选哪个呢？<br />
+点击官网的 Tomcat 镜像，然后点击 tag，就发现又有很多版本</p>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/_/tomcat?tab=tags">https://hub.docker.com/_/tomcat?tab=tags</a></p>
+<p>那么就选一个自己当前需要的吧。 比如我要用 8.0 的话，那么就执行如下命令</p>
+<pre><code class="highlight plaintext">docker pull tomcat:8.0</code></pre>
+<p>不同镜像的用法不一样，在它的描述里都有详细讲解如何启动等等信息：</p>
+<p><a target="_blank" rel="noopener" href="https://hub.docker.com/_/tomcat?tab=description&amp;page=2">https://hub.docker.com/_/tomcat?tab=description&amp;page=2</a></p>
+<p>比如这个8.0,按照官方指导启动办法：</p>
+<pre><code class="highlight plaintext">docker run -it --rm -p 8888:8080 tomcat:8.0</code></pre>
+<blockquote>
+<p>这个 --rm 表示如果容器已经存在了，自动删除容器</p>
+</blockquote>
+<hr />
+<p><strong>访问</strong></p>
+<p>然后访问：<a href="http://%3Cip%3E:8888">http://&lt;ip&gt;:8888</a></p>
+<p>就可以看到如图所示的效果</p>
+<h3 id="images命令"><a class="markdownIt-Anchor" href="#images命令"></a> images命令</h3>
+<p>就可以查看所有的本地镜像</p>
+<pre><code class="highlight plaintext">docker images</code></pre>
+<h3 id="rmi命令"><a class="markdownIt-Anchor" href="#rmi命令"></a> rmi命令</h3>
+<p>用于删除镜像</p>
+<pre><code class="highlight plaintext">docker images
+docker rmi docker.io/tomcat:8.0</code></pre>
+<blockquote>
+<p>用于删除镜像。 e? 怎么删不掉，这是因为这个镜像有对应的容器啦。 最好把对应的容器删了，才来删除它比较好啦。 所以这里就暂时不管啦，等后面学会了删除容器，再来删除镜像吧</p>
+</blockquote>
+<h3 id="push"><a class="markdownIt-Anchor" href="#push"></a> push</h3>
+<p>push 用于把镜像提交到仓库。 但是呢，还没讲怎么修改镜像，所以先不谈怎么提交，后面专门来谈如何push</p>
+<h3 id="tag"><a class="markdownIt-Anchor" href="#tag"></a> tag</h3>
+<p>通过tag可以对镜像进行标记，如图所示，把 <a target="_blank" rel="noopener" href="http://docker.io/tomcat:8.0">docker.io/tomcat:8.0</a> <a target="_blank" rel="noopener" href="http://xn--docker-2e8iz74kwhlk20g.io/mytomcat:8.0">标记成了docker.io/mytomcat:8.0</a></p>
+<pre><code class="highlight plaintext">docker tag docker.io/tomcat:8.0 docker.io/mytomcat:8.0</code></pre>
+<p>这样 image_id= “ef6a7c98d192” 的镜像，就有两个标记了，分别是</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://docker.io/tomcat:8.0">docker.io/tomcat:8.0</a></li>
+<li><a target="_blank" rel="noopener" href="http://docker.io/mytomcat:8.0">docker.io/mytomcat:8.0</a></li>
+</ul>
+<h3 id="删除全部镜像"><a class="markdownIt-Anchor" href="#删除全部镜像"></a> 删除全部镜像</h3>
+<p>有时候为了调试，需要不厌其烦地删除镜像，下面这句话就会自动删除所有镜像啦</p>
+<pre><code class="highlight plaintext">docker rmi $(docker images -q)</code></pre>
+<h2 id="docker容器管理"><a class="markdownIt-Anchor" href="#docker容器管理"></a> Docker容器管理</h2>
+<p>接着就是容器管理的一套命令了</p>
+<ol>
+<li>运行 run</li>
+<li>进入 exec attach</li>
+<li>生命周期管理， 暂停，恢复，停止，启动 pause, unpause, stop, start</li>
+<li>ps 查看所有的容器</li>
+<li>检查某个具体的容器</li>
+<li>rm 删除容器</li>
+<li>commit，对容器做了修改后，把改动后的容器，再次转换为镜像</li>
+</ol>
+<h3 id="run"><a class="markdownIt-Anchor" href="#run"></a> run</h3>
+<p><strong>启动一个容器</strong></p>
+<ul>
+<li>docker run 表示运行一个镜像</li>
+<li>-dit 是 -d -i -t 的缩写。 -d ，表示 detach，即在后台运行。 -i 表示提供交互接口，这样才可以通过 docker 和 跑起来的操作系统交互。 -t 表示提供一个 tty (伪终端)，与 -i 配合就可以通过 ssh 工具连接到 这个容器里面去了</li>
+<li>–privileged 启动容器的时候，把权限带进去。 这样才可以在容器里进行完整的操作</li>
+<li>-p21:21 第一个21，表示在CentOS 上开放21端口。 第二个21 表示在容器里开放21端口。 这样当访问CentOS 的21端口的时候，就会间接地访问到容器里了</li>
+<li>-p8080:8080 和21 一个道理，在本例里，访问的地址是 <a target="_blank" rel="noopener" href="http://192.168.84.128:8080/tmall/%EF%BC%8C">http://192.168.84.128:8080/tmall/，</a> 这个 192.168.84.128 是CentOS 的ip地址，8080是 CentOS 的端口，但是通过-p8080:8080 这么一映射，就访问到容器里的8080端口上的 tomcat了</li>
+<li>-p30000-30010 和21也是一个道理，这个是ftp用来传输数据的</li>
+<li>–name how2jtmall 给容器取了个名字，叫做 how2jtmall，方便后续管理</li>
+<li>how2j/tmall:latest how2j/tmall就是镜像的名称， latest是版本号，即最新版本</li>
+<li>/usr/sbin/init: 表示启动后运行的程序，即通过这个命令做初始化</li>
+</ul>
+<pre><code class="highlight plaintext">docker run -dit --privileged -p21:21 -p80:80 -p8080:8080 -p30000-30010:30000-30010 --name how2jtmall how2j/tmall:latest /usr/sbin/init</code></pre>
+<h3 id="execattach"><a class="markdownIt-Anchor" href="#execattach"></a> exec/attach</h3>
+<p>在 进入容器 里演示过，使用 exec 进入这个容器</p>
+<pre><code class="highlight plaintext">docker exec -it how2jtmall /bin/bash</code></pre>
+<blockquote>
+<p>attach命令已经过时了</p>
+</blockquote>
+<h3 id="commit"><a class="markdownIt-Anchor" href="#commit"></a> commit</h3>
+<p>commit 很有意思了，因为它的作用就是把一个活生生的容器，再转换为镜像。<br />
+正式因为有了这个命令，所以站长才把 how2j/tmall 这个镜像做出来啦，哈哈<br />
+使用办法：</p>
+<pre><code class="highlight plaintext">docker commit how2jtmall how2j/tmall:now</code></pre>
+<p>如图所示，就在 how2j/tmall:latest 这个镜像的基础上，又做了个镜像啦</p>
+<h3 id="生命周期管理"><a class="markdownIt-Anchor" href="#生命周期管理"></a> 生命周期管理</h3>
+<p><strong>暂停</strong>：pause<br />
+<strong>恢复</strong>：unpause<br />
+<strong>停止</strong>：stop<br />
+<strong>开始</strong>：start</p>
+<p>就是常见的生命周期命令。<br />
+需要注意的是， stop 之后再 start, 容器需要启动，tomcat也需要启动，里面的mysql 也需要启动，都很花时间，所以要等待十几秒再访问，才能看到结果，否则会误以启动失败了</p>
+<h3 id="ps"><a class="markdownIt-Anchor" href="#ps"></a> ps</h3>
+<p>查询所有的容器</p>
+<pre><code class="highlight plaintext">docker ps -a</code></pre>
+<p>查询查询 run 状态的和 pause 状态的， stop状态的就不会查询出来了</p>
+<pre><code class="highlight plaintext">docker ps</code></pre>
+<p>如图所示，故意先stop 容器，再执行 docker ps 就什么都看不到了</p>
+<h3 id="inspect"><a class="markdownIt-Anchor" href="#inspect"></a> inspect</h3>
+<p>检查这个容器里的各项信息</p>
+<pre><code class="highlight plaintext">docker inspect how2jtmall</code></pre>
+<h3 id="rm"><a class="markdownIt-Anchor" href="#rm"></a> rm</h3>
+<p>删除容器，与删除镜像 rmi 命令遥相呼应</p>
+<pre><code class="highlight plaintext">docker rm how2jtmall</code></pre>
+<p>如图所示，在运行中的 容器是不能删除的，要先 stop ,然后再删除。<br />
+好现在删除了容器了，这下回头再试试 当时因为容器在运行而不能执行的 删除镜像 rmi 命令， 能否执行成功吧</p>
+<h3 id="删除所有容器"><a class="markdownIt-Anchor" href="#删除所有容器"></a> 删除所有容器</h3>
+<p>有时候为了调试，需要不厌其烦地删除容器，下面这句话就会自动删除所有容器啦</p>
+<pre><code class="highlight plaintext">docker rm `docker ps -a -q` -f</code></pre>
+<h2 id="网络恢复"><a class="markdownIt-Anchor" href="#网络恢复"></a> 网络恢复</h2>
+<p>虚拟机一旦重启，或者关机过，那么就会出现可以访问 Linux，但是无法访问里面的 Docker的情况。 可以在 CentOS里做如下事情：</p>
+<pre><code class="highlight plaintext">vi /etc/sysctl.conf
+或者
+vi /usr/lib/sysctl.d/00-system.conf
+添加如下代码：
+net.ipv4.ip_forward=1
+重启network服务
+systemctl restart network
+查看是否修改成功
+sysctl net.ipv4.ip_forward
+如果返回为“net.ipv4.ip_forward = 1”则表示成功了</code></pre>
+<h2 id="docker提交镜像"><a class="markdownIt-Anchor" href="#docker提交镜像"></a> Docker提交镜像</h2>
+<p>在 commit 提交容器 中，我们把一个容器转换为了镜像，接下来我们要把这个镜像提交到仓库里，应该怎么做呢？</p>
+<h3 id="注册登录账号"><a class="markdownIt-Anchor" href="#注册登录账号"></a> 注册/登录账号</h3>
+<p><strong>注册</strong><br />
+仓库位于 <a href="hub.docker.com">hub.docker.com</a> 上，为了提交新的镜像，肯定要有账号才行，所以第一步是注册账号。<br />
+比如我就注册了名为 how2j 的账号。<br />
+注意： 这里命名很重要，因为在提交镜像的时候，由于不是官方的，必须在提交的时候用 ： how2j/tmall 这样的命名格式，而不能简单地命名为 tmall</p>
+<p>注册地址：<a target="_blank" rel="noopener" href="https://hub.docker.com/signup">https://hub.docker.com/signup</a><br />
+注册激活流程都很标准化，就自己去撸吧，我就不多赘述了。</p>
+<hr />
+<p><strong>登录</strong></p>
+<p>这里说的登录，不是在 <a target="_blank" rel="noopener" href="http://hub.docker.com">hub.docker.com</a> 网站上，而是在 docker 后台进行登录。<br />
+执行命令：</p>
+<pre><code class="highlight plaintext">docker login</code></pre>
+<p>然后输入账号密码就行了，注意，账号不是邮箱地址哦</p>
+<h3 id="push-2"><a class="markdownIt-Anchor" href="#push-2"></a> push</h3>
+<p>推送镜像到仓库<br />
+首先镜像命名要符合 how2j/tmall 这样的风格，即斜杠前面必须是你的账号名。 如果镜像不是这个名字，可以通过 tag进行标记。 用法在这里： 通过 tag 进行标记<br />
+然后就可以推送了</p>
+<pre><code class="highlight plaintext">docker push how2j/tmall:latest</code></pre>
+<h2 id="dockerfile"><a class="markdownIt-Anchor" href="#dockerfile"></a> DockerFile</h2>
+<p>DockerFile 与 commit一样，也是用于做镜像的。 与 commit 把现成的 容器转换为镜像不同的是， DockerFile 需要自己写脚本，一条一条地把最终镜像需要的内容撸进去~</p>
+<h3 id="简单举例"><a class="markdownIt-Anchor" href="#简单举例"></a> 简单举例</h3>
+<p>创建一个 docker_demo 目录</p>
+<pre><code class="highlight plaintext">mkdir docker_demo</code></pre>
+<p>然后在里面创建要给 Dockerfile</p>
+<pre><code class="highlight plaintext">cd docker_demo
+vi Dockerfile</code></pre>
+<p>文件内容如下</p>
+<pre><code class="highlight plaintext">FROM how2j/centos7_tools_ftp:latest
+MAINTAINER 1473335800@qq.com
+RUN yum -y install java-1.8.0-openjdk.x86_64</code></pre>
+<blockquote>
+<p>就表示基于 how2j/centos7_tools_ftp:latest 这个镜像创建，作者是 <a href="mailto:1473335800@qq.com">1473335800@qq.com</a>， 运行的命令是安装 java.</p>
+</blockquote>
+<p>接着运行到 docker_demo 目录下运行：</p>
+<pre><code class="highlight plaintext">docker build -t how2j/centos_7_tools_ftp_java .</code></pre>
+<blockquote>
+<p>注意，最后有一个点的哦</p>
+</blockquote>
+<h3 id="动手实践"><a class="markdownIt-Anchor" href="#动手实践"></a> 动手实践</h3>
+<p>可以自己做一个Docker的CentOS镜像，然后再CentOS镜像的基础上，结合之前的步骤把天猫项目部署进去，然后再提交到自己的的docker仓库中</p>
+<p>推荐使用7.6.1810这个版本</p>
+<pre><code class="highlight plaintext">docker pull centos:7.6.1810</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

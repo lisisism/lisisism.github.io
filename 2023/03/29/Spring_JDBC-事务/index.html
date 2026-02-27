@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Spring JDBC/事务 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Spring JDBC/事务</div>
+  <div class="post-meta">
+    <div class="date">2023 三月 29日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">Spring</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="spring-jdbc事务"><a class="markdownIt-Anchor" href="#spring-jdbc事务"></a> $Spring JDBC/事务</h1>
+<h1 id="springjdbc"><a class="markdownIt-Anchor" href="#springjdbc"></a> SpringJDBC</h1>
+<ul>
+<li><a href="">SpringJDBC</a>
+<ul>
+<li><a href="">Spring对JDBC的整合支持</a>
+<ul>
+<li><a href="">spring对DAO技术提供了那些支持</a>
+<ul>
+<li><a href="">Spring对DAO异常的支持</a></li>
+<li><a href="">Spring对DAO编写的支持</a></li>
+</ul>
+</li>
+<li><a href="">如何编写DAO组件</a></li>
+</ul>
+</li>
+<li><a href="">Spring jdbcTemplate的应用(XML)</a>
+<ul>
+<li><a href="">maven依赖</a></li>
+<li><a href="">入门直接使用</a></li>
+<li><a href="">spring管理使用方式</a>
+<ul>
+<li><a href="">spring配置文件</a></li>
+<li><a href="">测试使用</a></li>
+<li><a href="">增删改查</a></li>
+<li><a href="">dbcp/c3p0连接池使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Spring jdbcTemplate的应用(注解)</a>
+<ul>
+<li><a href="">JdbcTemplate用法</a></li>
+</ul>
+</li>
+<li><a href="">Sprng JdbcDaoSupport应用</a>
+<ul>
+<li><a href="">使用</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Spring 事务</a>
+<ul>
+<li><a href="">事务概念</a>
+<ul>
+<li><a href="">事务介绍</a></li>
+<li><a href="">事务的并发问题（隔离性导致）</a></li>
+<li><a href="">事务隔离级别</a>
+<ul>
+<li><a href="">四种隔离级别</a></li>
+<li><a href="">事务的传播行为</a></li>
+<li><a href="">注意事项</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Spring框架的事务管理相关的类和API</a>
+<ul>
+<li><a href="">PlatformTransactionManager接口</a></li>
+<li><a href="">TransactionDefinition接口</a></li>
+<li><a href="">TransactionStatus接口</a></li>
+</ul>
+</li>
+<li><a href="">Spring框架事务管理的分类</a>
+<ul>
+<li><a href="">编程式事务管理（了解）</a>
+<ul>
+<li><a href="">配置一个事务管理器</a></li>
+<li><a href="">配置事务管理模板</a></li>
+<li><a href="">注入事务管理模板</a></li>
+<li><a href="">在业务层使用模板管理事务</a></li>
+</ul>
+</li>
+<li><a href="">声明式事务管理（重点）</a>
+<ul>
+<li><a href="">基于AspectJ的XML方式</a>
+<ul>
+<li><a href="">maven依赖</a></li>
+<li><a href="">数据库表</a></li>
+<li><a href="">持久层</a></li>
+<li><a href="">业务层</a></li>
+<li><a href="">spring 配置</a></li>
+<li><a href="">测试</a></li>
+<li><a href="">源码分析</a></li>
+</ul>
+</li>
+<li><a href="">基于AspectJ的注解方式</a></li>
+</ul>
+</li>
+<li><a href="">使用声明式事务</a>
+<ul>
+<li><a href="">回滚事务</a></li>
+<li><a href="">事务边界</a></li>
+<li><a href="">事务传播</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="spring对jdbc的整合支持"><a class="markdownIt-Anchor" href="#spring对jdbc的整合支持"></a> Spring对JDBC的整合支持</h2>
+<p>Spring JDBC就是指spring自身对jdbc的代码进行了一些封装，使得使用更加的简单，方便，快捷。</p>
+<h3 id="spring对dao技术提供了那些支持"><a class="markdownIt-Anchor" href="#spring对dao技术提供了那些支持"></a> spring对DAO技术提供了那些支持</h3>
+<ul>
+<li>Spring对JDBC等数据库访问技术编写DAO提供了以下几个重要支持
+<ul>
+<li>Spring对DAO异常提供了统一处理</li>
+<li>Spring对DAO编写提供了支持的抽象类</li>
+<li>提高编程效率，减少JDBC编码量</li>
+</ul>
+</li>
+</ul>
+<h4 id="spring对dao异常的支持"><a class="markdownIt-Anchor" href="#spring对dao异常的支持"></a> Spring对DAO异常的支持</h4>
+<ul>
+<li>Spring把特定某种技术的异常，如SQLException,统一转化为自己的异常类型，这些异常以DataAccessException为父类，它们封装了原始异常对象，不会丢失原始错误信息</li>
+<li>DataAccessException继承于RuntimeException，是非检查异常，不会因为没有处理异常而出现编译错误，异常必须处理，可以用拦截器或者在界面层统一处理</li>
+</ul>
+<h4 id="spring对dao编写的支持"><a class="markdownIt-Anchor" href="#spring对dao编写的支持"></a> Spring对DAO编写的支持</h4>
+<ul>
+<li>Spring为了便于以一种一致的方式使用各种数据访问技术，如JDBC,Hibernate，Spring提供了一套抽象的DAO类，这些抽象类提供了一些方法，通过他们可以获得与数据访问技术相关的数据源和其他配置信息
+<ul>
+<li><code>JdbcTemplate</code> 封装常用的JDBC方法</li>
+<li><code>HibernateTemplate</code> 封装常用Hibernate方法</li>
+<li><code>JdbcDaoSupport</code> -JDBC数据访问对象的基类</li>
+<li><code>HibernateDaoSupport</code> -Hibernate数据访问对象的基类</li>
+</ul>
+</li>
+</ul>
+<h3 id="如何编写dao组件"><a class="markdownIt-Anchor" href="#如何编写dao组件"></a> 如何编写DAO组件</h3>
+<ul>
+<li>基于JDBC技术编写DAO组件可以采用下面两种模式
+<ol>
+<li><strong>DAO继承JdbcDaoSupport</strong>，通过getJdbcTemplate()方法获取JdbcTemplate对象，需要在DAO实现类中注入一个DataSource对象来完成JdbcTemplate的实例化</li>
+<li><strong>DAO使用JdbcTemplate</strong>，在Spring容器中配置一个JdbcTemplate的bean，然后注入给DAO实现类</li>
+</ol>
+</li>
+</ul>
+<h2 id="spring-jdbctemplate的应用xml"><a class="markdownIt-Anchor" href="#spring-jdbctemplate的应用xml"></a> Spring jdbcTemplate的应用(XML)</h2>
+<p>JdbcTemplate封装了连接获取以及连接释放等工作，从而简化了我买对JDBC的使用，避免忘记关闭连接等错误</p>
+<ul>
+<li>JdbcTemplate提供了以下主要方法
+<ul>
+<li><code>queryForInt</code>()</li>
+<li><code>queryForObject</code>()</li>
+<li><code>query</code>()</li>
+<li><code>update</code>()</li>
+<li><code>execute</code>()</li>
+</ul>
+</li>
+</ul>
+<p>正确编写JDBC代码的关键是使用try … finally释放资源，涉及到事务的代码需要正确提交或回滚事务。</p>
+<p>在Spring使用JDBC，首先我们通过IoC容器创建并管理一个DataSource实例，然后，Spring提供了一个JdbcTemplate，可以方便地让我们操作JDBC，因此，通常情况下，我们会实例化一个JdbcTemplate。顾名思义，这个类主要使用了Template模式。</p>
+<p>编写示例代码或者测试代码时，我们强烈推荐使用HSQLDB这个数据库，它是一个用Java编写的关系数据库，可以以内存模式或者文件模式运行，本身只有一个jar包，非常适合演示代码或者测试代码。</p>
+<h3 id="maven依赖"><a class="markdownIt-Anchor" href="#maven依赖"></a> maven依赖</h3>
+<blockquote>
+<p>或者可以使用阿里的<strong>druid连接�</strong>�</p>
+</blockquote>
+<pre><code class="highlight plaintext">&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+	xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+	&lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+	&lt;groupId&gt;com.lee&lt;/groupId&gt;
+	&lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+	&lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;
+
+	&lt;dependencies&gt;
+		&lt;!-- spring ioc组件需要的依赖包 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-expression&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+
+		&lt;!-- 基于AspectJ的aop依赖 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-aspects&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;aopalliance&lt;/groupId&gt;
+			&lt;artifactId&gt;aopalliance&lt;/artifactId&gt;
+			&lt;version&gt;1.0&lt;/version&gt;
+		&lt;/dependency&gt;
+
+		&lt;!-- spring 事务管理和JDBC依赖包 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-tx&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+
+		&lt;!-- spring 单元测试组件包 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;org.springframework&lt;/groupId&gt;
+			&lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+			&lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+		&lt;/dependency&gt;
+
+		&lt;!-- 单元测试Junit --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;junit&lt;/groupId&gt;
+			&lt;artifactId&gt;junit&lt;/artifactId&gt;
+			&lt;version&gt;4.12&lt;/version&gt;
+		&lt;/dependency&gt;
+
+		&lt;!-- mysql数据库驱动包 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;mysql&lt;/groupId&gt;
+			&lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+			&lt;version&gt;5.1.35&lt;/version&gt;
+		&lt;/dependency&gt;
+		
+		&lt;!-- dbcp连接池的依赖包 --&gt;
+		&lt;dependency&gt;
+			&lt;groupId&gt;commons-dbcp&lt;/groupId&gt;
+			&lt;artifactId&gt;commons-dbcp&lt;/artifactId&gt;
+			&lt;version&gt;1.4&lt;/version&gt;
+		&lt;/dependency&gt;
+
+	&lt;/dependencies&gt;
+	&lt;build&gt;
+		&lt;plugins&gt;
+			&lt;!-- 配置Maven的JDK编译级别 --&gt;
+			&lt;plugin&gt;
+				&lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+				&lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+				&lt;version&gt;3.2&lt;/version&gt;
+				&lt;configuration&gt;
+					&lt;source&gt;1.8&lt;/source&gt;
+					&lt;target&gt;1.8&lt;/target&gt;
+					&lt;encoding&gt;UTF-8&lt;/encoding&gt;
+				&lt;/configuration&gt;
+			&lt;/plugin&gt;
+		&lt;/plugins&gt;
+	&lt;/build&gt;
+&lt;/project&gt;</code></pre>
+<h3 id="入门直接使用"><a class="markdownIt-Anchor" href="#入门直接使用"></a> 入门直接使用</h3>
+<p>不使用spring管理，直接调用</p>
+<pre><code class="highlight plaintext">import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+public class Test &#123;
+
+    @org.junit.Test
+    public void run1()&#123;
+        // 创建连接池，先使用Spring框架内置的连接池
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName(&quot;com.mysql.jdbc.Driver&quot;);
+        dataSource.setUrl(&quot;jdbc:mysql:///leetest&quot;);
+        dataSource.setUsername(&quot;root&quot;);
+        dataSource.setPassword(&quot;123456&quot;);
+        // 创建模板类
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        // 完成数据的添加
+        jdbcTemplate.update(&quot;insert into account values (?,?,?)&quot;, 1,&quot;测试&quot;,10000);
+    &#125;
+&#125;</code></pre>
+<h3 id="spring管理使用方式"><a class="markdownIt-Anchor" href="#spring管理使用方式"></a> spring管理使用方式</h3>
+<p>使用方式改为纳入spring管理的使用方式</p>
+<p><strong>使用spring自带的datasource连接�</strong>�</p>
+<h4 id="spring配置文件"><a class="markdownIt-Anchor" href="#spring配置文件"></a> spring配置文件</h4>
+<p>applicationContext.xml</p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+    &lt;!--配置Spring内置数据源dataSource--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--spring管理模板类 --&gt;
+    &lt;bean id=&quot;JdbcTemplate&quot; class=&quot;org.springframework.jdbc.core.JdbcTemplate&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+<h4 id="测试使用"><a class="markdownIt-Anchor" href="#测试使用"></a> 测试使用</h4>
+<pre><code class="highlight plaintext">import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(&quot;classpath:ApplicationContext.xml&quot;)
+public class TestSpring &#123;
+    @Resource
+    JdbcTemplate template;
+
+    @Test
+    public void test()&#123;
+        template.update(&quot;insert into account values (?,?,?)&quot;, 2,&quot;测试222&quot;,10000);
+    &#125;
+&#125;
+</code></pre>
+<h4 id="增删改查"><a class="markdownIt-Anchor" href="#增删改查"></a> 增删改查</h4>
+<p>Account</p>
+<pre><code class="highlight plaintext">public class Account &#123;
+
+    private int id;
+    private String name;
+    private Double salary;
+
+    public int getId() &#123;
+        return id;
+    &#125;
+    public void setId(int id) &#123;
+        this.id = id;
+    &#125;
+    public String getName() &#123;
+        return name;
+    &#125;
+    public void setName(String name) &#123;
+        this.name = name;
+    &#125;
+
+    public Double getSalary() &#123;
+        return salary;
+    &#125;
+    public void setSalary(Double salary) &#123;
+        this.salary = salary;
+    &#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(&quot;classpath:ApplicationContext.xml&quot;)
+public class SpringDemo &#123;
+
+    @Resource
+    private JdbcTemplate jdbcTemplate;
+
+    @Test
+    // 插入操作
+    public void demo1() &#123;
+        jdbcTemplate.update(&quot;insert into account values (null,?,?)&quot;, &quot;冠希&quot;, 10000d);
+    &#125;
+
+    @Test
+    // 修改操作
+    public void demo2() &#123;
+        jdbcTemplate.update(&quot;update account set name=?,money =? where id = ?&quot;, &quot;思雨&quot;, 10000d, 5);
+    &#125;
+
+    @Test
+    // 删除操作
+    public void demo3() &#123;
+        jdbcTemplate.update(&quot;delete from account where id = ?&quot;, 5);
+    &#125;
+
+    @Test
+    // 查询一条记录
+    public void demo4() &#123;
+        Account account = jdbcTemplate.queryForObject(&quot;select * from account where id = ?&quot;, new BeanMapper(), 1);
+        System.out.println(account);
+    &#125;
+
+    @Test
+    // 查询所有记录
+    public void demo5() &#123;
+        List&lt;Account&gt; list = jdbcTemplate.query(&quot;select * from t_account&quot;, new BeanMapper());
+        for (Account account : list) &#123;
+            System.out.println(account);
+        &#125;
+    &#125;
+&#125;
+
+class BeanMapper implements RowMapper&lt;Account&gt; &#123;
+    public Account mapRow(ResultSet rs, int arg1) throws SQLException &#123;
+        Account account = new Account();
+        account.setId(rs.getInt(&quot;id&quot;));
+        account.setName(rs.getString(&quot;name&quot;));
+        account.setSalary(rs.getDouble(&quot;salary&quot;));
+        return account;
+    &#125;
+&#125;
+</code></pre>
+<h4 id="dbcpc3p0连接池使用"><a class="markdownIt-Anchor" href="#dbcpc3p0连接池使用"></a> dbcp/c3p0连接池使用</h4>
+<p><strong>spring配置文件</strong></p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+    &lt;!--配置Spring内置数据源dataSource--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--spring管理模板类 --&gt;
+    &lt;bean id=&quot;JdbcTemplate&quot; class=&quot;org.springframework.jdbc.core.JdbcTemplate&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;c3p0DataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--使用dbcp连接池--&gt;
+    &lt;bean id=&quot;dbcpDataSource&quot; class=&quot;org.apache.commons.dbcp.BasicDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--使用c3p0连接池--&gt;
+    &lt;bean id=&quot;c3p0DataSource&quot; class=&quot;com.mchange.v2.c3p0.ComboPooledDataSource&quot;&gt;
+        &lt;property name=&quot;driverClass&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;jdbcUrl&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;user&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+<h2 id="spring-jdbctemplate的应用注解"><a class="markdownIt-Anchor" href="#spring-jdbctemplate的应用注解"></a> Spring jdbcTemplate的应用(注解)</h2>
+<p>在Spring使用JDBC，首先我们通过IoC容器创建并管理一个DataSource实例，然后，Spring提供了一个JdbcTemplate，可以方便地让我们操作JDBC，因此，通常情况下，我们会实例化一个JdbcTemplate。顾名思义，这个类主要使用了Template模式。</p>
+<p>编写示例代码或者测试代码时，我们强烈推荐使用HSQLDB这个数据库，它是一个用Java编写的关系数据库，可以以内存模式或者文件模式运行，本身只有一个jar包，非常适合演示代码或者测试代码。</p>
+<p>我们以实际工程为例，先创建Maven工程spring-data-jdbc，然后引入以下依赖：</p>
+<pre><code class="highlight plaintext">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+        &lt;version&gt;5.2.0.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+        &lt;version&gt;5.2.0.RELEASE&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;javax.annotation&lt;/groupId&gt;
+        &lt;artifactId&gt;javax.annotation-api&lt;/artifactId&gt;
+        &lt;version&gt;1.3.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;com.zaxxer&lt;/groupId&gt;
+        &lt;artifactId&gt;HikariCP&lt;/artifactId&gt;
+        &lt;version&gt;3.4.2&lt;/version&gt;
+    &lt;/dependency&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.hsqldb&lt;/groupId&gt;
+        &lt;artifactId&gt;hsqldb&lt;/artifactId&gt;
+        &lt;version&gt;2.5.0&lt;/version&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;</code></pre>
+<p>在AppConfig中，我们需要创建以下几个必须的Bean：</p>
+<pre><code class="highlight plaintext">
+Configuration@ComponentScan@PropertySource(&quot;jdbc.properties&quot;)
+public class AppConfig &#123;
+
+    @Value(&quot;$&#123;jdbc.url&#125;&quot;)
+    String jdbcUrl;
+
+    @Value(&quot;$&#123;jdbc.username&#125;&quot;)
+    String jdbcUsername;
+
+    @Value(&quot;$&#123;jdbc.password&#125;&quot;)
+    String jdbcPassword;
+
+    @Bean
+    DataSource createDataSource() &#123;
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(jdbcUrl);
+        config.setUsername(jdbcUsername);
+        config.setPassword(jdbcPassword);
+        config.addDataSourceProperty(&quot;autoCommit&quot;, &quot;true&quot;);
+        config.addDataSourceProperty(&quot;connectionTimeout&quot;, &quot;5&quot;);
+        config.addDataSourceProperty(&quot;idleTimeout&quot;, &quot;60&quot;);
+        return new HikariDataSource(config);
+    &#125;
+
+    @Bean
+    JdbcTemplate createJdbcTemplate(@Autowired DataSource dataSource) &#123;
+        return new JdbcTemplate(dataSource);
+    &#125;
+&#125;</code></pre>
+<p>在上述配置中：</p>
+<ol>
+<li>通过@PropertySource(“jdbc.properties”)读取数据库配置文件；</li>
+<li>通过@Value(“${jdbc.url}”)注入配置文件的相关配置；</li>
+<li>创建一个DataSource实例，它的实际类型是HikariDataSource，创建时需要用到注入的配置；</li>
+<li>创建一个JdbcTemplate实例，它需要注入DataSource，这是通过方法参数完成注入的。</li>
+</ol>
+<p>最后，针对HSQLDB写一个配置文件jdbc.properties：</p>
+<pre><code class="highlight plaintext"># 数据库文件名为testdb:
+jdbc.url=jdbc:hsqldb:file:testdb
+
+# Hsqldb默认的用户名是sa，口令是空字符串:
+jdbc.username=sa
+jdbc.password=</code></pre>
+<p>可以通过HSQLDB自带的工具来初始化数据库表，这里我们写一个Bean，在Spring容器启动时自动创建一个users表：</p>
+<pre><code class="highlight plaintext">@Componentpublic class DatabaseInitializer &#123;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @PostConstruct
+    public void init() &#123;
+        jdbcTemplate.update(&quot;CREATE TABLE IF NOT EXISTS users (&quot; //
+                + &quot;id BIGINT IDENTITY NOT NULL PRIMARY KEY, &quot; //
+                + &quot;email VARCHAR(100) NOT NULL, &quot; //
+                + &quot;password VARCHAR(100) NOT NULL, &quot; //
+                + &quot;name VARCHAR(100) NOT NULL, &quot; //
+                + &quot;UNIQUE (email))&quot;);
+    &#125;
+&#125;</code></pre>
+<p>现在，所有准备工作都已完毕。我们只需要在需要访问数据库的Bean中，注入JdbcTemplate即可：</p>
+<pre><code class="highlight plaintext">@Component
+public class UserService &#123;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+    ...
+&#125;</code></pre>
+<h3 id="jdbctemplate用法"><a class="markdownIt-Anchor" href="#jdbctemplate用法"></a> JdbcTemplate用法</h3>
+<p>Spring提供的JdbcTemplate采用Template模式，提供了一系列以回调为特点的工具方法，目的是避免繁琐的try…catch语句。</p>
+<p>我们以具体的示例来说明JdbcTemplate的用法。</p>
+<p>首先我们看T execute(ConnectionCallback<T> action)方法，它提供了Jdbc的Connection供我们使用：</p>
+<pre><code class="highlight plaintext">public User getUserById(long id) &#123;
+    // 注意传入的是ConnectionCallback:
+    return jdbcTemplate.execute((Connection conn) -&gt; &#123;
+        // 可以直接使用conn实例，不要释放它，回调结束后JdbcTemplate自动释放:
+        // 在内部手动创建的PreparedStatement、ResultSet必须用try(...)释放:
+        try (var ps = conn.prepareStatement(&quot;SELECT * FROM users WHERE id = ?&quot;)) &#123;
+            ps.setObject(1, id);
+            try (var rs = ps.executeQuery()) &#123;
+                if (rs.next()) &#123;
+                    return new User( // new User object:
+                            rs.getLong(&quot;id&quot;), // id
+                            rs.getString(&quot;email&quot;), // email
+                            rs.getString(&quot;password&quot;), // password
+                            rs.getString(&quot;name&quot;)); // name
+                &#125;
+                throw new RuntimeException(&quot;user not found by id.&quot;);
+            &#125;
+        &#125;
+    &#125;);
+&#125;</code></pre>
+<p>也就是说，上述回调方法允许获取Connection，然后做任何基于Connection的操作。</p>
+<p>我们再看T execute(String sql, PreparedStatementCallback<T> action)的用法：</p>
+<pre><code class="highlight plaintext">public User getUserByName(String name) &#123;
+    // 需要传入SQL语句，以及PreparedStatementCallback:
+    return jdbcTemplate.execute(&quot;SELECT * FROM users WHERE name = ?&quot;, (PreparedStatement ps) -&gt; &#123;
+        // PreparedStatement实例已经由JdbcTemplate创建，并在回调后自动释放:
+        ps.setObject(1, name);
+        try (var rs = ps.executeQuery()) &#123;
+            if (rs.next()) &#123;
+                return new User( // new User object:
+                        rs.getLong(&quot;id&quot;), // id
+                        rs.getString(&quot;email&quot;), // email
+                        rs.getString(&quot;password&quot;), // password
+                        rs.getString(&quot;name&quot;)); // name
+            &#125;
+            throw new RuntimeException(&quot;user not found by id.&quot;);
+        &#125;
+    &#125;);
+&#125;</code></pre>
+<p>最后，我们看T queryForObject(String sql, Object[] args, RowMapper<T> rowMapper)方法：</p>
+<pre><code class="highlight plaintext">public User getUserByEmail(String email) &#123;
+    // 传入SQL，参数和RowMapper实例:
+    return jdbcTemplate.queryForObject(&quot;SELECT * FROM users WHERE email = ?&quot;, new Object[] &#123; email &#125;,
+            (ResultSet rs, int rowNum) -&gt; &#123;
+                // 将ResultSet的当前行映射为一个JavaBean:
+                return new User( // new User object:
+                        rs.getLong(&quot;id&quot;), // id
+                        rs.getString(&quot;email&quot;), // email
+                        rs.getString(&quot;password&quot;), // password
+                        rs.getString(&quot;name&quot;)); // name
+            &#125;);
+&#125;</code></pre>
+<p>在queryForObject()方法中，传入SQL以及SQL参数后，JdbcTemplate会自动创建PreparedStatement，自动执行查询并返回ResultSet，我们提供的RowMapper需要做的事情就是把ResultSet的当前行映射成一个JavaBean并返回。整个过程中，使用Connection、PreparedStatement和ResultSet都不需要我们手动管理。</p>
+<p>RowMapper不一定返回JavaBean，实际上它可以返回任何Java对象。例如，使用<code>SELECT COUNT(*)</code>查询时，可以返回Long：</p>
+<pre><code class="highlight plaintext">public long getUsers() &#123;
+    return jdbcTemplate.queryForObject(&quot;SELECT COUNT(*) FROM users&quot;, null, (ResultSet rs, int rowNum) -&gt; &#123;
+        // SELECT COUNT(*)查询只有一列，取第一列数据:
+        return rs.getLong(1);
+    &#125;);
+&#125;
+```如果我们期望返回多行记录，而不是一行，可以用query()方法：
+
+```java
+public List&lt;User&gt; getUsers(int pageIndex) &#123;
+    int limit = 100;
+    int offset = limit * (pageIndex - 1);
+    return jdbcTemplate.query(&quot;SELECT * FROM users LIMIT ? OFFSET ?&quot;, new Object[] &#123; limit, offset &#125;,
+            new BeanPropertyRowMapper&lt;&gt;(User.class));
+&#125;</code></pre>
+<p>上述query()方法传入的参数仍然是SQL、SQL参数以及RowMapper实例。这里我们直接使用Spring提供的BeanPropertyRowMapper。如果数据库表的结构恰好和JavaBean的属性名称一致，那么BeanPropertyRowMapper就可以直接把一行记录按列名转换为JavaBean。</p>
+<p>如果我们执行的不是查询，而是插入、更新和删除操作，那么需要使用update()方法：</p>
+<pre><code class="highlight plaintext">public void updateUser(User user) &#123;
+    // 传入SQL，SQL参数，返回更新的行数:
+    if (1 != jdbcTemplate.update(&quot;UPDATE users SET name = ? WHERE id=?&quot;, user.getName(), user.getId())) &#123;
+        throw new RuntimeException(&quot;User not found by id&quot;);
+    &#125;
+&#125;</code></pre>
+<p>只有一种INSERT操作比较特殊，那就是如果某一列是自增列（例如自增主键），通常，我们需要获取插入后的自增值。JdbcTemplate提供了一个KeyHolder来简化这一操作：</p>
+<pre><code class="highlight plaintext">public User register(String email, String password, String name) &#123;
+    // 创建一个KeyHolder:
+    KeyHolder holder = new GeneratedKeyHolder();
+    if (1 != jdbcTemplate.update(
+        // 参数1:PreparedStatementCreator
+        (conn) -&gt; &#123;
+            // 创建PreparedStatement时，必须指定RETURN_GENERATED_KEYS:
+            var ps = conn.prepareStatement(&quot;INSERT INTO users(email,password,name) VALUES(?,?,?)&quot;,
+                    Statement.RETURN_GENERATED_KEYS);
+            ps.setObject(1, email);
+            ps.setObject(2, password);
+            ps.setObject(3, name);
+            return ps;
+        &#125;,
+        // 参数2:KeyHolder
+        holder)
+    ) &#123;
+        throw new RuntimeException(&quot;Insert failed.&quot;);
+    &#125;
+    // 从KeyHolder中获取返回的自增值:
+    return new User(holder.getKey().longValue(), email, password, name);
+&#125;</code></pre>
+<p>JdbcTemplate还有许多重载方法，这里我们不一一介绍。需要强调的是，JdbcTemplate只是对JDBC操作的一个简单封装，它的目的是尽量减少手动编写try(resource) {…}的代码，对于查询，主要通过RowMapper实现了JDBC结果集到Java对象的转换。</p>
+<h2 id="sprng-jdbcdaosupport应用"><a class="markdownIt-Anchor" href="#sprng-jdbcdaosupport应用"></a> Sprng JdbcDaoSupport应用</h2>
+<ul>
+<li>JdbcDaoSupport是利用JDBC技术编写DAO的父类，通过该类提供的方法，可便于获取Connection和JdbcTemplate等对象信息</li>
+<li>JdbcDaoSupport使用时需要注入一个DataSource对象</li>
+<li>JdbcDaoSupport对代码有一定的<strong>侵入性</strong></li>
+</ul>
+<p><strong>jdbcDaoSupport有个成员变量jdbcTemplate</strong>，所以可以直接继承改类来获取jdbcTemplate，使用方式完全相同，<strong>只需把注入的方式改为继承的方式</strong></p>
+<h3 id="使用"><a class="markdownIt-Anchor" href="#使用"></a> 使用</h3>
+<p>使用JdbcDaoSupport，<strong>只需让sql操作类继承改类</strong>，然后在spring配置文件中，给sql操作类<strong>显式的注入datasource</strong>即可</p>
+<pre><code class="highlight plaintext">import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(&quot;classpath:ApplicationContext.xml&quot;)
+public class TestSpring extends JdbcDaoSupport &#123;
+//使用JdbcDaoSupport就无需注入JdbcTemplate
+//    @Resource
+//    JdbcTemplate template;
+
+    @Test
+    public void test()&#123;
+        this.template.update(&quot;insert into account values (?,?,?)&quot;, 2,&quot;测试222&quot;,10000);
+    &#125;
+&#125;</code></pre>
+<p>applicationContext.xml配置文件给该类注入datasource</p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+
+    &lt;!--配置Spring内置数据源dataSource--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--spring管理模板类 --&gt;
+    &lt;!--在这里显式的注入dataSource--&gt;
+    &lt;bean id=&quot;TestSpring&quot; class=&quot;com.lee.TestSpring&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+<h2 id=""><a class="markdownIt-Anchor" href="#"></a> </h2>
+<p>集成Hibernate</p>
+<h1 id="spring-事务"><a class="markdownIt-Anchor" href="#spring-事务"></a> Spring 事务</h1>
+<h2 id="事务概念"><a class="markdownIt-Anchor" href="#事务概念"></a> 事务概念</h2>
+<h3 id="事务介绍"><a class="markdownIt-Anchor" href="#事务介绍"></a> 事务介绍</h3>
+<p>事务：指的是逻辑上一组操作，组成这个事务的各个执行单元，要么一起成功，要么一起失败</p>
+<p>事务的特新：</p>
+<ul>
+<li><strong>原子性</strong>（Atomicity）
+<ul>
+<li>原子性是指事务包含的所有操作要么全部成功，要么全部失败回滚</li>
+</ul>
+</li>
+<li><strong>一致性</strong>（Consistecy）
+<ul>
+<li>一致性是指事务必须使数据库从一个一致性状态变换到另一个一致性状态，也就是说一个事务执行之前和执行之后都必须处于一致性状态</li>
+<li>比如：转账，a用户和b用户两者的钱加起来一共是5000，那么不管a和b之间如何转账，转几次帐，事务结束后两个用户的钱加起来还要是5000，这就是事务的一致性</li>
+</ul>
+</li>
+<li>隔离性（Isolation）
+<ul>
+<li>隔离性是当多个用户并发访问数据库时，比如操作同一张表时，数据库为每一个用户开启的事务，不能被其他事务的操作所干扰，多个并发事务之间要相互隔离</li>
+</ul>
+</li>
+<li>持久性（Durability）
+<ul>
+<li>持久性是指一个事务一旦被提交了，那么对数据库中的数据的改变就是永久性的，即使实在数据库系统中遇到故障的情况下，也不会丢失提交事务的操作</li>
+</ul>
+</li>
+</ul>
+<h3 id="事务的并发问题隔离性导致"><a class="markdownIt-Anchor" href="#事务的并发问题隔离性导致"></a> 事务的并发问题（隔离性导致）</h3>
+<p>在事务的并发操作中可能会出现一些问题：</p>
+<ul>
+<li><strong>脏读</strong>：一个事务读取到另一个事务<strong>未提交</strong>的数据</li>
+<li><strong>不可重复读</strong>：一个事务因读取到另一个事务已提交的数据，导致对<strong>同一条记录</strong>读取两次以上的结果不一致，update操作</li>
+<li><strong>幻读</strong>：一个事务因读取到另一个事务已提交的数据，导致<strong>对同一张表</strong>读取两次以上的结果不一致，insert,delete操作</li>
+</ul>
+<p><img src="image/.png" alt=".png" /></p>
+<h3 id="事务隔离级别"><a class="markdownIt-Anchor" href="#事务隔离级别"></a> 事务隔离级别</h3>
+<p>为了避免出现上述的几种情况，在标准sql规范中，定义了4个事务隔离级别，不同的隔离级别对事务的处理不同</p>
+<h4 id="四种隔离级别"><a class="markdownIt-Anchor" href="#四种隔离级别"></a> 四种隔离级别</h4>
+<p>MySQL数据库为我们提供了四种隔离级别（由低到高）：</p>
+<ul>
+<li><strong>Read uncommitted</strong>（读未提交）：最低级别，任何情况都无法保证</li>
+<li><strong>Read committed</strong>（读已提交）：可避免脏读的发生</li>
+<li><strong>Repeatable read</strong>（可重复读）：可避免脏读，不可重复读的发生</li>
+<li><strong>Serializable</strong>（串行化）：可避免脏读，不可重复读，幻读的发生</li>
+</ul>
+<p><strong>默认隔离级别</strong></p>
+<p>大多数数据库的默认隔离级别时Read committed，比如Oracle，DB2等</p>
+<p>MySQL数据库的隔离级别时Repeatable read</p>
+<h4 id="事务的传播行为"><a class="markdownIt-Anchor" href="#事务的传播行为"></a> 事务的传播行为</h4>
+<p>事务的传播行为：解决的是业务层之间的方法调用</p>
+<p>比如：事务都是针对service层进行设置的，但是service层的代码之间是可以相互调用的，s1和s2方法，两个方法都有各自的事务，如果此时s1调用了s2，那么为了保证在一个事务内进行操作的，需要进行事务传播特性的设置</p>
+<ul>
+<li><strong>PROPAGATION_REQUIRED</strong>（默认值）：A中有事务,使用A中的事务.如果没有，B就会开启一个新的事务,将A包含进来.(保证A,B在同一个事务中)，<strong>默认值</strong></li>
+<li><strong>PROPAGATION_SUPPORTS</strong>：A中有事务,使用A中的事务.如果A中没有事务.那么B也不使用事务.</li>
+<li><strong>PROPAGATION_MANDATORY</strong>：A中有事务,使用A中的事务.如果A没有事务.抛出异常.</li>
+<li><strong>PROPAGATION_REQUIRES_NEW</strong>：A中有事务,将A中的事务挂起.B创建一个新的事务.(保证A,B没有在一个事务中)</li>
+<li><strong>PROPAGATION_NOT_SUPPORTED</strong>：A中有事务,将A中的事务挂起.</li>
+<li><strong>PROPAGATION_NEVER</strong>：A中有事务,抛出异常.</li>
+<li><strong>PROPAGATION_NESTED</strong>：嵌套事务.当A执行之后,就会在这个位置设置一个保存点.如果B没有问题.执行通过.如果B出现异常,运行客户根据需求回滚(选择回滚到保存点或者是最初始状态)</li>
+</ul>
+<h4 id="注意事项"><a class="markdownIt-Anchor" href="#注意事项"></a> 注意事项</h4>
+<p><strong>隔离级别越高，越能保证数据的完整性和一致性，但是对并发性能的影响也越大</strong></p>
+<p>对于多数应用程序，可以优先考虑把数据库系统的隔离级别设为Read Committed。它能够避免脏读取，而且具有较好的并发性能。尽管它会导致不可重复读、幻读这些并发问题，在可能出现这类问题的个别场合，可以由应用程序采用悲观锁或乐观锁来控制</p>
+<h2 id="spring框架的事务管理相关的类和api"><a class="markdownIt-Anchor" href="#spring框架的事务管理相关的类和api"></a> Spring框架的事务管理相关的类和API</h2>
+<p>Spring并不直接管理事务，而是提供了多种事务管理器，他们将事务管理的职责委托给Hibernate或者JTA等持久化机制所提供的相关平台框架的事务来实现。 <strong>Spring事务管理器的接口是PlatformTransactionManager</strong>，通过这个接口，Spring为各个平台如JDBC、Hibernate等都提供了对应的事务管理器，但是具体的实现就是各个平台自己的事情了</p>
+<p><img src="image/-1.png" alt="-1.png" /></p>
+<h3 id="platformtransactionmanager接口"><a class="markdownIt-Anchor" href="#platformtransactionmanager接口"></a> PlatformTransactionManager接口</h3>
+<p>平台事务管理器（真正管理事务的类），该接口有具体的实现类，根据不同的持久层框架，需要选择不同的实现类</p>
+<ul>
+<li><strong>接口的实现类：</strong>
+<ul>
+<li>如果使用spring的jdbc模板或者mybatis框架，需要选择<code>DataSourceTransactionManager</code>实现类</li>
+<li>如果使用的是Hibernate的框架，需要选择的是<code>HibernateTransactionManager</code>实现类</li>
+</ul>
+</li>
+<li><strong>该接口的常用方法：</strong>
+<ul>
+<li>void commit(TransactionStatus status)</li>
+<li>TransactionStatus getTransaction(TransactionDefinition definition)</li>
+<li>void rollback(TransactionStatus status)</li>
+</ul>
+</li>
+</ul>
+<h3 id="transactiondefinition接口"><a class="markdownIt-Anchor" href="#transactiondefinition接口"></a> TransactionDefinition接口</h3>
+<p>事务定义信息（事务的隔离级别，传播行为，超时，只读）</p>
+<ul>
+<li><strong>事务隔离级别的常量</strong>
+<ul>
+<li>static int ISOLATION_DEFAULT             – 采用数据库的默认隔离级别</li>
+<li>static int ISOLATION_READ_UNCOMMITTED</li>
+<li>static int ISOLATION_READ_COMMITTED</li>
+<li>static int ISOLATION_REPEATABLE_READ</li>
+<li>static int ISOLATION_SERIALIZABLE</li>
+</ul>
+</li>
+<li><strong>事务的传播行为</strong>
+<ul>
+<li>PROPAGATION_REQUIRED（默认值） – A中有事务,使用A中的事务.如果没有，B就会开启一个新的事务,将A包含进来.(保证A,B在同一个事务中)，默认值！！</li>
+<li>PROPAGATION_SUPPORTS          – A中有事务,使用A中的事务.如果A中没有事务.那么B也不使用事务.</li>
+<li>PROPAGATION_MANDATORY         – A中有事务,使用A中的事务.如果A没有事务.抛出异常.</li>
+<li>PROPAGATION_REQUIRES_NEW      – A中有事务,将A中的事务挂起.B创建一个新的事务.(保证A,B没有在一个事务中)</li>
+<li>PROPAGATION_NOT_SUPPORTED     – A中有事务,将A中的事务挂起.</li>
+<li>PROPAGATION_NEVER             – A中有事务,抛出异常.</li>
+<li>PROPAGATION_NESTED            – 嵌套事务.当A执行之后,就会在这个位置设置一个保存点.如果B没有问题.执行通过.如果B出现异常,运行客户根据需求回滚(选择回滚到保存点或者是最初始状态)</li>
+</ul>
+</li>
+</ul>
+<h3 id="transactionstatus接口"><a class="markdownIt-Anchor" href="#transactionstatus接口"></a> TransactionStatus接口</h3>
+<p>事务的状态（是否新事物，是否已提交，是否有保存点，是否回滚）</p>
+<blockquote>
+<p>总结：上述对象之间的关系：平台事务管理器PlatformTransactionManager真正管理事务对象，根据事务定义的信息TransactionDefinition进行事务管理，在管理事务中产生一些状态，将状态记录到TransactionStatus中</p>
+</blockquote>
+<h2 id="spring框架事务管理的分类"><a class="markdownIt-Anchor" href="#spring框架事务管理的分类"></a> Spring框架事务管理的分类</h2>
+<ol>
+<li>spring的<strong>编程式事务管理</strong>（不推荐使用）
+<ul>
+<li>通过手动编写代码的方式完成事务的管理</li>
+</ul>
+</li>
+<li>spring的<strong>声明式事务管理</strong>（底层采用AOP的技术）
+<ul>
+<li>通过一段配置的方式完成事务的管理</li>
+<li>一般使用基于aspectJ的xml方式 和 基于aspectJ的注解方式</li>
+</ul>
+</li>
+</ol>
+<h3 id="编程式事务管理了解"><a class="markdownIt-Anchor" href="#编程式事务管理了解"></a> 编程式事务管理（了解）</h3>
+<p>spring为了简化事务管理的代码，提供了模板类TransactionTemplate，所以手手动编程的方式管理事务，只需要使用该模板类即可</p>
+<h4 id="配置一个事务管理器"><a class="markdownIt-Anchor" href="#配置一个事务管理器"></a> 配置一个事务管理器</h4>
+<p>配置一个事务管理器，Spring使用PlatformTransactionManager接口来管理事务，所以咱们需要使用到他的实现类</p>
+<pre><code class="highlight plaintext">&lt;!-- 配置事务管理器 --&gt;
+&lt;bean id=&quot;transactionManager&quot; 
+class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+&lt;/bean&gt;</code></pre>
+<h4 id="配置事务管理模板"><a class="markdownIt-Anchor" href="#配置事务管理模板"></a> 配置事务管理模板</h4>
+<pre><code class="highlight plaintext">&lt;!-- 配置事务管理的模板 --&gt;
+&lt;bean id=&quot;transactionTemplate&quot; 
+class=&quot;org.springframework.transaction.support.TransactionTemplate&quot;&gt;
+    &lt;property name=&quot;transactionManager&quot; ref=&quot;transactionManager&quot;/&gt;
+&lt;/bean&gt;</code></pre>
+<h4 id="注入事务管理模板"><a class="markdownIt-Anchor" href="#注入事务管理模板"></a> 注入事务管理模板</h4>
+<p>在需要在进行事务管理的类中，注入事务管理的模板</p>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;accountService&quot; class=&quot;com.itheima.demo1.AccountServiceImpl&quot;&gt;
+    &lt;property name=&quot;accountDao&quot; ref=&quot;accountDao&quot;/&gt;
+    &lt;property name=&quot;transactionTemplate&quot; ref=&quot;transactionTemplate&quot;/&gt;
+&lt;/bean&gt;</code></pre>
+<h4 id="在业务层使用模板管理事务"><a class="markdownIt-Anchor" href="#在业务层使用模板管理事务"></a> 在业务层使用模板管理事务</h4>
+<pre><code class="highlight plaintext">        // 注入事务模板对象
+        private TransactionTemplate transactionTemplate;
+        public void setTransactionTemplate(TransactionTemplate transactionTemplate) &#123;
+            this.transactionTemplate = transactionTemplate;
+        &#125;
+        public void pay(final String out, final String in, final double money) &#123;
+            transactionTemplate.execute(new TransactionCallbackWithoutResult() &#123;
+                protected void doInTransactionWithoutResult(TransactionStatus status) &#123;
+                    // 扣钱
+                    accountDao.outMoney(out, money);
+                    int a = 10/0;
+                    // 加钱
+                    accountDao.inMoney(in, money);
+                &#125;
+            &#125;);
+        &#125;</code></pre>
+<h3 id="声明式事务管理重点"><a class="markdownIt-Anchor" href="#声明式事务管理重点"></a> 声明式事务管理（重点）</h3>
+<p>声明式事务管理又分成两种方式</p>
+<ul>
+<li>基于AspectJ的XML方式（重点掌握）</li>
+<li>基于AspectJ的注解方式（重点掌握）</li>
+</ul>
+<h4 id="基于aspectj的xml方式"><a class="markdownIt-Anchor" href="#基于aspectj的xml方式"></a> 基于AspectJ的XML方式</h4>
+<h5 id="maven依赖-2"><a class="markdownIt-Anchor" href="#maven依赖-2"></a> maven依赖</h5>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.lee&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+    &lt;dependencies&gt;
+        &lt;!-- spring ioc组件需要的依赖包 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-expression&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- 基于AspectJ的aop依赖 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-aspects&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;aopalliance&lt;/groupId&gt;
+            &lt;artifactId&gt;aopalliance&lt;/artifactId&gt;
+            &lt;version&gt;1.0&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- spring 事务管理依赖包 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-tx&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--spring jdbc依赖包--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-jdbc&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- spring 单元测试组件包 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+            &lt;version&gt;5.0.7.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- 单元测试Junit --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;junit&lt;/groupId&gt;
+            &lt;artifactId&gt;junit&lt;/artifactId&gt;
+            &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- mysql数据库驱动包 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;mysql&lt;/groupId&gt;
+            &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+            &lt;version&gt;5.1.35&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- dbcp连接池的依赖包 --&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;commons-dbcp&lt;/groupId&gt;
+            &lt;artifactId&gt;commons-dbcp&lt;/artifactId&gt;
+            &lt;version&gt;1.4&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--c3p0连接池--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;com.mchange&lt;/groupId&gt;
+            &lt;artifactId&gt;c3p0&lt;/artifactId&gt;
+            &lt;version&gt;0.9.5.4&lt;/version&gt;
+        &lt;/dependency&gt;
+    &lt;/dependencies&gt;
+
+    &lt;build&gt;
+        &lt;plugins&gt;
+            &lt;!-- 配置Maven的JDK编译级别 --&gt;
+            &lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
+                &lt;version&gt;3.2&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;source&gt;1.8&lt;/source&gt;
+                    &lt;target&gt;1.8&lt;/target&gt;
+                    &lt;encoding&gt;UTF-8&lt;/encoding&gt;
+                &lt;/configuration&gt;
+            &lt;/plugin&gt;
+        &lt;/plugins&gt;
+    &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+<h5 id="数据库表"><a class="markdownIt-Anchor" href="#数据库表"></a> 数据库表</h5>
+<p><img src="image/-2.png" alt="-2.png" /></p>
+<h5 id="持久层"><a class="markdownIt-Anchor" href="#持久层"></a> 持久层</h5>
+<ul>
+<li>AccountDao</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.dao;
+
+public interface AccountDao &#123;
+
+    void updateAccount(String name,double mony);
+
+    Double selectAccount(String name);
+&#125;</code></pre>
+<ul>
+<li>AccountDaoImpl</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.dao;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
+import javax.annotation.Resource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+@Repository
+public class AccountDaoImpl implements AccountDao &#123;
+
+    @Resource
+    JdbcTemplate jdbcTemplate;
+
+    //根据名字修改金钱
+    public void updateAccount(String name, double money) &#123;
+
+        jdbcTemplate.update(&quot;update account set money = ? where name = ? &quot;, money, name);
+    &#125;
+
+    //根据名字查金钱
+    public Double selectAccount(String name) &#123;
+        Double money = jdbcTemplate.queryForObject(&quot;select money from account where name = ?&quot;, new BeanMapper(),name);
+        return money;
+    &#125;
+
+    class BeanMapper implements RowMapper&lt;Double&gt; &#123;
+        public Double mapRow(ResultSet rs, int arg1) throws SQLException &#123;
+            return rs.getDouble(&quot;money&quot;);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<h5 id="业务层"><a class="markdownIt-Anchor" href="#业务层"></a> 业务层</h5>
+<ul>
+<li>AccountService</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.service;
+
+public interface AccountService &#123;
+
+    void transfer(String form,String to,double money);
+&#125;</code></pre>
+<ul>
+<li>AccountServiceImpl</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.service;
+
+import com.lee.dao.AccountDao;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+
+@Service
+public class AccountServiceImpl implements AccountService &#123;
+
+    @Resource
+    AccountDao dao;
+
+    @Override
+    public void transfer(String form, String to, double money) &#123;
+        //给from减去金额
+        double money1 = dao.selectAccount(form);
+        dao.updateAccount(form,money1-money);
+        System.out.println(1/0);
+        //给to加上金额
+        double money2 = dao.selectAccount(to);
+        dao.updateAccount(to,money2+money);
+
+    &#125;
+&#125;</code></pre>
+<h5 id="spring-配置"><a class="markdownIt-Anchor" href="#spring-配置"></a> spring 配置</h5>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd&quot;&gt;
+
+    &lt;context:component-scan base-package=&quot;com.lee&quot;&gt;&lt;/context:component-scan&gt;
+
+    &lt;!--配置Spring内置数据源dataSource--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--spring管理模板类 --&gt;
+    &lt;bean id=&quot;JdbcTemplate&quot; class=&quot;org.springframework.jdbc.core.JdbcTemplate&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--基于AspectJ + XML方式实现声明式事务--&gt;
+
+    &lt;!--配置平台事务管理器DataSourceTransactionManager--&gt;
+    &lt;!--底层实际还是使用jdbc进行事务管理--&gt;
+    &lt;bean id=&quot;TransactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--事务通知--&gt;
+    &lt;!--tx:advice：对应的处理器类就是TransactionInterceptor类（实现MethodInterceptor环绕通知接口）--&gt;
+    &lt;!--TransactionInterceptor类实现事务是通过transaction-manager属性指定的值实现事务管理的--&gt;
+    &lt;tx:advice id=&quot;txAdvice&quot;  transaction-manager=&quot;TransactionManager&quot;&gt;
+        &lt;!--设置事务管理信息（隔离级别，传播行为）--&gt;
+        &lt;tx:attributes&gt;
+            &lt;!--name：要管理的方法名，可以使用通配符*--&gt;
+            &lt;!--isolation:隔离级别，一般使用默认--&gt;
+            &lt;!--propagation:事务传播行为：增删改一般使用required，查询一般使用read-only--&gt;
+            &lt;tx:method name=&quot;trans*&quot; isolation=&quot;DEFAULT&quot; propagation=&quot;REQUIRED&quot;/&gt;
+            
+            &lt;!--该标签可以写多条--&gt;
+            &lt;tx:method name=&quot;query*&quot; propagation=&quot;REQUIRED&quot;/&gt;
+        &lt;/tx:attributes&gt;
+    &lt;/tx:advice&gt;
+
+    &lt;!--配置aop--&gt;
+    &lt;aop:config&gt;
+        &lt;!--使用advisor的原因是我们使用的advice不是自己写的--&gt;
+        &lt;!--aop:advisor标签使用的是传统spring aop开发方式实现的--&gt;
+        &lt;!--spring已经提前实现了该增强功能，spring使用的是MethodInterceptor（环绕通知）接口的方式--&gt;
+        &lt;aop:advisor advice-ref=&quot;txAdvice&quot; pointcut=&quot;execution(* *..*.*ServiceImpl.*(..))&quot;/&gt;
+&lt;!--        这里不使用aspect的原因是aspect自由度更高，当我们自定义实现advice的时候使用aspect--&gt;
+&lt;!--        &lt;aop:aspect ref=&quot;txAdvice&quot;&gt;--&gt;
+&lt;!--            &lt;aop:around method=&quot;&quot; pointcut=&quot;execution(* *..*.*ServiceImpl.*(..))&quot;/&gt;--&gt;
+&lt;!--        &lt;/aop:aspect&gt;--&gt;
+    &lt;/aop:config&gt;
+&lt;/beans&gt;</code></pre>
+<h5 id="测试"><a class="markdownIt-Anchor" href="#测试"></a> 测试</h5>
+<pre><code class="highlight plaintext">import com.lee.service.AccountService;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(&quot;classpath:ApplicationContext.xml&quot;)
+public class TestSpring &#123;
+    @Resource
+    AccountService service;
+
+    @Test
+    public void test2()&#123;
+
+        service.transfer(&quot;李博&quot;,&quot;李菊&quot;,200);
+    &#125;
+&#125;</code></pre>
+<p>加上事务管理后，如果程序报错，则转账双方的金额都不会改变</p>
+<h5 id="源码分析"><a class="markdownIt-Anchor" href="#源码分析"></a> 源码分析</h5>
+<p><strong>源码入口</strong></p>
+<p>此处需要了解TxAdviceBeanDefinitionParser的继承体系，TxAdviceBeanDefinitionParseràAbstractSingleBeanDefinitionParseràAbstractBeanDefinitionParser，因为根据上面loadBeanDefinitions流程源码分析，我们知道自定义元素的解析工作是从一个namespaceHandler.parser方法开始的，该方法在AbstractBeanDefinitionParser类中</p>
+<p><img src="image/-3.png" alt="-3.png" /></p>
+<p><img src="image/-4.png" alt="-4.png" /></p>
+<p>我们重点关心如何获取BeanDefinition对象的，所以接下来，我们进入parseInternal方法，该方法在AbstractSingleBeanDefinitionParser中（参考上面继承体系）</p>
+<p><img src="image/-5.png" alt="-5.png" /></p>
+<p>接下来，我们来到了TxAdviceBeanDefinitionParser类，因为getBeanClass方法和doParser方法都在该类里面</p>
+<p><img src="image/-6.png" alt="-6.png" /></p>
+<p>此时我们重点了解一下TransactionInterceptor这个类，它是我们分析的最终目标</p>
+<p><img src="image/-7.png" alt="-7.png" /></p>
+<p>invokeWithInTransaction方法在TransactionInterceptor类的父类TransactionAspectSupport中：</p>
+<p><img src="image/-8.png" alt="-8.png" /></p>
+<p>对于事务源码，了解到此处基本上可以了，如果想再了解事务是如何开启和提交的，请继续往下看，接下来我们进入createTransactionIfNecessary方法看看，事务是如何开启的</p>
+<p><img src="image/-9.png" alt="-9.png" /></p>
+<p>我们进入AbstractPlatformTransactionManager中的getTransaction方法继续了解事务是如何开启的：</p>
+<p><img src="image/-10.png" alt="-10.png" /></p>
+<p>接下来，该进入doBegin方法了，不过该方法在具体的平台事务管理器的子类中，我们此处使用DataSourceTransactionManager子类进行源码跟踪</p>
+<p><img src="image/-11.png" alt="-11.png" /></p>
+<p>DataSourceTransactionManager的事务管理是通过底层的JDBC代码实现的，但是不同的平台事务管理器，它们底层的事务处理也是不同的</p>
+<h4 id="基于aspectj的注解方式"><a class="markdownIt-Anchor" href="#基于aspectj的注解方式"></a> 基于AspectJ的注解方式</h4>
+<p><strong>service类上或者方法上加注解：</strong></p>
+<ul>
+<li>类上加@Transactional：表示该类中所有的方法都被事务管理</li>
+<li>方法上加@Transactional：表示只有该方法被事务管理</li>
+</ul>
+<pre><code class="highlight plaintext">package com.lee.service;
+
+import com.lee.dao.AccountDao;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+//@Transactional：标记改类的所有方法都已经被事务管理了，至于管理属性，不设置的话，都采取默认值
+@Transactional
+@Service
+public class AccountServiceImpl implements AccountService &#123;
+
+    @Resource
+    AccountDao dao;
+
+    @Override
+    public void transfer(String form, String to, double money) &#123;
+        //给from减去金额
+        double money1 = dao.selectAccount(form);
+        dao.updateAccount(form,money1-money);
+        System.out.println(1/0);
+        //给to加上金额
+        double money2 = dao.selectAccount(to);
+        dao.updateAccount(to,money2+money);
+    &#125;
+&#125;
+</code></pre>
+<p><strong>开启事务注解：</strong></p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;
+       xmlns:aop=&quot;http://www.springframework.org/schema/aop&quot;
+       xmlns:tx=&quot;http://www.springframework.org/schema/tx&quot;
+       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       http://www.springframework.org/schema/tx
+       http://www.springframework.org/schema/tx/spring-tx.xsd&quot;&gt;
+
+    &lt;context:component-scan base-package=&quot;com.lee&quot;&gt;&lt;/context:component-scan&gt;
+
+    &lt;!--配置Spring内置数据源dataSource--&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;
+        &lt;property name=&quot;driverClassName&quot; value=&quot;com.mysql.jdbc.Driver&quot;/&gt;
+        &lt;property name=&quot;url&quot; value=&quot;jdbc:mysql://localhost:3306/leetest?characterEncoding=UTF-8&quot;/&gt;
+        &lt;property name=&quot;username&quot; value=&quot;root&quot;/&gt;
+        &lt;property name=&quot;password&quot; value=&quot;123456&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--spring管理模板类 --&gt;
+    &lt;bean id=&quot;JdbcTemplate&quot; class=&quot;org.springframework.jdbc.core.JdbcTemplate&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--配置平台事务管理器DataSourceTransactionManager--&gt;
+    &lt;!--底层实际还是使用jdbc进行事务管理--&gt;
+    &lt;bean id=&quot;TransactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;
+    &lt;/bean&gt;
+
+    &lt;!--开启事务注解--&gt;
+    &lt;tx:annotation-driven transaction-manager=&quot;TransactionManager&quot;/&gt;
+
+&lt;/beans&gt;</code></pre>
+<p><strong>@Transactional注解就相当于以下的配置，即使用注解后，以下代码就可以省略</strong></p>
+<pre><code class="highlight plaintext">  &lt;!--事务通知--&gt;
+    &lt;!--tx:advice：对应的处理器类就是TransactionInterceptor类（实现MethodInterceptor环绕通知接口）--&gt;
+    &lt;!--TransactionInterceptor类实现事务是通过transaction-manager属性指定的值实现事务管理的--&gt;
+    &lt;tx:advice id=&quot;txAdvice&quot;  transaction-manager=&quot;TransactionManager&quot;&gt;
+        &lt;!--设置事务管理信息（隔离级别，传播行为）--&gt;
+        &lt;tx:attributes&gt;
+            &lt;!--name：要管理的方法名，可以使用通配符*--&gt;
+            &lt;!--isolation:隔离级别，一般使用默认--&gt;
+            &lt;!--propagation:事务传播行为：增删改一般使用required，查询一般使用read-only--&gt;
+            &lt;tx:method name=&quot;trans*&quot; isolation=&quot;DEFAULT&quot; propagation=&quot;REQUIRED&quot;/&gt;
+        &lt;/tx:attributes&gt;
+    &lt;/tx:advice&gt;
+
+    &lt;!--配置aop--&gt;
+    &lt;aop:config&gt;
+        &lt;!--使用advisor的原因是我们使用的advice不是自己写的--&gt;
+        &lt;!--aop:advisor标签使用的是传统spring aop开发方式实现的--&gt;
+        &lt;!--spring已经提前实现了该增强功能，spring使用的是MethodInterceptor（环绕通知）接口的方式--&gt;
+        &lt;aop:advisor advice-ref=&quot;txAdvice&quot; pointcut=&quot;execution(* *..*.*ServiceImpl.*(..))&quot;/&gt;
+&lt;!--        这里不使用aspect的原因是aspect自由度更高，当我们自定义实现advice的时候使用aspect--&gt;
+&lt;!--        &lt;aop:aspect ref=&quot;txAdvice&quot;&gt;--&gt;
+&lt;!--            &lt;aop:around method=&quot;&quot; pointcut=&quot;execution(* *..*.*ServiceImpl.*(..))&quot;/&gt;--&gt;
+&lt;!--        &lt;/aop:aspect&gt;--&gt;
+    &lt;/aop:config&gt;</code></pre>
+<h3 id="使用声明式事务"><a class="markdownIt-Anchor" href="#使用声明式事务"></a> 使用声明式事务</h3>
+<p>使用Spring操作JDBC虽然方便，但是我们在前面讨论JDBC的时候，讲到过JDBC事务，如果要在Spring中操作事务，没必要手写JDBC事务，可以使用Spring提供的高级接口来操作事务。</p>
+<p>Spring提供了一个PlatformTransactionManager来表示事务管理器，所有的事务都由它负责管理。而事务由TransactionStatus表示。如果手写事务代码，使用try…catch如下：</p>
+<pre><code class="highlight plaintext">TransactionStatus tx = null;
+try &#123;
+    // 开启事务:
+    tx = txManager.getTransaction(new DefaultTransactionDefinition());
+    // 相关JDBC操作:
+    jdbcTemplate.update(&quot;...&quot;);
+    jdbcTemplate.update(&quot;...&quot;);
+    // 提交事务:
+    txManager.commit(tx);
+&#125; catch (RuntimeException e) &#123;
+    // 回滚事务:
+    txManager.rollback(tx);
+    throw e;
+&#125;</code></pre>
+<p>Spring为啥要抽象出PlatformTransactionManager和TransactionStatus？原因是JavaEE除了提供JDBC事务外，它还支持分布式事务JTA（Java Transaction API）。分布式事务是指多个数据源（比如多个数据库，多个消息系统）要在分布式环境下实现事务的时候，应该怎么实现。分布式事务实现起来非常复杂，简单地说就是通过一个分布式事务管理器实现两阶段提交，但本身数据库事务就不快，基于数据库事务实现的分布式事务就慢得难以忍受，所以使用率不高。</p>
+<p>Spring为了同时支持JDBC和JTA两种事务模型，就抽象出PlatformTransactionManager。因为我们的代码只需要JDBC事务，因此，在AppConfig中，需要再定义一个PlatformTransactionManager对应的Bean，它的实际类型是DataSourceTransactionManager：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+@PropertySource(&quot;jdbc.properties&quot;)
+public class AppConfig &#123;
+    ...
+    @Bean
+    PlatformTransactionManager createTxManager(@Autowired DataSource dataSource) &#123;
+        return new DataSourceTransactionManager(dataSource);
+    &#125;
+&#125;</code></pre>
+<p>使用编程的方式使用Spring事务仍然比较繁琐，更好的方式是通过声明式事务来实现。使用声明式事务非常简单，除了在AppConfig中追加一个上述定义的PlatformTransactionManager外，再加一个@EnableTransactionManagement就可以启用声明式事务：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+@EnableTransactionManagement // 启用声明式
+@PropertySource(&quot;jdbc.properties&quot;)
+public class AppConfig &#123;
+    ...
+&#125;</code></pre>
+<p>然后，对需要事务支持的方法，加一个@Transactional注解：</p>
+<pre><code class="highlight plaintext">@Component
+public class UserService &#123;
+    // 此public方法自动具有事务支持:
+    @Transactional
+    public User register(String email, String password, String name) &#123;
+       ...
+    &#125;
+&#125;</code></pre>
+<p>或者更简单一点，直接在Bean的class处加上，表示所有public方法都具有事务支持：</p>
+<pre><code class="highlight plaintext">@Component
+@Transactional
+public class UserService &#123;
+    ...
+&#125;</code></pre>
+<p>Spring对一个声明式事务的方法，如何开启事务支持？原理仍然是AOP代理，即通过自动创建Bean的Proxy实现：</p>
+<pre><code class="highlight plaintext">public class UserService$$EnhancerBySpringCGLIB extends UserService &#123;
+    UserService target = ...
+    PlatformTransactionManager txManager = ...
+
+    public User register(String email, String password, String name) &#123;
+        TransactionStatus tx = null;
+        try &#123;
+            tx = txManager.getTransaction(new DefaultTransactionDefinition());
+            target.register(email, password, name);
+            txManager.commit(tx);
+        &#125; catch (RuntimeException e) &#123;
+            txManager.rollback(tx);
+            throw e;
+        &#125;
+    &#125;
+    ...
+&#125;</code></pre>
+<blockquote>
+<p>注意：声明了@EnableTransactionManagement后，不必额外添加@EnableAspectJAutoProxy。</p>
+</blockquote>
+<h4 id="回滚事务"><a class="markdownIt-Anchor" href="#回滚事务"></a> 回滚事务</h4>
+<p>默认情况下，如果发生了RuntimeException，Spring的声明式事务将自动回滚。在一个事务方法中，如果程序判断需要回滚事务，只需抛出RuntimeException，例如：</p>
+<pre><code class="highlight plaintext">@Transactional
+public buyProducts(long productId, int num) &#123;
+    ...
+    if (store &lt; num) &#123;
+        // 库存不够，购买失败:
+        throw new IllegalArgumentException(&quot;No enough products&quot;);
+    &#125;
+    ...
+&#125;</code></pre>
+<p>如果要针对Checked Exception回滚事务，需要在@Transactional注解中写出来：</p>
+<pre><code class="highlight plaintext">@Transactional(rollbackFor = &#123;RuntimeException.class, IOException.class&#125;)
+public buyProducts(long productId, int num) throws IOException &#123;
+    ...
+&#125;</code></pre>
+<p>上述代码表示在抛出RuntimeException或IOException时，事务将回滚。</p>
+<p>为了简化代码，我们强烈建议业务异常体系从RuntimeException派生，这样就不必声明任何特殊异常即可让Spring的声明式事务正常工作：</p>
+<pre><code class="highlight plaintext">public class BusinessException extends RuntimeException &#123;
+    ...
+&#125;
+
+public class LoginException extends BusinessException &#123;
+    ...
+&#125;
+
+public class PaymentException extends BusinessException &#123;
+    ...
+&#125;
+</code></pre>
+<h4 id="事务边界"><a class="markdownIt-Anchor" href="#事务边界"></a> 事务边界</h4>
+<p>在使用事务的时候，明确事务边界非常重要。对于声明式事务，例如，下面的register()方法：</p>
+<pre><code class="highlight plaintext">@Component
+public class UserService &#123;
+    @Transactional
+    public User register(String email, String password, String name) &#123; // 事务开始
+       ...
+    &#125; // 事务结束
+&#125;</code></pre>
+<p>它的事务边界就是register()方法开始和结束。</p>
+<p>类似的，一个负责给用户增加积分的addBonus()方法：</p>
+<pre><code class="highlight plaintext">@Component
+public class BonusService &#123;
+    @Transactional
+    public void addBonus(long userId, int bonus) &#123; // 事务开始
+       ...
+    &#125; // 事务结束
+&#125;</code></pre>
+<p>它的事务边界就是addBonus()方法开始和结束。</p>
+<p>在现实世界中，问题总是要复杂一点点。用户注册后，能自动获得100积分，因此，实际代码如下：</p>
+<pre><code class="highlight plaintext">@Componentpublic class UserService &#123;
+    @Autowired
+    BonusService bonusService;
+
+    @Transactional
+    public User register(String email, String password, String name) &#123;
+        // 插入用户记录:
+        User user = jdbcTemplate.insert(&quot;...&quot;);
+        // 增加100积分:
+        bonusService.addBonus(user.id, 100);
+    &#125;
+&#125;</code></pre>
+<p>现在问题来了：调用方（比如RegisterController）调用UserService.register()这个事务方法，它在内部又调用了BonusService.addBonus()这个事务方法，一共有几个事务？如果addBonus()抛出了异常需要回滚事务，register()方法的事务是否也要回滚？</p>
+<h4 id="事务传播"><a class="markdownIt-Anchor" href="#事务传播"></a> 事务传播</h4>
+<p>要解决上面的问题，我们首先要定义事务的传播模型。</p>
+<p>假设用户注册的入口是RegisterController，它本身没有事务，仅仅是调用UserService.register()这个事务方法：</p>
+<pre><code class="highlight plaintext">@Controller
+public class RegisterController &#123;
+    @Autowired
+    UserService userService;
+
+    @PostMapping(&quot;/register&quot;)
+    public ModelAndView doRegister(HttpServletRequest req) &#123;
+        String email = req.getParameter(&quot;email&quot;);
+        String password = req.getParameter(&quot;password&quot;);
+        String name = req.getParameter(&quot;name&quot;);
+        User user = userService.register(email, password, name);
+        return ...
+    &#125;
+&#125;</code></pre>
+<p>因此，UserService.register()这个事务方法的起始和结束，就是事务的范围。</p>
+<p>我们需要关心的问题是，在UserService.register()这个事务方法内，调用BonusService.addBonus()，我们期待的事务行为是什么：</p>
+<pre><code class="highlight plaintext">@Transactional
+public User register(String email, String password, String name) &#123;
+    // 事务已开启:
+    User user = jdbcTemplate.insert(&quot;...&quot;);
+    // ???:
+    bonusService.addBonus(user.id, 100);
+&#125; // 事务结束</code></pre>
+<p>对于大多数业务来说，我们期待BonusService.addBonus()的调用，和UserService.register()应当融合在一起，它的行为应该如下：</p>
+<p>UserService.register()已经开启了一个事务，那么在内部调用BonusService.addBonus()时，BonusService.addBonus()方法就没必要再开启一个新事务，直接加入到BonusService.register()的事务里就好了。</p>
+<p>其实就相当于：</p>
+<ol>
+<li>UserService.register()先执行了一条INSERT语句：INSERT INTO users …</li>
+<li>BonusService.addBonus()再执行一条INSERT语句：INSERT INTO bonus …</li>
+</ol>
+<p>因此，Spring的声明式事务为事务传播定义了几个级别，<strong>默认传播级别就是REQUIRED</strong>，它的意思是，<strong>如果当前没有事务，就创建一个新事务，如果当前有事务，就加入到当前事务中执行</strong>。</p>
+<p>我们观察UserService.register()方法，它在RegisterController中执行，因为RegisterController没有事务，因此，UserService.register()方法会自动创建一个新事务。</p>
+<p>在UserService.register()方法内部，调用BonusService.addBonus()方法时，因为BonusService.addBonus()检测到当前已经有事务了，因此，它会加入到当前事务中执行。</p>
+<p>因此，整个业务流程的事务边界就清晰了：它只有一个事务，并且范围就是UserService.register()方法。</p>
+<p>有的童鞋会问：把BonusService.addBonus()方法的@Transactional去掉，变成一个普通方法，那不就规避了复杂的传播模型吗？</p>
+<p>去掉BonusService.addBonus()方法的@Transactional，会引来另一个问题，即其他地方如果调用BonusService.addBonus()方法，那就没法保证事务了。例如，规定用户登录时积分+5：</p>
+<pre><code class="highlight plaintext">@Controller
+public class LoginController &#123;
+    @Autowired
+    BonusService bonusService;
+
+    @PostMapping(&quot;/login&quot;)
+    public ModelAndView doLogin(HttpServletRequest req) &#123;
+        User user = ...
+        bonusService.addBonus(user.id, 5);
+    &#125;
+&#125;</code></pre>
+<p>可见，BonusService.addBonus()方法必须要有@Transactional，否则，登录后积分就无法添加了。</p>
+<p>默认的事务传播级别是REQUIRED，它满足绝大部分的需求。还有一些其他的传播级别：</p>
+<ul>
+<li>SUPPORTS：表示如果有事务，就加入到当前事务，如果没有，那也不开启事务执行。这种传播级别可用于查询方法，因为SELECT语句既可以在事务内执行，也可以不需要事务；</li>
+<li>MANDATORY：表示必须要存在当前事务并加入执行，否则将抛出异常。这种传播级别可用于核心更新逻辑，比如用户余额变更，它总是被其他事务方法调用，不能直接由非事务方法调用；</li>
+<li>REQUIRES_NEW：表示不管当前有没有事务，都必须开启一个新的事务执行。如果当前已经有事务，那么当前事务会挂起，等新事务完成后，再恢复执行；</li>
+<li>NOT_SUPPORTED：表示不支持事务，如果当前有事务，那么当前事务会挂起，等这个方法执行完成后，再恢复执行；</li>
+<li>NEVER：和NOT_SUPPORTED相比，它不但不支持事务，而且在监测到当前有事务时，会抛出异常拒绝执行；</li>
+<li>NESTED：表示如果当前有事务，则开启一个嵌套级别事务，如果当前没有事务，则开启一个新事务。</li>
+</ul>
+<p>定义事务的传播级别也是写在@Transactional注解里的：</p>
+<pre><code class="highlight plaintext">@Transactional(propagation = Propagation.REQUIRES_NEW)
+public Product createProduct() &#123;
+    ...
+&#125;</code></pre>
+<p>现在只剩最后一个问题了：Spring是如何传播事务的？</p>
+<p>我们在JDBC中使用事务的时候，是这么个写法：</p>
+<pre><code class="highlight plaintext">Connection conn = openConnection();
+try &#123;
+    // 关闭自动提交:
+    conn.setAutoCommit(false);
+    // 执行多条SQL语句:
+    insert(); update(); delete();
+    // 提交事务:
+    conn.commit();
+&#125; catch (SQLException e) &#123;
+    // 回滚事务:
+    conn.rollback();
+&#125; finally &#123;
+    conn.setAutoCommit(true);
+    conn.close();
+&#125;</code></pre>
+<p>Spring使用声明式事务，最终也是通过执行JDBC事务来实现功能的，那么，一个事务方法，如何获知当前是否存在事务？</p>
+<p>答案是使用ThreadLocal。Spring总是把JDBC相关的Connection和TransactionStatus实例绑定到ThreadLocal。如果一个事务方法从ThreadLocal未取到事务，那么它会打开一个新的JDBC连接，同时开启一个新的事务，否则，它就直接使用从ThreadLocal获取的JDBC连接以及TransactionStatus。</p>
+<p>因此，事务能正确传播的前提是，方法调用是在一个线程内才行。如果像下面这样写：</p>
+<pre><code class="highlight plaintext">@Transactional
+public User register(String email, String password, String name) &#123; // BEGIN TX-A
+    User user = jdbcTemplate.insert(&quot;...&quot;);
+    new Thread(() -&gt; &#123;
+        // BEGIN TX-B:
+        bonusService.addBonus(user.id, 100);
+        // END TX-B
+    &#125;).start();
+&#125; // END TX-A</code></pre>
+<p>在另一个线程中调用BonusService.addBonus()，它根本获取不到当前事务，因此，UserService.register()和BonusService.addBonus()两个方法，将分别开启两个完全独立的事务。</p>
+<p>换句话说，事务只能在当前线程传播，无法跨线程传播。</p>
+<p>那如果我们想实现跨线程传播事务呢？原理很简单，就是要想办法把当前线程绑定到ThreadLocal的Connection和TransactionStatus实例传递给新线程，但实现起来非常复杂，根据异常回滚更加复杂，不推荐自己去实现。</p>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

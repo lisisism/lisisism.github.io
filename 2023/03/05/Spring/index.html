@@ -1,0 +1,4046 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Spring 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Spring</div>
+  <div class="post-meta">
+    <div class="date">2023 三月 5日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">Spring</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="spring"><a class="markdownIt-Anchor" href="#spring"></a> $Spring</h1>
+<ul>
+<li><a href="">Spring IOC</a>
+<ul>
+<li><a href="">1. Spring是什么？</a>
+<ul>
+<li><a href="">优点</a></li>
+<li><a href="">Spring的组成</a></li>
+<li><a href="">spring体系结构</a></li>
+<li><a href="">spring容器的核心</a>
+<ul>
+<li><a href="">IoC</a></li>
+<li><a href="">AOP</a></li>
+</ul>
+</li>
+<li><a href="">为什么使用IoC</a></li>
+<li><a href="">Spring IoC源码分析</a>
+<ul>
+<li><a href="">什么是IoC容器</a></li>
+<li><a href="">如何创建IoC容器</a></li>
+<li><a href="">如何创建web环境中的IoC容器</a></li>
+<li><a href="">容器初始化主流程分析</a>
+<ul>
+<li><a href="">创建Bean Factory子流程</a></li>
+<li><a href="">加载解析BeanDefinition子流程（loadDefinitions方法）</a></li>
+<li><a href="">创建bean流程分析</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">2.Spring使用</a>
+<ul>
+<li><a href="">启动spring容器</a>
+<ul>
+<li><a href="">spring Maven依赖</a></li>
+<li><a href="">spring核心配置文件 applicationContext.xml</a></li>
+<li><a href="">启动spring容器</a></li>
+</ul>
+</li>
+<li><a href="">Spring Bean定义</a>
+<ul>
+<li><a href="">bean属性</a></li>
+<li><a href="">Bean和spring容器的关系</a></li>
+</ul>
+</li>
+<li><a href="">如何创建对象</a>
+<ul>
+<li><a href="">bean标签详解</a></li>
+<li><a href="">实例化bean的三种方式</a></li>
+<li><a href="">spring 原理</a></li>
+</ul>
+</li>
+<li><a href="">作用域（scope）</a>
+<ul>
+<li><a href="">spring scope原理</a></li>
+</ul>
+</li>
+<li><a href="">生命周期 init-method/destroy-method</a></li>
+<li><a href="">后置处理器</a>
+<ul>
+<li><a href="">Spring_Bean后置处理器</a></li>
+<li><a href="">基础案例</a></li>
+<li><a href="">高级案例</a></li>
+<li><a href="">后置对象原理</a></li>
+</ul>
+</li>
+<li><a href="">延迟加载（lazy-init=“true”）</a></li>
+<li><a href="">Spring Bean定义继承（parent）</a>
+<ul>
+<li><a href="">Bean定义模板（abstract=“true”）</a></li>
+</ul>
+</li>
+<li><a href="">Spring bean依赖关系</a></li>
+<li><a href="">动态工厂DynamicFactory</a>
+<ul>
+<li><a href="">Spring动态工厂原理</a></li>
+</ul>
+</li>
+<li><a href="">静态工厂</a></li>
+</ul>
+</li>
+<li><a href="">3.IOC(Inversion Of Controll 控制反转)</a>
+<ul>
+<li><a href="">IOC实现原理</a></li>
+<li><a href="">DI(Dependency Injection)依赖注入</a>
+<ul>
+<li><a href="">DI概述</a></li>
+<li><a href="">DI 依赖注入原理</a></li>
+</ul>
+</li>
+<li><a href="">1.Set方式注入（property）</a>
+<ul>
+<li><a href="">使用p名称空间注入数据</a></li>
+<li><a href="">Spring注入内部Beans</a></li>
+</ul>
+</li>
+<li><a href="">2构造器方式注入</a></li>
+<li><a href="">3自动装配（了解）</a></li>
+<li><a href="">4 注入基本/集合类型的值</a></li>
+<li><a href="">5 引用的方式注入集合类型的值</a></li>
+<li><a href="">6 注入空值</a></li>
+<li><a href="">7 读取配置文件properties的值</a></li>
+<li><a href="">8 使用spring表达式</a></li>
+</ul>
+</li>
+<li><a href="">Spring IoC注解</a>
+<ul>
+<li><a href="">1.什么是组件扫描</a></li>
+<li><a href="">2.如何进行组件扫描</a></li>
+<li><a href="">3.作用域原型/单例 AND 延迟加载 AND 初始化和销毁 回掉方法</a></li>
+<li><a href="">4 依赖注入相关的注解</a>
+<ul>
+<li><a href="">@Autowired</a></li>
+<li><a href="">@Resource（重点）</a></li>
+<li><a href="">@Value</a>
+<ul>
+<li><a href="">@value(“#{}”)和@value(“${}”)的区别</a></li>
+<li><a href="">通过util:properties</a></li>
+<li><a href="">通过PropertyPlaceholderConfigurer</a></li>
+<li><a href="">通过PreferencesPlaceholderConfigurer</a></li>
+<li><a href="">通过PropertiesFactoryBean</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Java类取代spring xml配置</a>
+<ul>
+<li><a href="">@Configuration和@Bean注解</a></li>
+<li><a href="">@ComponentScan</a></li>
+<li><a href="">@PropertySource</a></li>
+<li><a href="">@Resource</a></li>
+<li><a href="">@Import</a></li>
+<li><a href="">注入List</a></li>
+<li><a href="">生命周期回调</a></li>
+<li><a href="">创建第三方Bean</a></li>
+<li><a href="">初始化和销毁</a></li>
+<li><a href="">使用别名</a></li>
+<li><a href="">@Profile</a></li>
+<li><a href="">@Conditional</a></li>
+<li><a href="">注入Bean的依赖性</a></li>
+<li><a href="">通过注解获取容器</a></li>
+<li><a href="">使用FactoryBean</a></li>
+</ul>
+</li>
+<li><a href="">Spring 分模块开发</a>
+<ul>
+<li><a href="">如何加载多个配置文件</a></li>
+</ul>
+</li>
+<li><a href="">Spring 整合Junit</a></li>
+<li><a href="">Spring中事件处理</a>
+<ul>
+<li><a href="">Spring中的事件处理</a></li>
+<li><a href="">监听上下文</a></li>
+<li><a href="">案例</a>
+<ul>
+<li><a href="">Spring中的自定义事件</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="spring-ioc"><a class="markdownIt-Anchor" href="#spring-ioc"></a> Spring IOC</h1>
+<pre><code class="highlight plaintext">spring.io</code></pre>
+<h2 id="1-spring是什么"><a class="markdownIt-Anchor" href="#1-spring是什么"></a> 1. Spring是什么？</h2>
+<ul>
+<li>Spring是一个开源的轻量级的应用开发框架，其目的是用于简化企业级应用程序开发，<strong>减少侵入</strong></li>
+<li>Spring提供的IOC和AOP应用，可以将组建的耦合度降至最低，即解耦，便于系统日后的维护和升级</li>
+<li><strong>宗旨</strong>
+<ul>
+<li>不发明重复的轮子</li>
+</ul>
+</li>
+<li>Spring的本质是管理软件中的对象，如何创建对象和维护对象之间的关系</li>
+</ul>
+<hr />
+<ul>
+<li>是spring框架中的一个核心模块，用来管理对象</li>
+<li>在Spring中，任何的Java类都被当成Bean处理，这些Bean通过容器管理和应用</li>
+<li>Spring容器实现了IOC和AOP机制，这些机制可以简化Bean对象创建和Bean对象之间的解耦</li>
+<li>Spring容器有<strong>BeanFactory</strong>和<strong>ApplicationContext 建议使用</strong>两种类型</li>
+</ul>
+<h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
+<ol>
+<li><strong>方便解耦，简化开发</strong> 通过spring提供的ioc容器，我们可以将对象之间的依赖关系交给spring控制，避免硬编码所造成的过度程序耦合。有了spring，用户不用再为单例模式，属性文件解析等底层的需求编写代码，可以更加专注于上层的应用</li>
+<li><strong>AOP编程支持</strong> 通过spring提供的AOP功能，方便的进行面向切面的编程，许多不容易用传统OOP实现的功能可以使用AOP轻松的应付</li>
+<li><strong>声明式事务的支持</strong> 在spring中，我们可以从单调烦闷的事务管理的代码中解脱出来，通过声明式方式灵活的进行事务的管理，提高开发效率和质量</li>
+<li><strong>方便程序的测试</strong> 可以用非容器依赖的编程方式进行几乎所有的测试工作，在spring里，测试不再是昂贵的操作，而是随手可做的事情，例如：spring对Junit4支持，可以通过注解方便的测试Spring程序</li>
+<li><strong>方便集成各种优秀的框架</strong> spring对于主流的应用框架提供了集成支持，如hibernate，JPA，Struts，Hessian，Quartz等</li>
+<li><strong>降低Java EE API的使用难度</strong> Spring对于很多难用的Java EE API（如：JDBCJavaMail,远程调用等）提供了一个薄薄的封装层，通过spring的简易封装，这些Java EE API的使用难度大为降低</li>
+<li><strong>Java源码四经典学习范例</strong> spring的源码设计精妙，结构清晰，匠心独运，处处提心着大师对Java设计模式的灵活运用以及对Java技术的高深造诣，spring框架源码无疑式Java技术的最佳实践范例，如果想在短时间迅速提高自己的Java技术水平和应用开发水平，学习和研究spring源码将会使你收到意想不到的效果</li>
+</ol>
+<p><strong>总结起来，spring有如下优点</strong></p>
+<ol>
+<li>低倾入式设计，代码污染极低</li>
+<li>独立于各种应用服务器，基于spring框架的应用，可以真正实现一次编写，到处运行的承诺</li>
+<li>spring的DI机制降低了业务对象替换的复杂性，提高了组件之间的解耦</li>
+<li>spring的AOP支持允许将一些通用任务如安全，事务，日志等进行集中式管理，从而提供了更好的复用</li>
+<li>spring的orm和dao提供了第三方持久层框架的良好整合，并简化了底层的数据库访问</li>
+<li>spring并不强制应用完全依赖于spring，开发者可以自由选用spring框架的部分或者全部</li>
+</ol>
+<h3 id="spring的组成"><a class="markdownIt-Anchor" href="#spring的组成"></a> Spring的组成</h3>
+<ul>
+<li>DAO
+<ul>
+<li>Spring DAO : 对JDBC的抽象，简化了数据访问异常的处理，Spring提供了对JDBC的操作支持：JdbcTemplate模板工具类</li>
+</ul>
+</li>
+<li>ORM
+<ul>
+<li>Spring可以和ORM框架整合，例如Spring整合Hibernate框架，其中Spring还提供HibernateDaoSupport工具类，简化了Hibernate操作</li>
+</ul>
+</li>
+<li>AOP
+<ul>
+<li>Spring提供了面向切面的编程，可以给某一层提供事物管理，例如再Service层添加事物控制</li>
+</ul>
+</li>
+<li>JEE
+<ul>
+<li>J2EE开发规范的支持，例如EJB</li>
+</ul>
+</li>
+<li>WEB
+<ul>
+<li>Spring提供了对Struts，Springmvc的支持，支持WEB开发，于此同事Spring自身也提供了基于MVC的解决方案</li>
+</ul>
+</li>
+<li>CORE
+<ul>
+<li>核心类库，提供IOC容器对象的创建和处理以来对象关系</li>
+</ul>
+</li>
+<li>Context
+<ul>
+<li>提供框架式的Bean访问方式，以及企业级功能（JNDI、定时任务等）</li>
+</ul>
+</li>
+<li>MVC
+<ul>
+<li>提供面向Web应用的Model-View-Controller实现</li>
+</ul>
+</li>
+</ul>
+<h3 id="spring体系结构"><a class="markdownIt-Anchor" href="#spring体系结构"></a> spring体系结构</h3>
+<h3 id="spring容器的核心"><a class="markdownIt-Anchor" href="#spring容器的核心"></a> spring容器的核心</h3>
+<p>spring框架的核心就是<strong>ioc（控制反转）和AOP（面向切面编程）</strong></p>
+<ul>
+<li>IoC简单理解就是<strong>控制对象创建的角色</strong>由程序员反转为Spring IoC容器</li>
+<li>AOP简单理解就是针对目标对象进行动态代理，横向增强JavaBean的功能</li>
+</ul>
+<h4 id="ioc"><a class="markdownIt-Anchor" href="#ioc"></a> IoC</h4>
+<p>Spring IoC容器的本质就是<strong>创建类实例的工厂</strong>，并且对类实例进行管理</p>
+<p>Spring IoC容器需要<strong>通过Bean工厂来是实现</strong>，在spring框架中，主要有两个工厂接口：BeanFactory接口和ApplicationContext接口（该接口实现了Bean Factory接口）</p>
+<ul>
+<li>其中BeanFactory接口时Spring早期创建Bean对象的工厂接口</li>
+<li>而我们现在大多数是通过ApplicationContext接口进行Bean工厂的创建</li>
+</ul>
+<p>Spring IoC容器<strong>加载Bean信息</strong>的方式有XML配置方式和注解方式</p>
+<ul>
+<li>XML配置方式：bean标签</li>
+<li>注解方式：@Component、@Controller、@Service、@Repository，需要使用context:component-scan标签配合使用</li>
+</ul>
+<p>Spring IoC<strong>容器的创建方式</strong>主要有两种场景：Java Application中创建（jar包）和在Web Application（war包）中创建（重点）</p>
+<ul>
+<li>在Java application中创建Spring IoC容器主要通过applicationContext接口的两个实现类来完成：<code>ClassPathXmlApplicationContext</code>和<code>FileSystemXmlApplicationContext</code></li>
+<li>在Web Application中创建sprig IoC容器主要是通过ApplicationContext接口的子接口<code>WebApplicationContext</code>来实现的
+<ul>
+<li>WebApplicationContext是通过<code>ContextLoaderListener</code>（实现ServletcontextListener接口）创建后，放入<code>ServletContext</code>域对象中的</li>
+</ul>
+</li>
+</ul>
+<p>Spring DI(依赖注入)是基于IoC使用的，简单理解就是Bean工厂在生成Bean对象的时候，如果Bean对象需要装配一个属性，那么就会通过DI将属性值注入给对象的属性</p>
+<ul>
+<li>依赖注入的方式主要有<strong>构造方法注入</strong>和<strong>set方式注入</strong></li>
+<li>set方式注入又分为<strong>手动装配方式注入</strong>和<strong>自动装配方式注入</strong>
+<ul>
+<li>手动装配方式（XML方式）：Bean标签的子标签propery，需要在类中指定set方法</li>
+<li>自动装配方式（注解方式）：<code>@Autowired</code>注解，<code>@Resource</code>注解
+<ul>
+<li>@Autowired：一部分功能是<strong>查找实例</strong>，从spring容器中根据类型（Java类）获取对应的实例，另一部分功能就是<strong>赋值</strong>，将找到的实例，装配给另一个实例的属性值（注意：一个Java类型在同一个spring容器中，只能有一个实例）</li>
+<li>@Resource：一部分功能是<strong>查找实例</strong>，从spring容器中根据Bean的名称（bean标签的名称）获取对应的实例。另一部分功能就是<strong>赋值</strong>，将找到的实例，装配给另一个实力的属性值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="aop"><a class="markdownIt-Anchor" href="#aop"></a> AOP</h4>
+<p>Spring AOP实现原理是什么？</p>
+<ul>
+<li>动态代理技术（反射）：<strong>基于JDK的动态代理</strong>和使用<strong>CGLib的动态代理</strong></li>
+<li>动态代理方式选择：根据是否实现接口来选择哪种代理方式</li>
+</ul>
+<h3 id="为什么使用ioc"><a class="markdownIt-Anchor" href="#为什么使用ioc"></a> 为什么使用IoC</h3>
+<p>Spring提供的容器又称为IoC容器，什么是IoC？</p>
+<p>IoC全称Inversion of Control，直译为控制反转。那么何谓IoC？在理解IoC之前，我们先看看通常的Java组件是如何协作的。</p>
+<p>我们假定一个在线书店，通过BookService获取书籍：</p>
+<pre><code class="highlight plaintext">public class BookService &#123;
+    private HikariConfig config = new HikariConfig();
+    private DataSource dataSource = new HikariDataSource(config);
+
+    public Book getBook(long bookId) &#123;
+        try (Connection conn = dataSource.getConnection()) &#123;
+            ...
+            return book;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>为了从数据库查询书籍，BookService持有一个DataSource。为了实例化一个HikariDataSource，又不得不实例化一个HikariConfig。</p>
+<p>现在，我们继续编写UserService获取用户：</p>
+<pre><code class="highlight plaintext">public class UserService &#123;
+    private HikariConfig config = new HikariConfig();
+    private DataSource dataSource = new HikariDataSource(config);
+
+    public User getUser(long userId) &#123;
+        try (Connection conn = dataSource.getConnection()) &#123;
+            ...
+            return user;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>因为UserService也需要访问数据库，因此，我们不得不也实例化一个HikariDataSource。</p>
+<p>在处理用户购买的CartServlet中，我们需要实例化UserService和BookService：</p>
+<pre><code class="highlight plaintext">public class CartServlet extends HttpServlet &#123;
+    private BookService bookService = new BookService();
+    private UserService userService = new UserService();
+
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException &#123;
+        long currentUserId = getFromCookie(req);
+        User currentUser = userService.getUser(currentUserId);
+        Book book = bookService.getBook(req.getParameter(&quot;bookId&quot;));
+        cartService.addToCart(currentUser, book);
+        ...
+    &#125;
+&#125;</code></pre>
+<p>类似的，在购买历史HistoryServlet中，也需要实例化UserService和BookService：</p>
+<pre><code class="highlight plaintext">public class HistoryServlet extends HttpServlet &#123;
+    private BookService bookService = new BookService();
+    private UserService userService = new UserService();
+&#125;</code></pre>
+<p>上述每个组件都采用了一种简单的通过new创建实例并持有的方式。仔细观察，会发现以下缺点：</p>
+<ol>
+<li>实例化一个组件其实很难，例如，BookService和UserService要创建HikariDataSource，实际上需要读取配置，才能先实例化HikariConfig，再实例化HikariDataSource。</li>
+<li>没有必要让BookService和UserService分别创建DataSource实例，完全可以共享同一个DataSource，但谁负责创建DataSource，谁负责获取其他组件已经创建的DataSource，不好处理。类似的，CartServlet和HistoryServlet也应当共享BookService实例和UserService实例，但也不好处理。</li>
+<li>很多组件需要销毁以便释放资源，例如DataSource，但如果该组件被多个组件共享，如何确保它的使用方都已经全部被销毁？</li>
+<li>随着更多的组件被引入，例如，书籍评论，需要共享的组件写起来会更困难，这些组件的依赖关系会越来越复杂。</li>
+<li>测试某个组件，例如BookService，是复杂的，因为必须要在真实的数据库环境下执行。</li>
+</ol>
+<p>从上面的例子可以看出，如果一个系统有大量的组件，其生命周期和相互之间的依赖关系如果由组件自身来维护，不但大大增加了系统的复杂度，而且会导致组件之间极为紧密的耦合，继而给测试和维护带来了极大的困难。</p>
+<p>因此，核心问题是：</p>
+<ul>
+<li>谁负责创建组件？</li>
+<li>谁负责根据依赖关系组装组件？<br />
+销毁时，如何按依赖顺序正确销毁？</li>
+</ul>
+<p>解决这一问题的核心方案就是IoC。</p>
+<p>传统的应用程序中，控制权在程序本身，程序的控制流程完全由开发者控制，例如：CartServlet创建了BookService，在创建BookService的过程中，又创建了DataSource组件。这种模式的缺点是，一个组件如果要使用另一个组件，必须先知道如何正确地创建它。</p>
+<p>在IoC模式下，<strong>控制权发生了反转</strong>，即从应用程序转移到了IoC容器，所有组件不再由应用程序自己创建和配置，而是由IoC容器负责，这样，应用程序只需要直接使用已经创建好并且配置好的组件。为了能让组件在IoC容器中被“装配”出来，需要某种“注入”机制，例如，BookService自己并不会创建DataSource，而是等待外部通过setDataSource()方法来注入一个DataSource：</p>
+<pre><code class="highlight plaintext">public class BookService &#123;
+    private DataSource dataSource;
+
+    public void setDataSource(DataSource dataSource) &#123;
+        this.dataSource = dataSource;
+    &#125;
+&#125;</code></pre>
+<p>不直接new一个DataSource，而是注入一个DataSource，这个小小的改动虽然简单，却带来了一系列好处：</p>
+<ol>
+<li>BookService不再关心如何创建DataSource，因此，不必编写读取数据库配置之类的代码；</li>
+<li>DataSource实例被注入到BookService，同样也可以注入到UserService，因此，共享一个组件非常简单；</li>
+<li>测试BookService更容易，因为注入的是DataSource，可以使用内存数据库，而不是真实的MySQL配置。</li>
+</ol>
+<p>因此，IoC又称为依赖注入（DI：Dependency Injection），它解决了一个最主要的问题：<strong>将组件的创建+配置与组件的使用相分离，并且，由IoC容器负责管理组件的生命周期</strong>。</p>
+<p>因为IoC容器要负责实例化所有的组件，因此，有必要告诉容器如何创建组件，以及各组件的依赖关系。一种最简单的配置是通过XML文件来实现，例如：</p>
+<pre><code class="highlight plaintext">&lt;beans&gt;
+    &lt;bean id=&quot;dataSource&quot; class=&quot;HikariDataSource&quot; /&gt;
+    &lt;bean id=&quot;bookService&quot; class=&quot;BookService&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+    &lt;/bean&gt;
+    &lt;bean id=&quot;userService&quot; class=&quot;UserService&quot;&gt;
+        &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot; /&gt;
+    &lt;/bean&gt;&lt;/beans&gt;</code></pre>
+<p>上述XML配置文件指示IoC容器创建3个JavaBean组件，并把id为dataSource的组件通过属性dataSource（即调用setDataSource()方法）注入到另外两个组件中。</p>
+<p>在Spring的IoC容器中，我们把所有组件统称为JavaBean，即配置一个组件就是配置一个Bean。</p>
+<h3 id="spring-ioc源码分析"><a class="markdownIt-Anchor" href="#spring-ioc源码分析"></a> Spring IoC源码分析</h3>
+<h4 id="什么是ioc容器"><a class="markdownIt-Anchor" href="#什么是ioc容器"></a> 什么是IoC容器</h4>
+<p>所谓的IoC容器就是指spring中bean工厂里面的Map存储结构（存储了Bean实例）</p>
+<p><strong>spring框架中的工厂有哪些？</strong></p>
+<ul>
+<li><code>ApplicationContext</code>接口（）
+<ul>
+<li>实现了BeanFactory接口</li>
+<li>实现ApplicationContext接口的工厂，可以获取到容器中具体的Bean对象</li>
+</ul>
+</li>
+<li><code>BeanFactory</code>工厂（是Spring框架早期的创建Bean对象的工厂接口）
+<ul>
+<li>实现BeanFactory接口的工厂也可以获取到Bean对象</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>其实通过源码分析，不管是<code>BeanFactory</code>还是<code>ApplicationContext</code>，其实最终的底层<code>BeanFactory</code>都是<code>DefaultListableBeanFactory</code></p>
+</blockquote>
+<p><strong>ApplicationContext和BeanFactory的区别？</strong></p>
+<ul>
+<li><code>BeanFactory</code>采取延迟加载，第一次getBean时才会初始化Bean。</li>
+<li><code>ApplicationContext</code>是加载完applicationContext.xml时，就创建具体的Bean对象的实例。（只对BeanDefition中描述为是单例的bean，才进行饿汉式加载）</li>
+</ul>
+<p><strong>继承结构</strong></p>
+<h4 id="如何创建ioc容器"><a class="markdownIt-Anchor" href="#如何创建ioc容器"></a> 如何创建IoC容器</h4>
+<p><strong>创建方式</strong></p>
+<p>Application接口常用实现类</p>
+<ul>
+<li><code>ClassPathXmlApplicationContext</code>: 它是从类的根路径下加载配置文件，推荐使用这种</li>
+<li><code>FileSystemXmlApplicationContext</code>: 它是从磁盘路径上加载配置文件，配置文件可以在磁盘的任意位置</li>
+<li><code>AnnotationConfigApplicationContext</code>: 当我们使用注解配置容器对象时，需要使用此类来创建spring容器，它用来读取注解</li>
+</ul>
+<p><strong>Java应用中创建IoC容器</strong></p>
+<pre><code class="highlight plaintext">ApplicationContext context = new ClassPathXmlApplicationContext(xml路径)</code></pre>
+<h4 id="如何创建web环境中的ioc容器"><a class="markdownIt-Anchor" href="#如何创建web环境中的ioc容器"></a> 如何创建web环境中的IoC容器</h4>
+<p>web.xml中配置ContextLoaderListener接口，并配置ContextConfigLocation参数</p>
+<ol>
+<li>
+<p>web服务器tomcat启动会加载web.xml（启动<strong>ContextLoaderListener</strong>监听器）</p>
+</li>
+<li>
+<p>web服务器启动后，会创建ServletContext（web上下文，也就是web容器）此时会触发ContextLoaderListener监听器的<strong>contextInitialized</strong>()方法</p>
+</li>
+<li>
+<p>contextInitialized()方法中会调用<strong>initWebApplicationContext</strong>()方法，该方法负责创建spring容器（<strong>DefaultListableBeanFctory</strong>）和生产bean对象</p>
+</li>
+<li>
+<p>initWebApplicationContext()方法负责创建WebApplicationContext，通过createWebApplicationContext()方法</p>
+</li>
+</ol>
+<blockquote>
+<p>WebApplicationContext是一个接口，此处创建的是它的默认实现类，XmlWebApplicationContext（Web容器中真正的实例）</p>
+</blockquote>
+<ol>
+<li>
+<p>加载spring配置文件，并创建beans，通过configureAndRefreshWebApplicationContext()方法</p>
+</li>
+<li>
+<p>将spring容器context挂载到ServletContext这个web容器的上下文中，通过servletContext.setAttribute()方法</p>
+</li>
+</ol>
+<hr />
+<p><strong>Web三类八种监听器</strong></p>
+<p><strong>监听域对象的生命周期：</strong></p>
+<p>ServletContextListener:</p>
+<ul>
+<li>创建：服务器启动</li>
+<li>销毁：服务器正常关闭</li>
+<li>spring ContextLoaderListener（服务器启动时负责加载spring配置文件）</li>
+</ul>
+<p>HttpSessionListener</p>
+<ul>
+<li>创建：第一次访问request.getHttpSession()</li>
+<li>销毁：调用invalidate()，非法关闭，国企</li>
+</ul>
+<p>ServletRequestListener</p>
+<ul>
+<li>创建：每一次访问</li>
+<li>销毁：响应结束</li>
+</ul>
+<p><strong>监听域对象的属性：（添加，删除，替换）</strong></p>
+<ul>
+<li>ServletContextAttributeListener</li>
+<li>HttpSessionAttributeListener</li>
+<li>ServletRequestAttributeListener</li>
+</ul>
+<p><strong>监听HttpSession中JavaBean的改变：</strong></p>
+<ul>
+<li>HttpSessionBindingListener（HttpSession和JavaBean对象的绑定和解绑）</li>
+<li>HttpSessionActivationListener（HttpSession的序列化，活化、钝化）</li>
+</ul>
+<h4 id="容器初始化主流程分析"><a class="markdownIt-Anchor" href="#容器初始化主流程分析"></a> 容器初始化主流程分析</h4>
+<p>主流程入口</p>
+<pre><code class="highlight plaintext">ApplicationContext context = new ClassPathXmlApplicationContext（“spring.xml”）</code></pre>
+<p>ClassPathXmlApplicationContext类：重载的构造方法依次调用，进入下面代码</p>
+<p>AbstractApplicationContext的refresh方法：初始化spring容器的核心代码</p>
+<pre><code class="highlight plaintext">public void refresh() throws BeansException, IllegalStateException &#123;
+    synchronized (this.startupShutdownMonitor) &#123;
+        // Prepare this context for refreshing.
+        prepareRefresh();
+
+        // 1.创建真正的Spring容器（DefaultListableBeanFactory）
+        // 2.加载BeanDefition（描述要初始化的Bean的信息）
+        // 3.将BeanDefition注册到BeanDefitionRegistry
+        // Tell the subclass to refresh the internal bean factory.
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // Prepare the bean factory for use in this context.
+        prepareBeanFactory(beanFactory);
+
+        try &#123;
+            // Allows post-processing of the bean factory in context subclasses.
+            postProcessBeanFactory(beanFactory);
+
+            // 执行实现了BeanFactoryPostProcessor接口的Bean
+            // 比如PropertyPlaceHolderConfigurer（context:property-placeholer）就是此处被调用的，替换掉BeanDefition中的占位符（$&#123;&#125;）中的内容
+            // Invoke factory processors registered as beans in the context.
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // 注册BeanPostProcessor（后置处理器）
+            // 比如容器自动装载了一个AutowiredAnnotationBeanPostProcessor后置处理器（实现@Autowired注解功能）
+            // Register bean processors that intercept bean creation.
+            registerBeanPostProcessors(beanFactory);
+
+            // Initialize message source for this context.
+            initMessageSource();
+
+            // Initialize event multicaster for this context.
+            initApplicationEventMulticaster();
+
+            // Initialize other special beans in specific context subclasses.
+            onRefresh();
+
+            // Check for listener beans and register them.
+            registerListeners();
+
+            // 初始化非懒加载方式的单例Bean实例
+            // Instantiate all remaining (non-lazy-init) singletons.
+            finishBeanFactoryInitialization(beanFactory);
+
+            // Last step: publish corresponding event.
+            finishRefresh();
+        &#125;catch (BeansException ex) &#123;
+            if (logger.isWarnEnabled()) &#123;
+                logger.warn(&quot;Exception encountered during context initialization - &quot; +
+                        &quot;cancelling refresh attempt: &quot; + ex);
+            &#125;
+            // Destroy already created singletons to avoid dangling resources.
+            destroyBeans();
+
+            // Reset &#x27;active&#x27; flag.
+            cancelRefresh(ex);
+
+            // Propagate exception to caller.
+            throw ex;
+        &#125;
+
+        finally &#123;
+            // Reset common introspection caches in Spring&#x27;s core, since we
+            // might not ever need metadata for singleton beans anymore...
+            resetCommonCaches();
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>流程说明：</p>
+<ol>
+<li>ResourceLoader从存储介质中加载Spring配置信息，并使用Resource表示这个配置文件的资源；</li>
+<li>BeanDefinitionReader读取Resource所指向的配置文件资源，然后解析配置文件。配置文件中每一个<bean>解析成一个BeanDefinition对象，并保存到BeanDefinitionRegistry中；</li>
+<li>容器扫描BeanDefinitionRegistry中的BeanDefinition，使用Java的反射机制自动识别出Bean工厂后处理后器（实现BeanFactoryPostProcessor接口）的Bean，然后调用这些Bean工厂后处理器对BeanDefinitionRegistry中的BeanDefinition进行加工处理。主要完成以下两项工作：
+<ul>
+<li>对使用到占位符的<bean>元素标签进行解析，得到最终的配置值，这意味对一些半成品式的BeanDefinition对象进行加工处理并得到成品的BeanDefinition对象；</li>
+<li>对BeanDefinitionRegistry中的BeanDefinition进行扫描，通过Java反射机制找出所有属性编辑器的Bean（实现java.beans.PropertyEditor接口的Bean），并自动将它们注册到Spring容器的属性编辑器注册表中（PropertyEditorRegistry）；</li>
+</ul>
+</li>
+<li>Spring容器从BeanDefinitionRegistry中取出加工后的BeanDefinition，并调用InstantiationStrategy着手进行Bean实例化的工作；</li>
+<li>在实例化Bean时，Spring容器使用BeanWrapper对Bean进行封装，BeanWrapper提供了很多以Java反射机制操作Bean的方法，它将结合该Bean的BeanDefinition以及容器中属性编辑器，完成Bean属性的设置工作；</li>
+<li>利用容器中注册的Bean后处理器（实现BeanPostProcessor接口的Bean）对已经完成属性设置工作的Bean进行后续加工，直接装配出一个准备就绪的Bean。<br />
+Spring容器确实堪称一部设计精密的机器，其内部拥有众多的组件和装置。Spring的高明之处在于，它使用众多接口描绘出了所有装置的蓝图，构建好Spring的骨架，继而通过继承体系层层推演，不断丰富，最终让Spring成为有血有肉的完整的框架。所以查看Spring框架的源码时，有两条清晰可见的脉络：
+<ul>
+<li>接口层描述了容器的重要组件及组件间的协作关系；</li>
+<li>继承体系逐步实现组件的各项功能。</li>
+</ul>
+</li>
+<li>接口层清晰地勾勒出Spring框架的高层功能，框架脉络呼之欲出。有了接口层抽象的描述后，不但Spring自己可以提供具体的实现，任何第三方组织也可以提供不同实现， 可以说Spring完善的接口层使框架的扩展性得到了很好的保证。纵向继承体系的逐步扩展，分步骤地实现框架的功能，这种实现方案保证了框架功能不会堆积在某些类的身上，造成过重的代码逻辑负载，框架的复杂度被完美地分解开了。</li>
+</ol>
+<p>Spring组件按其所承担的角色可以划分为两类：</p>
+<ul>
+<li>物料组件：Resource、BeanDefinition、PropertyEditor以及最终的Bean等，它们是加工流程中被加工、被消费的组件，就像流水线上被加工的物料；</li>
+<li>加工设备组件：ResourceLoader、BeanDefinitionReader、BeanFactoryPostProcessor、InstantiationStrategy以及BeanWrapper等组件像是流水线上不同环节的加工设备，对物料组件进行加工处理。</li>
+</ul>
+<h5 id="创建bean-factory子流程"><a class="markdownIt-Anchor" href="#创建bean-factory子流程"></a> 创建Bean Factory子流程</h5>
+<p>子流程入口（从主流程refresh方法中的第二步开始）</p>
+<p>调用AbstractApplicationContext中的obtainFreshBeanFactory方法</p>
+<p>调用AbstractRefreshableApplicationContext的refreshBeanFactory方法</p>
+<h5 id="加载解析beandefinition子流程loaddefinitions方法"><a class="markdownIt-Anchor" href="#加载解析beandefinition子流程loaddefinitions方法"></a> 加载解析BeanDefinition子流程（loadDefinitions方法）</h5>
+<p>此处依次调用多个类的loadBeanDefinitions方法（AbstractXmlApplicationContextà</p>
+<p>AbstractBeanDefinitionReaderà XmlBeanDefinitionReader），一直调用到XmlBeanDefinitionReader 类的doLoadBeanDefinitions方法</p>
+<p>对于doLoadDocument方法不是我们关注的重点，我们进入到该类的registerBeanDefinitions方法看看</p>
+<p>此处有两个地方是我们关注的：一个createRederContext方法，一个是DefaultBeanDefinitionDocumentReader类的registerBeanDefinitions方法，先进入createRederContext方法看看</p>
+<p>至此，14个NamespaceHandlerResolver初始化成功。然后我们再进入DefaultBeanDefinitionDocumentReader类的registerBeanDefinitions方法</p>
+<p>继续进入到该类的doRegisterBeanDefinitions方法看看，这是真正干活的方法</p>
+<p>继续进入parseBeanDefinitions方法</p>
+<p>我们看到有两种解析方案，先看看parseDefaultElement方法</p>
+<p>不过我们重点看看BeanDefinitionParserDelegate类的parseCustomElement方法（AOP标签、tx标签的解析都是在该步骤中完成的）</p>
+<p>getNamespaceURI方法的作用一目了然，我们就不去追踪了，接下来我们进入DefaultNamespaceHandlerResolver类的resolve方法看看：</p>
+<p>在上面代码中，我们看到了一行代码：namespaceHandler.init();这个方法是很重要的。它实现了自定义标签到处理类的注册工作，不过NamespaceHandler是一个接口，具体的init方法需要不同的实现类进行实现，我们通过AopNamespaceHandler了解一下init的作用，其中aop:config标签是由ConfigBeanDefinitionParser类进行处理：</p>
+<p>至此，我们了解到了xml中的aop标签都是由哪些类进行处理的了。不过init方法只是注册了标签和处理类的对应关系，那么什么时候调用处理类进行解析的呢？我们再回到BeanDefinitionParserDelegate类的parseCustomElement方法看看</p>
+<p>我们看到，最后一行执行了parse方法，那么parse方法，在哪呢？我们需要到NamespaceHandlerSupport类中去看看，它是实现NamespaceHandler接口的，并且AopNamespaceHandler是继承了NamespaceHandlerSupport类，那么该方法也会继承到AopNamespaceHandler类中。</p>
+<p>至此，整个XML文档的解析工作，包括bean标签以及自定义标签如何解析为BeanDefinition信息的过程，我们已经了解了</p>
+<h5 id="创建bean流程分析"><a class="markdownIt-Anchor" href="#创建bean流程分析"></a> 创建bean流程分析</h5>
+<p>子流程入口</p>
+<p>我们进入finishBeanFactoryInitialization方法看看：</p>
+<p>继续进入DefaultListableBeanFactory类的preInstantiateSingletons方法，我们找到下面部分的代码，看到工厂Bean或者普通Bean，最终都是通过getBean的方法获取实例的。</p>
+<p>继续跟踪下去，我们进入到了AbstractBeanFactory类的doGetBean方法，这个方法中的代码很多，我们直接找到核心部分：</p>
+<p>接着进入到AbstractAutowireCapableBeanFactory类的方法，找到以下代码部分</p>
+<p>我们终于找到核心的地方了，进入doCreateBean方法看看，该方法我们关注两块重点区域：</p>
+<p>对于如何创建Bean的实例，和填充属性，暂时先不去追踪了，我们先去看看initializeBean方法是如何调用BeanPostProcessor的，因为这个牵扯到我们对于AOP动态代理的理解</p>
+<h2 id="2spring使用"><a class="markdownIt-Anchor" href="#2spring使用"></a> 2.Spring使用</h2>
+<h3 id="启动spring容器"><a class="markdownIt-Anchor" href="#启动spring容器"></a> 启动spring容器</h3>
+<h4 id="spring-maven依赖"><a class="markdownIt-Anchor" href="#spring-maven依赖"></a> spring Maven依赖</h4>
+<p>Spring框架的基础依赖</p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot;
+         xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+         xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&quot;&gt;
+    &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
+
+    &lt;groupId&gt;com.lee.SimpleSpring&lt;/groupId&gt;
+    &lt;artifactId&gt;SimpleSpring&lt;/artifactId&gt;
+    &lt;version&gt;1.0-SNAPSHOT&lt;/version&gt;
+
+    &lt;dependencies&gt;
+    &lt;!--Spring核心组件中的四个依赖--&gt;
+        &lt;!--spring5.0 核心工具包--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-core&lt;/artifactId&gt;
+            &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--spring5.0 Bean管理工具包--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-beans&lt;/artifactId&gt;
+            &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;c
+        &lt;/dependency&gt;
+        &lt;!--spring5.0 context管理工具包--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-context&lt;/artifactId&gt;
+            &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!--spring5.0 AOP工具包--&gt;
+        &lt;dependency&gt;
+            &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+            &lt;artifactId&gt;spring-expression&lt;/artifactId&gt;
+            &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+        &lt;/dependency&gt;
+        &lt;!-- 单元测试Junit--&gt;
+        &lt;dependency&gt;
+              &lt;groupId&gt;junit&lt;/groupId&gt;
+              &lt;artifactId&gt;junit&lt;/artifactId&gt;
+              &lt;version&gt;4.12&lt;/version&gt;
+        &lt;/dependency&gt;        
+    &lt;/dependencies&gt;
+    
+&lt;!--这里的配置影响构建过程--&gt;
+    &lt;build&gt;
+          &lt;plugins&gt;
+              &lt;!-- 配置Maven的JDK编译级别 --&gt;
+              &lt;plugin&gt;
+                   &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                   &lt;artifactId&gt;maven-compiler-plugin&lt;/u&gt;&lt;/artifactId&gt;
+                   &lt;version&gt;3.2&lt;/version&gt;
+                   &lt;configuration&gt;
+                            &lt;source&gt;1.8&lt;/source&gt;
+                            &lt;target&gt;1.8&lt;/target&gt;
+                            &lt;encoding&gt;UTF-8&lt;/encoding&gt;
+                   &lt;/configuration&gt;
+              &lt;/plugin&gt;
+          &lt;/plugins&gt;
+     &lt;/build&gt;
+
+&lt;/project&gt;</code></pre>
+<h4 id="spring核心配置文件-applicationcontextxml"><a class="markdownIt-Anchor" href="#spring核心配置文件-applicationcontextxml"></a> spring核心配置文件 applicationContext.xml</h4>
+<p>xml命名空间：xmlns表示的那几行</p>
+<p>如果命名空间没有声明，则下面无法使用</p>
+<p>例子： <code>xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</code></p>
+<p><code>xsi:schemaLocation=&quot;http://www.springframework.org/schema/context</code>    <code>http://www.springframework.org/schema/context/spring-context.xsd</code></p>
+<p><strong>xmlns与xsi:schemaLocation是一一对应的</strong></p>
+<blockquote>
+<p>在spring的xml配置文件中配置一个bean标签，该标签最终会被加载为一个BeanDefition对象（描述对象信息）</p>
+</blockquote>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot; 
+xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; 
+xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans    http://www.springframework.org/schema/beans/spring-beans.xsd&quot;&gt;
+ 
+    &lt;bean id=&quot;teacher&quot; class=&quot;com.lee.beans.Teacher&quot;&gt;
+        &lt;property name=&quot;tname&quot; value=&quot;leeBo&quot;&gt;&lt;/property&gt;
+     &lt;/bean&gt;
+     
+     &lt;bean id=&quot;student&quot; class=&quot;com.lee.beans.Student&quot;&gt;
+        &lt;property name=&quot;sname&quot; value=&quot;mike&quot;&gt;&lt;/property&gt;
+        &lt;property name=&quot;age&quot; value=&quot;22&quot;&gt;&lt;/property&gt;
+        &lt;property name=&quot;teacher&quot; ref=&quot;teacher&quot;&gt;&lt;/property&gt;
+     &lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+<p>一般的目录结构：</p>
+<h4 id="启动spring容器-2"><a class="markdownIt-Anchor" href="#启动spring容器-2"></a> 启动spring容器</h4>
+<pre><code class="highlight plaintext">       public static void main(String[] args) &#123;
+             //启动spring容器
+             ApplicationContext ac = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+             System.err.println(ac);
+       &#125;</code></pre>
+<hr />
+<ul>
+<li>使用BeanFactory启动容器
+<ul>
+<li>第一步利用框架提供的XmlBeanFactory()API去生成工厂bean以及利用<strong>ClassPathResource</strong>()去加载在路劲CLASSPATH下可用的bean配置文件，<strong>XmlBeanFactory</strong>()负责创建并初始化所有的对象，即在配置文件中提到的bean</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">import ....
+public class MainApp &#123;
+   public static void main(String[] args) &#123;
+      XmlBeanFactory factory = new XmlBeanFactory
+                             (new ClassPathResource(&quot;Beans.xml&quot;));
+      HelloWorld obj = (HelloWorld) factory.getBean(&quot;helloWorld&quot;);
+      obj.getMessage();
+   &#125;
+&#125;</code></pre>
+<p>BeanFactory和ApplicationContext的区别在于，BeanFactory的实现是按需创建，即第一次获取Bean时才创建这个Bean，而ApplicationContext会一次性创建所有的Bean。实际上，ApplicationContext接口是从BeanFactory接口继承而来的，并且，ApplicationContext提供了一些额外的功能，包括国际化支持、事件和通知机制等。通常情况下，我们总是使用ApplicationContext，很少会考虑使用BeanFactory。</p>
+<ul>
+<li><strong>ApplicationContext</strong>继承自BeanFactory接口，该容器为较高级的容器，有BeanFacory所具有的全部功能，并增加了企业所需要的功能</li>
+<li>最常被使用的ApplicationContext接口实现
+<ul>
+<li><strong>FileSystemXmlApplicationContext</strong>：该容器从XML文件中加载被定义的bean，需要提供XML文件的完整路劲</li>
+<li><strong>ClassPathXmlApplicationContext</strong>：该容器从XML文件中加载被定义的bean，不需要完整路径，正确配置CLASSPATH环境变量，容器会从CLASSPATH中搜索bean配置文件</li>
+<li><strong>WebXmlApplicationContext</strong>：该容器会在一个web应用程序的范围内加载在XML文件中已被定义的bean</li>
+</ul>
+</li>
+<li>实例化方法如下：</li>
+</ul>
+<pre><code class="highlight plaintext">//加载文件系统中的配置文件实例化
+String conf = &quot;C:\applicationContext.xml&quot;;
+ApplicationContext ac = new FileSystemXmlApplicationContext(conf);
+
+//加载工程classpath下的配置文件实例化
+String conf = &quot;applicationContext.xml&quot;;
+ApplicationContext ac = new ClassPathXmlApplicationContext(conf);</code></pre>
+<h3 id="spring-bean定义"><a class="markdownIt-Anchor" href="#spring-bean定义"></a> Spring Bean定义</h3>
+<ul>
+<li><strong>bean对象是构成应用程序的支柱也是由Spring IOC容器管理的，bean是一个被实例化，组装，并通过Spring IOC容器所管理的对象</strong></li>
+</ul>
+<hr />
+<ul>
+<li><strong>如何创建一个Bean</strong></li>
+<li><strong>bean的生命周期</strong></li>
+<li><strong>bean的以来关系</strong></li>
+</ul>
+<h4 id="bean属性"><a class="markdownIt-Anchor" href="#bean属性"></a> bean属性</h4>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>id</strong></td>
+<td>id标签是bean的唯一标识，IoC容器中bean的id标签不能重复，否则报错。</td>
+</tr>
+<tr>
+<td><strong>class</strong></td>
+<td>强制的，用来指定创建bean的类路径</td>
+</tr>
+<tr>
+<td><strong>scope</strong></td>
+<td>指定由特定的bean定义创建的对象的作用域</td>
+</tr>
+<tr>
+<td><strong>autowire</strong></td>
+<td>autowire表示bean的自动装配</td>
+</tr>
+<tr>
+<td>factory-method</td>
+<td>factory-method工厂方法属性，通过该属性，我们可以调用一个指定的静态工厂方法，创建bean实例</td>
+</tr>
+<tr>
+<td>factory-bean</td>
+<td>顾名思义，factory-bean就是生成bean的工厂对象，factory-bean属性和factory-method属性一起使用，首先要创建生成bean的工厂类和方法</td>
+</tr>
+<tr>
+<td>init-method</td>
+<td>bean的初始方法，在创建好bean后调用该方法</td>
+</tr>
+<tr>
+<td>destory-method</td>
+<td>是bean的销毁方法，在销毁bean之前调用该方法，一般在该方法中释放资源</td>
+</tr>
+<tr>
+<td>name</td>
+<td>唯一的bean标识符,与id等义</td>
+</tr>
+</tbody>
+</table>
+<h4 id="bean和spring容器的关系"><a class="markdownIt-Anchor" href="#bean和spring容器的关系"></a> Bean和spring容器的关系</h4>
+<h3 id="如何创建对象"><a class="markdownIt-Anchor" href="#如何创建对象"></a> 如何创建对象</h3>
+<h4 id="bean标签详解"><a class="markdownIt-Anchor" href="#bean标签详解"></a> bean标签详解</h4>
+<p><strong>bean标签的作用</strong></p>
+<ul>
+<li>用于配置对象让spring来创建的</li>
+<li>默认情况下它调用的是类中的无参构造器，如果没有无参构造函数，则不能创建成功</li>
+</ul>
+<p><strong>bean标签属性</strong></p>
+<ul>
+<li><strong>id</strong>：给对象在容器中提供一个<strong>唯一标识</strong>，用于获取对象</li>
+<li><strong>class</strong>：指定类的全限定名，用于反射出啊关键对象，默认情况下调用<strong>无参构造函数</strong></li>
+<li><strong>scope</strong>：指定对象的作用范围
+<ul>
+<li>singleton：默认值，单例的（在整个容器中只有一个对象）</li>
+<li>prototype：多例的</li>
+<li>request：web项目中，spring创建一个bean对象，将对象存入到request域中</li>
+<li>session：web项目中，spring创建一个bean对象，将对象存入到session域中</li>
+<li>global session：web项目中，应用在Portlet环境，如果没有Portlet环境那么globalSession相当于session</li>
+</ul>
+</li>
+<li>init-method：指定类中的初始化方法名称</li>
+<li>destroy-method：指定类中销毁方法名称，比如DataSource的配置中一般需要指定destroy-method=“close”</li>
+</ul>
+<p><strong>bean的作用范围：</strong></p>
+<ul>
+<li>单例对象：scope=“singleton”
+<ul>
+<li>一个应用只有一个对象的实例。它的作用范围就是整个引用。</li>
+<li>生命周期：
+<ul>
+<li>对象出生：当应用加载，创建容器时，对象就被创建了。</li>
+<li>对象活着：只要容器在，对象一直活着。</li>
+<li>对象死亡：当应用卸载，销毁容器时，对象就被销毁了。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>多例对象：scope=“prototype”
+<ul>
+<li>每次访问对象时，都会重新创建对象实例。</li>
+<li>生命周期：
+<ul>
+<li>对象出生：当使用对象时，创建新的对象实例。</li>
+<li>对象活着：只要对象在使用中，就一直活着。</li>
+<li>对象死亡：当对象长时间不用时，被 java 的垃圾回收器回收了。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="实例化bean的三种方式"><a class="markdownIt-Anchor" href="#实例化bean的三种方式"></a> 实例化bean的三种方式</h4>
+<ul>
+<li><strong>方式1 使用无参构造器（重点）</strong></li>
+</ul>
+<ol>
+<li>给类添加无参构造器（或者缺省构造器）
+<ul>
+<li>在默认情况下：他会根据默认无参构造函数来创建类对象</li>
+<li>如果bean中没有默认无参构造函数，将会创建失败</li>
+<li><code>&lt;bean /&gt;</code>
+<ul>
+<li>id：给对象在容器中提供一个唯一标识。用于获取对象</li>
+<li>class：指定类的全限定类名。用于反射创建对象。默认情况下调用无参构造函数</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>如果我们没有创建构造器，系统会为我们自动创建一个无参构造器，如果我们创建了构造器，那么系统将不会为我们创建无参构造器</p>
+</blockquote>
+<pre><code class="highlight plaintext">package com.lee.first;
+public class Student &#123;
+       public Student()&#123;
+             System.out.println(&quot;Student()&quot;);
+       &#125;
+&#125;</code></pre>
+<ol>
+<li>使用<bean>元素
+<ul>
+<li>①xmlns=“<a target="_blank" rel="noopener" href="http://www.springframework.org/schema/beans">http://www.springframework.org/schema/beans</a>”，默认命名空间：它没有空间名，用于Spring Bean的定义；</li>
+<li>②xmlns:xsi=“<a target="_blank" rel="noopener" href="http://www.w3.org/2001/XMLSchema-instance">http://www.w3.org/2001/XMLSchema-instance</a>”，xsi命名空间：这个命名空间用于为每个文档中命名空间指定相应的Schema样式文件，是标准组织定义的标准命名空间</li>
+</ul>
+</li>
+</ol>
+<pre><code class="highlight plaintext">applicationContet.xml
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+       &lt;!--IoC XML配置方式管理bean--&gt; 
+       &lt;!--使用无参构造器创建属性--&gt; 
+       &lt;!-- id属性：整个spring容器中要求唯一 --&gt;     
+       &lt;!--class属性：类的全限定名（要求包含包名）,容器会自动调用无参构造器创建对象--&gt;
+       &lt;bean id=&quot;stu1&quot; class=&quot;com.lee.first.Student&quot;&gt;&lt;/bean&gt;
+    &lt;bean id=&quot;date1&quot; class=&quot;java.util.Date&quot;&gt;&lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+<ol>
+<li>调用容器的getBean方法来获得对象</li>
+</ol>
+<pre><code class="highlight plaintext">@Test
+public void test1&#123;
+    //创建spring容器
+     ApplicationContext ac = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+     //从容器中获取Bean实例
+     //方式一：根据类型从容器中获取Bean实例
+     Student stu = ac.getBean(Student.class);
+     //方式二：根据bean的id从容器中获取bean实例
+     Student stu = (Student)ac.getBean(&quot;stu1&quot;);
+     System.out.println(stu);   
+&#125;</code></pre>
+<ul>
+<li><strong>方式2 使用静态工厂方法（了解）</strong>
+<ol>
+<li>通过调用类的静态方法来创建对象</li>
+</ol>
+</li>
+<li><code>&lt;bean factory-method=&quot;&quot;/&gt;</code>
+<ul>
+<li>id属性用于指定 bean名称</li>
+<li>class属性用于指定工厂类型</li>
+<li>factory-method属性用于指定工厂中创建bean对象的方法，必须用static修饰的方法</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext"> applicationContet.xml
+&lt;!-- 
+   使用静态工厂方法创建对象 
+   factory-method属性：指定一个   静态方法
+   spring容器会调用这个静态方法来创建对象
+   当使用getBean方法调用cal1时，返回的是Calendar类中getInstance方法的返回值
+       --&gt;
+       &lt;bean id=&quot;cal1&quot; class=&quot;java.util.Calendar&quot; factory-method=&quot;getInstance&quot;&gt;&lt;/bean&gt;</code></pre>
+<ul>
+<li><strong>方式3 使用实例工厂方法来创建对象（了解）</strong>
+<ol>
+<li>通过调用对象的实例方法来创建对象</li>
+</ol>
+</li>
+</ul>
+<pre><code class="highlight plaintext"> applicationContet.xml
+       &lt;!-- 
+    使用实例工厂方法创建对象
+    factory-bean属性：指定一个bean的id
+    factory-method属性：指定一个方法
+    spring容器会调用这个bean的对应的方法来创建对象
+    表示调用id为cal1的类的getTime方法
+        --&gt;
+&lt;bean id=&quot;time1&quot; factory-bean=&quot;cal1&quot; factory-method=&quot;getTime&quot;&gt;&lt;/bean&gt;</code></pre>
+<blockquote>
+<p><strong>Bean的别名</strong></p>
+<p>为已经定义好的Bena，再增加另外一个名字引用</p>
+<p><code>&lt;alias name=&quot;fromName&quot; alias=&quot;toName&quot;/&gt;</code></p>
+</blockquote>
+<h4 id="spring-原理"><a class="markdownIt-Anchor" href="#spring-原理"></a> spring 原理</h4>
+<ol>
+<li>spring框架启动时<code>ApplicationContext ac = new ClassPathXmlApplicationContext(conf);</code>，会加载核心配置文件，实际就是通过xml解析器解析配置文件中的xml属性</li>
+<li>然后用每个<bean>标签中的classpath通过<code>class.forName(classpath)</code>获取Class对象，然后<code>clazz.newInstance()</code>创建出实例对象，把该bean的id和实际对象存入Map中</li>
+<li>每当<code>factory.getBean(beanId);</code>时，就通过Map键值取得value值返回</li>
+</ol>
+<pre><code class="highlight plaintext">public class BeanDefined &#123;
+	
+	private String beanId;
+	private String classPath;
+	public String getBeanId() &#123;
+		return beanId;
+	&#125;
+	public void setBeanId(String beanId) &#123;
+		this.beanId = beanId;
+	&#125;
+	public String getClassPath() &#123;
+		return classPath;
+	&#125;
+	public void setClassPath(String classPath) &#123;
+		this.classPath = classPath;
+	&#125;
+&#125;</code></pre>
+<p>模拟spring工厂的getBean方法，初始版</p>
+<pre><code class="highlight plaintext">import java.util.List;
+
+public class BeanFactory &#123;
+	
+	   private List&lt;BeanDefined&gt; beanDefinedList;
+
+	public List&lt;BeanDefined&gt; getBeanDefinedList() &#123;
+		return beanDefinedList;
+	&#125;
+
+	public void setBeanDefinedList(List&lt;BeanDefined&gt; beanDefinedList) &#123;
+		this.beanDefinedList = beanDefinedList;
+	&#125;
+	
+	public Object getBean(String beanId) throws Exception&#123;
+		   Object instance;
+		   for(BeanDefined beanObj:beanDefinedList)&#123;
+			     if(beanId.equals(beanObj.getBeanId()))&#123;
+			    	 String classPath = beanObj.getClassPath();			    	 
+					 Class classFile= Class.forName(classPath);
+					 //在默认情况下，Spring工厂是通过调用当前类默认工作方法创建实例对象
+					 instance= classFile.newInstance();
+					 return instance;
+			     &#125;
+		   &#125;
+		   return null;
+	&#125;
+&#125;</code></pre>
+<p><strong>测试使用</strong></p>
+<pre><code class="highlight plaintext">public class TestMain &#123;
+
+	public static void main(String[] args) throws Exception &#123;
+		
+		  //1.声明注册bean
+		  BeanDefined beanObj = new BeanDefined();
+		  beanObj.setBeanId(&quot;teacher&quot;);
+		  beanObj.setClassPath(&quot;com.kaikeba.beans.Teacher&quot;);
+		  
+		  List beanList = new ArrayList();
+		  beanList.add(beanObj);//spring核心配置
+		  
+		  //2.声明一个Spring提供BeanFacotory
+		  BeanFactory factory = new BeanFactory();
+		  factory.setBeanDefinedList(beanList);
+		  
+		  //3.开发人员向BeanFactory索要实例对象.
+		  Teacher t= (Teacher) factory.getBean(&quot;teacher&quot;);
+		  System.out.println(t);
+
+	&#125;
+
+&#125;</code></pre>
+<h3 id="作用域scope"><a class="markdownIt-Anchor" href="#作用域scope"></a> 作用域（scope）</h3>
+<ul>
+<li>默认情况下，容器对于某个bean，只会创建一个实例</li>
+<li>Singleton是单例类型，就是在创建起容器时就同时自动创建了一个bean的对象，不管你是否使用，他都存在了，每次获取到的对象都是同一个对象。注意，Singleton作用域是<strong>Spring中的缺省作用域</strong></li>
+<li>Prototype是原型类型，它在我们创建容器的时候并没有实例化，而是当我们<code>getBean(beanId)</code>获取bean的时候才会去创建一个对象，而且我们<strong>每次获取到的对象都不是同一个对象</strong>。</li>
+</ul>
+<blockquote>
+<p><strong>根据经验，对有状态的bean应该使用prototype作用域，而对无状态的bean则应该使用singleton作用域</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>作用域</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>singleton</td>
+<td>在spring IoC容器仅存在一个Bean实例，Bean以单例方式存在，<strong>默认值</strong></td>
+</tr>
+<tr>
+<td>prototype</td>
+<td>每次从容器中调用Bean时，都返回一个新的实例，即每次调用getBean()时，相当于执行newXxxBean()</td>
+</tr>
+<tr>
+<td>request</td>
+<td>每次HTTP请求都会创建一个新的Bean，该作用域仅适用于WebApplicationContext环境</td>
+</tr>
+<tr>
+<td>session</td>
+<td>同一个HTTP Session共享一个Bean，不同Session使用不同的Bean，仅适用于WebApplicationContext环境</td>
+</tr>
+<tr>
+<td>global Session</td>
+<td>一般用于Portlet应用环境，该运用域仅适用于WebApplicationContext环境</td>
+</tr>
+</tbody>
+</table>
+<pre><code class="highlight plaintext">      &lt;!-- 
+            scope属性：用来配置作用域，缺省值是singleton（单例，即一个bean只创建一个实例）
+            如果值为prototype（原型，即一个bean会创建多个实例）
+       --&gt;
+      &lt;bean id=&quot;s1&quot; class=&quot;scope.ScopeBean&quot; scope=&quot;prototype&quot;/&gt;</code></pre>
+<ul>
+<li>默认情况下，下列代码输出true，当设置完scope属性之后，每次getBean都会创建新的对象</li>
+</ul>
+<pre><code class="highlight plaintext">      //测试作用域
+@Test
+      public void test1()&#123;
+            //启动spring容器
+            ApplicationContext ac = new ClassPathXmlApplicationContext(&quot;scope.xml&quot;);
+            //获得对象
+            ScopeBean s1 = ac.getBean(&quot;s1&quot;,ScopeBean.class);
+            ScopeBean s2 = ac.getBean(&quot;s1&quot;,ScopeBean.class);
+            System.out.println(s1 == s2);
+      &#125;</code></pre>
+<h4 id="spring-scope原理"><a class="markdownIt-Anchor" href="#spring-scope原理"></a> spring scope原理</h4>
+<pre><code class="highlight plaintext">public class BeanDefined &#123;
+	
+	private String beanId;
+	private String classPath;
+	private String scope =&quot;singleton&quot;;
+	
+	public String getScope() &#123;
+		return scope;
+	&#125;
+	public void setScope(String scope) &#123;
+		this.scope = scope;
+	&#125;
+	public String getBeanId() &#123;
+		return beanId;
+	&#125;
+	public void setBeanId(String beanId) &#123;
+		this.beanId = beanId;
+	&#125;
+	public String getClassPath() &#123;
+		return classPath;
+	&#125;
+	public void setClassPath(String classPath) &#123;
+		this.classPath = classPath;
+	&#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BeanFactory &#123;
+	
+	   private List&lt;BeanDefined&gt; beanDefinedList;
+	   private Map&lt;String ,Object&gt; SpringIoc;//已经创建好实例对象
+
+	public BeanFactory(List&lt;BeanDefined&gt; beanDefinedList) throws Exception &#123;
+		
+		this.beanDefinedList = beanDefinedList;
+		SpringIoc  = new HashMap(); //所有scope=&quot;singleton&quot; 采用单类模式管理bean对象
+		for(BeanDefined beanObj:this.beanDefinedList)&#123;
+			if(&quot;singleton&quot;.equals(beanObj.getScope()))&#123;
+				Class classFile= Class.forName(beanObj.getClassPath());
+				Object instance= classFile.newInstance();
+				SpringIoc.put(beanObj.getBeanId(), instance);
+			&#125;
+		&#125;
+	&#125;
+
+	public List&lt;BeanDefined&gt; getBeanDefinedList() &#123;
+		return beanDefinedList;
+	&#125;
+
+	public void setBeanDefinedList(List&lt;BeanDefined&gt; beanDefinedList) &#123;
+		this.beanDefinedList = beanDefinedList;
+	&#125;
+	
+	public Object getBean(String beanId) throws Exception&#123;
+		   Object instance = null;
+		   for(BeanDefined beanObj:beanDefinedList)&#123;
+			     if(beanId.equals(beanObj.getBeanId()))&#123;
+			    	 String classPath = beanObj.getClassPath();			    	 
+					 Class classFile= Class.forName(classPath);
+					 String scope=beanObj.getScope();
+					 if(&quot;prototype&quot;.equals(scope))&#123;//.getBean每次都要返回一个全新实例对象
+						  
+						  instance= classFile.newInstance();
+					 &#125;else&#123;
+						 instance=SpringIoc.get(beanId);
+					 &#125;
+					 return instance;
+			     &#125;
+		   &#125;
+		   return null;
+	&#125;
+	   
+&#125;</code></pre>
+<p><strong>测试使用</strong></p>
+<pre><code class="highlight plaintext">public class TestMain &#123;
+
+	public static void main(String[] args) throws Exception &#123;
+		
+		  //1.声明注册bean
+		  BeanDefined beanObj = new BeanDefined();
+		  beanObj.setBeanId(&quot;teacher&quot;);
+		  beanObj.setClassPath(&quot;com.kaikeba.beans.Teacher&quot;);
+		  //beanObj.setScope(&quot;prototype&quot;);
+		  
+		  List beanList = new ArrayList();
+		  beanList.add(beanObj);//spring核心配置
+		  
+		  //2.声明一个Spring提供BeanFacotory
+		  BeanFactory factory = new BeanFactory(beanList);
+		 
+		  
+		  //3.开发人员向BeanFactory索要实例对象.
+		  Teacher t= (Teacher) factory.getBean(&quot;teacher&quot;);
+		  System.out.println(&quot;t=&quot;+t);
+		  Teacher t2= (Teacher) factory.getBean(&quot;teacher&quot;);
+		  System.out.println(&quot;t2=&quot;+t2);
+	&#125;
+&#125;</code></pre>
+<h3 id="生命周期-init-methoddestroy-method"><a class="markdownIt-Anchor" href="#生命周期-init-methoddestroy-method"></a> 生命周期 init-method/destroy-method</h3>
+<ul>
+<li>Bean的生命周期为
+<ul>
+<li>bean的定义-beand的初始化-bean的使用-bean的销毁</li>
+</ul>
+</li>
+<li>初始化方法
+<ul>
+<li>使用<strong>init-method</strong>属性来指定初始化方法名</li>
+<li>注：spring容器创建对象之后，会立即调用初始化方法</li>
+</ul>
+</li>
+<li>销毁方法
+<ul>
+<li>使用<strong>destroy-method</strong>属性来指定销毁方法名</li>
+<li>注：spring容器再关闭之前，会先销毁对象，再销毁对象之前，会先调用对象的销毁方法。</li>
+<li>只有作用域为单例时，销毁方法才会执行，当为原型时销毁方法就不会执行。</li>
+</ul>
+</li>
+<li>在顶级的<beans/>元素中的default-init-method属性，可以为容器所有<bean>指定初始化方法，
+<ul>
+<li><code>&lt;beans default-init-method=&quot;init&quot;&gt;&lt;/beans&gt;</code></li>
+</ul>
+</li>
+<li>在顶级的<beans/>元素总default-destroy-method属性，可以为容器所有<bean>指定销毁方法
+<ul>
+<li><code>&lt;beans default-destroy-method=&quot;destroy&quot;&gt;&lt;/beans&gt;</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">     &lt;!-- 
+            init-method属性：用来指定初始化方法
+            即spring创建该对象的时候会立即调用init-method属性中标注的方法来完成初始化
+            destroy-method属性：用来指定销毁方法
+       --&gt;
+       &lt;bean id=&quot;mb1&quot; class=&quot;scope.MessageBean&quot; init-method=&quot;init&quot; destroy-method=&quot;destroy&quot;/&gt;</code></pre>
+<ul>
+<li>bean类和测试类，配置初始化方法后，创建该对象就会先执行初始化方法，关闭容器时会先执行销毁方法</li>
+</ul>
+<pre><code class="highlight plaintext">package scope;
+public class MessageBean &#123;
+      public MessageBean()&#123;
+            System.out.println(&quot;MessageBean()&quot;);
+      &#125;
+      //初始化方法
+      public void init()&#123;
+            System.out.println(&quot;init()&quot;);
+      &#125;
+      public void sendMsg()&#123;
+            System.out.println(&quot;sendMsg()&quot;);
+      &#125;
+      //销毁方法
+      public void destroy()&#123;
+            System.out.println(&quot;destroy()&quot;);
+      &#125;
+&#125;
+
+      //测试生命周期
+      @Test
+      public void test2()&#123;
+            //启动spring容器
+            //ApplicationContext:接口（无close方法）
+            //AbstractApplicationContext:上述接口的子接口（有close方法）
+            //ClassPathXmlApplicationContext:实现了上述接口
+            AbstractApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;scope.xml&quot;);
+            //获得对象
+            MessageBean mb = ac.getBean(&quot;mb1&quot;,MessageBean.class);
+            mb.sendMsg();
+            //关闭容器
+            //容器关闭之前会先执行对象的销毁方法
+            ac.close();
+      &#125;
+
+输出：
+MessageBean()
+init()
+sendMsg()
+destroy()</code></pre>
+<h3 id="后置处理器"><a class="markdownIt-Anchor" href="#后置处理器"></a> 后置处理器</h3>
+<h4 id="spring_bean后置处理器"><a class="markdownIt-Anchor" href="#spring_bean后置处理器"></a> Spring_Bean后置处理器</h4>
+<p><strong>只要定义该处理器：</strong></p>
+<p>该处理器不针对与某一个类或者接口，是拦截<strong>所有</strong></p>
+<p>后面初始化所有的bean的时候都会经过该处理器，无论<strong>单例</strong>还是<strong>原型</strong>，<strong>只要创建bean实例就会经过该后置处理器</strong></p>
+<p>所以我们要拦截某个特定的接口时，一定要清晰判断，以放拦截所有报错</p>
+<hr />
+<ul>
+<li>Bean后置处理器运行在调用初始化方法前后对Bean进行额外的处理</li>
+<li><strong>ApplicationContext</strong>会自动检测由<strong>BeanPostProcessor</strong>接口的实现定义的bean，注册这些bean后置处理器，然后通过在容器中创建bean，在适当的时候调用它</li>
+<li>你可以配置多个 BeanPostProcessor 接口，通过设置 BeanPostProcessor 实现的 Ordered 接口提供的 order 属性来控制这些 BeanPostProcessor 接口的执行顺序。</li>
+<li>BeanPostProcessor 可以对 bean（或对象）实例进行操作，这意味着 Spring IoC 容器实例化一个 bean 实例，然后 BeanPostProcessor 接口进行它们的工作</li>
+</ul>
+<h4 id="基础案例"><a class="markdownIt-Anchor" href="#基础案例"></a> 基础案例</h4>
+<ul>
+<li>HelloWorld.java</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+public class HelloWorld &#123;
+   private String message;
+   public void setMessage(String message)&#123;
+      this.message  = message;
+   &#125;
+   public void getMessage()&#123;
+      System.out.println(&quot;Your Message : &quot; + message);
+   &#125;
+   public void init()&#123;
+      System.out.println(&quot;Bean is going through init.&quot;);
+   &#125;
+   public void destroy()&#123;
+      System.out.println(&quot;Bean will destroy now.&quot;);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>这是实现BeanPostProcessor非常简单的例子，他在任何bean的初始化的之前和之后输入该Bean的名称，也可以在初始化bean的之前和之后实现更加复杂的逻辑，因为你有两个访问内置bean对象的后置处理程序的方法</li>
+<li>InitHelloWorld.java</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.BeansException;
+public class InitHelloWorld implements BeanPostProcessor &#123;
+    //bean表示这个bean本身，beanName表示这个bean的id
+   public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException &#123;
+      System.out.println(&quot;BeforeInitialization : &quot; + beanName);
+      //这里可以返回bean对象，或者返回它的监控代理对象
+      return bean;  
+   &#125;
+   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException &#123;
+      System.out.println(&quot;AfterInitialization : &quot; + beanName);
+      return bean;  //这里可以返回bean对象，或者返回它的监控代理对象
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>MainApp.java</li>
+<li>需要注册一个AbstractApplicationContext类中声明的关闭hook的registerShutdownHook() 方法，它将确保正常关闭，并且调用相关的destroy方法</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class MainApp &#123;
+   public static void main(String[] args) &#123;
+      AbstractApplicationContext context = new ClassPathXmlApplicationContext(&quot;Beans.xml&quot;);
+      HelloWorld obj = (HelloWorld) context.getBean(&quot;helloWorld&quot;);
+      obj.getMessage();
+      context.registerShutdownHook();
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>Beans.xml</li>
+</ul>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;helloWorld&quot; class=&quot;com.tutorialspoint.HelloWorld&quot;
+       init-method=&quot;init&quot; destroy-method=&quot;destroy&quot;&gt;
+       &lt;property name=&quot;message&quot; value=&quot;Hello World!&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean class=&quot;com.tutorialspoint.InitHelloWorld&quot; /&gt;
+
+&lt;/beans&gt;</code></pre>
+<ul>
+<li>输出</li>
+</ul>
+<pre><code class="highlight plaintext">BeforeInitialization : helloWorld
+Bean is going through init.
+AfterInitialization : helloWorld
+Your Message : Hello World!
+Bean will destroy now.</code></pre>
+<h4 id="高级案例"><a class="markdownIt-Anchor" href="#高级案例"></a> 高级案例</h4>
+<p>接口</p>
+<pre><code class="highlight plaintext">public interface BaseService &#123;
+        public String doSome();
+&#125;</code></pre>
+<p>接口实现类</p>
+<pre><code class="highlight plaintext">public class ISomeService implements BaseService &#123;
+
+	public String doSome() &#123;
+		// TODO Auto-generated method stub
+		return &quot;Hello mike&quot;;//增强效果，doSome方法返回值都是大写
+	&#125;
+&#125;</code></pre>
+<p>前后置增强类<strong>BeanPostProcessor</strong></p>
+<ul>
+<li><strong>所有</strong>的bean对象初始化都会经过该后置对象</li>
+<li>我们可以自行定义我们需要拦截的某个接口的实现类或者某个类</li>
+</ul>
+<pre><code class="highlight plaintext">import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+
+import com.kaikeba.serviceImpl.ISomeService;
+
+public class MyBeanPostProcessor implements BeanPostProcessor &#123;
+
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException &#123;
+		System.out.println(&quot;bean对象初始化之前。。。。。&quot;);
+		return bean;
+		//return  bean对象监控代理对象
+	&#125;
+
+	public Object postProcessAfterInitialization(final Object beanInstance, String beanName) throws BeansException &#123;
+		// 为当前bean对象注册代理监控对象，负责增强bean对象方法能力
+		Class beanClass = beanInstance.getClass();
+       // if (beanInstance instanceof BaseService) &#123;&#125;  //可以使用该语句拦截某一个接口的所有实现类
+        //这里只拦截了ISomeService的实例对象
+		if (beanClass == ISomeService.class) &#123;
+			Object proxy = Proxy.newProxyInstance(beanInstance.getClass().getClassLoader(),
+					beanInstance.getClass().getInterfaces(), new InvocationHandler() &#123;
+						/*
+						 * 
+						 * method:doSome args:doSome执行接受实参 proxy:代理监控对对象
+						 **/
+						public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+							System.out.println(&quot;ISomeService doSome 被拦截&quot;);
+							String result = (String) method.invoke(beanInstance, args);// beanInstance.doSome
+							return result.toUpperCase();
+						&#125;
+
+					&#125;);
+			return proxy;
+		&#125;
+		return beanInstance;
+	&#125;
+
+&#125;</code></pre>
+<p>注册</p>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xmlns:c=&quot;http://www.springframework.org/schema/c&quot;
+    xsi:schemaLocation=&quot; http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;
+   
+      &lt;!-- 注册bean:被监控实现类 --&gt;
+      &lt;bean id=&quot;isomeService&quot; class=&quot;com.kaikeba.serviceImpl.ISomeService&quot;&gt;&lt;/bean&gt; 
+      &lt;!-- 注册代理实现类 --&gt;
+      &lt;bean class=&quot;com.kaikeba.util.MyBeanPostProcessor&quot;&gt;&lt;/bean&gt; 
+  
+&lt;/beans&gt;</code></pre>
+<p>测试</p>
+<pre><code class="highlight plaintext">public class Test &#123;
+
+    public static void main(String[] args) &#123;
+        ApplicationContext ac = new ClassPathXmlApplicationContext(&quot;springConfig.xml&quot;);
+        BaseService baseService = (BaseService) ac.getBean(&quot;isomeservice&quot;);
+        System.out.println(baseService.doSome());
+    &#125;
+&#125;
+</code></pre>
+<h4 id="后置对象原理"><a class="markdownIt-Anchor" href="#后置对象原理"></a> 后置对象原理</h4>
+<p>后置对象接口</p>
+<pre><code class="highlight plaintext">public interface BeanPostProcessor &#123;
+	
+	default Object postProcessBeforeInitialization(Object bean, String beanName) throws Exception &#123;
+		return bean;
+	&#125;
+	
+	default Object postProcessAfterInitialization(Object bean, String beanName) throws Exception &#123;
+		return bean;
+	&#125;
+&#125;</code></pre>
+<p>接口实现</p>
+<pre><code class="highlight plaintext">public class MyBeanPostProcessor implements BeanPostProcessor &#123;
+
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws Exception &#123;
+		System.out.println(&quot;bean对象初始化之前。。。。。&quot;);
+		return bean;
+		//return  bean对象监控代理对象
+	&#125;
+
+	public Object postProcessAfterInitialization(final Object beanInstance, String beanName) throws Exception &#123;
+		// 为当前bean对象注册代理监控对象，负责增强bean对象方法能力
+		Class beanClass = beanInstance.getClass();
+		if (beanClass == ISomeService.class) &#123;
+			Object proxy = Proxy.newProxyInstance(beanInstance.getClass().getClassLoader(),
+					beanInstance.getClass().getInterfaces(), new InvocationHandler() &#123;
+						/*
+						 * 
+						 * method:doSome args:doSome执行接受实参 proxy:代理监控对对象
+						 **/
+						public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+							System.out.println(&quot;ISomeService doSome 被拦截&quot;);
+							String result = (String) method.invoke(beanInstance, args);// beanInstance.doSome
+							return result.toUpperCase();
+						&#125;
+
+					&#125;);
+			return proxy;
+		&#125;
+		return beanInstance;
+	&#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">public class BeanDefined &#123;
+	/*
+	 *   &lt;bean id  ,class,  scope.factory-bean,factory-method&gt;
+	 **/
+	private String beanId;
+	private String classPath;
+	private String scope =&quot;singleton&quot;;
+	private String factoryBean=null;
+	private String factoryMethod=null;
+	
+	public String getFactoryBean() &#123;
+		return factoryBean;
+	&#125;
+	public void setFactoryBean(String factoryBean) &#123;
+		this.factoryBean = factoryBean;
+	&#125;
+	public String getFactoryMethod() &#123;
+		return factoryMethod;
+	&#125;
+	public void setFactoryMethod(String factoryMethod) &#123;
+		this.factoryMethod = factoryMethod;
+	&#125;
+	public String getScope() &#123;
+		return scope;
+	&#125;
+	public void setScope(String scope) &#123;
+		this.scope = scope;
+	&#125;
+	public String getBeanId() &#123;
+		return beanId;
+	&#125;
+	public void setBeanId(String beanId) &#123;
+		this.beanId = beanId;
+	&#125;
+	public String getClassPath() &#123;
+		return classPath;
+	&#125;
+	public void setClassPath(String classPath) &#123;
+		this.classPath = classPath;
+	&#125;
+	
+&#125;</code></pre>
+<p><strong>spring实现后置对象基本原理</strong></p>
+<pre><code class="highlight plaintext">import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BeanFactory &#123;
+	
+	   private List&lt;BeanDefined&gt; beanDefinedList;
+	   private Map&lt;String ,Object&gt; SpringIoc;//已经创建好实例对象
+	   private BeanPostProcessor processorObj;//后置对象
+	   
+	public List&lt;BeanDefined&gt; getBeanDefinedList() &#123;
+		return beanDefinedList;
+	&#125;
+
+	public BeanFactory(List&lt;BeanDefined&gt; beanDefinedList) throws Exception &#123;
+		
+		this.beanDefinedList = beanDefinedList;
+		SpringIoc  = new HashMap(); //所有scope=&quot;singleton&quot; 采用单类模式管理bean对象
+		for(BeanDefined beanObj:this.beanDefinedList)&#123;
+			if(&quot;singleton&quot;.equals(beanObj.getScope()))&#123;
+				Class classFile= Class.forName(beanObj.getClassPath());
+				Object instance= classFile.newInstance();
+				//判断当前对象是一个bean对象还是后置处理处理对象
+				isProcessor(instance,classFile);
+				SpringIoc.put(beanObj.getBeanId(), instance);
+			&#125;
+		&#125;
+		
+	&#125;
+    //判断是否是后置对象处理器
+    private void isProcessor(Object instance,Class classFile)&#123;
+    	         Class interfaceArray[] = classFile.getInterfaces();
+    	         if(interfaceArray==null)&#123;
+    	        	 return;
+    	         &#125;
+    	         
+    	         for(int i=0;i&lt;interfaceArray.length;i++)&#123;
+    	        	 Class interfaceType = interfaceArray[i];
+    	        	 if(interfaceType == BeanPostProcessor.class)&#123;//证明当前实例对象是后置处理器
+    	        		 this.processorObj = (BeanPostProcessor)instance;
+    	        	 &#125;
+    	         &#125;
+    &#125;
+
+	public void setBeanDefinedList(List&lt;BeanDefined&gt; beanDefinedList) &#123;
+		this.beanDefinedList = beanDefinedList;
+	&#125;
+	
+	public Object getBean(String beanId) throws Exception&#123;
+		   Object instance = null;
+		   Object proxyObj = null;//当前实例对象的代理监控对象
+		   for(BeanDefined beanObj:beanDefinedList)&#123;
+			     if(beanId.equals(beanObj.getBeanId()))&#123;
+			    	 String classPath = beanObj.getClassPath();			    	 
+					 Class classFile= Class.forName(classPath);
+					 String scope=beanObj.getScope();
+					 String factoryBean = beanObj.getFactoryBean();
+					 String factoryMehtod=beanObj.getFactoryMethod();
+					 if(&quot;prototype&quot;.equals(scope))&#123;//.getBean每次都要返回一个全新实例对象
+						  
+						  if(factoryBean!=null &amp;&amp; factoryMehtod!=null)&#123;//用户希望使用指定工厂创建实例对象
+							       Object factoryObj=  SpringIoc.get(factoryBean);
+							       Class factoryClass=factoryObj.getClass();
+							       Method methodObj= factoryClass.getDeclaredMethod(factoryMehtod, null);
+							       methodObj.setAccessible(true);
+							       instance= methodObj.invoke(factoryObj, null);
+						  &#125;else&#123;
+							  instance= classFile.newInstance();
+						  &#125;
+					 &#125;else&#123;
+						 instance=SpringIoc.get(beanId);
+					 &#125;
+					 
+					 if(this.processorObj!=null)&#123;
+						 proxyObj = this.processorObj.postProcessBeforeInitialization(instance, beanId);
+						 //实例对象初始化。Spring依赖注入
+						 proxyObj = this.processorObj.postProcessAfterInitialization(instance, beanId);
+						 //此时返回proxyObj可能就是原始bean对象，也有可能就是代理对象
+						 return proxyObj;
+					 &#125;else&#123;
+						 return instance;
+					 &#125;
+					 
+					
+			     &#125;
+		   &#125;
+		   return null;
+	&#125;
+	   
+
+&#125;</code></pre>
+<h3 id="延迟加载lazy-inittrue"><a class="markdownIt-Anchor" href="#延迟加载lazy-inittrue"></a> 延迟加载（lazy-init=“true”）</h3>
+<ul>
+<li>spring容器直接启动时，会读一遍配置文件，会将所有所用域为<strong>单例</strong>的bean创建好，原型的bean（即scope属性值为prototype<br />
+）会在getBean（）的时候创建</li>
+<li>lazy-init=“true” 时，spring容器对于作用域为单例的bean，就不会再创建相应的实例了</li>
+</ul>
+<pre><code class="highlight plaintext">      &lt;!-- 
+            lazy-init属性：指定是否延迟加载，如果值为true,表示延迟加载
+       --&gt;
+&lt;bean id=&quot;mb1&quot; class=&quot;scope.MessageBean&quot; init-method=&quot;init&quot; 
+destroy-method=&quot;destroy&quot; lazy-init=&quot;true&quot;/&gt;</code></pre>
+<h3 id="spring-bean定义继承parent"><a class="markdownIt-Anchor" href="#spring-bean定义继承parent"></a> Spring Bean定义继承（parent）</h3>
+<ul>
+<li>Spring Bean 定义的继承与 Java 类的继承无关，但是继承的概念是一样的。你可以定义一个父 bean 的定义作为模板和其他子 bean 就可以从父 bean 中继承所需的配置</li>
+<li>使用<strong>parent</strong>属性定义自己的父亲，子bean继承了message2属性，重写message1属性，引入一个属性message3</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;helloWorld&quot; class=&quot;com.tutorialspoint.HelloWorld&quot;&gt;
+      &lt;property name=&quot;message1&quot; value=&quot;Hello World!&quot;/&gt;
+      &lt;property name=&quot;message2&quot; value=&quot;Hello Second World!&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean id=&quot;helloIndia&quot; class=&quot;com.tutorialspoint.HelloIndia&quot; parent=&quot;helloWorld&quot;&gt;
+      &lt;property name=&quot;message1&quot; value=&quot;Hello India!&quot;/&gt;
+      &lt;property name=&quot;message3&quot; value=&quot;Namaste India!&quot;/&gt;
+   &lt;/bean&gt;
+&lt;/beans&gt;</code></pre>
+<h4 id="bean定义模板abstracttrue"><a class="markdownIt-Anchor" href="#bean定义模板abstracttrue"></a> Bean定义模板（abstract=“true”）</h4>
+<ul>
+<li>创建一个Bean定义模板，让其他bean定义使用，指定模板时，不应该指定类的属性，指定<code>abstract=&quot;true&quot;</code></li>
+<li>抽象的父亲并不等被实例化</li>
+</ul>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;beanTeamplate&quot; abstract=&quot;true&quot;&gt;
+      &lt;property name=&quot;message1&quot; value=&quot;Hello World!&quot;/&gt;
+      &lt;property name=&quot;message2&quot; value=&quot;Hello Second World!&quot;/&gt;
+      &lt;property name=&quot;message3&quot; value=&quot;Namaste India!&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean id=&quot;helloIndia&quot; class=&quot;com.tutorialspoint.HelloIndia&quot; parent=&quot;beanTeamplate&quot;&gt;
+      &lt;property name=&quot;message1&quot; value=&quot;Hello India!&quot;/&gt;
+      &lt;property name=&quot;message3&quot; value=&quot;Namaste India!&quot;/&gt;
+   &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+<h3 id="spring-bean依赖关系"><a class="markdownIt-Anchor" href="#spring-bean依赖关系"></a> Spring bean依赖关系</h3>
+<ul>
+<li>当一个bean对另一个bean存在依赖关系，可以利用<bean>元素的<strong>depends-on</strong>属性指定</li>
+<li><strong>1 depends-on用来表示一个bean A的实例化依靠另一个bean B的实例化， 但是A并不需要持有一个B的对象，如果需要的话就不用depends-on，直接用set依赖注入就可以了</strong></li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;beanOne&quot; class=&quot;ExampleBean&quot; depends-on=&quot;manager&quot;/&gt;
+&lt;bean id=&quot;manager&quot; class=&quot;ManagerBean&quot;/&gt;
+多个依赖关系时，用逗号隔开</code></pre>
+<ul>
+<li><strong>2 如果A既依赖于B，而A又需要持有B的实例，那么使用构造器注入就可以了</strong></li>
+<li><strong>3 同样是如果A既依赖于B，而A又需要持有B的实例，那么也可以使用setter方式注入</strong></li>
+<li><strong>4 如果A不依赖于B，但是需要B的实例，单单使用setter就好了</strong></li>
+</ul>
+<h3 id="动态工厂dynamicfactory"><a class="markdownIt-Anchor" href="#动态工厂dynamicfactory"></a> 动态工厂DynamicFactory</h3>
+<p>动态工厂就是配置我们自己的bean对象创建工厂，不使用spring的工厂逻辑</p>
+<p>适用场合：在不同的环境下需要不同的bean创建方式</p>
+<p><strong>定义一个基础的bean</strong></p>
+<pre><code class="highlight plaintext">public class Teacher &#123;
+       private String tname;
+
+	public String getTname() &#123;
+		return tname;
+	&#125;
+
+	public void setTname(String tname) &#123;
+		this.tname = tname;
+	&#125;   
+&#125;
+</code></pre>
+<p><strong>bean创建工厂1</strong></p>
+<pre><code class="highlight plaintext">import com.kaikeba.beans.Teacher;
+
+public class TeacherFactory &#123;
+
+	  public Teacher createTeacher()&#123;
+		      Teacher teacher =    new Teacher();
+		      System.out.println(&quot;TeacherFactory 负责创建 teacher类实例对象..&quot;);
+		      return teacher;
+	  &#125;
+&#125;</code></pre>
+<p><strong>bean创建工厂2</strong></p>
+<pre><code class="highlight plaintext">import com.kaikeba.beans.Teacher;
+
+public class TeacherFactory2 &#123;
+	 public Teacher createTeacher()&#123;
+	      Teacher teacher =    new Teacher();
+	      teacher.setTname(&quot;Mr&quot;);
+	      System.out.println(&quot;TeacherFactory 负责创建 teacher类实例对象..&quot;);
+	      return teacher;
+ &#125;
+&#125;</code></pre>
+<p><strong>动态工厂的注册方式</strong></p>
+<p>注册好后，teacher类的创建方式就不是由spring的规则来创建，就是使用我们自己定义的teacherFactory来创建，如果像更换创建方式，也不用重新编译，可以直接修改该文件即可</p>
+<pre><code class="highlight plaintext"> &lt;!-- 注册工厂 --&gt;
+ &lt;bean id=&quot;factory1&quot; class=&quot;com.kaikeba.util.TeacherFactory&quot;&gt;&lt;/bean&gt;
+ &lt;bean id=&quot;factory2&quot; class=&quot;com.kaikeba.util.TeacherFactory2&quot;&gt;&lt;/bean&gt;
+&lt;!-- 
+      Spring容器，当前teacher类的实例化操作，由动态工厂进行创建，此时scope属性依然有效，为单例就只调用一次创建工厂，在初始化时调用；为原型时，每次getBean时都会调用一次创建工厂创建一个对象
+ --&gt;
+ &lt;bean id=&quot;teacher&quot; 
+      class=&quot;com.kaikeba.beans.Teacher&quot; scope=&quot;singleton&quot; factory-bean=&quot;factory2&quot; factory-method=&quot;createTeacher&quot;&gt;
+      
+ &lt;/bean&gt;</code></pre>
+<blockquote>
+<p><strong>此种方式如果用户访问量过大，会造成大量的资源消耗</strong></p>
+</blockquote>
+<h4 id="spring动态工厂原理"><a class="markdownIt-Anchor" href="#spring动态工厂原理"></a> Spring动态工厂原理</h4>
+<pre><code class="highlight plaintext">public class Teacher &#123;
+    private String tname;
+
+	public String getTname() &#123;
+		return tname;
+	&#125;
+
+	public void setTname(String tname) &#123;
+		this.tname = tname;
+	&#125; 
+&#125;
+</code></pre>
+<pre><code class="highlight plaintext">public class TeacherFactory &#123;
+
+	  public Teacher createTeacher()&#123;
+		      Teacher teacher =    new Teacher();
+		      System.out.println(&quot;TeacherFactory 负责创建 teacher类实例对象..&quot;);
+		      return teacher;
+	  &#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">public class BeanDefined &#123;
+	/*
+	 *   &lt;bean id  ,class,  scope.factory-bean,factory-method&gt;
+	 **/
+	private String beanId;
+	private String classPath;
+	private String scope =&quot;singleton&quot;;
+	private String factoryBean=null;
+	private String factoryMethod=null;
+	
+	public String getFactoryBean() &#123;
+		return factoryBean;
+	&#125;
+	public void setFactoryBean(String factoryBean) &#123;
+		this.factoryBean = factoryBean;
+	&#125;
+	public String getFactoryMethod() &#123;
+		return factoryMethod;
+	&#125;
+	public void setFactoryMethod(String factoryMethod) &#123;
+		this.factoryMethod = factoryMethod;
+	&#125;
+	public String getScope() &#123;
+		return scope;
+	&#125;
+	public void setScope(String scope) &#123;
+		this.scope = scope;
+	&#125;
+	public String getBeanId() &#123;
+		return beanId;
+	&#125;
+	public void setBeanId(String beanId) &#123;
+		this.beanId = beanId;
+	&#125;
+	public String getClassPath() &#123;
+		return classPath;
+	&#125;
+	public void setClassPath(String classPath) &#123;
+		this.classPath = classPath;
+	&#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class BeanFactory &#123;
+	
+	   private List&lt;BeanDefined&gt; beanDefinedList;
+	   private Map&lt;String ,Object&gt; SpringIoc;//已经创建好实例对象
+	   
+	public List&lt;BeanDefined&gt; getBeanDefinedList() &#123;
+		return beanDefinedList;
+	&#125;
+
+	public BeanFactory(List&lt;BeanDefined&gt; beanDefinedList) throws Exception &#123;
+		
+		this.beanDefinedList = beanDefinedList;
+		SpringIoc  = new HashMap(); 
+		//所有scope=&quot;singleton&quot; 采用单类模式管理bean对象(但不包括有创建工厂的bean)
+		for(BeanDefined beanObj:this.beanDefinedList)&#123;
+			if(&quot;singleton&quot;.equals(beanObj.getScope())&amp;&amp;(beanObj.getFactoryBean()==null||beanObj.getFactoryBean()==&quot;&quot;))&#123;
+				Class classFile= Class.forName(beanObj.getClassPath());
+				Object instance= classFile.newInstance();
+				SpringIoc.put(beanObj.getBeanId(), instance);
+			&#125;
+		&#125;
+		//这里单独创建有动态工厂的bean
+		for(BeanDefined beanObj:this.beanDefinedList)&#123;
+			if(beanObj.getFactoryBean()!=null||beanObj.getFactoryBean()!=&quot;&quot;)&#123;
+					Object factoryObj=  SpringIoc.get(beanObj.getFactoryBean);
+					Class factoryClass=factoryObj.getClass();
+					Method methodObj= factoryClass.getDeclaredMethod(beanObj.getFactoryMehtod, null);
+					methodObj.setAccessible(true);
+					SpringIoc.put(beanObj.getBeanId(), methodObj.invoke(factoryObj, null));
+			&#125;
+		&#125;
+		
+	&#125;
+
+	public void setBeanDefinedList(List&lt;BeanDefined&gt; beanDefinedList) &#123;
+		this.beanDefinedList = beanDefinedList;
+	&#125;
+	
+	public Object getBean(String beanId) throws Exception&#123;
+		   Object instance = null;
+		   for(BeanDefined beanObj:beanDefinedList)&#123;
+			     if(beanId.equals(beanObj.getBeanId()))&#123;
+			    	 String classPath = beanObj.getClassPath();			    	 
+					 Class classFile= Class.forName(classPath);
+					 String scope=beanObj.getScope();
+					 String factoryBean = beanObj.getFactoryBean();
+					 String factoryMehtod=beanObj.getFactoryMethod();
+					 if(&quot;prototype&quot;.equals(scope))&#123;//.getBean每次都要返回一个全新实例对象
+						  
+						  if(factoryBean!=null &amp;&amp; factoryMehtod!=null)&#123;//用户希望使用指定工厂创建实例对象
+							       Object factoryObj=  SpringIoc.get(factoryBean);
+							       Class factoryClass=factoryObj.getClass();
+							       Method methodObj= factoryClass.getDeclaredMethod(factoryMehtod, null);
+							       methodObj.setAccessible(true);
+							       instance= methodObj.invoke(factoryObj, null);
+						  &#125;else&#123;
+							  instance= classFile.newInstance();
+						  &#125;
+					 &#125;else&#123;
+						 instance=SpringIoc.get(beanId);
+					 &#125;
+					 return instance;
+			     &#125;
+		   &#125;
+		   return null;
+	&#125;
+&#125;</code></pre>
+<p><strong>测试使用</strong></p>
+<pre><code class="highlight plaintext">public class TestMain &#123;
+	public static void main(String[] args) throws Exception &#123;
+		  //1.声明注册bean
+		  BeanDefined beanObj = new BeanDefined();
+		  beanObj.setBeanId(&quot;teacher&quot;);
+		  beanObj.setClassPath(&quot;com.kaikeba.beans.Teacher&quot;);
+		  beanObj.setFactoryBean(&quot;factory1&quot;);
+		  beanObj.setFactoryMethod(&quot;createTeacher&quot;);
+		  beanObj.setScope(&quot;prototype&quot;);
+		  
+		  BeanDefined beanObj2 = new BeanDefined();
+		  beanObj2.setBeanId(&quot;factory1&quot;);
+		  beanObj2.setClassPath(&quot;com.kaikeba.beans.TeacherFactory&quot;);
+		  
+		  List configuration = new ArrayList();
+		  configuration.add(beanObj);//spring核心配置
+		  configuration.add(beanObj2);
+		  
+		  //2.声明一个Spring提供BeanFacotory
+		  BeanFactory factory = new BeanFactory(configuration);
+		 
+		  //3.开发人员向BeanFactory索要实例对象.
+		  Teacher t= (Teacher) factory.getBean(&quot;teacher&quot;);
+		  System.out.println(&quot;t=&quot;+t);
+	&#125;
+&#125;</code></pre>
+<h3 id="静态工厂"><a class="markdownIt-Anchor" href="#静态工厂"></a> 静态工厂</h3>
+<p>静态工厂和动态工厂的使用方法基本相同</p>
+<p><strong>作用</strong>：节省内存的消耗</p>
+<pre><code class="highlight plaintext">public class TeacherFactory &#123; 
+//这里只需要把方法改为静态方法即可
+    public static Teacher createTeacher()&#123; 
+        Teacher teacher = new Teacher(); 
+        System.out.println(&quot;TeacherFactory 负责创建 teacher类实例对象..&quot;); 
+        return teacher; 
+    &#125; 
+&#125;</code></pre>
+<p><strong>配置文件</strong></p>
+<p>只需要把class属性改为创建工厂的类路径即可</p>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;teacher&quot; class=&quot;com.lee.util.TeacherFactory&quot; factory-method=&quot;createTeacher&quot;&gt;&lt;/bean&gt;</code></pre>
+<h2 id="3iocinversion-of-controll-控制反转"><a class="markdownIt-Anchor" href="#3iocinversion-of-controll-控制反转"></a> 3.IOC(Inversion Of Controll 控制反转)</h2>
+<ul>
+<li>
+<p><strong>IOC就是一个生产和管理bean的容器就行了，原来需要在调用类中new的东西，现在都是通过容器生成，同时，要是产生的是单例的bean，他还可以给管理bean的生命周期</strong></p>
+</li>
+<li>
+<p>对象之间的依赖关系由容器来建立（而不是对象自己直接通过new调用或建立关系）</p>
+</li>
+<li>
+<p>IOC实现方法有DI和依赖查找</p>
+</li>
+<li>
+<p><strong>Spring容器采用DI方式</strong></p>
+</li>
+<li>
+<p>IoC是Spring框架的核心内容，使用多种方式完美的实现了IoC，可以使用XML配置，也可以使用注解，新版本的Spring也可以零配置实现IoC。Spring容器在初始化时先读取配置文件，根据配置文件或元数据创建与组织对象存入容器中，程序使用时再从Ioc容器中取出需要的对象</p>
+</li>
+</ul>
+<h3 id="ioc实现原理"><a class="markdownIt-Anchor" href="#ioc实现原理"></a> IOC实现原理</h3>
+<ul>
+<li>控制反转也叫依赖注入，IOC利用java反射机制，AOP利用代理模式。所谓控制反转是指，本来被调用者的实例是有调用者来创建的，这样的缺点是耦合性太强，IOC则是统一交给spring来管理创建，将对象交给容器管理，你只需要在spring配置文件总配置相应的bean，以及设置相关的属性，让spring容器来生成类的实例对象以及管理对象。在spring容器启动的时候，spring会把你在配置文件中配置的bean都初始化好，然后在你需要调用的时候，就把它已经初始化好的那些bean分配给你需要调用这些bean的类</li>
+</ul>
+<h3 id="didependency-injection依赖注入"><a class="markdownIt-Anchor" href="#didependency-injection依赖注入"></a> DI(Dependency Injection)依赖注入</h3>
+<ul>
+<li>容器通过调用对象提供的set方法或者构造器来建立依赖关系</li>
+<li><strong>IOC是目标，DI是手段</strong></li>
+<li>DI主要有两种注入方式，即Setter注入和构造器注入</li>
+</ul>
+<h4 id="di概述"><a class="markdownIt-Anchor" href="#di概述"></a> DI概述</h4>
+<p><strong>什么是依赖？</strong></p>
+<ul>
+<li>依赖指的就是Bean实例中的属性</li>
+<li>属性分为：简单类型（8种基本类型和String类型）的属性、POJO类型的属性、集合数组类型的属性</li>
+</ul>
+<p><strong>什么是依赖注入？</strong></p>
+<ul>
+<li>依赖注入：Dependency Injection。它是 spring 框架核心 ioc 的具体实现</li>
+</ul>
+<p><strong>为什么要进行依赖注入？</strong></p>
+<ul>
+<li>我们的程序在编写时，通过控制反转，把对象的创建交给了 spring，但是代码中不可能出现没有依赖的情况</li>
+<li>ioc 解耦只是降低他们的依赖关系，但不会消除。例如：我们的业务层仍会调用持久层的方法。那这种业务层和持久层的依赖关系，在使用 spring 之后，就让 spring 来维护了</li>
+<li>简单的说，就是坐等框架把持久层对象传入业务层，而不用我们自己去获取</li>
+</ul>
+<h4 id="di-依赖注入原理"><a class="markdownIt-Anchor" href="#di-依赖注入原理"></a> DI 依赖注入原理</h4>
+<p><strong>Spring框架通过反射机制，调用属性对应Set方法进行赋值</strong></p>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.Map;
+
+public class BeanDefined &#123;
+	/*
+	 * 
+	 *   
+	 *   &lt;bean id  ,class,  scope.factory-bean,factory-method&gt;
+	 **/
+	private String beanId;
+	private String classPath;
+	private String scope =&quot;singleton&quot;;
+	private String factoryBean=null;
+	private String factoryMethod=null;
+	private Map&lt;String,String&gt; propertyMap=new HashMap();
+
+	public Map&lt;String, String&gt; getPropertyMap() &#123;
+		return propertyMap;
+	&#125;
+	public void setPropertyMap(Map&lt;String, String&gt; propertyMap) &#123;
+		this.propertyMap = propertyMap;
+	&#125;
+	public String getFactoryBean() &#123;
+		return factoryBean;
+	&#125;
+	public void setFactoryBean(String factoryBean) &#123;
+		this.factoryBean = factoryBean;
+	&#125;
+	public String getFactoryMethod() &#123;
+		return factoryMethod;
+	&#125;
+	public void setFactoryMethod(String factoryMethod) &#123;
+		this.factoryMethod = factoryMethod;
+	&#125;
+	public String getScope() &#123;
+		return scope;
+	&#125;
+	public void setScope(String scope) &#123;
+		this.scope = scope;
+	&#125;
+	public String getBeanId() &#123;
+		return beanId;
+	&#125;
+	public void setBeanId(String beanId) &#123;
+		this.beanId = beanId;
+	&#125;
+	public String getClassPath() &#123;
+		return classPath;
+	&#125;
+	public void setClassPath(String classPath) &#123;
+		this.classPath = classPath;
+	&#125;
+&#125;
+</code></pre>
+<pre><code class="highlight plaintext">import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class BeanFactory &#123;
+	
+	   private List&lt;BeanDefined&gt; beanDefinedList;
+	   private Map&lt;String ,Object&gt; SpringIoc;//已经创建好实例对象
+	   private BeanPostProcessor processorObj;//后置对象
+	   
+
+	public List&lt;BeanDefined&gt; getBeanDefinedList() &#123;
+		return beanDefinedList;
+	&#125;
+
+	//依赖注入
+	public void setValue(Object instance,Class classFile,Map propertyMap) throws NoSuchFieldException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException&#123;
+		     //循环便利  propertyMap&lt;属性名,属性值&gt; 
+		     Method methodArray[]= classFile.getDeclaredMethods();
+		     Set fieldNameSet = propertyMap.keySet();
+		     Iterator fieldIterator = fieldNameSet.iterator();
+		     while(fieldIterator.hasNext())&#123;
+		    	 String fieldName = (String) fieldIterator.next();
+		    	 String value = (String) propertyMap.get(fieldName);
+		    	 Field fieldObj = classFile.getDeclaredField(fieldName);//同名属性对象
+		    	 for(int i=0;i&lt;methodArray.length;i++)&#123;
+		    		 Method methodObj  = methodArray[i];
+		    		 String methodName =&quot;set&quot;+fieldName;// sid == setsid
+		    		 if(methodName.equalsIgnoreCase(methodObj.getName()))&#123;
+		    			   Class fieldType=   fieldObj.getType();//属性的数据类型 Integer,String,Double,boolean,list
+		    		       if(fieldType == String.class)&#123;
+		    		    	   methodObj.invoke(instance, value);
+		    		       &#125;else if(fieldType == Integer.class)&#123;
+		    		    	   methodObj.invoke(instance, Integer.valueOf(value));
+		    		       &#125;else if(fieldType == Boolean.class)&#123;
+		    		    	   methodObj.invoke(instance, Boolean.valueOf(value));
+		    		       &#125;else if(fieldType==List.class)&#123;
+		    		    	     List tempList = new ArrayList();
+		    		    	     String dataArray[]=value.split(&quot;,&quot;);
+		    		    	     for(int j=0;j&lt;dataArray.length;j++)&#123;
+		    		    	    	 tempList.add(dataArray[j]);
+		    		    	     &#125;
+		    		    	     methodObj.invoke(instance, tempList);
+		    		       &#125;else&#123; //此时属性类型是数组
+		    		    	   String dataArray[]=value.split(&quot;,&quot;);
+		    		    	   Object data[] = new Object[1];
+		    		    	   data[0]=dataArray;
+		    		    	   methodObj.invoke(instance, data);
+		    		       &#125;
+		    		          break;
+		    		 &#125;
+		    	 &#125;
+		     &#125;
+	&#125;
+	
+	public BeanFactory(List&lt;BeanDefined&gt; beanDefinedList) throws Exception &#123;
+		
+		this.beanDefinedList = beanDefinedList;
+		SpringIoc  = new HashMap(); //所有scope=&quot;singleton&quot; 采用单类模式管理bean对象
+		for(BeanDefined beanObj:this.beanDefinedList)&#123;
+			if(&quot;singleton&quot;.equals(beanObj.getScope()))&#123;
+				Class classFile= Class.forName(beanObj.getClassPath());
+				Object instance= classFile.newInstance();
+				//判断当前对象是一个bean对象还是后置处理处理对象
+				isProcessor(instance,classFile);
+				SpringIoc.put(beanObj.getBeanId(), instance);
+			&#125;
+		&#125;
+		
+	&#125;
+    private void isProcessor(Object instance,Class classFile)&#123;
+    	         Class interfaceArray[] = classFile.getInterfaces();
+    	         if(interfaceArray==null)&#123;
+    	        	 return;
+    	         &#125;
+    	         
+    	         for(int i=0;i&lt;interfaceArray.length;i++)&#123;
+    	        	 Class interfaceType = interfaceArray[i];
+    	        	 if(interfaceType == BeanPostProcessor.class)&#123;//证明当前实例对象是后置处理器
+    	        		 this.processorObj = (BeanPostProcessor)instance;
+    	        	 &#125;
+    	         &#125;
+    &#125;
+
+	public void setBeanDefinedList(List&lt;BeanDefined&gt; beanDefinedList) &#123;
+		this.beanDefinedList = beanDefinedList;
+	&#125;
+	
+	public Object getBean(String beanId) throws Exception&#123;
+		   Object instance = null;
+		   Object proxyObj = null;//当前实例对象的代理监控对象
+		   for(BeanDefined beanObj:beanDefinedList)&#123;
+			     if(beanId.equals(beanObj.getBeanId()))&#123;
+			    	 String classPath = beanObj.getClassPath();			    	 
+					 Class classFile= Class.forName(classPath);
+					 String scope=beanObj.getScope();
+					 String factoryBean = beanObj.getFactoryBean();
+					 String factoryMehtod=beanObj.getFactoryMethod();
+					 Map propertyMap = beanObj.getPropertyMap();
+					 if(&quot;prototype&quot;.equals(scope))&#123;//.getBean每次都要返回一个全新实例对象
+						  
+						  if(factoryBean!=null &amp;&amp; factoryMehtod!=null)&#123;//用户希望使用指定工厂创建实例对象
+							       Object factoryObj=  SpringIoc.get(factoryBean);
+							       Class factoryClass=factoryObj.getClass();
+							       Method methodObj= factoryClass.getDeclaredMethod(factoryMehtod, null);
+							       methodObj.setAccessible(true);
+							       instance= methodObj.invoke(factoryObj, null);
+						  &#125;else&#123;
+							  instance= classFile.newInstance();
+						  &#125;
+					 &#125;else&#123;
+						 instance=SpringIoc.get(beanId);
+					 &#125;
+					 
+					 if(this.processorObj!=null)&#123;
+						 proxyObj = this.processorObj.postProcessBeforeInitialization(instance, beanId);
+						 //实例对象初始化。Spring依赖注入
+						 setValue(instance,classFile,propertyMap);
+						 proxyObj = this.processorObj.postProcessAfterInitialization(instance, beanId);
+						 //此时返回proxyObj可能就是原始bean对象，也有可能就是代理对象
+						 return proxyObj;
+					 &#125;else&#123;
+						 //实例对象初始化
+						 setValue(instance,classFile,propertyMap);
+						 return instance;
+					 &#125;
+					 
+					
+			     &#125;
+		   &#125;
+		   return null;
+	&#125;
+	   
+
+&#125;</code></pre>
+<h3 id="1set方式注入property"><a class="markdownIt-Anchor" href="#1set方式注入property"></a> 1.Set方式注入（property）</h3>
+<ul>
+<li>
+<p><strong>类中提供相应的set方法</strong></p>
+</li>
+<li>
+<p><strong>在配置<bean>中添加<property>元�</strong>�</p>
+</li>
+<li>
+<p>Spring容器会先将配置文件中的A和B创建好，然后把B对象的引用地址通过A类的setB(B b)方法赋值给A对象的b成员私有变量，实现A类对B类的调用，这种实现方法就叫做依赖注入。</p>
+</li>
+<li>
+<p>从而解决代码之间耦合度太高的问题</p>
+</li>
+<li>
+<p>原来是自己想要什么对象就创建什么对象，耦合度太高，spring就相当于一个公司，我们提出自己的诉求，让spring帮忙找我需要的对象。</p>
+</li>
+</ul>
+<pre><code class="highlight plaintext">      &lt;!-- 
+            property元素：表示使用set方法来注入依赖关系
+            name属性指定属性名（给name大写然后前面加set,即setB(),就是调用A的setB()方法传入id为b1的对象）
+            ref属性指定属性值（是被注入的bean的id）(传入id为b1的对象)
+            A和B的先后创建顺序不重要，spring容器会把所有容器创建好之后再处理依赖关系
+       --&gt;
+      &lt;bean id=&quot;a1&quot; class=&quot;ioc.A&quot;&gt;
+            &lt;property name=&quot;b&quot; ref=&quot;b1&quot;&gt;&lt;/property&gt;
+      &lt;/bean&gt;</code></pre>
+<pre><code class="highlight plaintext">package ioc;
+
+public class A &#123;
+      private B b;
+      public void setB(B b) &#123;
+            System.out.println(&quot;setB()&quot;);
+           this.b = b;
+      &#125;
+      public A()&#123;
+            System.out.println(&quot;A()&quot;);
+      &#125;
+      public void execute()&#123;
+            //new B().f1();  这样写A和B的耦合度太高
+            System.out.println(&quot;execute()&quot;);
+            b.f1();
+      &#125;
+&#125;
+
+package ioc;
+public class B &#123;
+      public B()&#123;
+            System.out.println(&quot;B()&quot;);
+      &#125;
+      public void f1()&#123;
+            System.out.println(&quot;B is f1()&quot;);
+      &#125;
+&#125;</code></pre>
+<ul>
+<li>调用测试方法，输出：</li>
+</ul>
+<pre><code class="highlight plaintext">      @Test
+      //测试set方式的注入
+      public void test5()&#123;
+            //启动容器
+            ApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;ioc.xml&quot;);
+            A a1 = ac.getBean(&quot;a1&quot;,A.class);
+            a1.execute();
+      &#125;
+      
+输出：
+B()
+A()
+setB()
+execute()
+B is f1()</code></pre>
+<ul>
+<li><strong>如果想要新建一个C类让A类调用，而不去修改A类源代码，解决办法</strong></li>
+<li>创建一个接口，让B和C都去实现它，然后再A的代码也改为接口就可以实现直接修改xml文件而更改A类所调用的方法的类。</li>
+</ul>
+<pre><code class="highlight plaintext">package ioc;
+public interface IB &#123;
+      public void f1();
+&#125;
+
+package ioc;
+public class B implements IB&#123;
+      public B()&#123;
+            System.out.println(&quot;B()&quot;);
+      &#125;      
+      public void f1()&#123;
+            System.out.println(&quot;B is f1()&quot;);
+      &#125;
+&#125;
+
+package ioc;
+public class C implements IB&#123;
+      public C()&#123;
+            System.out.println(&quot;C()&quot;);
+      &#125;
+      public void f1()&#123;
+            System.out.println(&quot;C is f1()&quot;);
+      &#125;
+&#125;
+
+package ioc;
+public class A &#123;
+      private IB b;  //这里修改为IB接口
+      public void setB(IB b) &#123;
+            System.out.println(&quot;setB()&quot;);
+            this.b = b;
+      &#125;
+      public A()&#123;
+            System.out.println(&quot;A()&quot;);
+       &#125;   
+      public void execute()&#123;
+            //new B().f1();  这样写A和B的耦合度太高
+            System.out.println(&quot;execute()&quot;);
+            b.f1();
+      &#125;
+&#125;</code></pre>
+<ul>
+<li>修改为接口的形式后，要想修改A类注入的其他类，直接修改ref的值即可</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;a1&quot; class=&quot;ioc.A&quot;&gt;
+            &lt;property name=&quot;b&quot; ref=&quot;c1&quot;&gt;&lt;/property&gt;
+      &lt;/bean&gt;</code></pre>
+<h4 id="使用p名称空间注入数据"><a class="markdownIt-Anchor" href="#使用p名称空间注入数据"></a> 使用p名称空间注入数据</h4>
+<p>如果你有许多的设值函数方法，那么在 XML 配置文件中使用 p-namespace 是非常方便的</p>
+<ul>
+<li>首先子schema的名称空间中加入该行：<code>xmlns:p=&quot;http://www.springframework.org/schema/p&quot;</code></li>
+<li>使用p名称空间的语法
+<ul>
+<li><code>p:属性名=&quot;&quot;</code></li>
+<li><code>p:属性名-ref=&quot;&quot;</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;john-classic&quot; class=&quot;com.example.Person&quot;&gt;
+      &lt;property name=&quot;name&quot; value=&quot;John Doe&quot;/&gt;
+      &lt;property name=&quot;spouse&quot; ref=&quot;jane&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean name=&quot;jane&quot; class=&quot;com.example.Person&quot;&gt;
+      &lt;property name=&quot;name&quot; value=&quot;John Doe&quot;/&gt;
+   &lt;/bean&gt;
+
+&lt;/beans&gt;
+
+简写后-------------------------------------------------------------------
+
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xmlns:p=&quot;http://www.springframework.org/schema/p&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;john-classic&quot; class=&quot;com.example.Person&quot;
+      p:name=&quot;John Doe&quot;
+      p:spouse-ref=&quot;jane&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean name=&quot;jane&quot; class=&quot;com.example.Person&quot;
+      p:name=&quot;John Doe&quot;/&gt;
+   &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+<h4 id="spring注入内部beans"><a class="markdownIt-Anchor" href="#spring注入内部beans"></a> Spring注入内部Beans</h4>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;outerBean&quot; class=&quot;...&quot;&gt;
+      &lt;property name=&quot;target&quot;&gt;
+         &lt;bean id=&quot;innerBean&quot; class=&quot;...&quot;/&gt;
+      &lt;/property&gt;
+   &lt;/bean&gt;
+
+&lt;/beans&gt;</code></pre>
+<h3 id="2构造器方式注入"><a class="markdownIt-Anchor" href="#2构造器方式注入"></a> 2构造器方式注入</h3>
+<ul>
+<li>
+<p><strong>1.添加相应的构造器</strong></p>
+</li>
+<li>
+<p><strong>2.配置constructor-arg元�</strong>�</p>
+<ul>
+<li><code>index</code>：指定参数在构造函数参数列表的索引位置</li>
+<li><code>name</code>：指定参数在构造函数的名称</li>
+<li><code>value</code>：它能给基本数据类型和String类型赋值</li>
+<li><code>ref</code>：他能赋值引用类型</li>
+</ul>
+</li>
+<li>
+<p>当构造器有多个值时，可以使用index参数配置参数的位置</p>
+</li>
+<li>
+<p>如果要把一个引用传递给一个对象，需要使用标签的<strong>ref</strong>属性；如果要直接传递一个值，应该使用<strong>value</strong>属性</p>
+</li>
+<li>
+<p>配置xml</p>
+</li>
+</ul>
+<pre><code class="highlight plaintext">      &lt;bean id=&quot;b1&quot; class=&quot;ioc2.B&quot;&gt;&lt;/bean&gt;
+      &lt;!--  
+            构造器方式注入
+            constructor-arg元素：用来配置构造器方式的注入，其中，
+            index属性指定参数的下标（从0开始）
+       --&gt;
+      &lt;bean id=&quot;a1&quot; class=&quot;ioc2.A&quot;&gt;
+            &lt;constructor-arg index=&quot;0&quot; ref=&quot;b1&quot;&gt;&lt;/constructor-arg&gt; 
+&lt;constructor-arg name=&quot;id&quot; value=&quot;1&quot;&gt;&lt;/constructor-arg&gt;
+            &lt;constructor-arg name=&quot;name&quot; value=&quot;zhangsan&quot;&gt;&lt;/constructor-arg&gt;
+      &lt;/bean&gt;</code></pre>
+<pre><code class="highlight plaintext">package ioc2;
+public class A &#123;
+      private B b;
+      public A()&#123;
+            System.out.println(&quot;A()&quot;);
+      &#125; 
+      //构造器传入
+      public A(B b)&#123;
+            this.b = b;
+            System.out.println(&quot;A(b)&quot;);
+      &#125;
+      public void execute()&#123;
+            System.out.println(&quot;execute()&quot;);
+            b.f1();
+      &#125;
+&#125;
+
+package ioc2;
+public class B &#123;
+      public B()&#123;
+            System.out.println(&quot;B()&quot;);
+      &#125;
+      public void f1()&#123;
+            System.out.println(&quot;B is f1()&quot;);
+      &#125;
+&#125;
+</code></pre>
+<ul>
+<li>测试输出</li>
+</ul>
+<pre><code class="highlight plaintext">public class TestCase2 &#123;
+      @Test
+      public void test()&#123;
+            ApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;ioc2.xml&quot;);
+            A a = ac.getBean(&quot;a1&quot;,A.class);
+            a.execute();
+      &#125;
+      
+输出：
+B()
+A(b)
+execute()
+B is f1()</code></pre>
+<h3 id="3自动装配了解"><a class="markdownIt-Anchor" href="#3自动装配了解"></a> 3自动装配（了解）</h3>
+<ul>
+<li>容器依据某种规则，自动建立对象之间的依赖关系</li>
+<li>默认情况下，容器不会自动装配</li>
+<li>可以通过指定autowire属性来告诉容器进行自动装配（容器仍然需要通过调用set方法或者构造器来完成关系的建立）
+<ul>
+<li><strong>byName</strong>：private Waiter wt;根据wt来找相同的id对象注入到setWt()方法中</li>
+<li><strong>byType</strong>：private Waiter wt;根据Waiter属性来找相同的class对应的对象注入到setWaiter()方法中</li>
+<li><s><strong>constructor</strong></s>：与byType的方式类似，不同之处在于它应用于构造器参数</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;!-- 
+            autowire属性：表示让容器自动装配
+            如果值为：
+            byName:容器依据属性名(成员变量名)查找(id)对应的bean,然后调用对应的（set加属性名大写）方法来完成注入
+                        注意：如果找不到对应的bean,注入null.不可能找到多个符合条件的bean，因为id唯一
+            byType:容器依据属性的类型查找对应的属性（class）相同的bean,然后调用对应的set方法来完成注入。
+                        注意：找不到对应的bean,注入null,找到多个就会报错。
+            constructor:与byType类似，不同的是调用对应的构造器来完成注入。
+       --&gt;
+       &lt;bean id=&quot;wt&quot; class=&quot;ioc2.Waiter&quot;/&gt;
+      &lt;bean id=&quot;rest&quot; class=&quot;ioc2.Restaurant&quot; autowire=&quot;byName&quot;&gt;&lt;/bean&gt;</code></pre>
+<pre><code class="highlight plaintext">package ioc2;
+public class Restaurant &#123;
+      private Waiter wt;   
+      public Restaurant()&#123;
+            System.out.println(&quot;Restaurant()&quot;);
+
+      &#125;      
+      public void setWt(Waiter wt)&#123;
+            this.wt = wt;
+            System.out.println(&quot;setWt()&quot;);
+      &#125;
+      public String toString()&#123;
+            return &quot;Restaurant [wt=&quot;+wt+&quot;]&quot;;
+      &#125;
+&#125;
+
+package ioc2;
+public class Waiter &#123;
+      public Waiter()&#123;
+            System.out.println(&quot;waiter&quot;);
+      &#125;
+&#125;
+
+      @Test
+      //测试自动装配
+      public void test2()&#123;
+            ApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;ioc2.xml&quot;);
+            Restaurant rest = ac.getBean(&quot;rest&quot;,Restaurant.class);
+            System.out.println(rest);
+      &#125;
+
+输出：
+waiter
+Restaurant()
+setWt()
+Restaurant [wt=ioc2.Waiter@1877ab81]</code></pre>
+<h3 id="4-注入基本集合类型的值"><a class="markdownIt-Anchor" href="#4-注入基本集合类型的值"></a> 4 注入基本/集合类型的值</h3>
+<ul>
+<li>注入基本类型的值：使用value属性/标签即可，容器将字符串从java.lang.String类型转化为实际的属性或参数类型后给Bean对象注入</li>
+<li>如果集合内是简单类型，使用value子标签，如果是POJO(引用)类型，则使用bean标签</li>
+</ul>
+<p>List Set Map Properties</p>
+<ul>
+<li>代码如下</li>
+</ul>
+<pre><code class="highlight plaintext">      &lt;bean id=&quot;vb1&quot; class=&quot;value.ValueBean&quot;&gt;
+&lt;!-- 上下两种写法都可以 --&gt;
+            &lt;property name=&quot;name&quot; value=&quot;胡八一&quot;&gt;&lt;/property&gt;
+      &lt;property name=&quot;age&quot;&gt;&lt;value&gt;30&lt;/value&gt;&lt;/property&gt;
+      
+      &lt;!--两种方式都可以--&gt;
+      &lt;property name=&quot;otherName&quot; value=&quot;张三,李四,王五&quot;&gt;&lt;/property&gt;
+      &lt;property name=&quot;otherName&quot;&gt;
+                  &lt;array&gt;
+                       &lt;value&gt;张三&lt;/value&gt;
+                        &lt;value&gt;李四&lt;/value&gt;
+                        &lt;bean&gt;&lt;/bean&gt;
+                  &lt;/arrya&gt;
+            &lt;/property&gt;
+      
+            &lt;property name=&quot;city&quot;&gt;
+                  &lt;list&gt;
+                       &lt;value&gt;北京&lt;/value&gt;
+                        &lt;value&gt;上海&lt;/value&gt;
+                        &lt;value&gt;广州&lt;/value&gt;
+                  &lt;/list&gt;
+            &lt;/property&gt;
+      
+            &lt;property name=&quot;interest&quot;&gt;
+                  &lt;set&gt;
+                        &lt;value&gt;盗墓&lt;/value&gt;
+                       &lt;value&gt;战斗&lt;/value&gt;
+                        &lt;value&gt;喝酒&lt;/value&gt;
+                  &lt;/set&gt;
+            &lt;/property&gt;
+      
+            &lt;property name=&quot;score&quot;&gt;
+                  &lt;map&gt;
+                        &lt;entry key=&quot;english&quot; value=&quot;60&quot;&gt;&lt;/entry&gt;
+                        &lt;entry key=&quot;math&quot; value=&quot;66&quot;&gt;&lt;/entry&gt;
+                  &lt;/map&gt;
+            &lt;/property&gt;
+      
+            &lt;property name=&quot;db&quot;&gt;
+                  &lt;props&gt;
+                        &lt;prop key=&quot;username&quot;&gt;Tiger&lt;/prop&gt;
+                        &lt;prop key=&quot;password&quot;&gt;1234&lt;/prop&gt;
+                  &lt;/props&gt;
+            &lt;/property&gt;
+      &lt;/bean&gt;</code></pre>
+<pre><code class="highlight plaintext">package value;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+
+public class ValueBean &#123;
+	private String name;
+	private int age;
+    private String[] otherName;
+	private List&lt;String&gt; city;
+	private Set&lt;String&gt; interest;
+	private Map&lt;String,Double&gt; score;
+	private Properties db;
+    
+	public ValueBean()&#123;
+		System.out.println(&quot;ValueBean()&quot;);
+	&#125;
+	public void setName(String name) &#123;
+		this.name = name;
+	&#125;
+	public void setAge(int age) &#123;
+		this.age = age;
+	&#125;
+	public void setCity(List&lt;String&gt; city) &#123;
+		this.city = city;
+	&#125;
+	public void setInterest(Set&lt;String&gt; interest) &#123;
+		this.interest = interest;
+	&#125;
+	public void setScore(Map&lt;String, Double&gt; score) &#123;
+		this.score = score;
+	&#125;
+	public void setDb(Properties db) &#123;
+		this.db = db;
+	&#125;
+	@Override
+	public String toString() &#123;
+		return &quot;ValueBean [name=&quot; + name + &quot;, age=&quot; + age + &quot;, city=&quot; + city + &quot;, interest=&quot; + interest + &quot;, score=&quot;+ score + &quot;, db=&quot; + db + &quot;]&quot;;
+	&#125;
+&#125;
+
+      @Test
+      public void test3()&#123;
+            ApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;value.xml&quot;);
+            ValueBean vb = ac.getBean(&quot;vb1&quot;,ValueBean.class);
+            System.out.println(vb);
+      &#125;
+
+输出:
+ValueBean()
+ValueBean [name=胡八一, age=30, city=[北京, 上海, 广州], interest=[盗墓, 战斗, 喝酒], score=&#123;english=60.0, math=66.0&#125;, db=&#123;password=1234, 
+username=Tiger&#125;]</code></pre>
+<h3 id="5-引用的方式注入集合类型的值"><a class="markdownIt-Anchor" href="#5-引用的方式注入集合类型的值"></a> 5 引用的方式注入集合类型的值</h3>
+<pre><code class="highlight plaintext">&lt;!-- 
+
+            util表示命名空间
+            将集合类型的值配置为一个bean,
+       --&gt;
+      &lt;util:list id=&quot;cityBean&quot;&gt;
+            &lt;value&gt;上海&lt;/value&gt;
+            &lt;value&gt;深圳&lt;/value&gt;
+            &lt;value&gt;武汉&lt;/value&gt;
+      &lt;/util:list&gt;
+      &lt;util:set id=&quot;interestBean&quot;&gt;
+            &lt;value&gt;书法&lt;/value&gt;
+            &lt;value&gt;绘画&lt;/value&gt;
+            &lt;value&gt;拳击&lt;/value&gt;
+      &lt;/util:set&gt;
+      &lt;util:map id=&quot;scoreBean&quot;&gt;
+            &lt;entry key=&quot;english&quot; value=&quot;80&quot;&gt;&lt;/entry&gt;
+            &lt;entry key=&quot;math&quot; value=&quot;99&quot;&gt;&lt;/entry&gt;
+      &lt;/util:map&gt;
+      &lt;util:properties id=&quot;dbBean&quot;&gt;
+            &lt;prop key=&quot;username&quot;&gt;Sally&lt;/prop&gt;
+            &lt;prop key=&quot;password&quot;&gt;1234&lt;/prop&gt;
+      &lt;/util:properties&gt;
+      &lt;!-- 引用的方式注入集合类型的值 --&gt;
+      &lt;bean id=&quot;vb2&quot; class=&quot;value.ValueBean&quot;&gt;
+            &lt;property name=&quot;city&quot; ref=&quot;cityBean&quot;&gt;&lt;/property&gt;
+            &lt;property name=&quot;interest&quot; ref=&quot;interestBean&quot;&gt;&lt;/property&gt;
+            &lt;property name=&quot;score&quot; ref=&quot;scoreBean&quot;&gt;&lt;/property&gt;
+            &lt;property name=&quot;db&quot; ref=&quot;dbBean&quot;&gt;&lt;/property&gt;
+      &lt;/bean&gt;
+</code></pre>
+<h3 id="6-注入空值"><a class="markdownIt-Anchor" href="#6-注入空值"></a> 6 注入空值</h3>
+<ul>
+<li>例子相当于 Java 代码：exampleBean.setEmail(“”)</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;...&quot; class=&quot;exampleBean&quot;&gt;
+   &lt;property name=&quot;email&quot; value=&quot;&quot;/&gt;&lt;/bean&gt;</code></pre>
+<ul>
+<li>例子相当于 Java 代码：exampleBean.setEmail(null)</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;...&quot; class=&quot;exampleBean&quot;&gt;
+   &lt;property name=&quot;email&quot;&gt;&lt;null/&gt;&lt;/property&gt;&lt;/bean&gt;</code></pre>
+<h3 id="7-读取配置文件properties的值"><a class="markdownIt-Anchor" href="#7-读取配置文件properties的值"></a> 7 读取配置文件properties的值</h3>
+<p>config.properties</p>
+<pre><code class="highlight plaintext">pagesize=10</code></pre>
+<p>value.xml</p>
+<pre><code class="highlight plaintext">location:表示配置文件的路劲
+&lt;!-- 读取properties文件的内容
+             classpath:按照类路劲来搜索（实际就是按照resource来找,如果有文件夹，就config/config.properties）
+             spring容器会根基路径来找到对应的properties文件，然后读取该文件的内容到Properties对象
+       --&gt;
+      &lt;util:properties id=&quot;config&quot; 
+location=&quot;classpath:config.properties&quot;&gt;&lt;/util:properties&gt;</code></pre>
+<p>@test</p>
+<pre><code class="highlight plaintext">      @Test
+public class TestCase2 &#123;
+      //测试 读取properties文件
+      public void test5()&#123;
+            ApplicationContext ac = new 
+ClassPathXmlApplicationContext(&quot;value.xml&quot;);
+            System.out.println(ac.getBean(&quot;config&quot;));
+      &#125;
+&#125;</code></pre>
+<h3 id="8-使用spring表达式"><a class="markdownIt-Anchor" href="#8-使用spring表达式"></a> 8 使用spring表达式</h3>
+<ul>
+<li>Spring引入了一种表达式语言，这和统一的EL再语法上很相似，这种表达式语言可以读取一个bean对象/集合中的数据</li>
+</ul>
+<blockquote>
+<p><strong>注意事项，要想使用spring表达式读取属性值，必须要被读取bean有相应的get方法</strong></p>
+</blockquote>
+<pre><code class="highlight plaintext">&lt;!-- 通过#来读取其他bean的属性值，前提是其他bean的该属性需要有get方法，否则无法读取值 --&gt;
+配置文件properties的bean
+      &lt;util:properties id=&quot;config&quot; 
+location=&quot;classpath:config.properties&quot;&gt;&lt;/util:properties&gt;
+
+      &lt;bean id=&quot;sp1&quot; class=&quot;value.SpelBean&quot;&gt;
+表示读取bean的属性      
+            &lt;property name=&quot;name&quot; value=&quot;#&#123;vb1.name&#125;&quot;&gt;&lt;/property&gt;
+表示用下标读取list            
+            &lt;property name=&quot;city&quot; value=&quot;#&#123;vb1.city[1]&#125;&quot;&gt;&lt;/property&gt;
+表示用map的key读取value            
+            &lt;property name=&quot;score&quot; 
+value=&quot;#&#123;vb1.score.english&#125;&quot;&gt;&lt;/property&gt;
+表示读取配置文件
+            &lt;property name=&quot;pageSize&quot; 
+value=&quot;#&#123;config.pagesize&#125;&quot;&gt;&lt;/property&gt;
+      &lt;/bean&gt;
+     
+      
+
+      &lt;bean id=&quot;vb1&quot; class=&quot;value.ValueBean&quot;&gt;
+            &lt;property name=&quot;name&quot; value=&quot;胡八一&quot;&gt;&lt;/property&gt;
+            &lt;property name=&quot;age&quot; value=&quot;30&quot;&gt;&lt;/property&gt;
+            &lt;property name=&quot;city&quot;&gt;
+                  &lt;list&gt;
+                        &lt;value&gt;北京&lt;/value&gt;
+                        &lt;value&gt;上海&lt;/value&gt;
+                        &lt;value&gt;广州&lt;/value&gt;
+                  &lt;/list&gt;
+            &lt;/property&gt;
+            &lt;property name=&quot;interest&quot;&gt;
+                  &lt;set&gt;
+                        &lt;value&gt;盗墓&lt;/value&gt;
+                        &lt;value&gt;战斗&lt;/value&gt;
+                        &lt;value&gt;喝酒&lt;/value&gt;
+                  &lt;/set&gt;
+            &lt;/property&gt;
+            &lt;property name=&quot;score&quot;&gt;
+                  &lt;map&gt;
+                        &lt;entry key=&quot;english&quot; value=&quot;60&quot;&gt;&lt;/entry&gt;
+                        &lt;entry key=&quot;math&quot; value=&quot;66&quot;&gt;&lt;/entry&gt;
+                  &lt;/map&gt;
+            &lt;/property&gt;
+            &lt;property name=&quot;db&quot;&gt;
+                  &lt;props&gt;
+                        &lt;prop key=&quot;username&quot;&gt;Tiger&lt;/prop&gt;
+                        &lt;prop key=&quot;password&quot;&gt;1234&lt;/prop&gt;
+                  &lt;/props&gt;
+            &lt;/property&gt;
+      &lt;/bean&gt;</code></pre>
+<pre><code class="highlight plaintext">package value;
+public class SpelBean &#123;
+      private String name;
+      private String city;
+      private double score;
+      private String pageSize;
+      public SpelBean()&#123;
+            System.out.println(&quot;SpelBean()&quot;);
+      &#125;
+      public void setName(String name) &#123;
+            this.name = name;
+      &#125;
+      public void setCity(String city) &#123;
+            this.city = city;
+      &#125;
+      public void setScore(double score) &#123;
+            this.score = score;
+      &#125;
+      public void setPageSize(String pageSize) &#123;
+            this.pageSize = pageSize;
+      &#125;  
+&#125;</code></pre>
+<p>输出</p>
+<pre><code class="highlight plaintext">SpelBean [name=胡八一, city=上海, score=60.0, pageSize=10]</code></pre>
+<h2 id="spring-ioc注解"><a class="markdownIt-Anchor" href="#spring-ioc注解"></a> Spring IoC注解</h2>
+<p>学习基于注解的 IoC 配置，大家脑海里首先得有一个认知，即<strong>注解配置和 xml 配置要实现的功能都是一样的</strong>，都是要降低程序间的耦合。只是配置的形式不一样。</p>
+<p>关于实际的开发中到底使用xml 还是注解，每家公司有着不同的使用习惯。所以这两种配置方式我们都需要掌握</p>
+<p><strong>注解的优势：</strong></p>
+<p>配置简单，维护方便（我们找到类，就相当于找到了对应的配置）</p>
+<p><strong>XML的优势：</strong></p>
+<p>修改时，不用改源码。不涉及重新编译和部署</p>
+<h3 id="1什么是组件扫描"><a class="markdownIt-Anchor" href="#1什么是组件扫描"></a> 1.什么是组件扫描</h3>
+<ul>
+<li>spring容器启动后，会扫描该包及其子包下面的所有的类如果改类前面有特定的注解（比如@Component）,则spring容器会将其纳入容器进行管理（相当于这里配置了一个bean元素）</li>
+<li>指定扫描路径后，并不是该路径下的所有组件类都扫描到spring容器，只有再组件类定义前面有以下注解标记时，才会扫描都Spring容器</li>
+<li>以下注解都是一个作用，但语义不同
+<blockquote>
+<p>@Componect 通用注解</p>
+<p>@Named 通用注解</p>
+<p>@Repository 持久化层注解扫描</p>
+<p>@Service 业务层组件扫描</p>
+<p>@Controller 表现层组件扫描</p>
+</blockquote>
+</li>
+</ul>
+<hr />
+<blockquote>
+<p><strong>上述注解有个value属性，用来指定bean的id</strong>，如果不写，则bean的默认id就是<strong>类名首字母小写</strong></p>
+</blockquote>
+<h3 id="2如何进行组件扫描"><a class="markdownIt-Anchor" href="#2如何进行组件扫描"></a> 2.如何进行组件扫描</h3>
+<ul>
+<li>1 一个无参构造器</li>
+<li>2 类标注解 @Component</li>
+<li>3 xml的<beans>中写包名
+<ul>
+<li><code>&lt;context:component-scan base-package=&quot;org.example&quot;</code></li>
+</ul>
+</li>
+<li>上面的配置，容器实例化时会自动扫描org.example包及其子包下所有组件类</li>
+</ul>
+<pre><code class="highlight plaintext">package annotation;
+import org.springframework.stereotype.Component;
+//相当于再spring配置文件中有一条bean，它的id为sb1,缺省值为someBean
+@Component(&quot;sb1&quot;)
+public class SomeBean &#123;
+      public SomeBean()&#123;
+            System.out.println(&quot;SomeBean()&quot;);
+      &#125;
+&#125;</code></pre>
+<p>applicationContext.xml</p>
+<pre><code class="highlight plaintext">      &lt;!-- 配置组件扫描 --&gt;
+      &lt;!--两种方式都可以--&gt;
+      &lt;context:annotation-config/&gt;
+      &lt;!-- 
+            base-package属性：指定要扫描的包名，spring容器会扫描该包及其子包下面的所有的类
+            如果改类前面有特定的注解（比如@Component）,则spring容器会将其纳入容器进行管理（相当于这里配置了一个bean元素）
+       --&gt;
+       &lt;beans&gt;
+      &lt;context:component-scan 
+base-package=&quot;annotation&quot;&gt;&lt;/context:component-scan&gt;
+    &lt;/beans&gt;</code></pre>
+<h3 id="3作用域原型单例-and-延迟加载-and-初始化和销毁-回掉方法"><a class="markdownIt-Anchor" href="#3作用域原型单例-and-延迟加载-and-初始化和销毁-回掉方法"></a> 3.作用域原型/单例 AND 延迟加载 AND 初始化和销毁 回掉方法</h3>
+<ul>
+<li><code>@Scope('singleton')</code> <strong>单例</strong></li>
+<li><code>@Lazy(true)</code><strong>延迟加载</strong></li>
+<li><code>@PostConstruct</code> <strong>初始化</strong></li>
+<li><code>@PreDestroy</code> <strong>销毁</strong>
+<ul>
+<li>注：初始化和销毁要单独导入tomcat相关包</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package annotation;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+//相当于再spring配置文件中有一条bean，它的id为sb1,缺省值为someBean
+@Component(&quot;sb1&quot;)
+//指定作用域，原型/单例，prototype原型/singleton单例
+@Scope(&quot;singleton&quot;)
+//默认单例都是容器启动就创建对象，延迟加载再启动容器时不创建对象，使用对象时再创建
+@Lazy(true)
+public class SomeBean &#123;
+	//@PostConstruct和@PreDestroy都是sun的包，需要导入tomcat对应依赖包
+	@PostConstruct
+	public void init()&#123;
+		System.out.println(&quot;init()&quot;);
+	&#125;
+	//销毁方法需要作用域为单例
+	@PreDestroy
+	public void destroy()&#123;
+		System.out.println(&quot;destroy()&quot;);
+	&#125;
+	public SomeBean()&#123;
+		System.out.println(&quot;SomeBean()&quot;);
+	&#125;
+&#125;</code></pre>
+<h3 id="4-依赖注入相关的注解"><a class="markdownIt-Anchor" href="#4-依赖注入相关的注解"></a> 4 依赖注入相关的注解</h3>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><s>@Required</s></td>
+<td>@Required 注释应用于 bean 属性的 setter 方法，它用来<strong>检查</strong>受影响的 bean 属性在配置时必须放在 XML 配置文件中，否则容器就会抛出一个 BeanInitializationException 异常</td>
+</tr>
+<tr>
+<td>@Autowired/@Qualifier</td>
+<td>一般成对使用，autowired默认使用byType方式传入，需要用Quelifier来指定bean的id</td>
+</tr>
+<tr>
+<td>@Resource</td>
+<td>只能用于setter,先按byName方式，然后用byType方式，也可以直接指定要传入的bean的id</td>
+</tr>
+</tbody>
+</table>
+<h4 id="autowired"><a class="markdownIt-Anchor" href="#autowired"></a> @Autowired</h4>
+<ul>
+<li><strong>@Autowired</strong>
+<ul>
+<li>可以处理构造器注入和Setter注入</li>
+<li>默认情况下必须要求依赖对象必须存在，如果要允许null值，可以设置它的required属性为false，如：<code>@Autowired(required=false)</code></li>
+<li>a.当采用set方式注入时，可以将@Autowired添加到set方法前面，如果不使用@Qualifier,则容器会使用byType的方式来注入，有可能出错，所以建议使用@Qualifier，明确指定要注入的bean的id</li>
+<li>b.也可以直接将两个注解添加到属性前（写在属性前容器会自动跳过set方法，用反射机制跳过private给赋值）</li>
+<li>c.当采用构造器方式注入时，可以将该注解添加到对应的构造器前面即可</li>
+</ul>
+</li>
+<li><strong>@Qualifier</strong>
+<ul>
+<li>在自动按照类型注入的基础之上，再按照 Bean 的 id 注入</li>
+<li>它在给字段注入时不能独立使用，必须和@Autowire 一起使用；但是给方法参数注入时，可以独立使用</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">public class UserService&#123;
+    //@Autowired
+    //@Qualifier(&quot;mysqlUserDao&quot;)
+    private UserDao userDao;
+
+    @Autowired
+    public void setUserDao(@Qualifier(&quot;mysqlUserDao&quot;)userDao dao)&#123;
+        this.userDao = dao;
+    &#125;
+&#125;</code></pre>
+<pre><code class="highlight plaintext">package annotation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component(&quot;rest&quot;)
+public class Restaurant &#123;
+      //两种写法都可以，写在成员变量前面可以省掉写set方法
+      //    @Autowired
+      //    @Qualifier(&quot;wt&quot;)
+      private Waiter wt;
+      public Restaurant()&#123;
+            System.out.println(&quot;Restaurant()&quot;);
+      &#125;
+      //@Autowired告诉容器set方法注入
+      //@Qualifier告诉容器注入对象id为wt
+      @Autowired
+      public void setWt(@Qualifier(&quot;wt&quot;)Waiter wt) &#123;
+            System.out.println(&quot;setWt()&quot;);
+            this.wt = wt;
+      &#125;
+      public String toString() &#123;
+            return &quot;Restaurant [wt=&quot; + wt + &quot;]&quot;;
+      &#125;
+&#125;
+
+package annotation;
+import org.springframework.stereotype.Component;
+@Component(&quot;wt&quot;)
+public class Waiter &#123;
+      public Waiter()&#123;
+            System.out.println(&quot;Waiter()&quot;);
+      &#125;
+&#125;
+
+annotation.xml
+&lt;context:component-scan base-package=&quot;annotation&quot;/&gt;</code></pre>
+<ul>
+<li><s>@Inject/@Named</s>
+<ul>
+<li>和@Autowired用法一致，需要额外导包</li>
+<li>Inject注解标记是Spring3.0开始增添的对JSR-330标准的支持，使用前需要添加JSR-330的jar包,使用方法与@Autowired相似</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">public class UserService&#123;
+    private UserDao userDao;
+
+    @Inject
+    public void  setUserDao(@Named(&quot;mysqlUserDao&quot;)UserDao dao)&#123;
+        this.userDao = dao;
+    &#125;
+&#125;</code></pre>
+<h4 id="resource重点"><a class="markdownIt-Anchor" href="#resource重点"></a> @Resource（重点）</h4>
+<ul>
+<li><strong>@Resource（重点）</strong>
+<ul>
+<li>默认按照<strong>名称（byName）进行装配</strong>，名称可以通过name属性进行指定</li>
+<li>该注解属于J2EE</li>
+<li>只能处理Setter注入，但是大部分情况都是Setter注入</li>
+<li>Resource注解标记可以用在<strong>字段定义</strong>或<strong>setter方法定义</strong>前面(区别就是字段前面只是单纯的赋值，方法前面可以捎带执行方法内的其他语句)</li>
+<li>如果没有指定name属性，当注解写在字段上时，<strong>默认首先按字段名匹配注入，当找不到与名称匹配的bean时才按照类型进行装配</strong></li>
+<li>当遇到多个匹配Bean时注入会发生错误，可以显示指定名称（但是需要注意的是，如果<strong>name属性一旦指定</strong>，就<strong>只会</strong>按照名称进行装配），例如<code>@Resource(name=&quot;empDao1&quot;)</code></li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">@Component(&quot;us&quot;)
+public class UserService&#123;
+    @Resource(name=&quot;userDao&quot;)
+    private UserDao userDao;
+    @Resource
+    public void setUserDao(UserDao dao)&#123;
+        this.userDao = dao;
+    &#125;
+&#125;</code></pre>
+<h4 id="value"><a class="markdownIt-Anchor" href="#value"></a> @Value</h4>
+<ul>
+<li>可以给基本类型和String类型注入值</li>
+<li>可以使用占位符获取properties属性文件中的值</li>
+</ul>
+<h5 id="value和value的区别"><a class="markdownIt-Anchor" href="#value和value的区别"></a> @value(“#{}”)和@value(“${}”)的区别</h5>
+<p><strong>@value(“${}”)</strong></p>
+<p>一般用来获取properties属性文件中的值，获取的前提是需要在applicationContext.xml文件中配置properties文件</p>
+<pre><code class="highlight plaintext">@Value(“$&#123;name&#125;”)//name是properties文件中的key
+private String name;</code></pre>
+<p>applicationContext.xml配置文件</p>
+<pre><code class="highlight plaintext">&lt;!-- 加载配置属性文件 --&gt;
+&lt;context:property-placeholder location=&quot;classpath:sys.properties&quot; /&gt;</code></pre>
+<p><strong>@value(“#{}”)</strong></p>
+<p>此种用法SpEl表达式通常用来获取bean的属性，或者调用bean的某个方法。当然还有可以表示常量</p>
+<pre><code class="highlight plaintext">public class LoginController &#123;
+	
+	@Value(&quot;#&#123;1&#125;&quot;)
+	private int number; //获取数字 1
+	
+	@Value(&quot;#&#123;&#x27;Spring Expression Language&#x27;&#125;&quot;) //获取字符串常量
+	private String str;
+	
+	@Value(&quot;#&#123;dataSource.url&#125;&quot;) //获取bean的属性
+	private String jdbcUrl;
+
+    ... ...
+&#125;</code></pre>
+<h5 id="通过utilproperties"><a class="markdownIt-Anchor" href="#通过utilproperties"></a> 通过util:properties</h5>
+<ul>
+<li>可以使用该注解来注入基本类型的值</li>
+<li>@Value注解可以注入Spring表达式值，使用方法</li>
+<li>首先在XML配置中指定要注入的properties文件
+<ul>
+<li><code>&lt;util:properties location=&quot;classpath:db.properties&quot;/&gt;</code></li>
+</ul>
+</li>
+<li>然后再setter方法前使用@Value注解</li>
+</ul>
+<pre><code class="highlight plaintext">public class JDBCDateSource&#123;
+    @Value(&quot;#&#123;jdbcProps.url&#125;&quot;)
+    private String url;
+    @Value(&quot;#&#123;jdbcProps.driver&#125;&quot;)
+    public void setUrl(String driver)&#123;
+        Class.forName(driver);
+    &#125;
+&#125;</code></pre>
+<h5 id="通过propertyplaceholderconfigurer"><a class="markdownIt-Anchor" href="#通过propertyplaceholderconfigurer"></a> 通过PropertyPlaceholderConfigurer</h5>
+<ul>
+<li>dev.properties</li>
+</ul>
+<pre><code class="highlight plaintext">tag=123</code></pre>
+<ul>
+<li>spring.xml 配置</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean class=&quot;org.springframework.beans.factory.config.PropertyPlaceholderConfigurer&quot;&gt;&lt;property name=&quot;location&quot; value=&quot;dev.properties&quot; /&gt;&lt;/bean&gt;</code></pre>
+<ul>
+<li>使用</li>
+</ul>
+<pre><code class="highlight plaintext">@Value(&quot;$&#123;tag&#125;&quot;)
+private String tag;</code></pre>
+<h5 id="通过preferencesplaceholderconfigurer"><a class="markdownIt-Anchor" href="#通过preferencesplaceholderconfigurer"></a> 通过PreferencesPlaceholderConfigurer</h5>
+<ul>
+<li>配置</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;appConfig&quot; class=&quot;org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer&quot;&gt;&lt;property name=&quot;location&quot; value=&quot;dev.properties&quot; /&gt;&lt;/bean&gt;</code></pre>
+<ul>
+<li>使用</li>
+</ul>
+<pre><code class="highlight plaintext">@Value(&quot;$&#123;tag&#125;&quot;)
+private String tag;</code></pre>
+<h5 id="通过propertiesfactorybean"><a class="markdownIt-Anchor" href="#通过propertiesfactorybean"></a> 通过PropertiesFactoryBean</h5>
+<ul>
+<li>配置</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;bean id=&quot;config&quot; class=&quot;org.springframework.beans.factory.config.PropertiesFactoryBean&quot;&gt;&lt;property name=&quot;location&quot; value=&quot;dev.properties&quot; /&gt;&lt;/bean&gt;</code></pre>
+<ul>
+<li>使用</li>
+</ul>
+<pre><code class="highlight plaintext">@Value(&quot;#&#123;config[&#x27;tag&#x27;]&#125;&quot;)
+private String tag;</code></pre>
+<h2 id="java类取代spring-xml配置"><a class="markdownIt-Anchor" href="#java类取代spring-xml配置"></a> Java类取代spring xml配置</h2>
+<h3 id="configuration和bean注解"><a class="markdownIt-Anchor" href="#configuration和bean注解"></a> @Configuration和@Bean注解</h3>
+<p>@<strong>Configuration</strong></p>
+<ul>
+<li>@<strong>Configuration</strong>相当于配置文件中<strong>的<beans/>根标签</strong></li>
+<li>从Spring3.0，@Configuration用于定义配置类，<strong>可替换xml配置文件</strong></li>
+<li>配置类内部包含有一个或多个被@Bean注解的方法，这些方法将会被<code>AnnotationConfigApplicationContext</code>或<code>AnnotationConfigWebApplicationContext</code>类进行扫描，并用于构建bean定义，初始化Spring容器</li>
+<li><strong>属性</strong>
+<ul>
+<li>value:用于指定配置类的字节码</li>
+</ul>
+</li>
+</ul>
+<p>@<strong>Bean</strong></p>
+<ul>
+<li>@<strong>Bean</strong>相当于<bean/>，只能注解在方法和注解上，一般在方法上使用</li>
+<li>带有@<strong>Configuration</strong>的注解类表示这个类可以使用Spring IOC容器作为bean定义的来源，@<strong>Bean</strong>注解告诉Spring，一个带有@Bean的注解方法将返回一个对象，该对象应该被注册在Spring应用程序上下文中的bean</li>
+<li><strong>属性</strong>
+<ul>
+<li>name：给当前@Bean 注解方法创建的对象指定一个名称(即 bean 的 id）</li>
+<li>如果不指定，<strong>默认与标注的方法名相同</strong></li>
+<li>@Bean注解默认作用域为单例singleton作用域，可通过@Scope(“prototype”)设置为原型作用域；</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>使用零配置和注解虽然方便，不需要编写麻烦的xml文件，但并非为了取代xml，应该根据实例需要选择，或二者结合使用，毕竟使用一个类作为容器的配置信息是硬编码的，<strong>无法在发布后修改</strong></p>
+</blockquote>
+<ul>
+<li>案例</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.annotation.*;
+@Configuration
+public class SpringConfiguration &#123;
+   @Bean 
+   public HelloWorld helloWorld()&#123;
+      return new HelloWorld();
+   &#125;
+   
+   //spring容器初始化时，会调用配置类的无参构造函数
+   public SpringConfiguration()&#123;
+       System.out.println(“容器启动初始化。。。”);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>上面的代码将等同于下面的XML配置</li>
+</ul>
+<pre><code class="highlight plaintext">&lt;beans&gt;
+   &lt;bean id=&quot;helloWorld&quot; class=&quot;com.tutorialspoint.HelloWorld&quot; /&gt;
+&lt;/beans&gt;</code></pre>
+<ul>
+<li>在这里，带有@Bean注解的方法名称作为bean的id,它创建并返回实际的bean，你的配置类可以声明多个@Bean，一旦定义了<strong>配置类</strong>，就可以使用AnnotationConfigApplicationContext来加载并把他们提供给spring容器</li>
+</ul>
+<pre><code class="highlight plaintext">public static void main(String[] args) &#123;
+   ApplicationContext ctx = 
+   new AnnotationConfigApplicationContext(HelloWorldConfig.class); //这个HolloWorldConfig就是一个配置类，里面@Bean声明的方法就相当于在spring容器中添加了一个bean配置
+   HelloWorld helloWorld = ctx.getBean(HelloWorld.class);
+   helloWorld.setMessage(&quot;Hello World!&quot;);
+   helloWorld.getMessage();
+&#125;</code></pre>
+<ul>
+<li>或者可以加载各种配置类</li>
+</ul>
+<pre><code class="highlight plaintext">public static void main(String[] args) &#123;
+   AnnotationConfigApplicationContext ctx = 
+   new AnnotationConfigApplicationContext();
+   ctx.register(AppConfig.class, OtherConfig.class);
+   ctx.register(AdditionalConfig.class);
+   ctx.refresh();
+   MyService myService = ctx.getBean(MyService.class);
+   myService.doStuff();
+&#125;</code></pre>
+<h3 id="componentscan"><a class="markdownIt-Anchor" href="#componentscan"></a> @ComponentScan</h3>
+<p>@<strong>ComponentScan</strong></p>
+<ul>
+<li>相当于context:component-scan标签</li>
+<li>组件扫描器，扫描@Component、@Controller、@Service、@Repository注解的类。</li>
+<li>该注解是编写在类上面的，一般配合@Configuration注解一起使用</li>
+<li><strong>属性</strong>
+<ul>
+<li>basePackages：用于指定要扫描的包</li>
+<li>value：和basePackages作用一样</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan(basePackages=&quot;com.kkb.spring.service&quot;)
+public class SpringConfiguration &#123;
+         public SpringConfiguration() &#123;
+                  System.out.println(&quot;容器初始化...&quot;);
+         &#125;
+&#125;</code></pre>
+<h3 id="propertysource"><a class="markdownIt-Anchor" href="#propertysource"></a> @PropertySource</h3>
+<p>在开发应用程序时，经常需要读取配置文件。最常用的配置方法是以key=value的形式写在.properties文件中。</p>
+<p>例如，MailService根据配置的app.zone=Asia/Shanghai来决定使用哪个时区。要读取配置文件，我们可以使用上一节讲到的Resource来读取位于classpath下的一个app.properties文件。但是，这样仍然比较繁琐。</p>
+<p>Spring容器还提供了一个更简单的@PropertySource来自动读取配置文件。我们只需要在@Configuration配置类上再添加一个注解：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+@PropertySource(&quot;app.properties&quot;) // 表示读取classpath的app.properties
+public class AppConfig &#123;
+    @Value(&quot;$&#123;app.zone:Z&#125;&quot;)
+    String zoneId;
+
+    @Bean
+    ZoneId createZoneId() &#123;
+        return ZoneId.of(zoneId);
+    &#125;
+&#125;</code></pre>
+<p>Spring容器看到@PropertySource(“app.properties”)注解后，自动读取这个配置文件，然后，我们使用@Value正常注入：</p>
+<pre><code class="highlight plaintext">@Value(&quot;$&#123;app.zone:Z&#125;&quot;)
+String zoneId;</code></pre>
+<p>注意注入的字符串语法，它的格式如下：</p>
+<ul>
+<li>&quot;${app.zone}&quot;表示读取key为app.zone的value，如果key不存在，启动将报错；</li>
+<li>&quot;${app.zone:Z}&quot;表示读取key为app.zone的value，但如果key不存在，就使用默认值Z。</li>
+</ul>
+<p>这样一来，我们就可以根据app.zone的配置来创建ZoneId。</p>
+<p>还可以把注入的注解写到方法参数中：</p>
+<pre><code class="highlight plaintext">@Bean
+ZoneId createZoneId(@Value(&quot;$&#123;app.zone:Z&#125;&quot;) String zoneId) &#123;
+    return ZoneId.of(zoneId);
+&#125;</code></pre>
+<p>可见，先使用@PropertySource读取配置文件，然后通过@Value以${key:defaultValue}的形式注入，可以极大地简化读取配置的麻烦。</p>
+<p>另一种注入配置的方式是先通过一个简单的JavaBean持有所有的配置，例如，一个SmtpConfig：</p>
+<pre><code class="highlight plaintext">@Component
+public class SmtpConfig &#123;
+    @Value(&quot;$&#123;smtp.host&#125;&quot;)
+    private String host;
+
+    @Value(&quot;$&#123;smtp.port:25&#125;&quot;)
+    private int port;
+
+    public String getHost() &#123;
+        return host;
+    &#125;
+
+    public int getPort() &#123;
+        return port;
+    &#125;
+&#125;</code></pre>
+<p>然后，在需要读取的地方，使用#{smtpConfig.host}注入：</p>
+<pre><code class="highlight plaintext">@Component
+public class MailService &#123;
+    @Value(&quot;#&#123;smtpConfig.host&#125;&quot;)
+    private String smtpHost;
+
+    @Value(&quot;#&#123;smtpConfig.port&#125;&quot;)
+    private int smtpPort;
+&#125;</code></pre>
+<p>注意观察#{}这种注入语法，它和${key}不同的是，#{}表示从JavaBean读取属性。&quot;#{smtpConfig.host}&quot;的意思是，从名称为smtpConfig的Bean读取host属性，即调用getHost()方法。一个Class名为SmtpConfig的Bean，它在Spring容器中的默认名称就是smtpConfig，除非用@Qualifier指定了名称。</p>
+<p>使用一个独立的JavaBean持有所有属性，然后在其他Bean中以#{bean.property}注入的好处是，多个Bean都可以引用同一个Bean的某个属性。例如，如果SmtpConfig决定从数据库中读取相关配置项，那么MailService注入的@Value(“#{smtpConfig.host}”)仍然可以不修改正常运行。</p>
+<p>示例：</p>
+<pre><code class="highlight plaintext">@Configuration
+@PropertySource(“classpath:jdbc.properties”)
+public class JdbcConfig &#123;
+
+    @Value(&quot;$&#123;jdbc.driver&#125;&quot;)
+    private String driver;
+
+    @Value(&quot;$&#123;jdbc.url&#125;&quot;)
+    private String url;
+
+    @Value(&quot;$&#123;jdbc.username&#125;&quot;)
+    private String username;
+
+    @Value(&quot;$&#123;jdbc.password&#125;&quot;)
+    private String password;
+
+    /**
+    创建一个数据源，并存入 spring 容器中
+    @return
+    */
+
+    @Bean(name=&quot;dataSource&quot;)
+    public DataSource createDataSource() &#123;
+        try &#123;
+            ComboPooledDataSource ds = new ComboPooledDataSource(); 
+            ds.setDriverClass(driver);
+            ds.setJdbcUrl(url); 
+            ds.setUser(username); 
+            ds.setPassword(password); 
+            return ds;
+        &#125; catch (Exception e) &#123;
+            throw new RuntimeException(e);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>jdbc.properties</p>
+<pre><code class="highlight plaintext">jdbc.driver=com.mysql.jdbc.Driver 
+jdbc.url=jdbc:mysql:///spring
+jdbc.username=root 
+jdbc.password=root</code></pre>
+<h3 id="resource"><a class="markdownIt-Anchor" href="#resource"></a> @Resource</h3>
+<p>在Java程序中，我们经常会读取配置文件、资源文件等。使用Spring容器时，我们也可以把“文件”注入进来，方便程序读取。</p>
+<p>例如，AppService需要读取logo.txt这个文件，通常情况下，我们需要写很多繁琐的代码，主要是为了定位文件，打开InputStream。</p>
+<p>Spring提供了一个org.springframework.core.io.Resource（注意不是jarkata.annotation.Resource或javax.annotation.Resource），它可以像String、int一样使用@Value注入：</p>
+<pre><code class="highlight plaintext">@Component
+public class AppService &#123;
+    @Value(&quot;classpath:/logo.txt&quot;)
+    private Resource resource;
+
+    private String logo;
+
+    @PostConstruct
+    public void init() throws IOException &#123;
+        try (var reader = new BufferedReader(
+                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) &#123;
+            this.logo = reader.lines().collect(Collectors.joining(&quot;\n&quot;));
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>注入Resource最常用的方式是通过classpath，即类似classpath:/logo.txt表示在classpath中搜索logo.txt文件，然后，我们直接调用Resource.getInputStream()就可以获取到输入流，避免了自己搜索文件的代码。也可以直接指定文件的路径，例如：</p>
+<pre><code class="highlight plaintext">@Value(&quot;file:/path/to/logo.txt&quot;)
+private Resource resource;</code></pre>
+<p>但使用classpath是最简单的方式。上述工程结构如下：</p>
+<h3 id="import"><a class="markdownIt-Anchor" href="#import"></a> @Import</h3>
+<p>@<strong>import</strong></p>
+<ul>
+<li>注解允许从另一个配置类中加载@Bean定义</li>
+<li>用来组合多个配置类</li>
+<li>相当于spring标签中的import标签</li>
+<li>在引入其他配置类时，可以不用再写@Configuration 注解。当然，写上也没问题</li>
+<li><strong>属性</strong>
+<ul>
+<li>value：用来指定其他配置类的字节码文件</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">@Configuration
+public class ConfigA &#123;
+   @Bean
+   public A a() &#123;
+      return new A(); 
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>可以在另一个bean声明中导入上述Bean声明</li>
+</ul>
+<pre><code class="highlight plaintext">@Configuration
+@Import(ConfigA.class)
+public class ConfigB &#123;
+   @Bean
+   public B a() &#123;
+      return new A(); 
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>现在，当实例化上下文时，不需要同时指定ConfigA.class和ConfigB.class，只有ConfigB类需要提供</li>
+</ul>
+<pre><code class="highlight plaintext">public static void main(String[] args) &#123;
+   ApplicationContext ctx = 
+   new AnnotationConfigApplicationContext(ConfigB.class);
+   // now both beans A and B will be available...
+   A a = ctx.getBean(A.class);
+   B b = ctx.getBean(B.class);
+&#125;</code></pre>
+<h3 id="注入list"><a class="markdownIt-Anchor" href="#注入list"></a> 注入List</h3>
+<p>有些时候，我们会有一系列接口相同，不同实现类的Bean。例如，注册用户时，我们要对email、password和name这3个变量进行验证。为了便于扩展，我们先定义验证接口：</p>
+<pre><code class="highlight plaintext">public interface Validator &#123;
+    void validate(String email, String password, String name);
+&#125;</code></pre>
+<p>然后，分别使用3个Validator对用户参数进行验证：</p>
+<pre><code class="highlight plaintext">
+@Componentpublic class EmailValidator implements Validator &#123;
+    public void validate(String email, String password, String name) &#123;
+        if (!email.matches(&quot;^[a-z0-9]+\\@[a-z0-9]+\\.[a-z]&#123;2,10&#125;$&quot;)) &#123;
+            throw new IllegalArgumentException(&quot;invalid email: &quot; + email);
+        &#125;
+    &#125;
+&#125;
+
+@Componentpublic class PasswordValidator implements Validator &#123;
+    public void validate(String email, String password, String name) &#123;
+        if (!password.matches(&quot;^.&#123;6,20&#125;$&quot;)) &#123;
+            throw new IllegalArgumentException(&quot;invalid password&quot;);
+        &#125;
+    &#125;
+&#125;
+
+@Componentpublic class NameValidator implements Validator &#123;
+    public void validate(String email, String password, String name) &#123;
+        if (name == null || name.isBlank() || name.length() &gt; 20) &#123;
+            throw new IllegalArgumentException(&quot;invalid name: &quot; + name);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>最后，我们通过一个Validators作为入口进行验证：</p>
+<pre><code class="highlight plaintext">@Component
+public class Validators &#123;
+    @Autowired
+    List&lt;Validator&gt; validators;
+
+    public void validate(String email, String password, String name) &#123;
+        for (var validator : this.validators) &#123;
+            validator.validate(email, password, name);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>注意到Validators被注入了一个List<Validator>，Spring会自动把<strong>所有类型为Validator的Bean装配为一个List注入</strong>进来，这样一来，我们每新增一个Validator类型，就自动被Spring装配到Validators中了，非常方便。</p>
+<p>因为Spring是通过扫描classpath获取到所有的Bean，而List是有序的，要指定List中Bean的顺序，可以加上@Order注解：</p>
+<pre><code class="highlight plaintext">
+@Component@Order(1)
+public class EmailValidator implements Validator &#123;
+    ...
+&#125;
+
+@Component@Order(2)
+public class PasswordValidator implements Validator &#123;
+    ...
+&#125;
+
+@Component@Order(3)
+public class NameValidator implements Validator &#123;
+    ...
+&#125;</code></pre>
+<h3 id="生命周期回调"><a class="markdownIt-Anchor" href="#生命周期回调"></a> 生命周期回调</h3>
+<ul>
+<li>@Bean注解支持任意的初始化和销毁的回调方法，就像在bean元素中spring的xml的初始化方法和销毁方法的属性</li>
+</ul>
+<pre><code class="highlight plaintext">public class Foo &#123;
+   public void init() &#123;
+      // initialization logic
+   &#125;
+   public void cleanup() &#123;
+      // destruction logic
+   &#125;
+&#125;
+
+@Configuration
+public class AppConfig &#123;
+   @Bean(initMethod = &quot;init&quot;, destroyMethod = &quot;cleanup&quot; )
+   public Foo foo() &#123;
+      return new Foo();
+   &#125;
+&#125;</code></pre>
+<ul>
+<li><strong>指定bean的范围</strong></li>
+<li>默认范围时单例，但是你可以重写带有@Scope注解的该方法</li>
+</ul>
+<pre><code class="highlight plaintext">
+@Configuration
+public class AppConfig &#123;
+   @Bean
+   @Scope(&quot;prototype&quot;)
+   public Foo foo() &#123;
+      return new Foo();
+   &#125;
+&#125;</code></pre>
+<h3 id="创建第三方bean"><a class="markdownIt-Anchor" href="#创建第三方bean"></a> 创建第三方Bean</h3>
+<p>如果一个Bean不在我们自己的package管理之内，例如ZoneId，如何创建它？</p>
+<p>答案是我们自己在@Configuration类中编写一个Java方法创建并返回它，注意给方法标记一个@Bean注解：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    // 创建一个Bean:
+    @Bean
+    ZoneId createZoneId() &#123;
+        return ZoneId.of(&quot;Z&quot;);
+    &#125;
+&#125;</code></pre>
+<p>Spring对标记为@Bean的方法只调用一次，因此返回的Bean仍然是单例。</p>
+<h3 id="初始化和销毁"><a class="markdownIt-Anchor" href="#初始化和销毁"></a> 初始化和销毁</h3>
+<p>有些时候，一个Bean在注入必要的依赖后，需要进行初始化（监听消息等）。在容器关闭时，有时候还需要清理资源（关闭连接池等）。我们通常会定义一个init()方法进行初始化，定义一个shutdown()方法进行清理，然后，引入JSR-250定义的Annotation：</p>
+<ul>
+<li>jakarta.annotation:jakarta.annotation-api:2.1.1</li>
+</ul>
+<p>在Bean的初始化和清理方法上标记@PostConstruct和@PreDestroy：</p>
+<pre><code class="highlight plaintext">@Component
+public class MailService &#123;
+    @Autowired(required = false)
+    ZoneId zoneId = ZoneId.systemDefault();
+
+    @PostConstruct
+    public void init() &#123;
+        System.out.println(&quot;Init mail service with zonehljs-keyword&quot; style=&quot;color: #569cd6; line-height: 160%; box-sizing: content-box;&quot;&gt;this.zoneId);
+    &#125;
+
+    @PreDestroy
+    public void shutdown() &#123;
+        System.out.println(&quot;Shutdown mail service&quot;);
+    &#125;
+&#125;</code></pre>
+<p>Spring容器会对上述Bean做如下初始化流程：</p>
+<ul>
+<li>调用构造方法创建MailService实例；</li>
+<li>根据@Autowired进行注入；</li>
+<li>调用标记有@PostConstruct的init()方法进行初始化。</li>
+</ul>
+<p>而销毁时，容器会首先调用标记有@PreDestroy的shutdown()方法。</p>
+<p>Spring只根据Annotation查找无参数方法，对方法名不作要求。</p>
+<h3 id="使用别名"><a class="markdownIt-Anchor" href="#使用别名"></a> 使用别名</h3>
+<p>默认情况下，对一种类型的Bean，容器只创建一个实例。但有些时候，我们需要对一种类型的Bean创建多个实例。</p>
+<p>例如，同时连接多个数据库，就必须创建多个DataSource实例。如果我们在@Configuration类中创建了多个同类型的Bean：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    @Bean
+    ZoneId createZoneOfZ() &#123;
+        return ZoneId.of(&quot;Z&quot;);
+    &#125;
+
+    @Bean
+    ZoneId createZoneOfUTC8() &#123;
+        return ZoneId.of(&quot;UTC+08:00&quot;);
+    &#125;
+&#125;</code></pre>
+<p>Spring会报NoUniqueBeanDefinitionException异常，意思是出现了重复的Bean定义。这个时候，需要给每个Bean添加不同的名字：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    @Bean(&quot;z&quot;)
+    ZoneId createZoneOfZ() &#123;
+        return ZoneId.of(&quot;Z&quot;);
+    &#125;
+
+    @Bean
+    @Qualifier(&quot;utc8&quot;)
+    ZoneId createZoneOfUTC8() &#123;
+        return ZoneId.of(&quot;UTC+08:00&quot;);
+    &#125;
+&#125;</code></pre>
+<p>可以用@Bean(“name”)指定别名，也可以用@Bean+@Qualifier(“name”)指定别名。</p>
+<p>存在多个同类型的Bean时，注入ZoneId又会报错：</p>
+<pre><code class="highlight plaintext">NoUniqueBeanDefinitionException: No qualifying bean of type &#x27;java.time.ZoneId&#x27; available: expected single matching bean but found 2</code></pre>
+<p>意思是期待找到唯一的ZoneId类型Bean，但是找到两。因此，注入时，要指定Bean的名称：</p>
+<pre><code class="highlight plaintext">@Component
+public class MailService &#123;
+        @Autowired(required = false)
+        @Qualifier(&quot;z&quot;) // 指定注入名称为&quot;z&quot;的ZoneId
+        ZoneId zoneId = ZoneId.systemDefault();
+    ...
+&#125;</code></pre>
+<p>还有一种方法是把其中某个Bean指定为@Primary：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    @Bean
+    @Primary // 指定为主要Bean
+    @Qualifier(&quot;z&quot;)
+    ZoneId createZoneOfZ() &#123;
+        return ZoneId.of(&quot;Z&quot;);
+    &#125;
+
+    @Bean
+    @Qualifier(&quot;utc8&quot;)
+    ZoneId createZoneOfUTC8() &#123;
+        return ZoneId.of(&quot;UTC+08:00&quot;);
+    &#125;
+&#125;</code></pre>
+<p>这样，在注入时，如果没有指出Bean的名字，Spring会注入标记有@Primary的Bean。这种方式也很常用。例如，对于主从两个数据源，通常将主数据源定义为@Primary：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    @Bean
+    @Primary
+    DataSource createMasterDataSource() &#123;
+        ...
+    &#125;
+
+    @Bean
+    @Qualifier(&quot;slave&quot;)
+    DataSource createSlaveDataSource() &#123;
+        ...
+    &#125;
+&#125;</code></pre>
+<p>其他Bean默认注入的就是主数据源。如果要注入从数据源，那么只需要指定名称即可。</p>
+<h3 id="profile"><a class="markdownIt-Anchor" href="#profile"></a> @Profile</h3>
+<p>开发应用程序时，我们会使用开发环境，例如，使用内存数据库以便快速启动。而运行在生产环境时，我们会使用生产环境，例如，使用MySQL数据库。如果应用程序可以根据自身的环境做一些适配，无疑会更加灵活。</p>
+<p>Spring为应用程序准备了Profile这一概念，用来表示不同的环境。例如，我们分别定义开发、测试和生产这3个环境：</p>
+<ul>
+<li>native</li>
+<li>test</li>
+<li>production</li>
+</ul>
+<p>创建某个Bean时，Spring容器可以根据注解@Profile来决定是否创建。例如，以下配置：</p>
+<pre><code class="highlight plaintext">@Configuration
+@ComponentScan
+public class AppConfig &#123;
+    @Bean
+    @Profile(&quot;!test&quot;)
+    ZoneId createZoneId() &#123;
+        return ZoneId.systemDefault();
+    &#125;
+
+    @Bean
+    @Profile(&quot;test&quot;)
+    ZoneId createZoneIdForTest() &#123;
+        return ZoneId.of(&quot;America/New_York&quot;);
+    &#125;
+&#125;</code></pre>
+<p>如果当前的Profile设置为test，则Spring容器会调用createZoneIdForTest()创建ZoneId，否则，调用createZoneId()创建ZoneId。注意到@Profile(“!test”)表示非test环境。</p>
+<p>在运行程序时，加上JVM参数-Dspring.profiles.active=test就可以指定以test环境启动。</p>
+<p>实际上，Spring允许指定多个Profile，例如：</p>
+<pre><code class="highlight plaintext">-Dspring.profiles.active=test,master</code></pre>
+<p>可以表示test环境，并使用master分支代码。</p>
+<p>要满足多个Profile条件，可以这样写：</p>
+<pre><code class="highlight plaintext">@Bean
+@Profile(&#123; &quot;test&quot;, &quot;master&quot; &#125;) // 满足test或master
+ZoneId createZoneId() &#123;
+    ...
+&#125;</code></pre>
+<h3 id="conditional"><a class="markdownIt-Anchor" href="#conditional"></a> @Conditional</h3>
+<p>除了根据@Profile条件来决定是否创建某个Bean外，Spring还可以根据@Conditional决定是否创建某个Bean。</p>
+<p>例如，我们对SmtpMailService添加如下注解：</p>
+<pre><code class="highlight plaintext">@Component
+@Conditional(OnSmtpEnvCondition.class)
+public class SmtpMailService implements MailService &#123;
+    ...
+&#125;</code></pre>
+<p>它的意思是，如果满足OnSmtpEnvCondition的条件，才会创建SmtpMailService这个Bean。OnSmtpEnvCondition的条件是什么呢？我们看一下代码：</p>
+<pre><code class="highlight plaintext">public class OnSmtpEnvCondition implements Condition &#123;
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) &#123;
+        return &quot;true&quot;.equalsIgnoreCase(System.getenv(&quot;smtp&quot;));
+    &#125;
+&#125;</code></pre>
+<p>因此，OnSmtpEnvCondition的条件是存在环境变量smtp，值为true。这样，我们就可以通过环境变量来控制是否创建SmtpMailService。</p>
+<p>Spring只提供了@Conditional注解，具体判断逻辑还需要我们自己实现。Spring Boot提供了更多使用起来更简单的条件注解，例如，如果配置文件中存在app.smtp=true，则创建MailService：</p>
+<pre><code class="highlight plaintext">@Component
+@ConditionalOnProperty(name=&quot;app.smtp&quot;, havingValue=&quot;true&quot;)
+public class MailService &#123;
+    ...
+&#125;</code></pre>
+<p>如果当前classpath中存在类javax.mail.Transport，则创建MailService：</p>
+<pre><code class="highlight plaintext">@Component
+@ConditionalOnClass(name = &quot;javax.mail.Transport&quot;)
+public class MailService &#123;
+    ...
+&#125;</code></pre>
+<p>后续我们会介绍Spring Boot的条件装配。我们以文件存储为例，假设我们需要保存用户上传的头像，并返回存储路径，在本地开发运行时，我们总是存储到文件：</p>
+<pre><code class="highlight plaintext">@Component
+@ConditionalOnProperty(name = &quot;app.storage&quot;, havingValue = &quot;file&quot;, matchIfMissing = true)
+public class FileUploader implements Uploader &#123;
+    ...
+&#125;</code></pre>
+<p>在生产环境运行时，我们会把文件存储到类似AWS S3上：</p>
+<pre><code class="highlight plaintext">@Component@ConditionalOnProperty(name = &quot;app.storage&quot;, havingValue = &quot;s3&quot;)
+public class S3Uploader implements Uploader &#123;
+    ...
+&#125;</code></pre>
+<p>其他需要存储的服务则注入Uploader：</p>
+<pre><code class="highlight plaintext">@Component
+public class UserImageService &#123;
+    @Autowired
+    Uploader uploader;
+&#125;</code></pre>
+<p>当应用程序检测到配置文件存在app.storage=s3时，自动使用S3Uploader，如果存在配置app.storage=file，或者配置app.storage不存在，则使用FileUploader。</p>
+<h3 id="注入bean的依赖性"><a class="markdownIt-Anchor" href="#注入bean的依赖性"></a> 注入Bean的依赖性</h3>
+<ul>
+<li>当@Bean依赖其他的Bean时，表达这种依赖性非常简单，只要有一个bean方法调用另一个即可</li>
+<li>这里，foo Bean通过构造函数注入来接受参数</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.annotation.*;
+@Configuration
+public class AppConfig &#123;
+   @Bean
+   public Foo foo() &#123;
+      return new Foo(bar());
+   &#125;
+   @Bean
+   public Bar bar() &#123;
+      return new Bar();
+   &#125;
+&#125;</code></pre>
+<h3 id="通过注解获取容器"><a class="markdownIt-Anchor" href="#通过注解获取容器"></a> 通过注解获取容器</h3>
+<p><strong>Java应用（AnnotationConfigApplicationContext）</strong></p>
+<pre><code class="highlight plaintext">ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+UserService service = context.getBean(UserService.class);
+service.saveUser();</code></pre>
+<p><strong>Web应用（AnnotationConfigWebApplicationContext</strong></p>
+<pre><code class="highlight plaintext">&lt;web-app&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;contextClass&lt;/param-name&gt;
+        &lt;param-value&gt;
+            org.springframework.web.context.
+            support.AnnotationConfigWebApplicationContext
+        &lt;/param-value&gt;
+    &lt;/context-param&gt;
+    &lt;context-param&gt;
+        &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+        &lt;param-value&gt;
+            com.kkb.spring.test.SpringConfiguration
+        &lt;/param-value&gt;
+    &lt;/context-param&gt;
+    &lt;listener&gt;
+        &lt;listener-class&gt;
+            org.springframework.web.context.ContextLoaderListener
+        &lt;/listener-class&gt;
+    &lt;/listener&gt;
+&lt;/web-app&gt;</code></pre>
+<h3 id="使用factorybean"><a class="markdownIt-Anchor" href="#使用factorybean"></a> 使用FactoryBean</h3>
+<p>我们在设计模式的工厂方法中讲到，很多时候，可以通过工厂模式创建对象。Spring也提供了工厂模式，允许定义一个工厂，然后由工厂创建真正的Bean。</p>
+<p>用工厂模式创建Bean需要实现FactoryBean接口。我们观察下面的代码：</p>
+<pre><code class="highlight plaintext">@Componentpublic class ZoneIdFactoryBean implements FactoryBean&lt;ZoneId&gt; &#123;
+
+    String zone = &quot;Z&quot;;
+
+    @Override
+    public ZoneId getObject() throws Exception &#123;
+        return ZoneId.of(zone);
+    &#125;
+
+    @Override
+    public Class&lt;?&gt; getObjectType() &#123;
+        return ZoneId.class;
+    &#125;
+&#125;</code></pre>
+<p>当一个Bean实现了FactoryBean接口后，Spring会先实例化这个工厂，然后调用getObject()创建真正的Bean。getObjectType()可以指定创建的Bean的类型，因为指定类型不一定与实际类型一致，可以是接口或抽象类。</p>
+<p>因此，如果定义了一个FactoryBean，要注意Spring创建的Bean实际上是这个FactoryBean的getObject()方法返回的Bean。为了和普通Bean区分，我们通常都以XxxFactoryBean命名。</p>
+<p>由于可以用@Bean方法创建第三方Bean，本质上@Bean方法就是工厂方法，所以，FactoryBean已经用得越来越少了。</p>
+<h2 id="spring-分模块开发"><a class="markdownIt-Anchor" href="#spring-分模块开发"></a> Spring 分模块开发</h2>
+<p>分模块开发的场景描述：</p>
+<ul>
+<li>表现层：spring配置文件，只想管理表现层的Bean</li>
+<li>业务层：spring配置文件，只想管理业务层的Bean，并且进行事务控制</li>
+<li>持久层：spring配置文件，只想管理持久层的Bean，并且还有需要管理数据源的Bean</li>
+</ul>
+<p><strong>为了方便管理项目中不同层的Bean对象，一般都是将一个spring配置文件，分解为多个spring配置文件</strong></p>
+<h3 id="如何加载多个配置文件"><a class="markdownIt-Anchor" href="#如何加载多个配置文件"></a> 如何加载多个配置文件</h3>
+<p><strong>1. 同时指定多个配置文件的地址一起加载</strong></p>
+<pre><code class="highlight plaintext">ApplicationContext ac = new ClassPathXmlApplicationContext(&quot;applicationContext1.xml&quot;,&quot;applicationContext2.xml&quot;,&quot;applicationContext3.xml&quot;);</code></pre>
+<p><strong>2. 定义一个import.xml文件，通过import标签将其他多个spring配置文件导入到该文件中，tomcat启动时只需要加载import.xml就可以</strong></p>
+<pre><code class="highlight plaintext">&lt;beans&gt;
+    &lt;!--import中放入其他的配置文件--&gt;
+    &lt;import resource=&quot;&quot;&gt;&lt;/import&gt;
+&lt;/beans&gt;</code></pre>
+<h2 id="spring-整合junit"><a class="markdownIt-Anchor" href="#spring-整合junit"></a> Spring 整合Junit</h2>
+<p><strong>要解决的问题</strong></p>
+<p>为了避免每次测试业务代码，都手动的写一遍启动spring框架的代码，我们需要的是程序能自动帮我们创建容器。一旦程序能自动为我们创建 spring 容器，我们就无须手动创建了，问题也就解决了。</p>
+<p>但紧接的问题就是junit它本身不认识spring，更无法帮助创建Spring容器了，不过好在Junit 给我们暴露了一个注解（@<strong>RunWith</strong>），可以让我们替换掉它的运行器。</p>
+<p>这时，我们需要依靠 spring 框架，因为它提供了一个<strong>运行器</strong>，可以读取配置文件（或注解）来创建容器。我们只需要告诉它配置文件在哪就行了。</p>
+<hr />
+<p><strong>具体实现</strong></p>
+<ol>
+<li>添加依赖</li>
+</ol>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-test&lt;/artifactId&gt;
+    &lt;version&gt;5.0.5.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<ol>
+<li>通过@RunWith注解，指定spring的运行器
+<ul>
+<li>Spring的运行器是<strong>SpringJunit4ClassRunner</strong></li>
+</ul>
+</li>
+<li>通过<code>@ContextConfiguration</code>注解，指定spring运行器需要的配置文件路径</li>
+<li>通过<code>@Autowired</code>注解给测试类中的变量注入数据</li>
+</ol>
+<pre><code class="highlight plaintext">import com.lee.util.BaseService;
+import javafx.application.Application;
+import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import javax.annotation.Resource;
+
+//@RunWith：Junit自身的注解，它的作用是可以指定一个新的运行器，进行单元测试
+//SpringJUnit4ClassRunner：spring提供的单元测试运行器
+@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration:SpringJUnit4ClassRunner运行器需要的上下文配置信息，方便创建spring容器
+//classes：纯注解方式，读取配置类
+//locations：XML方式，读取配置文件
+@ContextConfiguration(locations = &quot;classpath:springConfig.xml&quot;)
+//@ContextConfiguration(classes = SpringConfiguration.class)
+public class Test &#123;
+
+    @Resource
+    private UserService userService;
+
+    @Test
+    public void test1()&#123;
+        userService.saveUser();
+    &#125;
+&#125;</code></pre>
+<h2 id="spring中事件处理"><a class="markdownIt-Anchor" href="#spring中事件处理"></a> Spring中事件处理</h2>
+<h3 id="spring中的事件处理"><a class="markdownIt-Anchor" href="#spring中的事件处理"></a> Spring中的事件处理</h3>
+<ul>
+<li>Spring的核心时<strong>ApplicationContext</strong>，它负责管理beans的完整生命周期，当加载beans时，ApplicationContext发布某些类型的事件，例如，当上下文启动时，ContextStartedEvent发布，当上下文停止时，ContextStoppedEvent发布</li>
+<li>通过<strong>ApplicationEvent</strong>类和<strong>ApplicationListener</strong>接口来提供在ApplicationContext中处理事件。如果一个bean实现ApplicationListener，那么每次ApplicationEvent被发布到ApplicationContext上，那么bean会被通知</li>
+<li>spring提供了以下标准事件</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>序号</th>
+<th>Spring内置事件&amp;描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>ContextRefreshedEvent</strong> ApplicationContext 被初始化或刷新时，该事件被发布。这也可以在 ConfigurableApplicationContext 接口中使用 refresh() 方法来发生</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>ContextStartedEvent</strong> 当使用 ConfigurableApplicationContext 接口中的 start() 方法启动 ApplicationContext 时，该事件被发布。你可以调查你的数据库，或者你可以在接受到这个事件后重启任何停止的应用程序。</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>ContextStoppedEvent</strong> 当使用 ConfigurableApplicationContext 接口中的 stop() 方法停止 ApplicationContext 时，发布这个事件。你可以在接受到这个事件后做必要的清理的工作。</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>ContextClosedEvent</strong> 当使用 ConfigurableApplicationContext 接口中的 close() 方法关闭 ApplicationContext 时，该事件被发布。一个已关闭的上下文到达生命周期末端；它不能被刷新或重启。</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>RequestHandledEvent</strong> 这是一个 web-specific 事件，告诉所有 bean HTTP 请求已经被服务</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>由于spring的事件处理是单线程的，所以如果一个事件被发布，直至并且除非所有的接收者都得到消息，该进程被阻塞并且流程将不会继续</li>
+</ul>
+<h3 id="监听上下文"><a class="markdownIt-Anchor" href="#监听上下文"></a> 监听上下文</h3>
+<ul>
+<li>为了监听上下文事件，一个 bean 应该实现只有一个方法 <strong>onApplicationEvent</strong>() 的 <strong>ApplicationListener</strong>接口。因此，我们写一个例子来看看事件是如何传播的，以及如何可以用代码来执行基于某些事件所需的任务。</li>
+</ul>
+<h3 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例</h3>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+public class HelloWorld &#123;
+   private String message;
+   public void setMessage(String message)&#123;
+      this.message  = message;
+   &#125;
+   public void getMessage()&#123;
+      System.out.println(&quot;Your Message : &quot; + message);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>CStartEventHandler.java</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextStartedEvent;
+public class CStartEventHandler  implements ApplicationListener&lt;ContextStartedEvent&gt;&#123;
+   public void onApplicationEvent(ContextStartedEvent event) &#123;
+      System.out.println(&quot;ContextStartedEvent Received&quot;);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>CStopEvnetHandler.java</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextStoppedEvent;
+public class CStopEventHandler  implements ApplicationListener&lt;ContextStoppedEvent&gt;&#123;
+   public void onApplicationEvent(ContextStoppedEvent event) &#123;
+      System.out.println(&quot;ContextStoppedEvent Received&quot;);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>MainApp.java</li>
+</ul>
+<pre><code class="highlight plaintext">
+package com.tutorialspoint;
+
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class MainApp &#123;
+   public static void main(String[] args) &#123;
+      ConfigurableApplicationContext context = 
+      new ClassPathXmlApplicationContext(&quot;Beans.xml&quot;);
+
+      // Let us raise a start event.
+      context.start();
+
+      HelloWorld obj = (HelloWorld) context.getBean(&quot;helloWorld&quot;);
+
+      obj.getMessage();
+
+      // Let us raise a stop event.
+      context.stop();
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>Beans.xml</li>
+</ul>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;helloWorld&quot; class=&quot;com.tutorialspoint.HelloWorld&quot;&gt;
+      &lt;property name=&quot;message&quot; value=&quot;Hello World!&quot;/&gt;
+   &lt;/bean&gt;
+
+   &lt;bean id=&quot;cStartEventHandler&quot; 
+         class=&quot;com.tutorialspoint.CStartEventHandler&quot;/&gt;
+
+   &lt;bean id=&quot;cStopEventHandler&quot; 
+         class=&quot;com.tutorialspoint.CStopEventHandler&quot;/&gt;
+
+&lt;/beans&gt;</code></pre>
+<ul>
+<li>运行结果</li>
+</ul>
+<pre><code class="highlight plaintext">ContextStartedEvent Received
+Your Message : Hello World!
+ContextStoppedEvent Received</code></pre>
+<h4 id="spring中的自定义事件"><a class="markdownIt-Anchor" href="#spring中的自定义事件"></a> Spring中的自定义事件</h4>
+<ul>
+<li>CustomEvent.java -先定义事件
+<ul>
+<li>通过继承ApplicationEvent,创建一个事件类 CustomEvent。这个类必须定义一个默认的构造函数，它应该从 ApplicationEvent 类中继承的构造函数</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.ApplicationEvent;
+public class CustomEvent extends ApplicationEvent&#123; 
+   public CustomEvent(Object source) &#123;
+      super(source);
+   &#125;
+   public String toString()&#123;
+      return &quot;My Custom Event&quot;;
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>CustomEventPublisher.java -事件的发行者
+<ul>
+<li>一旦定义事件类，你可以从任何类中发布它，假定 EventClassPublisher 实现了 ApplicationEventPublisherAware。你还需要在 XML 配置文件中声明这个类作为一个 bean，之所以容器可以识别 bean 作为事件发布者，是因为它实现了 ApplicationEventPublisherAware 接口</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.ApplicationEventPublisherAware;
+public class CustomEventPublisher 
+   implements ApplicationEventPublisherAware &#123;
+   private ApplicationEventPublisher publisher;
+   public void setApplicationEventPublisher
+              (ApplicationEventPublisher publisher)&#123;
+      this.publisher = publisher;
+   &#125;
+   public void publish() &#123;
+      CustomEvent ce = new CustomEvent(this);
+      publisher.publishEvent(ce);
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>CustomEventHandler.java --事件处理者
+<ul>
+<li>发布的事件可以在一个类中被处理，假定 EventClassHandler 实现了 ApplicationListener 接口，而且实现了自定义事件的 onApplicationEvent 方法</li>
+</ul>
+</li>
+</ul>
+<pre><code class="highlight plaintext">
+package com.tutorialspoint;
+import org.springframework.context.ApplicationListener;
+public class CustomEventHandler 
+   implements ApplicationListener&lt;CustomEvent&gt;&#123;
+   public void onApplicationEvent(CustomEvent event) &#123;
+      System.out.println(event.toString());
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>MainApp.java</li>
+</ul>
+<pre><code class="highlight plaintext">package com.tutorialspoint;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+public class MainApp &#123;
+   public static void main(String[] args) &#123;
+      ConfigurableApplicationContext context = 
+      new ClassPathXmlApplicationContext(&quot;Beans.xml&quot;);    
+      CustomEventPublisher cvp = 
+      (CustomEventPublisher) context.getBean(&quot;customEventPublisher&quot;);
+      cvp.publish();  
+      cvp.publish();
+   &#125;
+&#125;</code></pre>
+<ul>
+<li>Beans.xml</li>
+</ul>
+<pre><code class="highlight plaintext">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+
+&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;
+    xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;
+    xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-3.0.xsd&quot;&gt;
+
+   &lt;bean id=&quot;customEventHandler&quot; 
+      class=&quot;com.tutorialspoint.CustomEventHandler&quot;/&gt;
+
+   &lt;bean id=&quot;customEventPublisher&quot; 
+      class=&quot;com.tutorialspoint.CustomEventPublisher&quot;/&gt;
+
+&lt;/beans&gt;</code></pre>
+<ul>
+<li>输出</li>
+</ul>
+<pre><code class="highlight plaintext">My Custom Event
+My Custom Event</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

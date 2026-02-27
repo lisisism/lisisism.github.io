@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java-AD域 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java-AD域</div>
+  <div class="post-meta">
+    <div class="date">2020 七月 6日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h2 id="ad域"><a class="markdownIt-Anchor" href="#ad域"></a> AD域</h2>
+<pre><code class="highlight java">
+<span class="keyword">import</span> javax.naming.Context;
+<span class="keyword">import</span> javax.naming.NamingEnumeration;
+<span class="keyword">import</span> javax.naming.NamingException;
+<span class="keyword">import</span> javax.naming.directory.*;
+<span class="keyword">import</span> javax.naming.ldap.InitialLdapContext;
+<span class="keyword">import</span> java.util.Properties;
+<span class="comment">/**</span>
+<span class="comment"> * <span class="doctag">@author</span> libo</span>
+<span class="comment"> * <span class="doctag">@version</span> 1.0</span>
+<span class="comment"> * <span class="doctag">@date</span> 2024/1/26 13:21</span>
+<span class="comment"> */</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ADTest</span> &#123;
+    <span class="keyword">private</span> <span class="type">DirContext</span> <span class="variable">dc</span> <span class="operator">=</span> <span class="literal">null</span>;
+    <span class="comment">/**</span>
+<span class="comment">     * 标识名称（distinguished Name，DN）：它是对象在 Active Directory 内的完整路径，DN 有三个属性，分别是 CN，OU，DC。</span>
+<span class="comment">     * DC (Domain Component)：域名组件；</span>
+<span class="comment">     * OU (Organizational Unit)：组织单位；</span>
+<span class="comment">     * CN (Common Name)：通用名称，一般为用户名或计算机名；</span>
+<span class="comment">     * 示例：CN=张三,OU=Web前端组,OU=软件开发部,DC=moonxy,DC=com</span>
+<span class="comment">     *</span>
+<span class="comment">     * 相对标识名称（Relative Distinguished Name，RDN）：RDN用来代表DN完整路径中的部分路径，例如上面路径中的 CN=张三与 OU=Web前端组等都是 RDN。</span>
+<span class="comment">     * Base DN：LDAP 目录树的最顶部就是根，也就是所谓的 &quot;Base DN&quot;，如 &quot;DC=moonxy,DC=com&quot;。</span>
+<span class="comment">     * 除了 DN 与 RDN 这两个对象名称外，另外还有如下两个名称：</span>
+<span class="comment">     *</span>
+<span class="comment">     * 全局唯一标识符（Global Unique Identifier，GUID）：GUID 是一个128位的数值，系统会自动为每个对象指定一个唯一的GUID。虽然可以改变对象的名称，但是其GUID永远不会改变。</span>
+<span class="comment">     *</span>
+<span class="comment">     * 用户主体名称（User Principal Name，UPN）：每个用户还可以有一个比DN更短、更容易记忆的 UPN，例如上面的张三隶属于 moonxy.com，则其 UPN 可以为 zhangsan@moonxy.com。用户登录时所输入的账户名最好是 UPN，因为无论此用户的账户被移动到哪一个域，其 UPN 都不会改变，因此用户可以一直使用同一个名称来登录。</span>
+<span class="comment">     *</span>
+<span class="comment">     * AD 与 LDAP 的关系：LDAP 是一种用来访问 AD 数据库的目录服务协议，AD DS 会通过 LDAP 名称路径来表示对象在 AD 数据库中的位置，以便用它来访问 AD 数据库内的对象。LDAP 的名称路径包括有 DN、RDN。</span>
+<span class="comment">     * openLDAP（Linux），Active Directory（Microsoft）等是对 LDAP 目录访问协议的具体实现，除了实现协议的功能，还对它进行了扩展。</span>
+<span class="comment">     */</span>
+    <span class="comment">//LDAP的根节点的DC</span>
+    <span class="keyword">public</span> <span class="type">String</span> <span class="variable">rootDN</span> <span class="operator">=</span> <span class="string">&quot;OU=软件研发部,DC=test68,DC=com&quot;</span>;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        <span class="type">ADTest</span> <span class="variable">adTest</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ADTest</span>();
+        <span class="comment">//新增ad域用户</span>
+<span class="comment">//        adTest.add(&quot;JimGreen&quot;);</span>
+        adTest.init();
+        <span class="comment">//搜索指定用户名</span>
+<span class="comment">//        SearchResult sr = adTest.searchByUserName(adTest.rootDN, &quot;wangwu&quot;);</span>
+<span class="comment">//        System.out.println(sr.getName());</span>
+<span class="comment">//        //修改用户属性</span>
+<span class="comment">//        adTest.modifyInformation(sr.getName(), &quot;M1380005&quot;);</span>
+        <span class="comment">//搜索指定节点下的所有AD域用户</span>
+<span class="comment">//        adTest.searchInformation(adTest.rootDN);</span>
+<span class="comment">//        //重命名AD域用户</span>
+<span class="comment">//        adTest.renameEntry(&quot;CN=JimGreen,OU=Java开发组,OU=软件研发部,DC=moonxy,DC=com&quot;, &quot;CN=JimGreen,OU=Web前端组,OU=软件研发部,DC=moonxy,DC=com&quot;);</span>
+<span class="comment">//        //删除AD域用户</span>
+<span class="comment">//        adTest.delete(&quot;CN=JimGreen,OU=Web前端组,OU=软件研发部,DC=moonxy,DC=com&quot;);</span>
+        adTest.close();
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:初始化AD域服务连接</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">init</span><span class="params">()</span> &#123;
+        <span class="type">Properties</span> <span class="variable">env</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        <span class="type">String</span> <span class="variable">adminName</span> <span class="operator">=</span> <span class="string">&quot;lisi@test68.com&quot;</span>;<span class="comment">//username@domain //注意用户名的写法：domain\User 或 User@domain.com</span>
+        <span class="type">String</span> <span class="variable">adminPassword</span> <span class="operator">=</span> <span class="string">&quot;123qwe!@#&quot;</span>;<span class="comment">//password</span>
+        <span class="type">String</span> <span class="variable">ldapURL</span> <span class="operator">=</span> <span class="string">&quot;LDAP://172.172.30.68:389&quot;</span>;<span class="comment">//ip:port</span>
+        env.put(Context.INITIAL_CONTEXT_FACTORY,<span class="string">&quot;com.sun.jndi.ldap.LdapCtxFactory&quot;</span>);
+        env.put(Context.SECURITY_AUTHENTICATION, <span class="string">&quot;simple&quot;</span>);<span class="comment">//LDAP访问安全级别：&quot;none&quot;,&quot;simple&quot;,&quot;strong&quot;</span>
+        env.put(Context.SECURITY_PRINCIPAL, adminName);
+        env.put(Context.SECURITY_CREDENTIALS, adminPassword);
+        env.put(Context.PROVIDER_URL, ldapURL);
+        <span class="keyword">try</span> &#123;
+            dc = <span class="keyword">new</span> <span class="title class_">InitialLdapContext</span>(env, <span class="literal">null</span>);
+            System.out.println(<span class="string">&quot;AD域服务连接认证成功&quot;</span>);
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            System.out.println(<span class="string">&quot;AD域服务连接认证失败&quot;</span>);
+            e.printStackTrace();
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:关闭AD域服务连接</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">close</span><span class="params">()</span> &#123;
+        <span class="keyword">if</span> (dc != <span class="literal">null</span>) &#123;
+            <span class="keyword">try</span> &#123;
+                dc.close();
+            &#125; <span class="keyword">catch</span> (NamingException e) &#123;
+                System.out.println(<span class="string">&quot;NamingException in close():&quot;</span> + e);
+            &#125;
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:新增AD域用户</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(String newUserName)</span> &#123;
+        <span class="keyword">try</span> &#123;
+            <span class="type">Attributes</span> <span class="variable">attrs</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BasicAttributes</span>(<span class="literal">true</span>);
+            attrs.put(<span class="string">&quot;objectClass&quot;</span>, <span class="string">&quot;user&quot;</span>);
+            attrs.put(<span class="string">&quot;samAccountName&quot;</span>, newUserName);
+            attrs.put(<span class="string">&quot;displayName&quot;</span>, newUserName);
+            attrs.put(<span class="string">&quot;userPrincipalName&quot;</span>, newUserName + <span class="string">&quot;@moonxy.com&quot;</span>);
+            dc.createSubcontext(<span class="string">&quot;CN=&quot;</span> + newUserName + <span class="string">&quot;,&quot;</span> + rootDN, attrs);
+            System.out.println(<span class="string">&quot;新增AD域用户成功:&quot;</span> + newUserName);
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+            System.out.println(<span class="string">&quot;新增AD域用户失败:&quot;</span> + newUserName);
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:删除AD域用户</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">delete</span><span class="params">(String dn)</span> &#123;
+        <span class="keyword">try</span> &#123;
+            dc.destroySubcontext(dn);
+            System.out.println(<span class="string">&quot;删除AD域用户成功:&quot;</span> + dn);
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            System.out.println(<span class="string">&quot;删除AD域用户失败:&quot;</span> + dn);
+            e.printStackTrace();
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:重命名AD域用户</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">renameEntry</span><span class="params">(String oldDN, String newDN)</span> &#123;
+        <span class="keyword">try</span> &#123;
+            dc.rename(oldDN, newDN);
+            System.out.println(<span class="string">&quot;重命名AD域用户成功&quot;</span>);
+            <span class="keyword">return</span> <span class="literal">true</span>;
+        &#125; <span class="keyword">catch</span> (NamingException ne) &#123;
+            System.out.println(<span class="string">&quot;重命名AD域用户失败&quot;</span>);
+            ne.printStackTrace();
+            <span class="keyword">return</span> <span class="literal">false</span>;
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:修改AD域用户属性</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">modifyInformation</span><span class="params">(String dn, String fieldValue)</span> &#123;
+        <span class="keyword">try</span> &#123;
+            ModificationItem[] mods = <span class="keyword">new</span> <span class="title class_">ModificationItem</span>[<span class="number">1</span>];
+            <span class="comment">// 修改属性</span>
+            <span class="type">Attribute</span> <span class="variable">attr0</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BasicAttribute</span>(<span class="string">&quot;homePhone&quot;</span>,fieldValue);
+            <span class="comment">//mods[0] = new ModificationItem(DirContext.ADD_ATTRIBUTE, attr0);//新增属性</span>
+            <span class="comment">//mods[0] = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,attr0);//删除属性</span>
+            mods[<span class="number">0</span>] = <span class="keyword">new</span> <span class="title class_">ModificationItem</span>(DirContext.REPLACE_ATTRIBUTE, attr0);<span class="comment">//覆盖属性</span>
+            dc.modifyAttributes(dn + <span class="string">&quot;,&quot;</span> + rootDN, mods);
+            System.out.println(<span class="string">&quot;修改AD域用户属性成功&quot;</span>);
+            <span class="keyword">return</span> <span class="literal">true</span>;
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            System.err.println(<span class="string">&quot;修改AD域用户属性失败&quot;</span>);
+            e.printStackTrace();
+            <span class="keyword">return</span> <span class="literal">false</span>;
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:搜索指定节点下的所有AD域用户</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * searchBase = &quot;DC=Hebmc,DC=com&quot;; //Specify the Base for the search//搜索域节点</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">searchInformation</span><span class="params">(String searchBase)</span> &#123;
+        <span class="keyword">try</span> &#123;
+            <span class="type">SearchControls</span> <span class="variable">searchCtls</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchControls</span>();
+            searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            <span class="type">String</span> <span class="variable">searchFilter</span> <span class="operator">=</span> <span class="string">&quot;objectClass=user&quot;</span>;
+            String returnedAtts[] = &#123; <span class="string">&quot;url&quot;</span>, <span class="string">&quot;employeeID&quot;</span>,  <span class="string">&quot;mail&quot;</span>,
+                    <span class="string">&quot;name&quot;</span>, <span class="string">&quot;userPrincipalName&quot;</span>, <span class="string">&quot;physicalDeliveryOfficeName&quot;</span>,
+                    <span class="string">&quot;departmentNumber&quot;</span>, <span class="string">&quot;telephoneNumber&quot;</span>, <span class="string">&quot;homePhone&quot;</span>,
+                    <span class="string">&quot;mobile&quot;</span>, <span class="string">&quot;department&quot;</span>, <span class="string">&quot;sAMAccountName&quot;</span>, <span class="string">&quot;whenChanged&quot;</span>&#125;; <span class="comment">// 定制返回属性</span>
+<span class="comment">//            String returnedAtts[] = &#123; &quot;memberOf&quot; &#125;;</span>
+            searchCtls.setReturningAttributes(returnedAtts);
+            NamingEnumeration&lt;SearchResult&gt; answer = dc.search(searchBase, searchFilter, searchCtls);
+            <span class="keyword">while</span> (answer.hasMoreElements()) &#123;
+                <span class="type">SearchResult</span> <span class="variable">sr</span> <span class="operator">=</span> (SearchResult) answer.next();
+                <span class="comment">////返回格式一般是CN=xxxx,OU=xxxx</span>
+                System.out.println(<span class="string">&quot;&lt;&lt;&lt;::[&quot;</span> + sr.getName() + <span class="string">&quot;]::&gt;&gt;&gt;&gt;&quot;</span>);
+                <span class="type">Attributes</span> <span class="variable">attrs</span> <span class="operator">=</span> sr.getAttributes();
+                <span class="comment">//Attribute cnAttribute = attributes.get(&quot;cn&quot;);</span>
+                <span class="comment">//String username = cnAttribute.get().toString();</span>
+                <span class="keyword">if</span> (attrs != <span class="literal">null</span>) &#123;
+                    <span class="keyword">for</span> (<span class="type">NamingEnumeration</span> <span class="variable">ne</span> <span class="operator">=</span> attrs.getAll(); ne.hasMore();) &#123;
+                        <span class="type">Attribute</span> <span class="variable">attr</span> <span class="operator">=</span> (Attribute) ne.next();<span class="comment">//得到下一个属性</span>
+                        System.out.print(attr.getID() + <span class="string">&quot;:&quot;</span>);
+                        <span class="comment">//读取属性值</span>
+                        <span class="keyword">for</span> (<span class="type">NamingEnumeration</span> <span class="variable">e</span> <span class="operator">=</span> attr.getAll(); e.hasMore();) &#123;
+                            <span class="type">String</span> <span class="variable">userInfo</span> <span class="operator">=</span>  e.next().toString();
+                            System.out.print(userInfo);
+                        &#125;
+                        System.out.println(<span class="string">&quot;&quot;</span>);
+                    &#125;
+                &#125;
+            &#125;
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+    <span class="comment">/**</span>
+<span class="comment">     * <span class="doctag">@Description</span>:指定搜索节点搜索指定域用户</span>
+<span class="comment">     * <span class="doctag">@author</span> moonxy</span>
+<span class="comment">     * <span class="doctag">@date</span> 2018-05-15</span>
+<span class="comment">     */</span>
+    <span class="keyword">public</span> SearchResult <span class="title function_">searchByUserName</span><span class="params">(String searchBase, String userName)</span> &#123;
+        <span class="type">SearchControls</span> <span class="variable">searchCtls</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SearchControls</span>();
+        searchCtls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+        <span class="type">String</span> <span class="variable">searchFilter</span> <span class="operator">=</span> <span class="string">&quot;(sAMAccountName=&quot;</span> + userName + <span class="string">&quot;)&quot;</span>;
+        String returnedAtts[] = &#123; <span class="string">&quot;memberOf&quot;</span> &#125;; <span class="comment">//定制返回属性</span>
+        searchCtls.setReturningAttributes(returnedAtts); <span class="comment">//设置返回属性集</span>
+        <span class="keyword">try</span> &#123;
+            NamingEnumeration&lt;SearchResult&gt; answer = dc.search(searchBase, searchFilter, searchCtls);
+            <span class="keyword">return</span> answer.next();
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            System.err.println(<span class="string">&quot;指定搜索节点搜索指定域用户失败&quot;</span>);
+            e.printStackTrace();
+        &#125;
+        <span class="keyword">return</span> <span class="literal">null</span>;
+    &#125;
+&#125;
+
+</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

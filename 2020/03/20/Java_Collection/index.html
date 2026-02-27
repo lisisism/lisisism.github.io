@@ -1,0 +1,2876 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java 集合Collection 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java 集合Collection</div>
+  <div class="post-meta">
+    <div class="date">2020 三月 20日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java-collection"><a class="markdownIt-Anchor" href="#java-collection"></a> $Java Collection</h1>
+<ul>
+<li><a href="">Java Collection</a>
+<ul>
+<li><a href="">java集合简介</a></li>
+<li><a href="">常用遍历容器方法</a></li>
+<li><a href="">List</a>
+<ul>
+<li><a href="">创建/遍历List</a></li>
+<li><a href="">List和Array转换</a></li>
+<li><a href="">高效删除list1中list2的元�</a>�</li>
+<li><a href="">自实现List</a></li>
+<li><a href="">自实现ArrayList</a></li>
+<li><a href="">自实现LinkedList</a></li>
+</ul>
+</li>
+<li><a href="">equals方法</a></li>
+<li><a href="">Map</a>
+<ul>
+<li><a href="">遍历Map</a></li>
+<li><a href="">equals/hashCode</a></li>
+<li><a href="">Map探索</a></li>
+<li><a href="">自实现HashMap</a></li>
+</ul>
+</li>
+<li><a href="">EnumMap</a></li>
+<li><a href="">排序容器</a>
+<ul>
+<li><a href="">TreeMap</a></li>
+<li><a href="">TreeSet</a></li>
+<li><a href="">Comparable/Comparator</a>
+<ul>
+<li><a href="">Comparable</a></li>
+<li><a href="">Comparator</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="">Properties</a>
+<ul>
+<li><a href="">读取配置文件</a></li>
+<li><a href="">写入配置文件</a></li>
+<li><a href="">编码</a></li>
+<li><a href="">案例：</a></li>
+</ul>
+</li>
+<li><a href="">Set</a></li>
+<li><a href="">Queue</a></li>
+<li><a href="">PriorityQueue</a></li>
+<li><a href="">Deque</a></li>
+<li><a href="">Stack</a></li>
+<li><a href="">Iterator</a>
+<ul>
+<li><a href="">自实现Iterator</a></li>
+</ul>
+</li>
+<li><a href="">Collections</a>
+<ul>
+<li><a href="">创建集合</a></li>
+<li><a href="">排序</a></li>
+<li><a href="">洗牌</a></li>
+<li><a href="">不可变集合</a></li>
+<li><a href="">线程安全集合</a></li>
+<li><a href="">编写Collections排序方法</a></li>
+</ul>
+</li>
+<li><a href="">引用分类</a>
+<ul>
+<li><a href="">WeakHashMap</a></li>
+<li><a href="">WeakReference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="java-collection-2"><a class="markdownIt-Anchor" href="#java-collection-2"></a> Java Collection</h1>
+<h2 id="java集合简介"><a class="markdownIt-Anchor" href="#java集合简介"></a> java集合简介</h2>
+<p>什么是集合（Collection）？集合就是“由若干个确定的元素所构成的整体”。例如，5只小兔构成的集合：</p>
+<p><img src="image/.png" alt=".png" /></p>
+<p>在数学中，我们经常遇到集合的概念。例如：</p>
+<ul>
+<li>有限集合：
+<ul>
+<li>一个班所有的同学构成的集合；</li>
+<li>一个网站所有的商品构成的集合；</li>
+<li>…</li>
+</ul>
+</li>
+<li>无限集合：
+<ul>
+<li>全体自然数集合：1，2，3…</li>
+<li>有理数集合</li>
+<li>实数集合</li>
+<li>…</li>
+</ul>
+</li>
+</ul>
+<p>为什么要在计算机中引入集合呢？这是为了便于处理一组类似的数据，例如：</p>
+<ul>
+<li>计算所有同学的总成绩和平均成绩；</li>
+<li>列举所有的商品名称和价格；</li>
+<li>……</li>
+</ul>
+<p>在Java中，如果一个Java对象可以在内部持有若干其他Java对象，并对外提供访问接口，我们把这种Java对象称为集合。很显然，Java的数组可以看作是一种集合：</p>
+<pre><code class="highlight plaintext">String[] ss = new String[10]; // 可以持有10个String对象
+ss[0] = &quot;Hello&quot;; // 可以放入String对象
+String first = ss[0]; // 可以获取String对象</code></pre>
+<p>既然Java提供了数组这种数据类型，可以充当集合，那么，我们为什么还需要其他集合类？这是因为数组有如下限制：</p>
+<ul>
+<li>数组初始化后大小不可变；</li>
+<li>数组只能按索引顺序存取。</li>
+</ul>
+<p>因此，我们需要各种不同类型的集合类来处理不同的数据，例如：</p>
+<ul>
+<li>可变大小的顺序链表；</li>
+<li>保证无重复元素的集合；</li>
+<li>…</li>
+</ul>
+<hr />
+<p><strong>Collection</strong></p>
+<p>Java标准库自带的java.util包提供了集合类：Collection，它是除Map外所有其他集合类的根接口。Java的java.util包主要提供了以下三种类型的集合：</p>
+<ul>
+<li>List：一种<strong>有序列表的集合</strong>，例如，按索引排列的Student的List；</li>
+<li>Set：一种保证<strong>没有重复元素的集合</strong>，例如，所有无重复名称的Student的Set；</li>
+<li>Map：一种<strong>通过键值（key-value）查找的映射表集合</strong>，例如，根据Student的name查找对应Student的Map。<br />
+<img src="image/-1.png" alt="-1.png" /></li>
+</ul>
+<p>Java集合的设计有几个特点：一是实现了接口和实现类相分离，例如，有序表的接口是List，具体的实现类有ArrayList，LinkedList等，二是支持泛型，我们可以限制在一个集合中只能放入同一种数据类型的元素，例如：</p>
+<pre><code class="highlight plaintext">List&lt;String&gt; list = new ArrayList&lt;&gt;(); // 只能放入String类型</code></pre>
+<p>最后，<strong>Java访问集合总是通过统一的方式——迭代器（Iterator）来实现</strong>，它最明显的好处在于无需知道集合内部元素是按什么方式存储的。</p>
+<p>由于Java的集合设计非常久远，中间经历过大规模改进，我们要注意到有一小部分集合类是<strong>遗留类</strong>，不应该继续使用：</p>
+<ul>
+<li>Hashtable：一种线程安全的Map实现；</li>
+<li>Vector：一种线程安全的List实现；</li>
+<li>Stack：基于Vector实现的LIFO的栈。</li>
+</ul>
+<p>还有一小部分接口是<strong>遗留接口</strong>，也不应该继续使用：</p>
+<ul>
+<li>Enumeration<E>：已被Iterator<E>取代。</li>
+</ul>
+<h2 id="常用遍历容器方法"><a class="markdownIt-Anchor" href="#常用遍历容器方法"></a> 常用遍历容器方法</h2>
+<pre><code class="highlight plaintext">import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+/*
+ * 测试迭代器
+ */
+public class TestIterator &#123;
+public static void main(String[] args) &#123;
+
+        List list = new ArrayList();
+
+        list.add(&quot;aaa&quot;);
+        list.add(&quot;bbb&quot;);
+        list.add(&quot;ccc&quot;);
+        System.out.println(list); //list可以直接输出
+        for(Object obj: list)&#123;//也可以使用增强for循环遍历
+            System.out.println(obj+&quot;*&quot;);
+        &#125;
+
+        /**
+         * 通过索引遍历list
+         *
+         */
+        for(int i=0;i&lt;list.size();i++)&#123;
+            System.out.println(list.get(i));
+        &#125;
+        /*
+         * 通过迭代遍历list    while/for都可以
+         */
+        Iterator iter = list.iterator();
+        while(iter.hasNext())&#123;
+            System.out.println(iter.next());
+        &#125;
+
+        /*
+         * 遍历Map的一种方法 ,可以set形式获取entry()，然后遍历set
+         */
+        Map map = new HashMap();
+        map.put(&quot;libo&quot;, &quot;李博&quot;);
+        map.put(&quot;wangyangyi&quot;, &quot;王阳怡&quot;);
+        Set&lt;Entry&lt;String,String&gt;&gt; entry = map.entrySet();
+        for(Entry&lt;String,String&gt; en:entry)&#123;
+            System.out.println(en.getKey()+&quot; &quot;+en.getValue());
+        &#125;
+
+        Set set = new HashSet();
+        set.add(&quot;高琪&quot;);
+        set.add(&quot;马士兵&quot;);
+        set.add(&quot;裴新&quot;);
+        遍历set
+        Iterator iter1 = set.iterator();
+        while(iter1.hasNext())&#123;
+            System.out.println(iter1.next());
+
+        &#125;
+
+        /**
+         * 通过迭代遍历set
+         */
+        for(Iterator iter2 = set.iterator();iter2.hasNext();)&#123;
+            System.out.println(iter2.next());
+        &#125;
+    &#125;
+
+&#125;</code></pre>
+<h2 id="list"><a class="markdownIt-Anchor" href="#list"></a> List</h2>
+<p>在集合类中，List是最基础的一种集合：它是一种<strong>有序链表</strong>。</p>
+<p><strong>List的行为和数组几乎完全相同</strong>：List内部按照放入元素的先后顺序存放，每个元素都可以通过索引确定自己的位置，List的索引和数组一样，从0开始。</p>
+<p>数组和List类似，也是有序结构，如果我们使用数组，在添加和删除元素的时候，会非常不方便。例如，从一个已有的数组{‘A’, ‘B’, ‘C’, ‘D’, ‘E’}中删除索引为2的元素：</p>
+<p><img src="image/-2.png" alt="-2.png" /></p>
+<p>这个“删除”操作实际上是把’C’后面的元素依次往前挪一个位置，而“添加”操作实际上是把指定位置以后的元素都依次向后挪一个位置，腾出来的位置给新加的元素。这两种操作，用数组实现非常麻烦。</p>
+<hr />
+<p><strong>ArrayList</strong></p>
+<ul>
+<li><strong>底层实现为数组，查询快，修改/删除/插入慢，效率高，线程不安全，源码为Object类型的数组，包装了一些操作类</strong></li>
+</ul>
+<p>因此，在实际应用中，需要增删元素的有序列表，我们使用最多的是ArrayList。实际上，ArrayList在内部使用了数组来存储所有元素。例如，一个ArrayList拥有5个元素，实际数组大小为6（即有一个空位）：</p>
+<p><img src="image/-3.png" alt="-3.png" /></p>
+<p>当添加一个元素并指定索引到ArrayList时，ArrayList自动移动需要移动的元素：</p>
+<p><img src="image/-4.png" alt="-4.png" /></p>
+<p>然后，往内部指定索引的数组位置添加一个元素，然后把size加1：</p>
+<p><img src="image/-5.png" alt="-5.png" /></p>
+<p>继续添加元素，但是数组已满，没有空闲位置的时候，ArrayList先创建一个更大的新数组，然后把旧数组的所有元素复制到新数组，紧接着用新数组取代旧数组：</p>
+<p><img src="image/-6.png" alt="-6.png" /></p>
+<p>现在，新数组就有了空位，可以继续添加一个元素到数组末尾，同时size加1：</p>
+<p><img src="image/-7.png" alt="-7.png" /></p>
+<p>可见，ArrayList把添加和删除的操作封装起来，让我们操作List类似于操作数组，却不用关心内部元素如何移动。</p>
+<p>我们考察List<E>接口，可以看到几个主要的接口方法：</p>
+<ul>
+<li>在末尾添加一个元素：void add(E e)</li>
+<li>在指定索引添加一个元素：void add(int index, E e)</li>
+<li>删除指定索引的元素：int remove(int index)</li>
+<li>删除某个元素：int remove(Object e)</li>
+<li>获取指定索引的元素：E get(int index)</li>
+<li>获取链表大小（包含元素的个数）：int size()</li>
+<li>删除包含的c的集合：boolean removeAll(Collection&lt;?&gt; c)</li>
+<li>从这个列表中删除所有不包含在指定集合中的元素(返回交集)：boolean retainAll(Collection&lt;?&gt; c）</li>
+</ul>
+<hr />
+<p><strong>LinkedList</strong></p>
+<ul>
+<li><strong>底层实现为链表，查询慢，修改/删除/插入快，效率高，线程不安全，源码为一个Node节点对象，对象中有Node previous（存放前节点）/Objcet obj（本节点内容）/Node next（存放下节点）三个成员变量，达到链表的实现</strong></li>
+</ul>
+<p>但是，实现List接口并非只能通过数组（即ArrayList的实现方式）来实现，另一种LinkedList通过“链表”也实现了List接口。在LinkedList中，它的内部每个元素都指向下一个元素：</p>
+<p><img src="image/-8.png" alt="-8.png" /></p>
+<p>我们来比较一下ArrayList和LinkedList：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ArrayList</th>
+<th>LinkedList</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取指定元素</td>
+<td>速度很快</td>
+<td>需要从头开始查找元素</td>
+</tr>
+<tr>
+<td>添加元素到末尾</td>
+<td>速度很快</td>
+<td>速度很快</td>
+</tr>
+<tr>
+<td>在指定位置添加/删除</td>
+<td>需要移动元素</td>
+<td>不需要移动元素</td>
+</tr>
+<tr>
+<td>内存占用</td>
+<td>少</td>
+<td>较大</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>通常情况下，我们总是优先使用ArrayList</p>
+</blockquote>
+<hr />
+<p><strong>List的特点</strong></p>
+<p>使用List时，我们要关注List接口的规范。List接口允许我们添加重复的元素，即<strong>List内部的元素可以重复</strong>：</p>
+<pre><code class="highlight plaintext">import java.util.ArrayList;
+import java.util.List;
+
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        list.add(&quot;apple&quot;); // size=1
+        list.add(&quot;pear&quot;); // size=2
+        list.add(&quot;apple&quot;); // 允许重复添加元素，size=3
+        System.out.println(list.size());
+    &#125;
+&#125;</code></pre>
+<p>List还允许添加null：</p>
+<pre><code class="highlight plaintext">import java.util.ArrayList;
+import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        list.add(&quot;apple&quot;); // size=1
+        list.add(null); // size=2
+        list.add(&quot;pear&quot;); // size=3
+        String second = list.get(1); // null
+        System.out.println(second);
+    &#125;
+&#125;</code></pre>
+<hr />
+<h3 id="创建遍历list"><a class="markdownIt-Anchor" href="#创建遍历list"></a> 创建/遍历List</h3>
+<p>除了使用ArrayList和LinkedList，我们还可以通过List接口提供的of()方法，根据给定元素快速创建List：</p>
+<pre><code class="highlight plaintext">List&lt;Integer&gt; list = List.of(1, 2, 5);</code></pre>
+<blockquote>
+<p>但是List.of()方法不接受null值，如果传入null，会抛出NullPointerException异常。</p>
+</blockquote>
+<hr />
+<p><strong>遍历List</strong></p>
+<p>和数组类型，我们要遍历一个List，完全可以用for循环根据索引配合get(int)方法遍历：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;);
+        for (int i=0; i&lt;list.size(); i++) &#123;
+            String s = list.get(i);
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>但这种方式并不推荐，一是代码复杂，二是因为get(int)方法只有ArrayList的实现是高效的，换成LinkedList后，索引越大，访问速度越慢。</p>
+<p>所以我们要始终坚持使用迭代器Iterator来访问List。Iterator本身也是一个对象，但它是由List的实例调用iterator()方法的时候创建的。Iterator对象知道如何遍历一个List，并且不同的List类型，返回的Iterator对象实现也是不同的，但总是具有最高的访问效率。</p>
+<p>Iterator对象有两个方法：<code>boolean hasNext()</code>判断是否有下一个元素，<code>E next()</code>返回下一个元素。因此，使用Iterator遍历List代码如下：</p>
+<pre><code class="highlight plaintext">import java.util.Iterator;
+import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;);
+        for (Iterator&lt;String&gt; it = list.iterator(); it.hasNext(); ) &#123;
+            String s = it.next();
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>有童鞋可能觉得使用Iterator访问List的代码比使用索引更复杂。但是，要记住，通过Iterator遍历List永远是最高效的方式。并且，由于Iterator遍历是如此常用，所以，Java的for each循环本身就可以帮我们使用Iterator遍历。把上面的代码再改写如下</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;);
+        for (String s : list) &#123;
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>上述代码就是我们编写遍历List的常见代码。</p>
+<p>实际上，只要实现了Iterable接口的集合类都可以直接用for each循环来遍历，Java编译器本身并不知道如何遍历集合对象，但它会自动把for each循环变成Iterator的调用，原因就在于Iterable接口定义了一个Iterator<E> iterator()方法，强迫集合类必须返回一个Iterator实例。</p>
+<hr />
+<h3 id="list和array转换"><a class="markdownIt-Anchor" href="#list和array转换"></a> List和Array转换</h3>
+<p><strong>把List变为Array</strong>有三种方法</p>
+<p><strong>第一种</strong>是调用toArray()方法直接返回一个Object[]数组：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;apple&quot;, &quot;pear&quot;, &quot;banana&quot;);
+        Object[] array = list.toArray();
+        for (Object s : array) &#123;
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>这种方法会丢失类型信息，所以实际应用很少。</p>
+</blockquote>
+<p><strong>第二种</strong>方式是给toArray(T[])传入一个类型相同的Array，List内部自动把元素复制到传入的Array中：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Integer&gt; list = List.of(12, 34, 56);
+        Integer[] array = list.toArray(new Integer[3]);
+        for (Integer n : array) &#123;
+            System.out.println(n);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>注意到这个toArray(T[])方法的泛型参数<T>并不是List接口定义的泛型参数<E>，所以，我们实际上可以传入其他类型的数组，例如我们传入Number类型的数组，返回的仍然是Number类型：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Integer&gt; list = List.of(12, 34, 56);
+        Number[] array = list.toArray(new Number[3]);
+        for (Number n : array) &#123;
+            System.out.println(n);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>但是，如果我们传入类型不匹配的数组，例如，String[]类型的数组，由于List的元素是Integer，所以无法放入String数组，这个方法会抛出ArrayStoreException。</p>
+<p>如果我们传入的数组大小和List实际的元素个数不一致怎么办？根据List接口的文档，我们可以知道：</p>
+<p>如果传入的数组不够大，那么List内部会创建一个新的刚好够大的数组，填充后返回；如果传入的数组比List元素还要多，那么填充完元素后，剩下的数组元素一律填充null。</p>
+<p>实际上，最常用的是传入一个“恰好”大小的数组：</p>
+<pre><code class="highlight plaintext">Integer[] array = list.toArray(new Integer[list.size()]);</code></pre>
+<p><strong>最后一种</strong>更简洁的写法是通过List接口定义的T[] toArray(IntFunction&lt;T[]&gt; generator)方法：</p>
+<pre><code class="highlight plaintext">Integer[] array = list.toArray(Integer[]::new);</code></pre>
+<p>这种函数式写法我们会在后续讲到。</p>
+<hr />
+<p><strong>Array转List</strong></p>
+<p>反过来，把Array变为List就简单多了，通过List.of(T…)方法最简单：</p>
+<pre><code class="highlight plaintext">Integer[] array = &#123; 1, 2, 3 &#125;;
+List&lt;Integer&gt; list = List.of(array);</code></pre>
+<blockquote>
+<p>对于JDK 11之前的版本，可以使用Arrays.asList(T…)方法把数组转换成List。</p>
+</blockquote>
+<blockquote>
+<p>要注意的是，返回的List不一定就是ArrayList或者LinkedList，因为List只是一个接口，如果我们调用List.of()，它返回的是一个只读List：</p>
+</blockquote>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Integer&gt; list = List.of(12, 34, 56);
+        list.add(999); // UnsupportedOperationException
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>对只读List调用add()、remove()方法会抛出UnsupportedOperationException</p>
+</blockquote>
+<h3 id="高效删除list1中list2的元素"><a class="markdownIt-Anchor" href="#高效删除list1中list2的元素"></a> 高效删除list1中list2的元素</h3>
+<p><strong>方法一</strong></p>
+<pre><code class="highlight plaintext">public static void main(String[] args)&#123;
+    ArrayList&lt;Integer&gt; listA = new ArrayList&lt;&gt;();
+    listA.add(1);
+    listA.add(2);
+    listA.add(3);
+    listA.add(3);
+    ArrayList&lt;Integer&gt; listB = new ArrayList&lt;&gt;();
+    listB.add(3);
+    listA.removeAll(listB);
+    System.out.println(listA);
+&#125;</code></pre>
+<p><strong>方法二(效率高)</strong></p>
+<pre><code class="highlight plaintext">public static void main(String[] args) &#123;
+        //List&lt;long&gt;类型
+        List&lt;Long&gt; list=new ArrayList&lt;&gt;();
+        List&lt;Long&gt; list1=Arrays.asList(1L,2L,3L,4L,5L,6L);
+        List&lt;Long&gt; list2=Arrays.asList(4L,5L,6L);
+        HashSet h1 = new HashSet(list1);
+        HashSet h2 = new HashSet(list2);
+        h1.removeAll(h2);
+        //或者使用 list1.clear();
+        list.addAll(h1);
+        System.out.println(list);//打印结果为：[1, 2, 3]
+        //List&lt;String&gt;类型 同上
+        List&lt;String&gt; s=new ArrayList&lt;&gt;();
+        List&lt;String&gt; st=Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;);
+        List&lt;String&gt; str=Arrays.asList(&quot;a&quot;,&quot;b&quot;,&quot;c&quot;);
+        HashSet hs1 = new HashSet(st);
+        HashSet hs2 = new HashSet(str);
+        hs1.removeAll(hs2);
+        s.addAll(hs1);
+        System.out.println(s);//打印结果为：[d]
+&#125;</code></pre>
+<p>采用 hashSet 代替 arrayList 进行稍大数据量 removeAll 的场景，依据如下：</p>
+<ul>
+<li>a、进行了增量测试，测试数据集范围从 1000–&gt;500000 观察 二者的耗时</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>数量</th>
+<th>arrayList耗时(ms)</th>
+<th>hashSet耗时(ms)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1000</td>
+<td>13</td>
+<td>0</td>
+</tr>
+<tr>
+<td>10000</td>
+<td>491</td>
+<td>1</td>
+</tr>
+<tr>
+<td>50000</td>
+<td>2164</td>
+<td>1</td>
+</tr>
+<tr>
+<td>100000</td>
+<td>44858</td>
+<td>7</td>
+</tr>
+<tr>
+<td>500000</td>
+<td>544184</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>b、看一下二者 removeAll的操作源码arrayList:</li>
+<li>A.removeAll(B)</li>
+</ul>
+<pre><code class="highlight plaintext">(1) 遍历A
+   判断B.contains(A[i])
+   若不包含，则 A[w] = A[i]  w从0递增
+(2) 遍历完成则将 A[w]往后部分置为 null
+
+(3) 看下上面(1)的B.contains(A[i])的逻辑：
+
+   遍历B，一个个匹配，匹配到则返回B的index</code></pre>
+<blockquote>
+<p>综上，arrayList的removeAll A的循环里面套B的循环，时间复杂度是：O(n*m)</p>
+</blockquote>
+<ul>
+<li>hashSet: A.removeAll(B)</li>
+</ul>
+<pre><code class="highlight plaintext">(1)若A.size &gt; B.size 遍历 B
+   直接操作A的 hashMap.remove(B[i])   ---- （new hashSet&lt;&gt;时会同步生成对应的hashMap&lt;&gt; key则为set的元素，value为一个虚拟值）
+
+   看下hashMap的remove操作：
+   根据B[i] 计算hashcode，根据hashcode 直接在hashMap中找到对应的链表桶，会先定位到链表头，到这相当于直接找到落入的小组，极大缩小了检索范围，然后从链表头开始遍历链表，找到则返回
+
+   java8中对hashMap的链表长度做了优化，当链表长度大于设定的值后，则改链表的数据格式转为&#x27;红黑树&#x27;--一种遵循类似二叉树的原则：右子树比左子树数据大，但是二叉树容易存在不平衡性，所以红黑树是一种平衡的二叉树
+   由于红黑树是顺序性的，基本是二分查找，所以速率大大提升
+
+(2) 若 A.size &lt; B.size 遍历 A
+   判断B.contain(A[i])  若true，则直接remove
+   进去contain方法，也是直接调用的 hashMap.containsKey()，方法逻辑同上一样</code></pre>
+<blockquote>
+<p>综上，hashSet的removeAll由于通过hashMap的遍历方法实现，时间复杂度是:O(n)</p>
+</blockquote>
+<hr />
+<p><strong>去除List<Object></strong></p>
+<ul>
+<li>先写一个简单的javaBean</li>
+</ul>
+<pre><code class="highlight plaintext">public class User &#123;
+ 
+	private Integer userId;
+	private String username;
+	private int sex;
+	private Integer age;
+	
+	public Integer getUserId() &#123;
+		return userId;
+	&#125;
+	public void setUserId(Integer userId) &#123;
+		this.userId = userId;
+	&#125;
+	public String getUsername() &#123;
+		return username;
+	&#125;
+	public void setUsername(String username) &#123;
+		this.username = username;
+	&#125;
+	public int getSex() &#123;
+		return sex;
+	&#125;
+	public void setSex(int sex) &#123;
+		this.sex = sex;
+	&#125;
+	public Integer getAge() &#123;
+		return age;
+	&#125;
+	public void setAge(Integer age) &#123;
+		this.age = age;
+	&#125;
+	public User() &#123;
+		super();
+	&#125;
+	public User(Integer userId, String username, int sex, Integer age) &#123;
+		super();
+		this.userId = userId;
+		this.username = username;
+		this.sex = sex;
+		this.age = age;
+	&#125;
+	@Override
+	public String toString() &#123;
+		return &quot;User [userhljs-string&quot; style=&quot;color: #d69d85; line-height: 160%; box-sizing: content-box;&quot;&gt;&quot;, username=&quot; + username + &quot;, sex=&quot; + sex + &quot;, age=&quot; + age + &quot;]&quot;;
+	&#125;
+&#125;</code></pre>
+<p>同样的方法并不能有效的去除重复元素：</p>
+<pre><code class="highlight plaintext">public static void main(String[] args) &#123;
+        List&lt;User&gt; uList=new ArrayList&lt;User&gt;();
+		uList.add(new User(1, &quot;xxx&quot;, 1, 11));
+		uList.add(new User(2, &quot;zzz&quot;, 1, 11));
+		uList.add(new User(3, &quot;aaa&quot;, 1, 11));
+		uList.add(new User(4, &quot;bbb&quot;, 1, 11));
+		
+		List&lt;User&gt; uList1=new ArrayList&lt;User&gt;();
+		uList1.add(new User(1, &quot;xxx&quot;, 1, 11));
+		HashSet h3 = new HashSet(uList);
+		HashSet h4 = new HashSet(uList1);
+		h3.removeAll(h4);
+		//uList.removeAll(uList1);
+		uList.clear();
+		uList.addAll(h3);
+		//[User [userId=3, username=aaa, sex=1, age=11], User [userId=1, username=xxx, sex=1, age=11], User [userId=2, username=zzz, sex=1, age=11], User [userId=4, username=bbb, sex=1, age=11]]
+		System.out.println(uList);//结果并不是想要的
+&#125;</code></pre>
+<p>要想有效的去除，必须<strong>重写equals方法和hashcode</strong>(使用HashSet时需要重写hashcode方法)方法：</p>
+<pre><code class="highlight plaintext">//重写hashCode和equals
+@Override
+public int hashCode() &#123;
+    String result = username+userId;
+    return result.hashCode();
+&#125;
+@Override
+public boolean equals(Object obj) &#123;
+    User u = (User)obj;
+    return this.getUsername().equals(u.getUsername()) &amp;&amp; (this.getUserId().equals(u.getUserId()));
+&#125;</code></pre>
+<h3 id="自实现list"><a class="markdownIt-Anchor" href="#自实现list"></a> 自实现List</h3>
+<pre><code class="highlight plaintext">public class Deep2List&lt;E&gt; implements java.lang.Iterable&lt;E&gt;&#123;
+    private Object[] ele = new Object[5];
+
+    private int size = 0;
+
+    public int size()&#123;
+        return size;
+    &#125;
+/*
+ * 返回迭代器的方法
+  //实现java.lang.Iterable必须重写iterator方法，才可以保证该集合可以使用for each
+ */
+    public Iterator&lt;E&gt; iterator()&#123;//在方法中创建匿名内部类
+        return new Iterator&lt;E&gt;()&#123;  //创建Iterator迭代器接口  的实现类(没有名称)的对象
+            private int coursor = -1;//游标
+
+            //判断是否存在下一个
+            public boolean hasNext()&#123;
+                return coursor!=size-1;
+            &#125;
+            //获取下一个
+            public E next()&#123;
+                coursor++;
+                return (E)ele[coursor];
+            &#125;
+            //移除
+            public void remove()&#123;
+                System.arraycopy(ele, coursor+1, ele, coursor, size-coursor-1);
+                size--;
+                coursor--;
+            &#125;
+        &#125;;
+    &#125;
+
+    public void add(E obj)&#123;
+        //容量检查
+        if(size==ele.length)&#123;
+            ele=Arrays.copyOf(ele, ele.length+5);
+        &#125;
+        ele[size]=obj;
+        size++;
+
+    &#125;
+    /**
+     * 内部类Itrertor
+     * @author Mr
+     *
+     */
+    private class MyIterator&lt;E&gt; implements Iterator&lt;E&gt;&#123; //实现Iterator接口
+        private int coursor = -1;//游标
+
+        //判断是否存在下一个
+        public boolean hasNext()&#123;
+            return coursor!=size-1;
+        &#125;
+        //获取下一个
+        public E next()&#123;
+            coursor++;
+            return (E)ele[coursor];
+        &#125;
+        //移除
+        public void remove()&#123;
+            System.arraycopy(ele, coursor+1, ele, coursor, size-coursor-1);
+            size--;
+            coursor--;
+        &#125;
+    &#125;
+    public static void main(String[] args) &#123;
+
+        Deep2List&lt;Integer&gt; list = new Deep2List&lt;Integer&gt;();
+        list.add(1);
+        list.add(2);
+        list.add(0);
+        for(Integer i: list)&#123;
+            System.out.println(i);
+        &#125;
+        /*
+         * 可以加入多种元素
+         */
+        System.out.println(&quot;----------------&quot;);
+        Deep2List&lt;String&gt; list2 = new Deep2List&lt;String&gt;();
+        list2.add(&quot;马云&quot;);
+        list2.add(&quot;马化腾&quot;);
+        list2.add(&quot;马士兵&quot;);
+        for(String s:list2)&#123;
+            System.out.println(s);
+        &#125;
+
+        Iterator&lt;String&gt; it = list2.iterator();
+        while(it.hasNext())&#123;
+            System.out.println(it.next()+&quot;*&quot;);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h3 id="自实现arraylist"><a class="markdownIt-Anchor" href="#自实现arraylist"></a> 自实现ArrayList</h3>
+<pre><code class="highlight plaintext">package com.li.collection;
+/**
+ * 自己实现一个ArrayList类，帮助自己更好的理解ArrayList类的底层结构
+ * @author Mr
+ */
+public class MyArrayList /*implements List*/ &#123;
+
+     //先没有必要去实现List接口
+     private Object[] elementData;   //核心Object数组
+
+     private int size;
+
+     public MyArrayList()&#123;
+           this(10);
+     &#125;
+     public MyArrayList(int i)&#123;
+           if (i&lt;0)&#123;
+                try &#123;
+                      throw new ArrayIndexOutOfBoundsException();
+                &#125; catch (ArrayIndexOutOfBoundsException e) &#123;
+                      // TODO Auto-generated catch block
+                      e.printStackTrace();
+                &#125;
+           &#125;
+           elementData = new Object[i];
+     &#125;
+
+     public int size()&#123;
+           return size;
+     &#125;
+
+     public void add(Object obj)&#123;
+           if(size&gt;=elementData.length)&#123;
+                /**
+                 * 数组扩容
+                 */
+                Object[] newElement = new Object[size*2+1];
+                /**
+                 * 复制数组
+                 * 用arraycopy或者自己写都可以
+                 */
+                //System.arraycopy(elementData, 0, newElement, 0, elementData.length);
+                for(int i=0;i&lt;elementData.length;i++)&#123;
+                      newElement[i] = elementData[i];
+                &#125;
+
+                elementData = newElement;
+           &#125;
+           elementData[size++] = obj;
+     &#125;
+
+     public boolean isEmpty()&#123;
+           return size == 0;
+     &#125;
+
+     public Object get(int index)&#123;
+           if(index&lt;0||index&gt;=size)&#123;
+                try&#123;
+                throw new ArrayIndexOutOfBoundsException();
+                &#125;catch(ArrayIndexOutOfBoundsException e)&#123;
+                      e.printStackTrace();
+                &#125;
+           &#125;
+           return elementData[index];
+     &#125;
+
+     public static void main(String[] args) &#123;
+           MyArrayList mylist = new MyArrayList(3);
+           mylist.add(&quot;asdf&quot;);
+           mylist.add(&quot;qwer&quot;);
+           mylist.add(&quot;zxcv&quot;);
+           mylist.add(&quot;lkjh&quot;);
+           mylist.add(&quot;vbnm&quot;);
+           mylist.add(&quot;1234&quot;);
+
+           System.out.println(mylist.size());
+           System.out.println(mylist.get(5));
+     &#125;
+&#125;</code></pre>
+<h3 id="自实现linkedlist"><a class="markdownIt-Anchor" href="#自实现linkedlist"></a> 自实现LinkedList</h3>
+<pre><code class="highlight plaintext">public class MyLinkedList &#123;
+
+     private Node first; //第一个
+     private Node last;//第二个
+
+     private int size;
+     /**
+      * 返回size
+      * @return
+      */
+     public int size()&#123;
+           return size;
+     &#125;
+
+     /**
+      * 增加节点
+      * @param obj
+      */
+     public void add(Object obj)&#123;
+           Node n = new Node();
+           if(first==null)&#123;
+
+                n.setPrevious(null);
+                n.setObj(obj);
+                n.setNext(null);;
+                //最开始的第一个节点也是最后一个节点
+                first = n;
+                last = n;
+           &#125;else&#123;   //直接在last后加新的节点
+                n.setPrevious(last);
+                n.setObj(obj);
+                n.setNext(null);
+                last.setNext(n);
+
+                last = n;
+           &#125;
+           size++;    //计数
+     &#125;
+     /**
+      * 指定位置增加节点
+      * @param index
+      * @param obj
+      */
+     public void add(int index , Object obj)&#123;
+           rangeCheck(index);
+           Node temp =node(index);
+           if(temp!=null)&#123;
+                Node newNode = new Node();
+                newNode.obj = obj;
+                newNode.previous = temp.previous;
+                newNode.next = temp;
+
+                temp.previous.next = newNode;
+                temp.previous = newNode;
+                size++;
+                &#125;
+
+     &#125;
+
+     /**
+      * 移除方法
+      * @param index
+      */
+     public void remove(int index)&#123;
+           rangeCheck(index);
+           Node temp = node(index);
+           if(temp!=null)&#123;
+
+                temp.next.previous=temp.previous;
+                temp.previous.next = temp.next;
+           &#125;
+           size--;
+     &#125;
+/*
+ * 索引 返回Object
+ * 供外部调用
+ */
+     public Object get(int index)&#123;
+
+           return node(index).obj;
+     &#125;
+/*
+ * 类内部使用
+ * 索引 返回Node
+ */
+     private Node node(int index)&#123;
+           rangeCheck(index); //越界检查
+           Node temp = null;
+           if(first==null)&#123;
+                return null;
+           &#125;else&#123;
+                if(index&lt;(size &gt;&gt; 1))&#123;   直接把size二进制位左移一位，除以2
+                      temp = first;
+                for(int i=0;i&lt;index;i++)&#123;
+                      temp = temp.next;
+                &#125;
+                &#125;else&#123;
+                      temp = last;
+                      for(int i=size-1;i&gt;index;i--)&#123;
+                           temp = temp.previous;
+                      &#125;
+                &#125;
+           &#125;
+           return temp;
+     &#125;
+     /**
+      * 越界检查
+      * @param index
+      */
+     private void rangeCheck(int index)&#123;//越界检查
+           if(index&gt;=size)&#123;
+                try&#123;
+                throw new ArrayIndexOutOfBoundsException();
+                &#125;catch(ArrayIndexOutOfBoundsException e)&#123;
+                      e.printStackTrace();
+                &#125;
+           &#125;
+     &#125;
+
+     /**
+      * 内部节点类
+      * @author Mr
+      *
+      */
+     class Node&#123;
+           private Node previous;  //前节点(使用节点类型)
+           private Object obj;  //值
+           private Node next ;//后节点(使用节点类型)
+           public Node() &#123;
+           &#125;
+
+           public Node(Node previous, Object obj, Node next) &#123;
+                super();
+                this.previous = previous;
+                this.obj = obj;
+                this.next = next;
+           &#125;
+           public Node getPrevious() &#123;
+                return previous;
+           &#125;
+           public void setPrevious(Node previous) &#123;
+                this.previous = previous;
+           &#125;
+           public Object getObj() &#123;
+                return obj;
+           &#125;
+           public void setObj(Object obj) &#123;
+                this.obj = obj;
+           &#125;
+           public Node getNext() &#123;
+                return next;
+           &#125;
+           public void setNext(Node next) &#123;
+                this.next = next;
+           &#125;
+
+     &#125;
+     public static void main(String[] args) &#123;
+
+           MyLinkedList list = new MyLinkedList();
+
+           list.add(&quot;asdf&quot;);
+           list.add(&quot;qwer&quot;);
+           list.add(&quot;zxcv&quot;);
+           list.add(&quot;tyui&quot;);
+           list.add(3, &quot;asdf&quot;);
+           //list.remove(1);
+           //System.out.println(list.size());
+           System.out.println(list.get(0));
+           System.out.println(list.size());
+     &#125;
+&#125;</code></pre>
+<h2 id="equals方法"><a class="markdownIt-Anchor" href="#equals方法"></a> equals方法</h2>
+<p>我们知道List是一种有序链表：List内部按照放入元素的先后顺序存放，并且每个元素都可以通过索引确定自己的位置。</p>
+<p>List还提供了<code>boolean contains(Object o)</code>方法来判断List是否包含某个指定元素。</p>
+<p>此外，<code>int indexOf(Object o)</code>方法可以返回某个元素的索引，如果元素不存在，就返回-1。</p>
+<p>我们来看一个例子：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);
+        System.out.println(list.contains(&quot;C&quot;)); // true
+        System.out.println(list.contains(&quot;X&quot;)); // false
+        System.out.println(list.indexOf(&quot;C&quot;)); // 2
+        System.out.println(list.indexOf(&quot;X&quot;)); // -1
+    &#125;
+&#125;</code></pre>
+<p>这里我们注意一个问题，我们往List中添加的&quot;C&quot;和调用contains(“C”)传入的&quot;C&quot;是不是同一个实例？</p>
+<p>如果这两个&quot;C&quot;不是同一个实例，这段代码是否还能得到正确的结果？我们可以改写一下代码测试一下：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = List.of(&quot;A&quot;, &quot;B&quot;, &quot;C&quot;);
+        System.out.println(list.contains(new String(&quot;C&quot;))); // true or false?
+        System.out.println(list.indexOf(new String(&quot;C&quot;))); // 2 or -1?
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>因为我们传入的是new String(“C”)，所以一定是不同的实例。结果仍然符合预期，这是为什么呢？</p>
+</blockquote>
+<p>因为List内部并不是通过==判断两个元素是否相等，而是使用equals()方法判断两个元素是否相等，例如contains()方法可以实现如下：</p>
+<pre><code class="highlight plaintext">public class ArrayList &#123;
+    Object[] elementData;
+    public boolean contains(Object o) &#123;
+        for (int i = 0; i &lt; size; i++) &#123;
+            if (o.equals(elementData[i])) &#123;
+                return true;
+            &#125;
+        &#125;
+        return false;
+    &#125;
+&#125;</code></pre>
+<p>因此，要正确使用List的<code>contains()</code>、<code>indexOf()</code>这些方法，放入的实例必须正确覆写equals()方法，否则，放进去的实例，查找不到。</p>
+<p>我们之所以能正常放入String、Integer这些对象，是因为Java标准库定义的这些类已经正确实现了equals()方法。我们以Person对象为例，测试一下：</p>
+<pre><code class="highlight plaintext">import java.util.List;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Person&gt; list = List.of(
+            new Person(&quot;Xiao Ming&quot;),
+            new Person(&quot;Xiao Hong&quot;),
+            new Person(&quot;Bob&quot;)
+        );
+        System.out.println(list.contains(new Person(&quot;Bob&quot;))); // false
+    &#125;
+&#125;
+
+class Person &#123;
+    String name;
+    public Person(String name) &#123;
+        this.name = name;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>不出意外，虽然放入了new Person(“Bob”)，但是用另一个new Person(“Bob”)查询不到，原因就是Person类没有覆写equals()方法</p>
+</blockquote>
+<hr />
+<p><strong>编写equals</strong></p>
+<p>如何正确编写equals()方法？equals()方法要求我们必须满足以下条件：</p>
+<ul>
+<li>自反性（Reflexive）：对于非null的x来说，x.equals(x)必须返回true；</li>
+<li>对称性（Symmetric）：对于非null的x和y来说，如果x.equals(y)为true，则y.equals(x)也必须为true；</li>
+<li>传递性（Transitive）：对于非null的x、y和z来说，如果x.equals(y)为true，y.equals(z)也为true，那么x.equals(z)也必须为true；</li>
+<li>一致性（Consistent）：对于非null的x和y来说，只要x和y状态不变，则x.equals(y)总是一致地返回true或者false；</li>
+<li>对null的比较：即x.equals(null)永远返回false。</li>
+</ul>
+<p>上述规则看上去似乎非常复杂，但其实代码实现equals()方法是很简单的，我们以Person类为例：</p>
+<pre><code class="highlight plaintext">public class Person &#123;
+    public String name;
+    public int age;
+&#125;</code></pre>
+<p>因此，编写equals()方法如下：</p>
+<pre><code class="highlight plaintext">public boolean equals(Object o) &#123;
+    if (o instanceof Person) &#123;
+        Person p = (Person) o;
+        return this.name.equals(p.name) &amp;&amp; this.age == p.age;
+    &#125;
+    return false;
+&#125;</code></pre>
+<p>对于引用字段比较，我们使用equals()，对于基本类型字段的比较，我们使用==。</p>
+<p>如果this.name为null，那么equals()方法会报错，因此，需要继续改写如下：</p>
+<pre><code class="highlight plaintext">public boolean equals(Object o) &#123;
+    if (o instanceof Person) &#123;
+        Person p = (Person) o;
+        boolean nameEquals = false;
+        if (this.name == null &amp;&amp; p.name == null) &#123;
+            nameEquals = true;
+        &#125;
+        if (this.name != null) &#123;
+            nameEquals = this.name.equals(p.name);
+        &#125;
+        return nameEquals &amp;&amp; this.age == p.age;
+    &#125;
+    return false;
+&#125;</code></pre>
+<p>如果Person有好几个引用类型的字段，上面的写法就太复杂了。要简化引用类型的比较，我们使用Objects.equals()静态方法：</p>
+<pre><code class="highlight plaintext">public boolean equals(Object o) &#123;
+    if (o instanceof Person) &#123;
+        Person p = (Person) o;
+        return Objects.equals(this.name, p.name) &amp;&amp; this.age == p.age;
+    &#125;
+    return false;
+&#125;</code></pre>
+<p>因此，我们总结一下equals()方法的正确编写方法：</p>
+<ol>
+<li>先确定实例“相等”的逻辑，即哪些字段相等，就认为实例相等；</li>
+<li>用instanceof判断传入的待比较的Object是不是当前类型，如果是，继续比较，否则，返回false；</li>
+<li>对引用类型用Objects.equals()比较，对基本类型直接用==比较。</li>
+</ol>
+<p>使用Objects.equals()比较两个引用类型是否相等的目的是省去了判断null的麻烦。两个引用类型都是null时它们也是相等的。</p>
+<p>如果不调用List的contains()、indexOf()这些方法，那么放入的元素就不需要实现equals()方法。</p>
+<h2 id="map"><a class="markdownIt-Anchor" href="#map"></a> Map</h2>
+<p>我们知道，List是一种顺序列表，如果有一个存储学生Student实例的List，要在List中根据name查找某个指定的Student的分数，应该怎么办？</p>
+<p>最简单的方法是遍历List并判断name是否相等，然后返回指定元素：</p>
+<pre><code class="highlight plaintext">List&lt;Student&gt; list = ...
+Student target = null;
+for (Student s : list) &#123;
+    if (&quot;Xiao Ming&quot;.equals(s.name)) &#123;
+        target = s;
+        break;
+    &#125;
+&#125;
+System.out.println(target.score);</code></pre>
+<p>这种需求其实非常常见，即通过一个键去查询对应的值。使用List来实现存在效率非常低的问题，因为平均需要扫描一半的元素才能确定，而<strong>Map这种键值（key-value）映射表的数据结构，作用就是能高效通过key快速查找value</strong>（元素）</p>
+<hr />
+<p><strong>Map</strong></p>
+<ul>
+<li>Map接口的实现类有HashMap和TreeMap和Hashtable
+<ul>
+<li>HashMap：效率高，线程不安全</li>
+<li>Hashtable：效率低，线程安全</li>
+</ul>
+</li>
+<li>Map类中存储的键/值对通过键来标识，所以键不可以重复：依赖于equals()，若形参类没有重写equals()方法，则使用Object内的equals方法,若重写了，则调用该形参类中的equals()方法</li>
+<li>Map底层是数组+链表</li>
+</ul>
+<p><img src="image/-9.png" alt="-9.png" /></p>
+<p>用Map来实现根据name查询某个Student的代码如下：</p>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.Map;
+
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        Student s = new Student(&quot;Xiao Ming&quot;, 99);
+        Map&lt;String, Student&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;Xiao Ming&quot;, s); // 将&quot;Xiao Ming&quot;和Student实例映射并关联
+        Student target = map.get(&quot;Xiao Ming&quot;); // 通过key查找并返回映射的Student实例
+        System.out.println(target == s); // true，同一个实例
+        System.out.println(target.score); // 99
+        Student another = map.get(&quot;Bob&quot;); // 通过另一个key查找
+        System.out.println(another); // 未找到返回null
+    &#125;
+&#125;
+
+class Student &#123;
+    public String name;
+    public int score;
+    public Student(String name, int score) &#123;
+        this.name = name;
+        this.score = score;
+    &#125;
+&#125;</code></pre>
+<p>通过上述代码可知：Map&lt;K, V&gt;是一种键-值映射表，当我们调用<strong>put(K key, V value)方法</strong>时，就把key和value做了映射并放入Map</p>
+<p>当我们调用<strong>V get(K key)时</strong>，就可以通过key获取到对应的value。如果key不存在，则返回null。和List类似，Map也是一个接口，最常用的实现类是HashMap</p>
+<p>如果只是想查询某个key是否存在，可以调用<strong>boolean containsKey(K key)方法</strong></p>
+<hr />
+<p>如果我们在存储Map映射关系的时候，对同一个key调用两次put()方法，分别放入不同的value，会有什么问题呢？例如：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;apple&quot;, 123);
+        map.put(&quot;pear&quot;, 456);
+        System.out.println(map.get(&quot;apple&quot;)); // 123
+        map.put(&quot;apple&quot;, 789); // 再次放入apple作为key，但value变为789
+        System.out.println(map.get(&quot;apple&quot;)); // 789
+    &#125;
+&#125;</code></pre>
+<p>重复放入key-value并不会有任何问题，但是<strong>一个key只能关联一个value</strong>。在上面的代码中，一开始我们把key对象&quot;apple&quot;映射到Integer对象123，然后再次调用put()方法把&quot;apple&quot;映射到789，这时，原来关联的value对象123就被“冲掉”了。实际上，put()方法的签名是V put(K key, V value)，<strong>如果放入的key已经存在，put()方法会返回被删除的旧的value，否则，返回null</strong></p>
+<blockquote>
+<p><strong>始终牢记：Map中不存在重复的key，因为放入相同的key，只会把原有的key-value对应的value给替换掉</strong></p>
+</blockquote>
+<blockquote>
+<p>此外，在一个Map中，虽然key不能重复，但value是可以重复的</p>
+</blockquote>
+<h3 id="遍历map"><a class="markdownIt-Anchor" href="#遍历map"></a> 遍历Map</h3>
+<p>对Map来说，要遍历key可以使用for each循环遍历Map实例的keySet()方法返回的Set集合，它包含不重复的key的集合：</p>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.Map;
+
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;apple&quot;, 123);
+        map.put(&quot;pear&quot;, 456);
+        map.put(&quot;banana&quot;, 789);
+        for (String key : map.keySet()) &#123;
+            Integer value = map.get(key);
+            System.out.println(key + &quot; = &quot; + value);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>同时遍历key和value可以使用for each循环遍历Map对象的entrySet()集合，它包含每一个key-value映射：</p>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.Map;
+
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+        map.put(&quot;apple&quot;, 123);
+        map.put(&quot;pear&quot;, 456);
+        map.put(&quot;banana&quot;, 789);
+        for (Map.Entry&lt;String, Integer&gt; entry : map.entrySet()) &#123;
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+            System.out.println(key + &quot; = &quot; + value);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<p>Map和List不同的是，<strong>Map存储的是key-value的映射关系</strong>，并且，<strong>它不保证顺序</strong>。在遍历的时候，<strong>遍历的顺序既不一定是put()时放入的key的顺序，也不一定是key的排序顺序</strong>。</p>
+<p>使用Map时，任何依赖顺序的逻辑都是不可靠的。以HashMap为例，假设我们放入&quot;A&quot;，“B”，&quot;C&quot;这3个key，遍历的时候，每个key会保证被遍历一次且仅遍历一次，但顺序完全没有保证，甚至对于不同的JDK版本，相同的代码遍历的输出顺序都是不同的！</p>
+<blockquote>
+<p><strong>遍历Map时，不可假设输出的key是有序的</strong></p>
+</blockquote>
+<h3 id="equalshashcode"><a class="markdownIt-Anchor" href="#equalshashcode"></a> equals/hashCode</h3>
+<ul>
+<li><strong>equals返回true，则HashCode 必然相等;反之则不然</strong></li>
+<li><strong>哈希码哈希算法的本质，拿系统内部地址进行计算，快速定位存在什么地方</strong></li>
+<li><strong>用于快速定位数据在Map中的位置，为了保证对象内容相同但地址不同的情况下Map会认定这个key是不同的，所以在重写equals方法的情况下，equals相等，也得重写HashCode保证HashCode()返回相等，因为Map中比较对象相等会同时比equals和HashCode</strong></li>
+<li><strong>如果要重写equals和HashCode，则必须保证equals返回true时HashCode相等</strong></li>
+</ul>
+<p><img src="image/-10.png" alt="-10.png" /></p>
+<p>我们知道Map是一种键-值（key-value）映射表，可以通过key快速查找对应的value。</p>
+<p>以HashMap为例，观察下面的代码：</p>
+<pre><code class="highlight plaintext">Map&lt;String, Person&gt; map = new HashMap&lt;&gt;();
+map.put(&quot;a&quot;, new Person(&quot;Xiao Ming&quot;));
+map.put(&quot;b&quot;, new Person(&quot;Xiao Hong&quot;));
+map.put(&quot;c&quot;, new Person(&quot;Xiao Jun&quot;));
+
+map.get(&quot;a&quot;); // Person(&quot;Xiao Ming&quot;)
+map.get(&quot;x&quot;); // null</code></pre>
+<p>HashMap之所以能根据key直接拿到value，原因是它内部通过空间换时间的方法，用一个大数组存储所有value，并根据key直接计算出value应该存储在哪个索引：</p>
+<p><img src="image/-11.png" alt="-11.png" /></p>
+<ul>
+<li>如果key的值为&quot;a&quot;，计算得到的索引总是1，因此返回value为Person(“Xiao Ming”)，如果key的值为&quot;b&quot;，计算得到的索引总是5，因此返回value为Person(“Xiao Hong”)，这样，就不必遍历整个数组，即可直接读取key对应的value。</li>
+</ul>
+<p>当我们使用key存取value的时候，就会引出一个问题：</p>
+<ul>
+<li>我们放入Map的key是字符串&quot;a&quot;，但是，当我们获取Map的value时，传入的变量不一定就是放入的那个key对象。换句话讲，两个key应该是内容相同，但不一定是同一个对象。测试代码如下：</li>
+</ul>
+<pre><code class="highlight plaintext">import java.util.HashMap;
+import java.util.Map;
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        String key1 = &quot;a&quot;;
+        Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;();
+        map.put(key1, 123);
+
+        String key2 = new String(&quot;a&quot;);
+        map.get(key2); // 123
+
+        System.out.println(key1 == key2); // false
+        System.out.println(key1.equals(key2)); // true
+    &#125;
+&#125;</code></pre>
+<p>因为<strong>在Map的内部，对key做比较是通过equals()实现的</strong>，这一点和List查找元素需要正确覆写equals()是一样的，即正确使用Map必须保证：<strong>作为key的对象必须正确覆写equals()方法</strong>。</p>
+<p>我们经常使用String作为key，因为String已经正确覆写了equals()方法。但如果我们放入的key是一个自己写的类，就必须保证正确覆写了equals()方法。</p>
+<p>我们再思考一下HashMap为什么能通过key直接计算出value存储的索引。相同的key对象（使用equals()判断时返回true）必须要计算出相同的索引，否则，相同的key每次取出的value就不一定对。</p>
+<p>通过<strong>key计算索引的方式就是调用key对象的hashCode()方法，它返回一个int整数</strong>。<strong>HashMap正是通过这个方法直接定位key对应的value的索引</strong>，继而直接返回value。</p>
+<p>因此，正确使用Map必须保证：</p>
+<ol>
+<li><strong>作为key的对象必须正确覆写equals()方法</strong>，相等的两个key实例调用equals()必须返回true；</li>
+<li><strong>作为key的对象还必须正确覆写hashCode()方法</strong>，且hashCode()方法要严格遵循以下规范：
+<ul>
+<li>如果两个对象相等，则两个对象的hashCode()必须相等；</li>
+<li>如果两个对象不相等，则两个对象的hashCode()尽量不要相等。</li>
+</ul>
+</li>
+</ol>
+<p>即对应两个实例a和b：</p>
+<ul>
+<li>如果a和b相等，那么a.equals(b)一定为true，则a.hashCode()必须等于b.hashCode()；</li>
+<li>如果a和b不相等，那么a.equals(b)一定为false，则a.hashCode()和b.hashCode()尽量不要相等</li>
+</ul>
+<p>上述第一条规范是正确性，必须保证实现，否则HashMap不能正常工作</p>
+<p><strong>而第二条如果尽量满足，则可以保证查询效率</strong>，因为不同的对象，如果返回相同的hashCode()，会造成Map内部存储冲突，使存取的效率下降。</p>
+<p>正确编写equals()的方法我们已经在编写equals方法一节中讲过了，以Person类为例：</p>
+<pre><code class="highlight plaintext">public class Person &#123;
+    String firstName;
+    String lastName;
+    int age;
+&#125;</code></pre>
+<p>把需要比较的字段找出来：</p>
+<ul>
+<li>firstName</li>
+<li>lastName</li>
+<li>age</li>
+</ul>
+<p>然后，引用类型使用Objects.equals()比较，基本类型使用==比较。</p>
+<p>在正确实现equals()的基础上，我们还需要正确实现hashCode()，即上述3个字段分别相同的实例，hashCode()返回的int必须相同：</p>
+<pre><code class="highlight plaintext">public class Person &#123;
+    String firstName;
+    String lastName;
+    int age;
+
+    @Override
+    int hashCode() &#123;
+        int h = 0;
+        h = 31 * h + firstName.hashCode();
+        h = 31 * h + lastName.hashCode();
+        h = 31 * h + age;
+        return h;
+    &#125;
+&#125;</code></pre>
+<p>注意到String类已经正确实现了hashCode()方法，我们在计算Person的hashCode()时，反复使用<code>31*h</code>，这样做的目的是为了尽量把不同的Person实例的hashCode()均匀分布到整个int范围。</p>
+<p>和实现equals()方法遇到的问题类似，如果firstName或lastName为null，上述代码工作起来就会抛NullPointerException。为了解决这个问题，我们在<strong>计算hashCode()的时候，经常借助Objects.hash()来计算</strong>：</p>
+<pre><code class="highlight plaintext">int hashCode() &#123;
+    return Objects.hash(firstName, lastName, age);
+&#125;</code></pre>
+<p>所以，编写equals()和hashCode()遵循的原则是：</p>
+<ul>
+<li>equals()用到的用于比较的每一个字段，都<strong>必须</strong>在hashCode()中用于计算；equals()中没有使用到的字段，<strong>绝不可</strong>放在hashCode()中计算。</li>
+<li>另外注意，对于放入HashMap的value对象，没有任何要求</li>
+</ul>
+<hr />
+<h3 id="map探索"><a class="markdownIt-Anchor" href="#map探索"></a> Map探索</h3>
+<p>既然HashMap内部使用了数组，通过计算key的hashCode()直接定位value所在的索引，那么第一个问题来了：hashCode()返回的int范围高达±21亿，先不考虑负数，HashMap内部使用的数组得有多大？</p>
+<p>实际上HashMap初始化时默认的数组大小只有16，任何key，无论它的hashCode()有多大，都可以简单地通过：</p>
+<pre><code class="highlight plaintext">int index = key.hashCode() &amp; 0xf; // 0xf = 15</code></pre>
+<p>把索引确定在0～15，即永远不会超出数组范围，上述算法只是一种最简单的实现。</p>
+<hr />
+<p>第二个问题：如果添加超过16个key-value到HashMap，数组不够用了怎么办？</p>
+<p>添加超过一定数量的key-value时，HashMap会在内部自动扩容，每次扩容一倍，即长度为16的数组扩展为长度32，相应地，需要重新确定hashCode()计算的索引位置。例如，对长度为32的数组计算hashCode()对应的索引，计算方式要改为：</p>
+<pre><code class="highlight plaintext">int index = key.hashCode() &amp; 0x1f; // 0x1f = 31</code></pre>
+<p><strong>由于扩容会导致重新分布已有的key-value，所以，频繁扩容对HashMap的性能影响很大</strong>。如果我们确定要使用一个容量为10000个key-value的HashMap，更好的方式是创建HashMap时就指定容量：</p>
+<pre><code class="highlight plaintext">Map&lt;String, Integer&gt; map = new HashMap&lt;&gt;(10000);</code></pre>
+<p>虽然指定容量是10000，但HashMap内部的数组长度总是2n，因此，实际数组长度被初始化为比10000大的16384（2^14）。</p>
+<hr />
+<p>最后一个问题：如果不同的两个key，例如&quot;a&quot;和&quot;b&quot;，它们的hashCode()恰好是相同的（这种情况是完全可能的，因为不相等的两个实例，只要求hashCode()尽量不相等），那么，当我们放入时，由于计算出的数组索引相同，后面放入的&quot;Xiao Hong&quot;会不会把&quot;Xiao Ming&quot;覆盖了？</p>
+<pre><code class="highlight plaintext">map.put(&quot;a&quot;, new Person(&quot;Xiao Ming&quot;));
+map.put(&quot;b&quot;, new Person(&quot;Xiao Hong&quot;));</code></pre>
+<p>当然不会！使用Map的时候，只要key不相同，它们映射的value就互不干扰。但是，在HashMap内部，确实可能存在不同的key，映射到相同的hashCode()，即相同的数组索引上，肿么办？</p>
+<p>我们就假设&quot;a&quot;和&quot;b&quot;这两个key最终计算出的索引都是5，那么，在HashMap的数组中，实际存储的不是一个Person实例，而是一个List，它包含两个Entry，一个是&quot;a&quot;的映射，一个是&quot;b&quot;的映射：</p>
+<p><img src="image/-12.png" alt="-12.png" /></p>
+<p>在查找的时候，例如：</p>
+<pre><code class="highlight plaintext">Person p = map.get(&quot;a&quot;);</code></pre>
+<p>HashMap内部通过&quot;a&quot;找到的实际上是List&lt;Entry&lt;String, Person&gt;&gt;，它还需要遍历这个List，并用equals比较key，并找到一个Entry，它的key字段是&quot;a&quot;，才能返回对应的Person实例。</p>
+<p>我们把<strong>不同的key具有相同的hashCode()的情况称之为哈希冲突</strong>。在冲突的时候，一种最简单的解决办法是用List存储hashCode()相同的key-value。显然，如果冲突的概率越大，这个List就越长，Map的get()方法效率就越低，这就是为什么要尽量满足条件二：</p>
+<ul>
+<li><strong>如果两个对象不相等，则两个对象的hashCode()尽量不要相等</strong></li>
+</ul>
+<blockquote>
+<p>hashCode()方法编写得越好，HashMap工作的效率就越高</p>
+</blockquote>
+<h3 id="自实现hashmap"><a class="markdownIt-Anchor" href="#自实现hashmap"></a> 自实现HashMap</h3>
+<pre><code class="highlight plaintext">import java.util.LinkedList;
+import java.util.List;
+
+import com.li.collection.MyLinkedList.Node;
+/**
+ * MyHashList高效率版
+ * @author Mr
+ *
+ */
+public class MyHashMap02 &#123;
+
+    List[] list = new LinkedList[999];//暂时写为999
+    int size;
+
+    public void put(Object key, Object value)&#123;
+        /**
+         * hashCode与equals
+         * equals返回true   则HashCode 必然相等
+         * 如果HashCode相等，则两对象有可能相等
+         * 哈希码哈希算法的本质，拿系统内部地址进行计算，快速定位存在什么地方
+         *
+         * 如果要重写equals和HashCode，则必须保证equals返回true时HashCode相等
+         */
+        int hash = (key.hashCode()&lt;0)?-key.hashCode():key.hashCode();//保证Hashcold为正
+        int a = hash%list.length;//哈希码  用于数组index下标
+
+        if(list[a]==null)&#123;
+            list[a] = new LinkedList();
+            list[a].add(new Entry(key,value));
+            size++;
+            return;
+        &#125;else&#123;
+            for(int i=0;i&lt;list[a].size();i++)&#123;
+                Entry e = (Entry)list[a].get(i);
+                if(e.key.equals(key))&#123;  //两对象若equals返回true 则必然有相同的HashCode()
+                    e.value = value;
+                    return;
+                &#125;
+            &#125;
+            list[a].add(new Entry(key,value));
+            return;
+        &#125;
+    &#125;
+
+    public Object get(Object key)&#123;
+        int a = key.hashCode()%list.length;
+        if(list[a]==null)&#123;
+            return null;
+        &#125;else&#123;
+            for(int i=0;i&lt;list[a].size();i++)&#123;
+                Entry e = (Entry)list[a].get(i);
+                if(e.key.equals(key))&#123;  //两对象若equals返回true 则必然有相同的HashCode()
+                    return e.value;
+                &#125;
+            &#125;
+        &#125;
+        return null;
+    &#125;
+
+    /**
+     * HashMap核心键值对类
+     * @author Mr
+     *
+     */
+    class Entry&#123;
+        Object key;
+        Object value;
+
+        public Entry(Object key,Object value)&#123;
+            this.key  = key;
+            this.value = value;
+        &#125;
+    &#125;
+    public static void main(String[] args) &#123;
+        MyHashMap02 map = new MyHashMap02();
+
+        map.put(&quot;libo&quot;, new Huwoman(&quot;李博&quot;));
+        map.put(&quot;libo&quot;, new Huwoman(&quot;李小博&quot;));
+
+        map.put(&quot;wangyangyi&quot;, new Huwoman(&quot;王阳怡&quot;));
+
+        map.put(&quot;xiexiangrui&quot;, new Huwoman(&quot;谢祥瑞&quot;));
+        map.put(&quot;songjinwei&quot;, new Huwoman(&quot;宋锦伟&quot;));
+
+        Huwoman h = (Huwoman) map.get(&quot;libo&quot;);
+        System.out.println(h.name);
+    &#125;
+&#125;</code></pre>
+<h2 id="enummap"><a class="markdownIt-Anchor" href="#enummap"></a> EnumMap</h2>
+<p>因为HashMap是一种通过对key计算hashCode()，通过空间换时间的方式，直接定位到value所在的内部数组的索引，因此，查找效率非常高。</p>
+<p>如果作为key的对象是enum类型，那么，还可以使用Java集合库提供的一种EnumMap，它在内部以一个非常紧凑的数组存储value，并且根据enum类型的key直接定位到内部数组的索引，并不需要计算hashCode()，不但效率最高，而且没有额外的空间浪费。</p>
+<p>我们以DayOfWeek这个枚举类型为例，为它做一个“翻译”功能：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;DayOfWeek, String&gt; map = new EnumMap&lt;&gt;(DayOfWeek.class);
+        map.put(DayOfWeek.MONDAY, &quot;星期一&quot;);
+        map.put(DayOfWeek.TUESDAY, &quot;星期二&quot;);
+        map.put(DayOfWeek.WEDNESDAY, &quot;星期三&quot;);
+        map.put(DayOfWeek.THURSDAY, &quot;星期四&quot;);
+        map.put(DayOfWeek.FRIDAY, &quot;星期五&quot;);
+        map.put(DayOfWeek.SATURDAY, &quot;星期六&quot;);
+        map.put(DayOfWeek.SUNDAY, &quot;星期日&quot;);
+        System.out.println(map);
+        System.out.println(map.get(DayOfWeek.MONDAY));
+    &#125;
+&#125;</code></pre>
+<p>使用EnumMap的时候，我们总是用Map接口来引用它，因此，实际上把HashMap和EnumMap互换，在客户端看来没有任何区别</p>
+<h2 id="排序容器"><a class="markdownIt-Anchor" href="#排序容器"></a> 排序容器</h2>
+<p>TreeSet和TreeMap中保存的数据除了Integer和String等有默认顺序的类型外的自定义类型都<strong>需要实现Comparable接口并重写compareTo()方法</strong></p>
+<p>或者手动在new 的时候传入java.util.Comparator()接口的实现类</p>
+<p><strong>TreeMap：</strong></p>
+<ul>
+<li>确保key可以排序（key实现Comparable接口）</li>
+<li>提供key比较器 public TreeMap(Comparator&lt;? super K&gt; comparator)</li>
+</ul>
+<p><strong>TreeSet：</strong></p>
+<ul>
+<li>确保元素实体可以排序（元素实体实现Comparable接口）</li>
+<li>提供value排序比较器 public TresSet(Comparator&lt;? super E&gt; comparator)</li>
+</ul>
+<p>其排序会按照其二叉树的层级关系从最左侧的叶级节点开始找其父节点，在查找其父节点的右子节点若其父节点的右子节点下还有子节点则遍历该右节点直至找到该右节点下最左边的叶级节点当期父节点遍历完成之后则以同样的方法遍历其父节点的父节点以此类推直至该二叉树遍历完毕</p>
+<p><img src="image/-13.png" alt="-13.png" /></p>
+<h3 id="treemap"><a class="markdownIt-Anchor" href="#treemap"></a> TreeMap</h3>
+<p>我们已经知道，HashMap是一种以空间换时间的映射表，它的实现原理决定了内部的Key是无序的，即遍历HashMap的Key时，其顺序是不可预测的（但每个Key都会遍历一次且仅遍历一次）。</p>
+<p>还有一种Map，<strong>它在内部会对Key进行排序，这种Map就是SortedMap</strong>。注意到SortedMap是接口，它的<strong>实现类是TreeMap</strong>。</p>
+<p><img src="image/-14.png" alt="-14.png" /></p>
+<p>SortedMap保证遍历时以Key的顺序来进行排序。例如，放入的Key是&quot;apple&quot;、“pear”、“orange”，遍历的顺序一定是&quot;apple&quot;、“orange”、“pear”，因为String默认按字母排序：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;String, Integer&gt; map = new TreeMap&lt;&gt;();
+        map.put(&quot;orange&quot;, 1);
+        map.put(&quot;apple&quot;, 2);
+        map.put(&quot;pear&quot;, 3);
+        for (String key : map.keySet()) &#123;
+            System.out.println(key);
+        &#125;
+        // apple, orange, pear
+    &#125;
+&#125;
+
+输出：
+
+apple
+orange
+pear</code></pre>
+<p><strong>使用TreeMap时，放入的Key必须实现Comparable接口</strong>。String、Integer这些类已经实现了Comparable接口，因此可以直接作为Key使用。作为Value的对象则没有任何要求。</p>
+<p>如果作为Key的class没有实现Comparable接口，那么，<strong>必须在创建TreeMap时同时指定一个自定义排序算法</strong>：</p>
+<p><strong>使用java.util.Comparator+compare()</strong></p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;Person, Integer&gt; map = new TreeMap&lt;&gt;(new Comparator&lt;Person&gt;() &#123;
+            public int compare(Person p1, Person p2) &#123;
+                return p1.name.compareTo(p2.name);
+            &#125;
+        &#125;);
+        map.put(new Person(&quot;Tom&quot;), 1);
+        map.put(new Person(&quot;Bob&quot;), 2);
+        map.put(new Person(&quot;Lily&quot;), 3);
+        for (Person key : map.keySet()) &#123;
+            System.out.println(key);
+        &#125;
+        // &#123;Person: Bob&#125;, &#123;Person: Lily&#125;, &#123;Person: Tom&#125;
+        System.out.println(map.get(new Person(&quot;Bob&quot;))); // 2
+    &#125;
+&#125;
+
+class Person &#123;
+    public String name;
+    Person(String name) &#123;
+        this.name = name;
+    &#125;
+    public String toString() &#123;
+        return &quot;&#123;Person: &quot; + name + &quot;&#125;&quot;;
+    &#125;
+&#125;</code></pre>
+<p>注意到Comparator接口要求实现一个比较方法，它负责比较传入的两个元素a和b，如果a&lt;b，则返回负数，通常是-1，如果a==b，则返回0，如果a&gt;b，则返回正数，通常是1。<strong>TreeMap内部根据比较结果对Key进行排序</strong>。</p>
+<p>从上述代码执行结果可知，打印的Key确实是按照Comparator定义的顺序排序的。如果要根据Key查找Value，我们可以传入一个new Person(“Bob”)作为Key，它会返回对应的Integer值2。</p>
+<p>另外，<strong>注意到Person类并未覆写equals()和hashCode()，因为TreeMap不使用equals()和hashCode()</strong></p>
+<p>我们来看一个稍微复杂的例子：这次我们定义了Student类，并用分数score进行排序，高分在前：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Map&lt;Student, Integer&gt; map = new TreeMap&lt;&gt;(new Comparator&lt;Student&gt;() &#123;
+            public int compare(Student p1, Student p2) &#123;
+                return p1.score &gt; p2.score ? -1 : 1;
+            &#125;
+        &#125;);
+        map.put(new Student(&quot;Tom&quot;, 77), 1);
+        map.put(new Student(&quot;Bob&quot;, 66), 2);
+        map.put(new Student(&quot;Lily&quot;, 99), 3);
+        for (Student key : map.keySet()) &#123;
+            System.out.println(key);
+        &#125;
+        System.out.println(map.get(new Student(&quot;Bob&quot;, 66))); // null?
+    &#125;
+&#125;
+
+class Student &#123;
+    public String name;
+    public int score;
+    Student(String name, int score) &#123;
+        this.name = name;
+        this.score = score;
+    &#125;
+    public String toString() &#123;
+        return String.format(&quot;&#123;%s: score=%d&#125;&quot;, name, score);
+    &#125;
+&#125;</code></pre>
+<p>在for循环中，我们确实得到了正确的顺序。但是，且慢！根据相同的Key：new Student(“Bob”, 66)进行查找时，结果为null！</p>
+<p>这是怎么肥四？难道TreeMap有问题？遇到TreeMap工作不正常时，我们首先回顾Java编程基本规则：出现问题，不要怀疑Java标准库，要从自身代码找原因。</p>
+<p>在这个例子中，TreeMap出现问题，原因其实出在这个Comparator上：</p>
+<pre><code class="highlight plaintext">public int compare(Student p1, Student p2) &#123;
+    return p1.score &gt; p2.score ? -1 : 1;
+&#125;</code></pre>
+<p>在p1.score和p2.score不相等的时候，它的返回值是正确的，但是，在p1.score和p2.score相等的时候，它并没有返回0！这就是为什么TreeMap工作不正常的原因：TreeMap在比较两个Key是否相等时，依赖Key的compareTo()方法或者Comparator.compare()方法。在两个Key相等时，必须返回0。因此，修改代码如下：</p>
+<pre><code class="highlight plaintext">public int compare(Student p1, Student p2) &#123;
+    if (p1.score == p2.score) &#123;
+        return 0;
+    &#125;
+    return p1.score &gt; p2.score ? -1 : 1;
+&#125;</code></pre>
+<blockquote>
+<p>或者直接借助<code>Integer.compare(int, int)</code>也可以返回正确的比较结果。</p>
+</blockquote>
+<p><strong>使用java.lang.Comparable+compareTo</strong></p>
+<pre><code class="highlight plaintext">package com.li.SortTreeSetAndTreeMap;
+/**
+ * 通过实现comparable来进行排序
+ * @author Mr
+ *
+ */
+public class Worker implements java.lang.Comparable&lt;Worker&gt;&#123;
+     
+     private String type;//工种
+     private double salary;//工资
+     public Worker() &#123;
+           super();
+           // TODO Auto-generated constructor stub
+     &#125;
+     public Worker(String type, double salary) &#123;
+           super();
+           this.type = type;
+           this.salary = salary;
+     &#125;
+     public String getType() &#123;
+           return type;
+     &#125;
+     public void setType(String type) &#123;
+           this.type = type;
+     &#125;
+     public double getSalary() &#123;
+           return salary;
+     &#125;
+     public void setSalary(double salary) &#123;
+           this.salary = salary;
+     &#125;
+     @Override
+     public int compareTo(Worker o) &#123;
+           // TODO Auto-generated method stub
+           return this.salary&gt;o.salary?1:(this.salary==o.salary?0:-1);
+     &#125;
+     public String toString ()&#123;
+           return &quot;工作：&quot;+type+&quot; 工资：&quot;+salary+&quot;\n&quot;;
+     &#125;
+     
+&#125;
+
+package com.li.SortTreeSetAndTreeMap;
+import java.util.TreeMap;
+public class WorkerTreeMap &#123;
+     public static void main(String[] args) &#123;
+           
+           Worker w1 = new Worker(&quot;垃圾回收员&quot;,12000);
+           Worker w2 = new Worker(&quot;农名工&quot;,8000);
+           Worker w3 = new Worker(&quot;程序员&quot;,5000);
+           
+           TreeMap&lt;Worker,String&gt; workers = new TreeMap&lt;Worker,String&gt;();
+           workers.put(w1,&quot;boLee&quot;);
+           workers.put(w2,&quot;boLee&quot;);
+           workers.put(w3,&quot;boLee&quot;);
+           System.out.println(workers);
+     &#125;
+&#125;</code></pre>
+<h3 id="treeset"><a class="markdownIt-Anchor" href="#treeset"></a> TreeSet</h3>
+<ul>
+<li>元素实体类本身具有排序规则 java.lang.Comparable+compareTo<br />
+使用 new TreeSet()</li>
+<li>元素实体类本身并不具有排序规则 java.util.Comparator+compare<br />
+使用 new TreeSet(Comparator&lt;? super E&gt; comparator)</li>
+</ul>
+<p>TreeSet添加数据时进行排序，数据更改不会影响原来的数据，TreeSet使用时不要修改数据，否则可能重复（应该时在放的时候不可以重复，放完之后可以修改，就有可能重复，但不会报错）</p>
+<p><strong>使用java.util.Comparator+compare()</strong></p>
+<pre><code class="highlight plaintext">代码如下
+package com.li.SortCol;
+/**
+* 了解使用TreeSet
+*/
+import java.util.TreeSet;
+
+public class PersonApp &#123;
+  public static void main(String[] args) &#123;
+  Person p1 = new Person(&quot;我&quot;,150);
+  Person p2 = new Person(&quot;刘德华&quot;,110);
+  Person p3 = new Person(&quot;梁朝伟&quot;,120);
+  Person p4 = new Person(&quot;李博&quot;,130);
+
+  /**
+  * TreeSet&lt;Person&gt; persons = new TreeSet&lt;Person&gt;();
+  * 因为person类本身不具有排序规则，所以不可以使用Comparable 的comparTo方法
+  * 要是person类实现了Comparable接口，则不会报错，可以添加数据
+  * 因为TreeSet在添加数据的时候排序
+  */
+  TreeSet&lt;Person&gt; persons = new TreeSet&lt;Person&gt;(    //在new TreeSet(Comparator comparator)的时候可以传入一个comparator的实现类
+  /*
+  * 匿名内部类
+  */
+  new java.util.Comparator&lt;Person&gt;()&#123;
+  public int compare(Person o1, Person o2) &#123;
+  return o1.getHandsome()-o2.getHandsome();&#125;
+  &#125;
+
+  );
+  persons.add(p1);
+  persons.add(p2);
+  persons.add(p3);
+  persons.add(p4);
+
+  //p4.setHandsome(50); 因TreeSet是添加的时候排序，所以后来更改数据并不会影响排序
+  System.out.println(persons);
+  &#125;</code></pre>
+<p><strong>使用java.lang.Comparable+compareTo</strong></p>
+<pre><code class="highlight plaintext">package com.li.SortTreeSetAndTreeMap;
+/**
+ * 通过实现comparable来进行排序
+ * @author Mr
+ *
+ */
+public class Worker implements java.lang.Comparable&lt;Worker&gt;&#123;
+     
+     private String type;//工种
+     private double salary;//工资
+     public Worker() &#123;
+           super();
+           // TODO Auto-generated constructor stub
+     &#125;
+     public Worker(String type, double salary) &#123;
+           super();
+           this.type = type;
+           this.salary = salary;
+     &#125;
+     public String getType() &#123;
+           return type;
+     &#125;
+     public void setType(String type) &#123;
+           this.type = type;
+     &#125;
+     public double getSalary() &#123;
+           return salary;
+     &#125;
+     public void setSalary(double salary) &#123;
+           this.salary = salary;
+     &#125;
+     @Override
+     public int compareTo(Worker o) &#123;
+           // TODO Auto-generated method stub
+           return this.salary&gt;o.salary?1:(this.salary==o.salary?0:-1);
+     &#125;
+     public String toString ()&#123;
+           return &quot;工作：&quot;+type+&quot; 工资：&quot;+salary+&quot;\n&quot;;
+     &#125;
+     
+&#125;
+
+package com.li.SortTreeSetAndTreeMap;
+/**
+* 实体类实现comparable的应用
+*/
+import java.util.TreeSet;
+public class WoekerTreeSet &#123;
+    public static void main(String[] args) &#123;
+        
+        Worker w1 = new Worker(&quot;垃圾回收员&quot;,12000);
+        Worker w2 = new Worker(&quot;农名工&quot;,8000);
+        Worker w3 = new Worker(&quot;程序员&quot;,5000);
+        
+        TreeSet&lt;Worker&gt; workers = new TreeSet&lt;Worker&gt;();
+        workers.add(w1);
+        workers.add(w2);
+        workers.add(w3);
+        System.out.println(workers);
+    &#125;
+&#125;</code></pre>
+<h3 id="comparablecomparator"><a class="markdownIt-Anchor" href="#comparablecomparator"></a> Comparable/Comparator</h3>
+<p>Comparable：实体类实现该接口，表示自己是可以排序的</p>
+<p>Comparator：比较器实现该接口，表示自己是一个比较器</p>
+<h4 id="comparable"><a class="markdownIt-Anchor" href="#comparable"></a> Comparable</h4>
+<p>&quot;<strong>可排序</strong>&quot;的实体类<strong>都实现了java.lang.Comparable接口</strong>，Comparable接口中只有一个方法：</p>
+<pre><code class="highlight plaintext">public int compareTo(Object obj);
+
+返回0：    表示this==obj
+返回正数：表示this&gt;obj
+返回负数：表示this&lt;obj</code></pre>
+<blockquote>
+<p>实现了comparable接口的类通过实现compareTo方法从而确定该类对象的排序方式</p>
+</blockquote>
+<p>一般内置类排序方法：</p>
+<ol>
+<li>整数，小数Integer Float Double直接比较基本数据类型的大小</li>
+<li>字符：比较Unicode码之差</li>
+<li>字符串：  如果其中一个是另外一个起始开始的字串，返回长度之差，否则返回第一个不相等的Unicode码之差</li>
+<li>时间：比较内部long长整形</li>
+</ol>
+<p>案例：</p>
+<pre><code class="highlight plaintext">package com.li.SortTreeSetAndTreeMap;
+/**
+ * 通过实现comparable来进行排序
+ * @author Mr
+ *
+ */
+public class Worker implements java.lang.Comparable&lt;Worker&gt;&#123;
+     
+     private String type;//工种
+     private double salary;//工资
+     public Worker() &#123;
+           super();
+           // TODO Auto-generated constructor stub
+     &#125;
+     public Worker(String type, double salary) &#123;
+           super();
+           this.type = type;
+           this.salary = salary;
+     &#125;
+     public String getType() &#123;
+           return type;
+     &#125;
+     public void setType(String type) &#123;
+           this.type = type;
+     &#125;
+     public double getSalary() &#123;
+           return salary;
+     &#125;
+     public void setSalary(double salary) &#123;
+           this.salary = salary;
+     &#125;
+     @Override
+     public int compareTo(Worker o) &#123;
+           // TODO Auto-generated method stub
+           return this.salary&gt;o.salary?1:(this.salary==o.salary?0:-1);
+     &#125;
+     public String toString ()&#123;
+           return &quot;工作：&quot;+type+&quot; 工资：&quot;+salary+&quot;\n&quot;;
+     &#125;
+     
+&#125;
+
+package com.li.SortTreeSetAndTreeMap;
+/**
+* 实体类实现comparable的应用
+*/
+import java.util.TreeSet;
+public class WoekerTreeSet &#123;
+    public static void main(String[] args) &#123;
+        
+        Worker w1 = new Worker(&quot;垃圾回收员&quot;,12000);
+        Worker w2 = new Worker(&quot;农名工&quot;,8000);
+        Worker w3 = new Worker(&quot;程序员&quot;,5000);
+        
+        TreeSet&lt;Worker&gt; workers = new TreeSet&lt;Worker&gt;();
+        workers.add(w1);
+        workers.add(w2);
+        workers.add(w3);
+        System.out.println(workers);
+    &#125;
+&#125;</code></pre>
+<h4 id="comparator"><a class="markdownIt-Anchor" href="#comparator"></a> Comparator</h4>
+<p>提供排序的比较器，业务比较器</p>
+<ul>
+<li>实现java.util.Comparator接口</li>
+<li>重写public int compare(T o1，T o2)</li>
+</ul>
+<p>作用：</p>
+<ul>
+<li>解耦：独立于实体类</li>
+<li>方便：便于应对各种排序规则</li>
+</ul>
+<p>用来定义排序规则，自己写自己需要的排序规则类  实现java.uril.Comparator接口   重写compare方法，然后供其他类调用</p>
+<p><strong>使用案例：</strong></p>
+<pre><code class="highlight plaintext">package com.li.collections;
+/**
+* 测试collections   排序工具类
+*/
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import com.li.comparable.StringComparator;
+
+public class TestCollections &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = new ArrayList&lt;String&gt;();
+        list.add(&quot;abcdf&quot;);
+        list.add(&quot;ab&quot;);
+        list.add(&quot;abc&quot;);
+        list.add(&quot;abcd&quot;);
+        Collections.sort(list);//直接调用进行排序
+        System.out.println(list);
+
+        List&lt;String&gt; list2 = new ArrayList&lt;String&gt;();
+        list2.add(&quot;abcdf&quot;);
+        list2.add(&quot;ab&quot;);
+        list2.add(&quot;abc&quot;);
+        list2.add(&quot;abcd&quot;);
+        Collections.sort(list2, new StringComparator());  //使用自己定义的方法进行排序，自定义排序规则，也可以自己重写sort方法
+        System.out.println(list2);
+
+    &#125;
+&#125;
+
+/**
+ *
+ * 定义排序规则
+ * 排序规则的业务类
+ * @author Mr
+ *
+ */
+public class StringComparator implements java.util.Comparator&lt;String&gt; &#123;       //自定义排序规则需要实现Comparator接口，还必须实现compare方法，返回int,返回正数表示&gt;，小数表示&lt;,等于返回0
+     public int compare(String o1, String o2) &#123;
+           /**
+            * 按长度比较大小
+            * 正数 》
+            * 小数 《
+            * 等于 0
+            */
+           int len1 = o1.length();
+           int len2 = o2.length();
+           
+           return len1-len2;
+     &#125;
+&#125;</code></pre>
+<h2 id="properties"><a class="markdownIt-Anchor" href="#properties"></a> Properties</h2>
+<p>在编写应用程序的时候，经常需要读写配置文件。例如，用户的设置：</p>
+<pre><code class="highlight plaintext"># 上次最后打开的文件:
+last_open_file=/data/hello.txt
+# 自动保存文件的时间间隔:
+auto_save_interval=60</code></pre>
+<p>配置文件的特点是，它的Key-Value一般都是String-String类型的，因此我们完全可以用Map&lt;String, String&gt;来表示它。</p>
+<p>因为配置文件非常常用，所以Java集合库提供了一个Properties来表示一组“配置”。由于历史遗留原因，Properties内部本质上是一个Hashtable，但我们只需要用到Properties自身关于读写配置的接口。</p>
+<h3 id="读取配置文件"><a class="markdownIt-Anchor" href="#读取配置文件"></a> 读取配置文件</h3>
+<p>用Properties读取配置文件非常简单。Java默认配置文件以.properties为扩展名，每行以key=value表示，以#课开头的是注释。以下是一个典型的配置文件：</p>
+<pre><code class="highlight plaintext"># setting.properties
+
+last_open_file=/data/hello.txt
+auto_save_interval=60</code></pre>
+<p>可以从文件系统读取这个.properties文件：</p>
+<pre><code class="highlight plaintext">String f = &quot;setting.properties&quot;;
+Properties props = new Properties();
+props.load(new java.io.FileInputStream(f));
+
+String filepath = props.getProperty(&quot;last_open_file&quot;);
+String interval = props.getProperty(&quot;auto_save_interval&quot;, &quot;120&quot;);</code></pre>
+<p>可见，用Properties读取配置文件，一共有三步：</p>
+<ul>
+<li>创建Properties实例；</li>
+<li>调用load()读取文件；</li>
+<li>调用getProperty()获取配置。</li>
+</ul>
+<p>调用<strong>getProperty()获取配置时，如果key不存在，将返回null</strong>。我们还可以提供一个默认值，这样，当key不存在的时候，就返回默认值。</p>
+<p>也可以<strong>从classpath读取.properties文件</strong>，因为load(InputStream)方法接收一个InputStream实例，表示一个字节流，它不一定是文件流，也可以是从jar包中读取的资源流：</p>
+<pre><code class="highlight plaintext">Properties props = new Properties();
+props.load(getClass().getResourceAsStream(&quot;/common/setting.properties&quot;));</code></pre>
+<p>如果有多个.properties文件，可以<strong>反复</strong>调用load()读取，<strong>后读取的key-value会覆盖已读取的key-value</strong>：</p>
+<pre><code class="highlight plaintext">Properties props = new Properties();
+props.load(getClass().getResourceAsStream(&quot;/common/setting.properties&quot;));
+props.load(new FileInputStream(&quot;C:\\conf\\setting.properties&quot;));</code></pre>
+<p>上面的代码演示了Properties的一个常用用法：可以把默认配置文件放到classpath中，然后，根据机器的环境编写另一个配置文件，覆盖某些默认的配置。</p>
+<p>Properties设计的目的是存储String类型的key－value，但Properties实际上是从Hashtable派生的，它的设计实际上是有问题的，但是为了保持兼容性，现在已经没法修改了。除了getProperty()和setProperty()方法外，还有从Hashtable继承下来的get()和put()方法，这些方法的参数签名是Object，我们在使用Properties的时候，不要去调用这些从Hashtable继承下来的方法。</p>
+<h3 id="写入配置文件"><a class="markdownIt-Anchor" href="#写入配置文件"></a> 写入配置文件</h3>
+<p>如果通过setProperty()修改了Properties实例，可以把配置写入文件，以便下次启动时获得最新配置。写入配置文件使用store()方法：</p>
+<ul>
+<li>创建Properties实例；</li>
+<li>调用setProperty()写入配置。</li>
+<li>调用store()写入文件；</li>
+</ul>
+<pre><code class="highlight plaintext">Properties props = new Properties();
+props.setProperty(&quot;url&quot;, &quot;http://www.liaoxuefeng.com&quot;);
+props.setProperty(&quot;language&quot;, &quot;Java&quot;);
+props.store(new FileOutputStream(&quot;C:\\conf\\setting.properties&quot;), &quot;这是写入的properties注释&quot;);</code></pre>
+<h3 id="编码"><a class="markdownIt-Anchor" href="#编码"></a> 编码</h3>
+<p>早期版本的Java规定.properties文件编码是ASCII编码（ISO8859-1），如果涉及到中文就必须用name=\u4e2d\u6587来表示，非常别扭。从JDK9开始，Java的.properties文件可以使用UTF-8编码了。</p>
+<p>不过，需要注意的是，由于load(InputStream)默认总是以ASCII编码读取字节流，所以会导致读到乱码。我们需要用另一个重载方法load(Reader)读取：</p>
+<pre><code class="highlight plaintext">Properties props = new Properties();
+props.load(new FileReader(&quot;settings.properties&quot;, StandardCharsets.UTF_8));</code></pre>
+<p>就可以正常读取中文。InputStream和Reader的区别是一个是字节流，一个是字符流。字符流在内存中已经以char类型表示了，不涉及编码问题。</p>
+<h3 id="案例"><a class="markdownIt-Anchor" href="#案例"></a> 案例：</h3>
+<pre><code class="highlight plaintext">package com.li.others;
+
+import java.io.IOException;
+import java.util.Properties;
+
+/**
+ * 使用类相对路径读取配置文件
+ * 工作中一般使用这种方法
+ * bin
+ * @author Mr
+ *
+ */
+public class PropertiesTest4 &#123;
+    public static void main(String[] args) throws IOException &#123;
+        Properties pro = new Properties();
+        //类相对路径  bin目录下  第一个/表示bin目录
+        //getResourceAsStream()一般用来读取配置文件
+        //getResourceAsStream读取的文件路径只局限与工程的源文件夹中，包括在工程src根目录下，
+        //以及类包里面任何位置，但是如果配置文件路径是在除了源文件夹之外的其他文件夹中时，该方法是用不了的
+
+        pro.load(PropertiesTest4.class.getResourceAsStream(&quot;/com/li/others/db.properties&quot;));
+
+        //也可以使用当前线程的类加载器
+        //这里 空 表示 bin
+        pro.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(&quot;com/li/others/db.properties&quot;));
+        System.out.println(pro.getProperty(&quot;user&quot;));
+    &#125;
+&#125;</code></pre>
+<h2 id="set"><a class="markdownIt-Anchor" href="#set"></a> Set</h2>
+<p>我们知道，Map用于存储key-value的映射，对于充当key的对象，是不能重复的，并且，不但需要正确覆写equals()方法，还要正确覆写hashCode()方法。</p>
+<ul>
+<li><strong>无序/不可重复</strong></li>
+<li><strong>HashSet，元素必须重写hashcode和equals方法</strong></li>
+<li><strong>set存数据时存入HashMap中的Key值中，所以不可重复，而value重复存一个静态的Object常量</strong></li>
+</ul>
+<p>如果我们<strong>只需要存储不重复的key，并不需要存储映射的value，那么就可以使用Set</strong>。</p>
+<p>Set用于存储不重复的元素集合，它主要提供以下几个方法：</p>
+<ul>
+<li>将元素添加进Set<E>：boolean add(E e)</li>
+<li>将元素从Set<E>删除：boolean remove(Object e)</li>
+<li>判断是否包含元素：boolean contains(Object e)</li>
+</ul>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Set&lt;String&gt; set = new HashSet&lt;&gt;();
+        System.out.println(set.add(&quot;abc&quot;)); // true
+        System.out.println(set.add(&quot;xyz&quot;)); // true
+        System.out.println(set.add(&quot;xyz&quot;)); // false，添加失败，因为元素已存在
+        System.out.println(set.contains(&quot;xyz&quot;)); // true，元素存在
+        System.out.println(set.contains(&quot;XYZ&quot;)); // false，元素不存在
+        System.out.println(set.remove(&quot;hello&quot;)); // false，删除失败，因为元素不存在
+        System.out.println(set.size()); // 2，一共两个元素
+    &#125;
+&#125;</code></pre>
+<p>Set实际上相当于只存储key、不存储value的Map。我们经常用Set用于去除重复元素。</p>
+<p>因为放入Set的元素和Map的key类似，<strong>都要正确实现equals()和hashCode()方法</strong>，否则该元素无法正确地放入Set。</p>
+<p>最常用的Set实现类是HashSet，实际上，HashSet仅仅是对HashMap的一个简单封装，它的核心代码如下：</p>
+<pre><code class="highlight plaintext">public class HashSet&lt;E&gt; implements Set&lt;E&gt; &#123;
+    // 持有一个HashMap:
+    private HashMap&lt;E, Object&gt; map = new HashMap&lt;&gt;();
+
+    // 放入HashMap的value:
+    private static final Object PRESENT = new Object();
+
+    public boolean add(E e) &#123;
+        return map.put(e, PRESENT) == null;
+    &#125;
+
+    public boolean contains(Object o) &#123;
+        return map.containsKey(o);
+    &#125;
+
+    public boolean remove(Object o) &#123;
+        return map.remove(o) == PRESENT;
+    &#125;
+&#125;</code></pre>
+<p>Set接口并不保证有序，而<strong>SortedSet接口则保证元素是有序</strong>的：</p>
+<ul>
+<li><strong>HashSet是无序的</strong>，因为它实现了Set接口，并没有实现SortedSet接口；</li>
+<li><strong>TreeSet是有序的</strong>，因为它实现了SortedSet接口。<br />
+<img src="image/-15.png" alt="-15.png" /></li>
+</ul>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Set&lt;String&gt; set = new HashSet&lt;&gt;();
+        set.add(&quot;apple&quot;);
+        set.add(&quot;banana&quot;);
+        set.add(&quot;pear&quot;);
+        set.add(&quot;orange&quot;);
+        for (String s : set) &#123;
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;
+
+输出：
+
+banana
+orange
+apple
+pear</code></pre>
+<p>注意输出的顺序既不是添加的顺序，也不是String排序的顺序，在不同版本的JDK中，这个顺序也可能是不同的。</p>
+<p>把HashSet换成TreeSet，在遍历TreeSet时，输出就是有序的，这个顺序是元素的排序顺序：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Set&lt;String&gt; set = new TreeSet&lt;&gt;();
+        set.add(&quot;apple&quot;);
+        set.add(&quot;banana&quot;);
+        set.add(&quot;pear&quot;);
+        set.add(&quot;orange&quot;);
+        for (String s : set) &#123;
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>使用TreeSet和使用TreeMap的要求一样，添加的元素必须正确实现Comparable接口，如果没有实现Comparable接口，那么创建TreeSet时必须传入一个Comparator对象。</p>
+</blockquote>
+<h2 id="queue"><a class="markdownIt-Anchor" href="#queue"></a> Queue</h2>
+<p>队列（Queue）是一种经常使用的集合。Queue实际上是实现了一个<strong>先进先出</strong>（FIFO：First In First Out）的有序表。它和List的区别在于，List可以在任意位置添加和删除元素，而Queue只有两个操作：</p>
+<ul>
+<li>把元素添加到队列末尾；</li>
+<li>从队列头部取出元素。</li>
+</ul>
+<p>在Java的标准库中，队列接口Queue定义了以下几个方法：</p>
+<ul>
+<li>int size()：获取队列长度；</li>
+<li>boolean add(E)/boolean offer(E)：添加元素到队尾；</li>
+<li>E remove()/E poll()：获取队首元素并从队列中删除；</li>
+<li>E element()/E peek()：获取队首元素但并不从队列中删除。</li>
+</ul>
+<p>对于具体的实现类，有的Queue有最大队列长度限制，有的Queue没有。注意到添加、删除和获取队列元素总是有两个方法，这是因为在添加或获取元素失败时，这两个方法的行为是不同的。我们用一个表格总结如下：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>throw Exception</th>
+<th>返回false或null</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>添加元素到队尾</td>
+<td>add(E e)</td>
+<td>boolean offer(E e)</td>
+</tr>
+<tr>
+<td>去队首元素并删除</td>
+<td>E remove()</td>
+<td>E poll()</td>
+</tr>
+<tr>
+<td>取队首元素但不删除</td>
+<td>E element()</td>
+<td>E peek()</td>
+</tr>
+</tbody>
+</table>
+<p>举个栗子，假设我们有一个队列，对它做一个添加操作，如果调用add()方法，当添加失败时（可能超过了队列的容量），它会抛出异常：</p>
+<pre><code class="highlight plaintext">Queue&lt;String&gt; q = ...
+try &#123;
+    q.add(&quot;Apple&quot;);
+    System.out.println(&quot;添加成功&quot;);
+&#125; catch(IllegalStateException e) &#123;
+    System.out.println(&quot;添加失败&quot;);
+&#125;</code></pre>
+<p>如果我们调用offer()方法来添加元素，当添加失败时，它不会抛异常，而是返回false：</p>
+<pre><code class="highlight plaintext">Queue&lt;String&gt; q = ...
+if (q.offer(&quot;Apple&quot;)) &#123;
+    System.out.println(&quot;添加成功&quot;);
+&#125; else &#123;
+    System.out.println(&quot;添加失败&quot;);
+&#125;</code></pre>
+<p>当我们需要从Queue中取出队首元素时，如果当前Queue是一个空队列，调用remove()方法，它会抛出异常：</p>
+<pre><code class="highlight plaintext">Queue&lt;String&gt; q = ...
+try &#123;
+    String s = q.remove();
+    System.out.println(&quot;获取成功&quot;);
+&#125; catch(IllegalStateException e) &#123;
+    System.out.println(&quot;获取失败&quot;);
+&#125;</code></pre>
+<p>如果我们调用poll()方法来取出队首元素，当获取失败时，它不会抛异常，而是返回null：</p>
+<pre><code class="highlight plaintext">Queue&lt;String&gt; q = ...
+String s = q.poll();
+if (s != null) &#123;
+    System.out.println(&quot;获取成功&quot;);
+&#125; else &#123;
+    System.out.println(&quot;获取失败&quot;);
+&#125;</code></pre>
+<p>因此，两套方法可以根据需要来选择使用。</p>
+<p>注意：不要把null添加到队列中，否则poll()方法返回null时，很难确定是取到了null元素还是队列为空。</p>
+<p>接下来我们以poll()和peek()为例来说说“获取并删除”与“获取但不删除”的区别。对于Queue来说，每次调用poll()，都会获取队首元素，并且获取到的元素已经从队列中被删除了：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Queue&lt;String&gt; q = new LinkedList&lt;&gt;();
+        // 添加3个元素到队列:
+        q.offer(&quot;apple&quot;);
+        q.offer(&quot;pear&quot;);
+        q.offer(&quot;banana&quot;);
+        // 从队列取出元素:
+        System.out.println(q.poll()); // apple
+        System.out.println(q.poll()); // pear
+        System.out.println(q.poll()); // banana
+        System.out.println(q.poll()); // null,因为队列是空的
+    &#125;
+&#125;</code></pre>
+<p>如果用peek()，因为获取队首元素时，并不会从队列中删除这个元素，所以可以反复获取：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Queue&lt;String&gt; q = new LinkedList&lt;&gt;();
+        // 添加3个元素到队列:
+        q.offer(&quot;apple&quot;);
+        q.offer(&quot;pear&quot;);
+        q.offer(&quot;banana&quot;);
+        // 队首永远都是apple，因为peek()不会删除它:
+        System.out.println(q.peek()); // apple
+        System.out.println(q.peek()); // apple
+        System.out.println(q.peek()); // apple
+    &#125;
+&#125;</code></pre>
+<p>从上面的代码中，我们还可以发现，LinkedList即实现了List接口，又实现了Queue接口，但是，在使用的时候，如果我们把它当作List，就获取List的引用，如果我们把它当作Queue，就获取Queue的引用：</p>
+<pre><code class="highlight plaintext">// 这是一个List:
+List&lt;String&gt; list = new LinkedList&lt;&gt;();
+// 这是一个Queue:
+Queue&lt;String&gt; queue = new LinkedList&lt;&gt;();</code></pre>
+<h2 id="priorityqueue"><a class="markdownIt-Anchor" href="#priorityqueue"></a> PriorityQueue</h2>
+<p>我们知道，Queue是一个先进先出（FIFO）的队列。</p>
+<p>在银行柜台办业务时，我们假设只有一个柜台在办理业务，但是办理业务的人很多，怎么办？</p>
+<p>可以每个人先取一个号，例如：A1、A2、A3……然后，按照号码顺序依次办理，实际上这就是一个Queue。</p>
+<p>如果这时来了一个VIP客户，他的号码是V1，虽然当前排队的是A10、A11、A12……但是柜台下一个呼叫的客户号码却是V1。</p>
+<p>这个时候，我们发现，要实现“VIP插队”的业务，用Queue就不行了，因为Queue会严格按FIFO的原则取出队首元素。我们需要的是<strong>优先队列：PriorityQueue</strong>。</p>
+<p>PriorityQueue和Queue的区别在于，<strong>它的出队顺序与元素的优先级有关，对PriorityQueue调用remove()或poll()方法，返回的总是优先级最高的元�</strong>�。</p>
+<p>要使用PriorityQueue，我们就<strong>必须给每个元素定义“优先级”</strong>。我们以实际代码为例，先看看PriorityQueue的行为：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Queue&lt;String&gt; q = new PriorityQueue&lt;&gt;();
+        // 添加3个元素到队列:
+        q.offer(&quot;apple&quot;);
+        q.offer(&quot;pear&quot;);
+        q.offer(&quot;banana&quot;);
+        System.out.println(q.poll()); // apple
+        System.out.println(q.poll()); // banana
+        System.out.println(q.poll()); // pear
+        System.out.println(q.poll()); // null,因为队列为空
+    &#125;
+&#125;</code></pre>
+<p>我们放入的顺序是&quot;apple&quot;、“pear”、“banana”，但是取出的顺序却是&quot;apple&quot;、“banana”、“pear”，这是因为从字符串的排序看，&quot;apple&quot;排在最前面，&quot;pear&quot;排在最后面。</p>
+<p>因此，放入PriorityQueue的元素，必须实现Comparable接口，PriorityQueue会根据元素的排序顺序决定出队的优先级。</p>
+<p>如果我们要放入的元素并没有实现Comparable接口怎么办？PriorityQueue允许我们提供一个Comparator对象来判断两个元素的顺序。我们以银行排队业务为例，实现一个PriorityQueue：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Queue&lt;User&gt; q = new PriorityQueue&lt;&gt;(new UserComparator());
+        // 添加3个元素到队列:
+        q.offer(new User(&quot;Bob&quot;, &quot;A1&quot;));
+        q.offer(new User(&quot;Alice&quot;, &quot;A2&quot;));
+        q.offer(new User(&quot;Boss&quot;, &quot;V1&quot;));
+        System.out.println(q.poll()); // Boss/V1
+        System.out.println(q.poll()); // Bob/A1
+        System.out.println(q.poll()); // Alice/A2
+        System.out.println(q.poll()); // null,因为队列为空
+    &#125;
+&#125;
+
+class UserComparator implements Comparator&lt;User&gt; &#123;
+    public int compare(User u1, User u2) &#123;
+        if (u1.number.charAt(0) == u2.number.charAt(0)) &#123;
+            // 如果两人的号都是A开头或者都是V开头,比较号的大小:
+            return u1.number.compareTo(u2.number);
+        &#125;
+        if (u1.number.charAt(0) == &#x27;V&#x27;) &#123;
+            // u1的号码是V开头,优先级高:
+            return -1;
+        &#125; else &#123;
+            return 1;
+        &#125;
+    &#125;
+&#125;
+
+class User &#123;
+    public final String name;
+    public final String number;
+
+    public User(String name, String number) &#123;
+        this.name = name;
+        this.number = number;
+    &#125;
+
+    public String toString() &#123;
+        return name + &quot;/&quot; + number;
+    &#125;
+&#125;
+</code></pre>
+<p>实现PriorityQueue的关键在于提供的UserComparator对象，它负责比较两个元素的大小（较小的在前）。UserComparator总是把V开头的号码优先返回，只有在开头相同的时候，才比较号码大小</p>
+<h2 id="deque"><a class="markdownIt-Anchor" href="#deque"></a> Deque</h2>
+<p>我们知道，Queue是队列，只能一头进，另一头出。</p>
+<p>如果把条件放松一下，允许<strong>两头都进，两头都出，这种队列叫双端队列</strong>（Double Ended Queue），学名Deque</p>
+<p>Java集合提供了接口Deque来实现一个双端队列，它的功能是：</p>
+<ul>
+<li><strong>既可以添加到队尾，也可以添加到队首</strong>；</li>
+<li><strong>既可以从队首获取，又可以从队尾获取</strong>。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Queue</th>
+<th>Deque</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>添加元素到队尾</td>
+<td>add(E e) / offer(E e)</td>
+<td>addLast(E e) / offerLast(E e)</td>
+</tr>
+<tr>
+<td>取队首元素并删除</td>
+<td>E remove() / E poll()</td>
+<td>E removeFirst() / E pollFirst()</td>
+</tr>
+<tr>
+<td>取队首元素但不删除</td>
+<td>E element() / E peek()</td>
+<td>E getFirst() / E peekFirst()</td>
+</tr>
+<tr>
+<td>添加元素到队首</td>
+<td>无</td>
+<td>addFirst(E e) / offerFirst(E e)</td>
+</tr>
+<tr>
+<td>取队尾元素并删除</td>
+<td>无</td>
+<td>E removeLast() / E pollLast()</td>
+</tr>
+<tr>
+<td>取队尾元素但不删除</td>
+<td>无</td>
+<td>E getLast() / E peekLast()</td>
+</tr>
+</tbody>
+</table>
+<p>对于添加元素到队尾的操作，Queue提供了add()/offer()方法，而Deque提供了addLast()/offerLast()方法。添加元素到对首、取队尾元素的操作在Queue中不存在，在Deque中由addFirst()/removeLast()等方法提供。</p>
+<p>注意到Deque接口实际上扩展自Queue：</p>
+<pre><code class="highlight plaintext">public interface Deque&lt;E&gt; extends Queue&lt;E&gt; &#123;
+    ...
+&#125;</code></pre>
+<p>因此，Queue提供的add()/offer()方法在Deque中也可以使用，但是，使用Deque，最好不要调用offer()，而是调用offerLast()：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        Deque&lt;String&gt; deque = new LinkedList&lt;&gt;();
+        deque.offerLast(&quot;A&quot;); // A
+        deque.offerLast(&quot;B&quot;); // B -&gt; A
+        deque.offerFirst(&quot;C&quot;); // B -&gt; A -&gt; C
+        System.out.println(deque.pollFirst()); // C, 剩下B -&gt; A
+        System.out.println(deque.pollLast()); // B
+        System.out.println(deque.pollFirst()); // A
+        System.out.println(deque.pollFirst()); // null
+    &#125;
+&#125;</code></pre>
+<blockquote>
+<p>如果直接写deque.offer()，我们就需要思考，offer()实际上是offerLast()，我们明确地写上offerLast()，不需要思考就能一眼看出这是添加到队尾</p>
+</blockquote>
+<p>因此，<strong>使用Deque，推荐总是明确调用offerLast()/offerFirst()或者pollFirst()/pollLast()方法</strong>。</p>
+<p>Deque是一个接口，它的实现类有ArrayDeque和LinkedList</p>
+<p>我们发现LinkedList真是一个全能选手，它即是List，又是Queue，还是Deque。但是我们在使用的时候，总是用特定的接口来引用它，这是因为持有接口说明代码的抽象层次更高，而且接口本身定义的方法代表了特定的用途。</p>
+<pre><code class="highlight plaintext">// 不推荐的写法:
+LinkedList&lt;String&gt; d1 = new LinkedList&lt;&gt;();
+d1.offerLast(&quot;z&quot;);
+// 推荐的写法：
+Deque&lt;String&gt; d2 = new LinkedList&lt;&gt;();
+d2.offerLast(&quot;z&quot;);</code></pre>
+<h2 id="stack"><a class="markdownIt-Anchor" href="#stack"></a> Stack</h2>
+<p>栈（Stack）是一种<strong>后进先出</strong>（LIFO：Last In First Out）的数据结构。</p>
+<p>所谓FIFO，是最先进队列的元素一定最早出队列，而LIFO是最后进Stack的元素一定最早出Stack。如何做到这一点呢？只需要把队列的一端封死：</p>
+<p><img src="image/-16.png" alt="-16.png" /></p>
+<p>因此，Stack是这样一种数据结构：只能不断地往Stack中压入（push）元素，最后进去的必须最早弹出（pop）来：</p>
+<p>Stack只有入栈和出栈的操作：</p>
+<ul>
+<li>把元素压栈：push(E)；</li>
+<li>把栈顶的元素“弹出”：pop(E)；</li>
+<li>取栈顶元素但不弹出：peek(E)。</li>
+</ul>
+<p>在Java中，我们<strong>用Deque可以实现Stack的功能</strong>：</p>
+<ul>
+<li>把元素压栈：push(E)/addFirst(E)；</li>
+<li>把栈顶的元素“弹出”：pop(E)/removeFirst()；</li>
+<li>取栈顶元素但不弹出：peek(E)/peekFirst()。</li>
+</ul>
+<p>为什么Java的集合类没有单独的Stack接口呢？因为有个遗留类名字就叫Stack，出于兼容性考虑，所以没办法创建Stack接口，只能用Deque接口来“模拟”一个Stack了。</p>
+<p>当我们把Deque作为Stack使用时，注意只调用push()/pop()/peek()方法，不要调用addFirst()/removeFirst()/peekFirst()方法，这样代码更加清晰</p>
+<hr />
+<p><strong>Stack的作用</strong></p>
+<hr />
+<p>Stack在计算机中使用非常广泛，JVM在处理Java方法调用的时候就会通过栈这种数据结构维护方法调用的层次。例如：</p>
+<pre><code class="highlight plaintext">static void main(String[] args) &#123;
+    foo(123);
+&#125;
+
+static String foo(x) &#123;
+    return &quot;F-&quot; + bar(x + 1);
+&#125;
+
+static int bar(int x) &#123;
+    return x &lt;&lt; 2;
+&#125;</code></pre>
+<p>JVM会创建方法调用栈，每调用一个方法时，先将参数压栈，然后执行对应的方法；当方法返回时，返回值压栈，调用方法通过出栈操作获得方法返回值。</p>
+<p>因为方法调用栈有容量限制，嵌套调用过多会造成栈溢出，即引发StackOverflowError：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        increase(1);
+    &#125;
+
+    static int increase(int x) &#123;
+        return increase(x) + 1;
+    &#125;
+&#125;</code></pre>
+<hr />
+<p>我们再来看一个Stack的用途：对整数进行进制的转换就可以利用栈。</p>
+<p>例如，我们要把一个int整数12500转换为十六进制表示的字符串，如何实现这个功能？首先我们准备一个空栈：</p>
+<p>首先我们准备一个空栈：</p>
+<p><img src="image/-17.png" alt="-17.png" /></p>
+<p>然后计算12500÷16=781…4，余数是4，把余数4压栈：</p>
+<p><img src="image/-18.png" alt="-18.png" /></p>
+<p>然后计算781÷16=48…13，余数是13，13的十六进制用字母D表示，把余数D压栈：</p>
+<p><img src="image/-19.png" alt="-19.png" /></p>
+<p>然后计算48÷16=3…0，余数是0，把余数0压栈：</p>
+<p><img src="image/-20.png" alt="-20.png" /></p>
+<p>最后计算3÷16=0…3，余数是3，把余数3压栈：</p>
+<p><img src="image/-21.png" alt="-21.png" /></p>
+<p>当商是0的时候，计算结束，我们把栈的所有元素依次弹出，组成字符串30D4，这就是十进制整数12500的十六进制表示的字符串。</p>
+<h2 id="iterator"><a class="markdownIt-Anchor" href="#iterator"></a> Iterator</h2>
+<p>Java的集合类都可以使用for each循环，List、Set和Queue会迭代每个元素，Map会迭代每个key。以List为例：</p>
+<pre><code class="highlight plaintext">List&lt;String&gt; list = List.of(&quot;Apple&quot;, &quot;Orange&quot;, &quot;Pear&quot;);
+for (String s : list) &#123;
+    System.out.println(s);
+&#125;</code></pre>
+<p>实际上，Java编译器并不知道如何遍历List。上述代码能够编译通过，只是因为编译器把for each循环通过Iterator改写为了普通的for循环：</p>
+<pre><code class="highlight plaintext">for (Iterator&lt;String&gt; it = list.iterator(); it.hasNext(); ) &#123;
+     String s = it.next();
+     System.out.println(s);
+&#125;</code></pre>
+<p>我们把这种通过Iterator对象遍历集合的模式称为迭代器。</p>
+<p>使用迭代器的好处在于，调用方总是以统一的方式遍历各种集合类型，而不必关系它们内部的存储结构。</p>
+<p>例如，我们虽然知道ArrayList在内部是以数组形式存储元素，并且，它还提供了get(int)方法。虽然我们可以用for循环遍历：</p>
+<pre><code class="highlight plaintext">for (int i=0; i&lt;list.size(); i++) &#123;
+    Object value = list.get(i);
+&#125;</code></pre>
+<p>但是这样一来，调用方就必须知道集合的内部存储结构。并且，如果把ArrayList换成LinkedList，get(int)方法耗时会随着index的增加而增加。如果把ArrayList换成Set，上述代码就无法编译，因为Set内部没有索引。</p>
+<p>用Iterator遍历就没有上述问题，因为Iterator对象是集合对象自己在内部创建的，它自己知道如何高效遍历内部的数据集合，调用方则获得了统一的代码，编译器才能把标准的for each循环自动转换为Iterator遍历。</p>
+<p>如果我们自己编写了一个集合类，想要使用for each循环，只需满足以下条件：</p>
+<ul>
+<li>集合类实现Iterable接口，该接口要求返回一个Iterator对象；</li>
+<li>用Iterator对象迭代集合内部数据。</li>
+</ul>
+<p>这里的关键在于，集合类通过调用iterator()方法，返回一个Iterator对象，这个对象必须自己知道如何遍历该集合。</p>
+<p>一个简单的Iterator示例如下，它总是以倒序遍历集合：</p>
+<pre><code class="highlight plaintext">import java.util.*;
+
+public class Main &#123;
+    public static void main(String[] args) &#123;
+        ReverseList&lt;String&gt; rlist = new ReverseList&lt;&gt;();
+        rlist.add(&quot;Apple&quot;);
+        rlist.add(&quot;Orange&quot;);
+        rlist.add(&quot;Pear&quot;);
+        for (String s : rlist) &#123;
+            System.out.println(s);
+        &#125;
+    &#125;
+&#125;
+
+class ReverseList&lt;T&gt; implements Iterable&lt;T&gt; &#123;
+
+    private List&lt;T&gt; list = new ArrayList&lt;&gt;();
+
+    public void add(T t) &#123;
+        list.add(t);
+    &#125;
+
+    @Override
+    public Iterator&lt;T&gt; iterator() &#123;
+        return new ReverseIterator(list.size());
+    &#125;
+
+    class ReverseIterator implements Iterator&lt;T&gt; &#123;
+        int index;
+
+        ReverseIterator(int index) &#123;
+            this.index = index;
+        &#125;
+
+        @Override
+        public boolean hasNext() &#123;
+            return index &gt; 0;
+        &#125;
+
+        @Override
+        public T next() &#123;
+            index--;
+            return ReverseList.this.list.get(index);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>虽然ReverseList和ReverseIterator的实现类稍微比较复杂，但是，注意到这是底层集合库，只需编写一次。而调用方则完全按for each循环编写代码，根本不需要知道集合内部的存储逻辑和遍历逻辑。</p>
+<p>在编写Iterator的时候，我们通常可以用一个内部类来实现Iterator接口，这个内部类可以直接访问对应的外部类的所有字段和方法。例如，上述代码中，内部类ReverseIterator可以用ReverseList.this获得当前外部类的this引用，然后，通过这个this引用就可以访问ReverseList的所有字段和方法。</p>
+<h3 id="自实现iterator"><a class="markdownIt-Anchor" href="#自实现iterator"></a> 自实现Iterator</h3>
+<pre><code class="highlight plaintext">import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public class MyIterator &#123;
+
+    List list = new ArrayList();
+    int cursor = 0;
+
+    int lastRet = -1;
+
+    public boolean hasNext()&#123;
+        return cursor!=list.size();
+    &#125;
+
+    public Object next()&#123;
+
+        Object next = list.get(cursor);
+        lastRet = cursor++;
+        return next;
+    &#125;
+    public void remove() throws Exception&#123;
+        if(lastRet == -1)&#123;
+            throw new Exception();
+        &#125;
+        list.remove(lastRet);
+        if(lastRet&lt;cursor)
+        lastRet = -1;
+        cursor--;
+    &#125;
+&#125;</code></pre>
+<h2 id="collections"><a class="markdownIt-Anchor" href="#collections"></a> Collections</h2>
+<p><strong>Collections是JDK提供的工具类</strong>，同样位于java.util包中。它提供了一系列静态方法，能更方便地操作各种集合。</p>
+<blockquote>
+<p>注意Collections结尾多了一个s，不是Collection！</p>
+</blockquote>
+<p>我们一般看方法名和参数就可以确认Collections提供的该方法的功能。例如，对于以下静态方法：</p>
+<pre><code class="highlight plaintext">public static boolean addAll(Collection&lt;? super T&gt; c, T... elements) &#123; ... &#125;</code></pre>
+<p>addAll()方法可以给一个Collection类型的集合添加若干元素。因为方法签名是Collection，所以我们可以传入List，Set等各种集合类型。</p>
+<h3 id="创建集合"><a class="markdownIt-Anchor" href="#创建集合"></a> 创建集合</h3>
+<p><strong>创建集合</strong></p>
+<p>Collections提供了一系列方法来创建空集合：</p>
+<ul>
+<li>创建空List：List<T> emptyList()</li>
+<li>创建空Map：Map&lt;K, V&gt; emptyMap()</li>
+<li>创建空Set：Set<T> emptySet()</li>
+</ul>
+<p>要注意到返回的空集合是不可变集合，无法向其中添加或删除元素。</p>
+<p>此外，也可以用各个集合接口提供的of(T…)方法创建空集合。例如，以下创建空List的两个方法是等价的：</p>
+<pre><code class="highlight plaintext">List&lt;String&gt; list1 = List.of();
+List&lt;String&gt; list2 = Collections.emptyList();</code></pre>
+<p><strong>创建多元素集合</strong></p>
+<p>Collections提供了一系列方法来创建一个单元素集合：</p>
+<ul>
+<li>创建一个元素的List：List<T> singletonList(T o)</li>
+<li>创建一个元素的Map：Map&lt;K, V&gt; singletonMap(K key, V value)</li>
+<li>创建一个元素的Set：Set<T> singleton(T o)</li>
+</ul>
+<p>要注意到返回的单元素集合也是不可变集合，无法向其中添加或删除元素。</p>
+<p>此外，也可以用各个集合接口提供的of(T…)方法创建单元素集合。例如，以下创建单元素List的两个方法是等价的：</p>
+<pre><code class="highlight plaintext">List&lt;String&gt; list1 = List.of(&quot;apple&quot;);
+List&lt;String&gt; list2 = Collections.singletonList(&quot;apple&quot;);</code></pre>
+<p>实际上，使用List.of(T…)更方便，因为它既可以创建空集合，也可以创建单元素集合，还可以创建任意个元素的集合：</p>
+<pre><code class="highlight plaintext">List&lt;String&gt; list1 = List.of(); // empty list
+List&lt;String&gt; list2 = List.of(&quot;apple&quot;); // 1 element
+List&lt;String&gt; list3 = List.of(&quot;apple&quot;, &quot;pear&quot;); // 2 elements
+List&lt;String&gt; list4 = List.of(&quot;apple&quot;, &quot;pear&quot;, &quot;orange&quot;); // 3 elements</code></pre>
+<h3 id="排序"><a class="markdownIt-Anchor" href="#排序"></a> 排序</h3>
+<p>Collections可以对List进行排序。因为排序会直接修改List元素的位置，因此必须传入可变List：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list = new ArrayList&lt;&gt;();
+        list.add(&quot;apple&quot;);
+        list.add(&quot;pear&quot;);
+        list.add(&quot;orange&quot;);
+        // 排序前:
+        System.out.println(list);
+        Collections.sort(list);
+        // 排序后:
+        System.out.println(list);
+    &#125;
+&#125;</code></pre>
+<h3 id="洗牌"><a class="markdownIt-Anchor" href="#洗牌"></a> 洗牌</h3>
+<p>Collections提供了洗牌算法，即传入一个有序的List，可以随机打乱List内部元素的顺序，效果相当于让计算机洗牌：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;Integer&gt; list = new ArrayList&lt;&gt;();
+        for (int i=0; i&lt;10; i++) &#123;
+            list.add(i);
+        &#125;
+        // 洗牌前:
+        System.out.println(list);
+        Collections.shuffle(list);
+        // 洗牌后:
+        System.out.println(list);
+    &#125;
+&#125;</code></pre>
+<h3 id="不可变集合"><a class="markdownIt-Anchor" href="#不可变集合"></a> 不可变集合</h3>
+<p>Collections还提供了一组方法把可变集合封装成不可变集合：</p>
+<ul>
+<li><strong>封装成不可变List</strong>：List<T> unmodifiableList(List&lt;? extends T&gt; list)</li>
+<li><strong>封装成不可变Set</strong>：Set<T> unmodifiableSet(Set&lt;? extends T&gt; set)</li>
+<li><strong>封装成不可变Map</strong>：Map&lt;K, V&gt; unmodifiableMap(Map&lt;? extends K, ? extends V&gt; m)</li>
+</ul>
+<p>这种封装实际上是通过创建一个代理对象，拦截掉所有修改方法实现的。我们来看看效果：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; mutable = new ArrayList&lt;&gt;();
+        mutable.add(&quot;apple&quot;);
+        mutable.add(&quot;pear&quot;);
+        // 变为不可变集合:
+        List&lt;String&gt; immutable = Collections.unmodifiableList(mutable);
+        immutable.add(&quot;orange&quot;); // UnsupportedOperationException!
+    &#125;
+&#125;</code></pre>
+<p>然而，继续对原始的可变List进行增删是可以的，并且，会直接影响到封装后的“不可变”List：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; mutable = new ArrayList&lt;&gt;();
+        mutable.add(&quot;apple&quot;);
+        mutable.add(&quot;pear&quot;);
+        // 变为不可变集合:
+        List&lt;String&gt; immutable = Collections.unmodifiableList(mutable);
+        mutable.add(&quot;orange&quot;);
+        System.out.println(immutable);
+    &#125;
+&#125;</code></pre>
+<p>因此，如果我们希望把一个可变List封装成不可变List，那么，返回不可变List后，最好立刻扔掉可变List的引用，这样可以保证后续操作不会意外改变原始对象，从而造成“不可变”List变化了：</p>
+<pre><code class="highlight plaintext">public class Main &#123;
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; mutable = new ArrayList&lt;&gt;();
+        mutable.add(&quot;apple&quot;);
+        mutable.add(&quot;pear&quot;);
+        // 变为不可变集合:
+        List&lt;String&gt; immutable = Collections.unmodifiableList(mutable);
+        // 立刻扔掉mutable的引用:
+        mutable = null;
+        System.out.println(immutable);
+    &#125;
+&#125;</code></pre>
+<h3 id="线程安全集合"><a class="markdownIt-Anchor" href="#线程安全集合"></a> 线程安全集合</h3>
+<p>Collections还提供了一组方法，可以把线程不安全的集合变为线程安全的集合：</p>
+<ul>
+<li>变为线程安全的List：List<T> synchronizedList(List<T> list)</li>
+<li>变为线程安全的Set：Set<T> synchronizedSet(Set<T> s)</li>
+<li>变为线程安全的Map：Map&lt;K,V&gt; synchronizedMap(Map&lt;K,V&gt; m)</li>
+</ul>
+<p>多线程的概念我们会在后面讲。<strong>因为从Java 5开始，引入了更高效的并发集合类，所以上述这几个同步方法已经没有什么用了</strong>。</p>
+<h3 id="编写collections排序方法"><a class="markdownIt-Anchor" href="#编写collections排序方法"></a> 编写Collections排序方法</h3>
+<pre><code class="highlight plaintext">package com.li.comparable;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+/*
+ * 把冒泡排序提取出来
+ *
+ * 这里这个util相当于 Collections   大同小异
+ */
+public class Utils &#123;
+     
+     /**
+      * 数组排序+comparator
+      * @param &lt;T&gt;
+      */
+public static &lt;T&gt; void sort(Object[] arr,Comparator&lt;T&gt; com)&#123;     //传入Comparator接口的实现类，第2步编写sort排序类
+           
+           int len = arr.length;
+           boolean sorted;
+           for(int j= 0;j&lt;len-1;j++)&#123; //趟数
+                sorted=false;
+                for(int i = 0;i&lt;len-1-j;i++)&#123; //次数 //这里次数减去J
+                      if(com.compare((T)(arr[i]), (T)(arr[i+1]))&lt;0)&#123;        //这里使用comparetor中的compare的方法比较大小，所以实现Comparator的类必须重写compare()方法
+                           /**
+                            * 不要借助中间变量的交换顺序版蹦
+                            */
+                           Object temp = arr[i];
+                           arr[i] = arr[i+1];
+                           arr[i+1] = temp;
+                           sorted = true;
+                      &#125;
+                &#125;
+                if(!sorted)return;
+                      
+           &#125;
+     &#125;
+     
+     /**
+      * List排序
+      */
+     public static &lt;T extends Comparable&lt;T&gt;&gt; void sort(List&lt;T&gt; list)&#123;
+           Object[] arr = list.toArray();
+           sort(arr);
+           for(int i=0;i&lt;arr.length;i++)&#123;
+                list.set(i, (T)(arr[i]));
+           &#125;
+           
+     &#125;
+     /**
+      * 数组排序(使用泛型方法)
+      */
+     public static&lt;T extends Comparable&lt;T&gt;&gt; void sort(T[] arr)&#123;
+ 
+           int len = arr.length;
+           boolean sorted;
+           for(int j= 0;j&lt;len-1;j++)&#123; //趟数
+                sorted=false;
+                for(int i = 0;i&lt;len-1-j;i++)&#123; //次数 //这里次数减去J
+                     if(((Comparable)arr[i]).compareTo(arr[i+1])&gt;0)&#123;
+                           /**
+                            * 不要借助中间变量的交换顺序版蹦
+                            */
+                           T temp = arr[i];
+                           arr[i] = arr[i+1];
+                           arr[i+1] = temp;
+                           sorted = true;
+                      &#125;
+                &#125;
+                if(!sorted)return;
+                
+                
+           &#125;
+           System.out.println(Arrays.toString(arr));
+     &#125;
+     
+     /**
+      * 数组排序（降序）
+      * @param arr
+      */
+     public static void sort(Object[] arr)&#123;
+           
+           int len = arr.length;
+           boolean sorted;
+           for(int j= 0;j&lt;len-1;j++)&#123; //趟数
+                sorted=false;
+                for(int i = 0;i&lt;len-1-j;i++)&#123; //次数 //这里次数减去J
+                     if(((Comparable)arr[i]).compareTo(arr[i+1])&gt;0)&#123;
+                           /**
+                            * 不要借助中间变量的交换顺序版蹦
+                            */
+                           Object temp = arr[i];
+                           arr[i] = arr[i+1];
+                           arr[i+1] = temp;
+                           sorted = true;
+                      &#125;
+                &#125;
+                if(!sorted)return;
+                
+                
+           &#125;
+           System.out.println(Arrays.toString(arr));
+     &#125;
+&#125;
+
+public class StringComparator implements java.util.Comparator&lt;String&gt; &#123;       //第1步，编写排序规则
+     public int compare(String o1, String o2) &#123;
+           /**
+            * 按长度比较大小
+            * 正数 》
+            * 小数 《
+            * 等于 0
+            */
+           int len1 = o1.length();
+           int len2 = o2.length();
+           
+           return len1-len2;
+     &#125;
+&#125;</code></pre>
+<h2 id="引用分类"><a class="markdownIt-Anchor" href="#引用分类"></a> 引用分类</h2>
+<p><strong>引用分类</strong></p>
+<ul>
+<li>强引用：StrongReference：引用指向对象，gc运行时不回收</li>
+<li>软引用：SoftReference：gc运行时可能回收（jvm内存不够）</li>
+<li>弱引用：WeakReference：gc运行时立即回收</li>
+<li>虚引用：PhantomReference：类似于无引用，主要跟踪对象被回收的状态，不能单独使用，必须与引用队列（ReferenceQueue）联合使用</li>
+</ul>
+<p><strong>目的</strong></p>
+<ul>
+<li>避免对象长期驻留在内存中，解决垃圾回收机制回收时机问题</li>
+</ul>
+<p>1、<strong>强引用</strong></p>
+<p>代码中普遍存在的类似&quot;Object obj = new Object()&quot;这类的引用，只要强引用还存在，垃圾收集器永远不会回收掉被引用的对象</p>
+<p>2、<strong>软引用</strong></p>
+<p>描述有些还有用但并非必需的对象。在系统将要发生内存溢出异常之前，将会把这些对象列进回收范围进行二次回收。如果这次回收还没有足够的内存，才会抛出内存溢出异常。Java中的类SoftReference表示软引用</p>
+<p>3、<strong>弱引用</strong></p>
+<p>描述非必需对象。被弱引用关联的对象只能生存到下一次垃圾回收之前，垃圾收集器工作之后，无论当前内存是否足够，都会回收掉只被弱引用关联的对象。Java中的类WeakReference表示弱引用</p>
+<p>4、<strong>虚引用</strong></p>
+<p>这个引用存在的唯一目的就是在这个对象被收集器回收时收到一个系统通知，被虚引用关联的对象，和其生存时间完全没关系。Java中的类PhantomReference表示虚引用</p>
+<h3 id="weakhashmap"><a class="markdownIt-Anchor" href="#weakhashmap"></a> WeakHashMap</h3>
+<p>键为弱引用，回收键后自动删除key-value对象</p>
+<pre><code class="highlight plaintext">import java.util.WeakHashMap;
+
+/**
+ * WeakHashMalp键为弱类型
+ * gc运行立即回收
+ * @author Mr
+ *
+ */
+public class WeakHashMapDemo &#123;
+     public static void main(String[] args) &#123;
+           WeakHashMap&lt;String,String&gt; map = new WeakHashMap&lt;String,String&gt;();
+           //常量池对象，不会被回收
+           map.put(&quot;li&quot;, &quot;llibo&quot;);
+           map.put(&quot;wang&quot;, &quot;wangyangyi&quot;);
+           //gc运行即被回收
+           map.put(new String(&quot;li&quot;), &quot;libo&quot;);
+           map.put(&quot;wang&quot;, &quot;wangyangyi&quot;);
+           System.out.println(map.size());
+           //通知回收
+           System.gc();
+           System.runFinalization();
+           System.out.println(map.size());
+     &#125;
+
+&#125;</code></pre>
+<h3 id="weakreference"><a class="markdownIt-Anchor" href="#weakreference"></a> WeakReference</h3>
+<pre><code class="highlight plaintext">import java.lang.ref.WeakReference;
+
+/**
+ * 引用分类：强，软，弱，虚
+ * 强于弱引用
+ * 描述非必需对象。被弱引用关联的对象只能生存到下一次垃圾回收之前，垃圾收集器工作之后，无论当前内存是否足够，都会回收掉只被弱引用关联的对象。
+ * @author Mr
+ *
+ */
+public class WeakReferenceTest &#123;
+
+     public static void main(String[] args) &#123;
+           //字符串对象，可以被回收
+           String str = new String(&quot;bjsxt is very good!&quot;)   ;
+           //弱引用管理对象
+           WeakReference&lt;String&gt; wr = new WeakReference&lt;String&gt;(str);
+           //断开str对字符串的引用
+           str = null;
+
+           System.out.println(wr.get());
+           //调用GC(垃圾回收装置  )   通知回收
+
+           System.gc();
+           System.runFinalization();  //开始回收
+
+           System.out.println(&quot;GC运行后&quot;);
+           System.out.println(wr.get());
+     &#125;
+
+     public static void TestString()&#123;
+           //字符串常量池 是共享资源（不可以被回收）
+           String str = &quot;bjsxt is very good!&quot;    ;
+           WeakReference&lt;String&gt; wr = new WeakReference&lt;String&gt;(str);
+           //断开str对字符串的引用
+           str = null;
+           System.out.println(wr.get());
+           //调用GC(垃圾回收装置  )   通知回收
+           System.gc();
+           System.runFinalization();  //开始回收
+
+           System.out.println(&quot;GC运行后&quot;);
+           System.out.println(wr.get());  //运行发现不能被回收
+     &#125;
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

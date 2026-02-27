@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Nanohttp 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Nanohttp</div>
+  <div class="post-meta">
+    <div class="date">2021 五月 16日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Nanohttp</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="nanohttp"><a class="markdownIt-Anchor" href="#nanohttp"></a> $NanoHTTP</h1>
+<h1 id="nanohttp使用教程"><a class="markdownIt-Anchor" href="#nanohttp使用教程"></a> NanoHTTP使用教程</h1>
+<p>nanohttp是一个轻量级的，微型的HTTP服务器，如果想给某项目增加一个http的访问，nanohttp是一个很好的选择，只需引入一个jar包，即可轻松配置。</p>
+<h2 id="依赖"><a class="markdownIt-Anchor" href="#依赖"></a> 依赖</h2>
+<pre><code class="highlight plaintext">&lt;dependency&gt;
+    &lt;groupId&gt;org.nanohttpd&lt;/groupId&gt; 
+    &lt;!-- &lt;groupId&gt;com.nanohttpd&lt;/groupId&gt; for 2.1.0 and earlier --&gt;
+    &lt;artifactId&gt;nanohttpd&lt;/artifactId&gt;
+    &lt;version&gt;2.2.0&lt;/version&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.nanohttpd&lt;/groupId&gt; 
+    &lt;!-- &lt;groupId&gt;com.nanohttpd&lt;/groupId&gt; for 2.1.0 and earlier --&gt;
+    &lt;artifactId&gt;nanohttpd-apache-fileupload&lt;/artifactId&gt;
+    &lt;version&gt;2.2.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+<h2 id="文件服务器源代码"><a class="markdownIt-Anchor" href="#文件服务器源代码"></a> 文件服务器源代码</h2>
+<pre><code class="highlight plaintext">import fi.iki.elonen.NanoFileUpload;
+import fi.iki.elonen.NanoHTTPD;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.io.FileUtils;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
+import shaded.org.apache.commons.lang.StringUtils;
+
+import java.io.*;
+import java.net.URL;
+import java.security.KeyStore;
+import java.util.*;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+/**
+ * @author libo
+ * @date Created in 2020/8/11 13:59
+ */
+public class NanoHttpServer extends NanoHTTPD &#123;
+
+    public static void main(String[] args) &#123;
+        try &#123;
+            NanoHttpServer nanoHttpServer = new NanoHttpServer(44016, new RestTemplate());
+            //nanoHttpServer.makeSecure(NanoHTTPD.makeSSLSocketFactory(&quot;/keystore.jks&quot;, &quot;password&quot;.toCharArray()), null);
+            nanoHttpServer.start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+        &#125; catch (IOException e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+
+    private RestTemplate restTemplate ;
+    private String url = &quot;https://adm.suninfo.com:44000/sdmPermissionCheck&quot;;
+    private NanoFileUpload uploader;
+    private Properties props;
+
+    public NanoHttpServer(int port, RestTemplate restTemplate) throws IOException &#123;
+        super(port);
+        this.restTemplate = restTemplate;
+        this.uploader = new NanoFileUpload(new DiskFileItemFactory());
+        this.props = new Properties();
+        InputStream resourceAsStream = this.getClass().getClassLoader().getResourceAsStream(&quot;constant.properties&quot;);
+        props.load(resourceAsStream);
+        System.setProperty(&quot;javax.net.ssl.trustStore&quot;, new File(NanoHttpServer.class.getClassLoader().getResource(&quot;keystore.jks&quot;).getPath()).getAbsolutePath());
+        //start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
+    &#125;
+
+    @Override
+    public Response serve(IHTTPSession session) &#123;
+        String uri = session.getUri();
+        //跨域域请求通过
+//        if(session.getMethod() == Method.OPTIONS)&#123;
+//            Response response = newFixedLengthResponse(Response.Status.OK, &quot;text/html;charset=utf-8&quot;, null);
+//            response.addHeader(&quot;Access-Control-Allow-Origin&quot;, &quot;*&quot;);
+//            response.addHeader(&quot;Access-Control-Allow-Methods&quot;, &quot;GET,POST,PUT,DELETE,OPTIONS,PATCH&quot;);
+//            response.addHeader(&quot;Access-Control-Allow-Headers&quot;, session.getHeaders().get(&quot;access-control-request-headers&quot;));
+//            //response.addHeader(&quot;Access-Control-Allow-Credentials&quot;, &quot;true&quot;);
+//            //response.addHeader(&quot;Access-Control-Max-Age&quot;, &quot;2&quot;);
+//            return response;
+//        &#125;
+//
+        if(!checkLegal(session))&#123;
+            return responseError(&quot;无权限&quot;);
+        &#125;
+
+        if(uri.contains(&quot;upload&quot;))&#123;
+            return uploadFile(session);
+        &#125;else if(uri.contains(&quot;download&quot;))&#123;
+            return downFile(session);
+        &#125;else if(uri.contains(&quot;delete&quot;))&#123;
+            return delFile(session);
+        &#125;
+        return responseError(&quot;未知错误&quot;);
+    &#125;
+
+    //删除文件
+    private Response delFile(IHTTPSession session) &#123;
+        try &#123;
+            session.parseBody(new HashMap&lt;String, String&gt;());
+            Map&lt;String, String&gt; parms = session.getParms();
+            Set&lt;Map.Entry&lt;String, String&gt;&gt; entries = parms.entrySet();
+            for(Map.Entry&lt;String, String&gt; tempEntry:entries)&#123;
+                String value = tempEntry.getValue();
+                deleteFile(new File(value));
+            &#125;
+        &#125; catch (Exception e) &#123;
+            return responseError(&quot;error&quot;);
+        &#125;
+        return responseSuccess(&quot;success&quot;);
+    &#125;
+
+    //上传文件
+    private Response uploadFile(IHTTPSession session) &#123;
+        String uri = session.getUri();
+        String queryParameterString = session.getQueryParameterString();
+        Map&lt;String, String&gt; parms = session.getParms();
+        String typeName = parms.get(&quot;typeName&quot;);
+        String taskName = parms.get(&quot;taskName&quot;);
+        String userName = parms.get(&quot;userName&quot;);
+        if (taskName.contains(&quot;/&quot;) || userName.contains(&quot;/&quot;))&#123;
+            return responseError(&quot;非法访问&quot;);
+        &#125;
+        String startPath = &quot;&quot;;
+        String dirPath = &quot;&quot;;
+        String filePath = &quot;&quot;;
+        File newFile = null;
+
+        if(typeName.equals(&quot;text&quot;))&#123;
+            startPath = props.getProperty(&quot;input_filepath&quot;);
+        &#125;else if(typeName.equals(&quot;hive&quot;))&#123;
+            startPath = props.getProperty(&quot;hive_filepath&quot;);
+        &#125;else if(typeName.equals(&quot;hadoop&quot;))&#123;
+            startPath = props.getProperty(&quot;hadoop_filepath&quot;);
+        &#125;else&#123;
+            return responseError(&quot;非法访问&quot;);
+        &#125;
+
+        try &#123;
+            if(NanoFileUpload.isMultipartContent(session))&#123;
+                List&lt;FileItem&gt; fileItems = uploader.parseRequest(session);
+                for(FileItem fileItem:fileItems)&#123;
+                    if(fileItem.getFieldName().contains(&quot;file&quot;))&#123;
+                        String fileName = StringUtils.substringAfter(fileItem.getFieldName(),&quot;_&quot;);
+                        if(fileItem.getSize() &gt; 1073741824L)&#123;
+                            return responseError(&quot;上传文件夹过大&quot;);
+                        &#125;
+                        dirPath = startPath + userName+ File.separator + taskName + File.separator;
+                        filePath = dirPath + fileName;
+                        File dir = new File(dirPath);
+                        if (!dir.exists())&#123;
+                            dir.mkdirs();
+                            dir.setWritable(true);
+                        &#125;
+                        newFile = new File(filePath);
+                        if(newFile.exists())&#123;
+                            newFile.delete();
+                        &#125;
+                        fileItem.write(newFile);
+                        newFile.setExecutable(false);
+                    &#125;
+                &#125;
+            &#125;
+
+            if(typeName.equals(&quot;hive&quot;) || typeName.equals(&quot;hadoop&quot;))&#123;
+                return responseSuccess(dirPath);
+            &#125;else&#123;
+                return responseSuccess(filePath);
+            &#125;
+        &#125; catch (Exception e) &#123;
+            if(null != newFile &amp;&amp; newFile.exists())&#123;
+                newFile.delete();
+            &#125;
+            return responseError(&quot;未知错误&quot;);
+        &#125;
+    &#125;
+
+    //下载文件
+    private Response downFile(IHTTPSession session)&#123;
+        String queryParameterString = session.getQueryParameterString();
+        Map&lt;String, String&gt; parms = session.getParms();
+        String taskName = parms.get(&quot;taskName&quot;);
+        String userName = parms.get(&quot;userName&quot;);
+        if (taskName.contains(&quot;/&quot;) || userName.contains(&quot;/&quot;))&#123;
+            return responseError(&quot;非法访问&quot;);
+        &#125;
+        //下载文件之前，先压缩
+        String filepath = props.getProperty(&quot;output_filepath&quot;) + userName + &quot;/&quot; + taskName;
+        File dirFile = new File(filepath);
+        if (!dirFile.exists())&#123;
+            return responseError(&quot;文件不存在&quot;);
+        &#125;
+        if (dirFile.isDirectory())&#123;
+            if (!ifHasChildFile(dirFile))&#123;
+                return responseError(&quot;文件不存在&quot;);
+            &#125;
+        &#125;
+        long sizeOfDirFile = FileUtils.sizeOfDirectory(dirFile);
+        if(sizeOfDirFile &gt; 1073741824L)&#123;
+            return responseError(&quot;文件超过1G，无法下载，请在&quot;+filepath+&quot;路径自行下载&quot;);
+        &#125;
+        deleteFile(new File(filepath + &quot;.zip&quot;));
+        String srcPath = props.getProperty(&quot;output_filepath&quot;) + userName + &quot;/&quot; + taskName;
+        String zipPath = props.getProperty(&quot;output_filepath&quot;) + userName;
+        String zipFileName = taskName + &quot;.zip&quot;;
+        try &#123;
+            zipFile(srcPath, zipPath, zipFileName);
+        &#125; catch (Exception e) &#123;
+            return responseError(&quot;生成压缩文件失败&quot;);
+        &#125;
+
+        //下载文件
+        filepath = filepath + &quot;.zip&quot;;
+        File file = new File(filepath);
+        if(file.length() &gt; 1073741824L)&#123;
+            return responseError(&quot;文件超过1G，无法下载，请在&quot;+filepath+&quot;路径自行下载&quot;);
+        &#125;
+        try&#123;
+            FileInputStream fis = new FileInputStream(filepath);
+            Response response = newFixedLengthResponse(Response.Status.OK, &quot;application/octet-stream;charset=UTF-8&quot;, fis, fis.available());
+            response.addHeader(&quot;Content-Disposition&quot;, &quot;attachment;filename=&quot; + new String(taskName.getBytes(&quot;GBK&quot;),&quot;ISO-8859-1&quot;) + &quot;.zip&quot;);
+            return response;
+        &#125; catch (Exception e) &#123;
+            return responseError(&quot;未知错误&quot;);
+        &#125;
+    &#125;
+
+    //校验请求和否是合法请求
+    public boolean checkLegal(IHTTPSession session) &#123;
+//        boolean legalFlag = true;
+//        //请求头添加cookie
+//        Map&lt;String, String&gt; srcHeader = session.getHeaders();
+//        String cookie = srcHeader.get(&quot;cookiepara&quot;);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(HttpHeaders.COOKIE,cookie);
+//        HttpEntity&lt;String&gt; requestEntity = new HttpEntity&lt;&gt;(null, headers);
+//        //获取currentUserSID
+//        Map&lt;String, String&gt; parms = session.getParms();
+//        String currentUserSID = parms.get(&quot;currentUserSID&quot;);
+//        try&#123;
+//            ResponseEntity&lt;String&gt; resEntity = restTemplate.exchange(url+&quot;?currentUserSID=&quot;+currentUserSID, HttpMethod.GET, requestEntity, String.class);
+//            Logger.logger.info(&quot;file download:&quot; + url);
+//            if(resEntity.getStatusCode().toString().startsWith(&quot;4&quot;))&#123;
+//                legalFlag = false;
+//            &#125;
+//        &#125;catch (Exception e)&#123;
+//            legalFlag = false;
+//        &#125;
+        Map&lt;String, String&gt; srcHeader = session.getHeaders();
+        String cookie = srcHeader.get(&quot;cookie&quot;);
+        if(cookie.equals(&quot;sdmHttpServer_jh7(_8Hk9GH%jkl&quot;))&#123;
+            return true;
+        &#125;
+        return false;
+    &#125;
+
+    //返回错误信息
+    public Response responseError(String message) &#123;
+        message = &quot;&#123;\&quot;code\&quot;:1,\&quot;message\&quot;:\&quot;&quot;+message+&quot;\&quot;&#125;&quot;;
+        Response response = newFixedLengthResponse(Response.Status.NOT_FOUND, &quot;application/json;charset=UTF-8&quot;, message);
+        return response;
+    &#125;
+
+    //返回成功信息
+    public Response responseSuccess(String message) &#123;
+        message = &quot;&#123;\&quot;code\&quot;:0,\&quot;message\&quot;:\&quot;&quot;+message+&quot;\&quot;&#125;&quot;;
+        Response response = newFixedLengthResponse(Response.Status.OK, &quot;application/json;charset=UTF-8&quot;, message);
+        return response;
+    &#125;
+
+    /**
+     * 检查当前文件夹下是否有子文件
+     * @param file 待检查文件夹
+     * @return true:有子文件，false:没有子文件
+     */
+    private boolean ifHasChildFile(File file)&#123;
+        boolean[] flag = &#123;false&#125;;
+        ifHasChildFile(file,flag);
+        return flag[0];
+    &#125;
+
+    private void ifHasChildFile(File file,boolean[] flag)&#123;
+        if (file.isFile())&#123;
+            flag[0] = true;
+        &#125;
+        else &#123;
+            for (File tempFile : file.listFiles())&#123;
+                if (tempFile.isDirectory())&#123;
+                    ifHasChildFile(tempFile,flag);
+                &#125;
+                else &#123;
+                    flag[0] = true;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    /**
+     * 删除指定文件
+     * @param file 待删除的文件对象
+     */
+    private void deleteFile(File file)&#123;
+        if (!file.exists())&#123;
+            return;
+        &#125;
+        if (file.isFile())&#123;
+            file.delete();
+        &#125;
+        else&#123;
+            File[] fileList = file.listFiles();
+            if (fileList != null &amp;&amp; fileList.length !=0)&#123;
+                for (File item : fileList)&#123;
+                    if (item.isDirectory())&#123;
+                        deleteFile(item);
+                    &#125;
+                    else&#123;
+                        item.delete();
+                    &#125;
+                &#125;
+            &#125;
+            file.delete();
+        &#125;
+    &#125;
+
+    private void zipFile(String srcPath, String zipPath, String zipFileName) throws Exception
+    &#123;
+        CheckedOutputStream cos = null;
+        ZipOutputStream zos = null;
+        try
+        &#123;
+            File srcFile = new File(srcPath);
+            //判断压缩文件保存的路径是否存在，如果不存在，则创建目录
+            File zipDir = new File(zipPath);
+            if (!zipDir.exists() || !zipDir.isDirectory())
+            &#123;
+                zipDir.mkdirs();
+            &#125;
+
+            //创建压缩文件保存的文件对象
+            String zipFilePath = zipPath + File.separator + zipFileName;
+            File zipFile = new File(zipFilePath);
+            if (zipFile.exists())
+            &#123;
+                //检测文件是否允许删除，如果不允许删除，将会抛出SecurityException
+                SecurityManager securityManager = new SecurityManager();
+                securityManager.checkDelete(zipFilePath);
+                //删除已存在的目标文件
+                zipFile.delete();
+            &#125;
+
+            cos = new CheckedOutputStream(new FileOutputStream(zipFile), new CRC32());
+            zos = new ZipOutputStream(cos);
+
+            //如果只是压缩一个文件，则需要截取该文件的父目录
+            String srcRootDir = srcPath;
+            if (srcFile.isFile())
+            &#123;
+                int index = srcPath.lastIndexOf(File.separator);
+                if (index != -1)
+                &#123;
+                    srcRootDir = srcPath.substring(0, index);
+                &#125;
+            &#125;
+            //调用递归压缩方法进行目录或文件压缩
+            compress(srcRootDir, srcFile, zos);
+            zos.flush();
+        &#125;
+        catch (Exception e)
+        &#123;
+            throw e;
+        &#125;
+        finally
+        &#123;
+            try
+            &#123;
+                if (zos != null)
+                &#123;
+                    zos.close();
+                &#125;
+            &#125;
+            catch (Exception e)
+            &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+
+    private void compress(String srcRootDir, File file, ZipOutputStream zos) throws Exception
+    &#123;
+        if (file == null)
+        &#123;
+            return;
+        &#125;
+
+        //如果是文件，则直接压缩该文件
+        if (file.isFile())
+        &#123;
+            int count, bufferLen = 1024;
+            byte data[] = new byte[bufferLen];
+
+            //获取文件相对于压缩文件夹根目录的子路径
+            String subPath = file.getAbsolutePath();
+            int index = subPath.indexOf(srcRootDir);
+            if (index != -1)
+            &#123;
+                subPath = subPath.substring(srcRootDir.length() + File.separator.length());
+            &#125;
+            ZipEntry entry = new ZipEntry(subPath);
+            zos.putNextEntry(entry);
+            BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+            while ((count = bis.read(data, 0, bufferLen)) != -1)
+            &#123;
+                zos.write(data, 0, count);
+            &#125;
+            bis.close();
+            zos.closeEntry();
+        &#125;
+        //如果是目录，则压缩整个目录
+        else
+        &#123;
+            //压缩目录中的文件或子目录
+            File[] childFileList = file.listFiles();
+            for (int n=0; n&lt;childFileList.length; n++)
+            &#123;
+                compress(srcRootDir, childFileList[n], zos);
+            &#125;
+        &#125;
+    &#125;
+
+&#125;
+</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

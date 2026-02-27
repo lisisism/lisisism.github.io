@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    编写HTTP服务器 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">编写HTTP服务器</div>
+  <div class="post-meta">
+    <div class="date">2020 五月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="编写http服务器"><a class="markdownIt-Anchor" href="#编写http服务器"></a> $编写HTTP服务器</h1>
+<h2 id="编写http-server"><a class="markdownIt-Anchor" href="#编写http-server"></a> 编写HTTP Server</h2>
+<p>我们来看一下如何编写HTTP Server。一个HTTP Server本质上是一个TCP服务器，我们先用TCP编程的多线程实现的服务器端框架：</p>
+<pre><code class="highlight plaintext">
+public class Server &#123;
+    public static void main(String[] args) throws IOException &#123;
+        ServerSocket ss = new ServerSocket(8080); // 监听指定端口
+        System.out.println(&quot;server is running...&quot;);
+        for (;;) &#123;
+            Socket sock = ss.accept();
+            System.out.println(&quot;connected from &quot; + sock.getRemoteSocketAddress());
+            Thread t = new Handler(sock);
+            t.start();
+        &#125;
+    &#125;
+&#125;
+
+class Handler extends Thread &#123;
+    Socket sock;
+
+    public Handler(Socket sock) &#123;
+        this.sock = sock;
+    &#125;
+
+    public void run() &#123;
+        try (InputStream input = this.sock.getInputStream()) &#123;
+            try (OutputStream output = this.sock.getOutputStream()) &#123;
+                handle(input, output);
+            &#125;
+        &#125; catch (Exception e) &#123;
+            try &#123;
+                this.sock.close();
+            &#125; catch (IOException ioe) &#123;
+            &#125;
+            System.out.println(&quot;client disconnected.&quot;);
+        &#125;
+    &#125;
+
+    private void handle(InputStream input, OutputStream output) throws IOException &#123;
+        var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+        var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+        // TODO: 处理HTTP请求
+    &#125;
+&#125;</code></pre>
+<p>只需要在handle()方法中，用Reader读取HTTP请求，用Writer发送HTTP响应，即可实现一个最简单的HTTP服务器。编写代码如下：</p>
+<pre><code class="highlight plaintext">private void handle(InputStream input, OutputStream output) throws IOException &#123;
+    System.out.println(&quot;Process new http request...&quot;);
+    var reader = new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+    var writer = new BufferedWriter(new OutputStreamWriter(output, StandardCharsets.UTF_8));
+    // 读取HTTP请求:
+    boolean requestOk = false;
+    String first = reader.readLine();
+    if (first.startsWith(&quot;GET / HTTP/1.&quot;)) &#123;
+        requestOk = true;
+    &#125;
+    for (;;) &#123;
+        String header = reader.readLine();
+        if (header.isEmpty()) &#123; // 读取到空行时, HTTP Header读取完毕
+            break;
+        &#125;
+        System.out.println(header);
+    &#125;
+    System.out.println(requestOk ? &quot;Response OK&quot; : &quot;Response Error&quot;);
+    if (!requestOk) &#123;
+        // 发送错误响应:
+        writer.write(&quot;HTTP/1.0 404 Not Found\r\n&quot;);
+        writer.write(&quot;Content-Length: 0\r\n&quot;);
+        writer.write(&quot;\r\n&quot;);
+        writer.flush();
+    &#125; else &#123;
+        // 发送成功响应:
+        String data = &quot;&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello, world!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;&quot;;
+        int length = data.getBytes(StandardCharsets.UTF_8).length;
+        writer.write(&quot;HTTP/1.0 200 OK\r\n&quot;);
+        writer.write(&quot;Connection: close\r\n&quot;);
+        writer.write(&quot;Content-Type: text/html\r\n&quot;);
+        writer.write(&quot;Content-Length: &quot; + length + &quot;\r\n&quot;);
+        writer.write(&quot;\r\n&quot;); // 空行标识Header和Body的分隔
+        writer.write(data);
+        writer.flush();
+    &#125;
+&#125;
+</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>
