@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Quarkus 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Quarkus</div>
+  <div class="post-meta">
+    <div class="date">2024 一月 10日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">Quarkus</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="quarkus"><a class="markdownIt-Anchor" href="#quarkus"></a> Quarkus</h1>
+<h2 id="什么是quarkus"><a class="markdownIt-Anchor" href="#什么是quarkus"></a> 什么是Quarkus</h2>
+<p>Quarkus 是一个专门为云原生和 GraalVM Native Image 设计的 Java 框架。<br />
+它的核心思想是把传统框架在运行期做的事情（比如依赖注入、注解扫描、反射）提前到编译期完成，这样生成的代码天然就对 Native Image 友好，不需要大量额外配置。<br />
+同时 Quarkus 即使不用 Native Image，用普通 JVM 运行也比 Spring Boot 启动更快。</p>
+<h2 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h2>
+<p><strong>需要安装：</strong></p>
+<ul>
+<li>JDK 17+（推荐 21）</li>
+<li>Maven 3.9+ 或 Gradle</li>
+<li>GraalVM（如果需要编译 Native Image）</li>
+<li>Quarkus CLI（可选但推荐）</li>
+</ul>
+<pre><code class="highlight bash"><span class="comment"># 安装 Quarkus CLI（Mac/Linux）</span>
+curl -Ls https://sh.jbang.dev | bash -s - trust add https://repo1.maven.org/maven2/io/quarkus/quarkus-cli/
+curl -Ls https://sh.jbang.dev | bash -s - app install --fresh --verbose quarkus@quarkusio</code></pre>
+<hr />
+<h2 id="创建第一个项目"><a class="markdownIt-Anchor" href="#创建第一个项目"></a> 创建第一个项目</h2>
+<p><strong>方式一：Quarkus CLI</strong></p>
+<pre><code class="highlight bash">quarkus create app com.example:my-quarkus-app \
+  --extension=<span class="string">&#x27;resteasy-reactive,jackson&#x27;</span>
+<span class="built_in">cd</span> my-quarkus-app</code></pre>
+<p><strong>方式二：Maven</strong></p>
+<pre><code class="highlight bash">mvn io.quarkus.platform:quarkus-maven-plugin:3.8.0:create \
+  -DprojectGroupId=com.example \
+  -DprojectArtifactId=my-quarkus-app \
+  -Dextensions=<span class="string">&quot;resteasy-reactive,jackson&quot;</span></code></pre>
+<p><strong>方式三：网页生成（推荐新手）</strong></p>
+<p>直接访问 <a target="_blank" rel="noopener" href="https://code.quarkus.io">https://code.quarkus.io</a> 勾选需要的扩展，下载项目。</p>
+<hr />
+<h2 id="项目结构"><a class="markdownIt-Anchor" href="#项目结构"></a> 项目结构</h2>
+<pre><code class="highlight plaintext">my-quarkus-app/
+├── src/
+│   ├── main/
+│   │   ├── java/com/example/
+│   │   │   └── GreetingResource.java   # 默认生成的接口
+│   │   ├── resources/
+│   │   │   ├── application.properties  # 配置文件
+│   │   │   └── META-INF/resources/     # 静态资源
+│   └── test/
+├── pom.xml</code></pre>
+<hr />
+<h2 id="核心概念"><a class="markdownIt-Anchor" href="#核心概念"></a> 核心概念</h2>
+<h3 id="1-第一个-rest-接口"><a class="markdownIt-Anchor" href="#1-第一个-rest-接口"></a> 1. 第一个 REST 接口</h3>
+<pre><code class="highlight java"><span class="keyword">import</span> jakarta.ws.rs.GET;
+<span class="keyword">import</span> jakarta.ws.rs.Path;
+<span class="keyword">import</span> jakarta.ws.rs.Produces;
+<span class="keyword">import</span> jakarta.ws.rs.core.MediaType;
+
+<span class="meta">@Path(&quot;/hello&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GreetingResource</span> &#123;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Produces(MediaType.TEXT_PLAIN)</span>
+    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> <span class="string">&quot;Hello Quarkus!&quot;</span>;
+    &#125;
+    
+    <span class="meta">@GET</span>
+    <span class="meta">@Path(&quot;/&#123;name&#125;&quot;)</span>
+    <span class="meta">@Produces(MediaType.TEXT_PLAIN)</span>
+    <span class="keyword">public</span> String <span class="title function_">helloName</span><span class="params">(String name)</span> &#123;
+        <span class="keyword">return</span> <span class="string">&quot;Hello &quot;</span> + name + <span class="string">&quot;!&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<h3 id="2-依赖注入cdi"><a class="markdownIt-Anchor" href="#2-依赖注入cdi"></a> 2. 依赖注入（CDI）</h3>
+<pre><code class="highlight java"><span class="comment">// Service 层</span>
+<span class="keyword">import</span> jakarta.enterprise.context.ApplicationScoped;
+
+<span class="meta">@ApplicationScoped</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GreetingService</span> &#123;
+    <span class="keyword">public</span> String <span class="title function_">greet</span><span class="params">(String name)</span> &#123;
+        <span class="keyword">return</span> <span class="string">&quot;Hello, &quot;</span> + name + <span class="string">&quot;!&quot;</span>;
+    &#125;
+&#125;
+
+<span class="comment">// 注入使用</span>
+<span class="meta">@Path(&quot;/hello&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GreetingResource</span> &#123;
+
+    <span class="meta">@Inject</span>
+    GreetingService greetingService;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Path(&quot;/&#123;name&#125;&quot;)</span>
+    <span class="meta">@Produces(MediaType.TEXT_PLAIN)</span>
+    <span class="keyword">public</span> String <span class="title function_">hello</span><span class="params">(String name)</span> &#123;
+        <span class="keyword">return</span> greetingService.greet(name);
+    &#125;
+&#125;</code></pre>
+<p><strong>常用作用域注解：</strong></p>
+<ul>
+<li><code>@ApplicationScoped</code> — 整个应用单例</li>
+<li><code>@RequestScoped</code> — 每次请求新建</li>
+<li><code>@Singleton</code> — 类似 ApplicationScoped，但更轻量</li>
+</ul>
+<h3 id="3-配置文件"><a class="markdownIt-Anchor" href="#3-配置文件"></a> 3. 配置文件</h3>
+<pre><code class="highlight properties"><span class="comment"># application.properties</span>
+<span class="attr">quarkus.http.port</span>=<span class="string">8080</span>
+<span class="attr">quarkus.http.host</span>=<span class="string">0.0.0.0</span>
+<span class="comment"></span>
+<span class="comment"># 自定义配置</span>
+<span class="attr">greeting.message</span>=<span class="string">Hello</span>
+<span class="attr">greeting.name</span>=<span class="string">World</span></code></pre>
+<p>读取配置：</p>
+<pre><code class="highlight java"><span class="keyword">import</span> org.eclipse.microprofile.config.inject.ConfigProperty;
+
+<span class="meta">@ApplicationScoped</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">GreetingService</span> &#123;
+
+    <span class="meta">@ConfigProperty(name = &quot;greeting.message&quot;, defaultValue = &quot;Hi&quot;)</span>
+    String message;
+
+    <span class="meta">@ConfigProperty(name = &quot;greeting.name&quot;)</span>
+    String name;
+
+    <span class="keyword">public</span> String <span class="title function_">greet</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> message + <span class="string">&quot;, &quot;</span> + name + <span class="string">&quot;!&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<h3 id="4-返回-json"><a class="markdownIt-Anchor" href="#4-返回-json"></a> 4. 返回 JSON</h3>
+<pre><code class="highlight java"><span class="comment">// 实体类（用 Record 更简洁）</span>
+<span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">Person</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;&#125;
+
+<span class="meta">@Path(&quot;/person&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">PersonResource</span> &#123;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Produces(MediaType.APPLICATION_JSON)</span>
+    <span class="keyword">public</span> Person <span class="title function_">getPerson</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Person</span>(<span class="string">&quot;张三&quot;</span>, <span class="number">25</span>);
+    &#125;
+    
+    <span class="meta">@POST</span>
+    <span class="meta">@Consumes(MediaType.APPLICATION_JSON)</span>
+    <span class="meta">@Produces(MediaType.APPLICATION_JSON)</span>
+    <span class="keyword">public</span> Person <span class="title function_">createPerson</span><span class="params">(Person person)</span> &#123;
+        <span class="comment">// 处理逻辑</span>
+        <span class="keyword">return</span> person;
+    &#125;
+&#125;</code></pre>
+<hr />
+<h2 id="数据库操作"><a class="markdownIt-Anchor" href="#数据库操作"></a> 数据库操作</h2>
+<h3 id="添加依赖panache-mysql"><a class="markdownIt-Anchor" href="#添加依赖panache-mysql"></a> 添加依赖（Panache + MySQL）</h3>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.quarkus<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>quarkus-hibernate-orm-panache<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.quarkus<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>quarkus-jdbc-mysql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<p>配置数据库：</p>
+<pre><code class="highlight properties"><span class="attr">quarkus.datasource.db-kind</span>=<span class="string">mysql</span>
+<span class="attr">quarkus.datasource.username</span>=<span class="string">root</span>
+<span class="attr">quarkus.datasource.password</span>=<span class="string">123456</span>
+<span class="attr">quarkus.datasource.jdbc.url</span>=<span class="string">jdbc:mysql://localhost:3306/mydb</span>
+
+<span class="attr">quarkus.hibernate-orm.database.generation</span>=<span class="string">update</span></code></pre>
+<h3 id="entityactive-record-模式"><a class="markdownIt-Anchor" href="#entityactive-record-模式"></a> Entity（Active Record 模式）</h3>
+<pre><code class="highlight java"><span class="keyword">import</span> io.quarkus.hibernate.orm.panache.PanacheEntity;
+<span class="keyword">import</span> jakarta.persistence.Entity;
+<span class="keyword">import</span> jakarta.persistence.Column;
+
+<span class="meta">@Entity</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> <span class="keyword">extends</span> <span class="title class_">PanacheEntity</span> &#123;
+    <span class="comment">// id 字段由 PanacheEntity 自动提供</span>
+    
+    <span class="keyword">public</span> String name;
+    
+    <span class="meta">@Column(unique = true)</span>
+    <span class="keyword">public</span> String email;
+    
+    <span class="keyword">public</span> <span class="type">int</span> age;
+    
+    <span class="comment">// 可以直接在 Entity 里写查询方法</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> User <span class="title function_">findByEmail</span><span class="params">(String email)</span> &#123;
+        <span class="keyword">return</span> find(<span class="string">&quot;email&quot;</span>, email).firstResult();
+    &#125;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> List&lt;User&gt; <span class="title function_">findAdults</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> list(<span class="string">&quot;age &gt;= ?1&quot;</span>, <span class="number">18</span>);
+    &#125;
+&#125;</code></pre>
+<h3 id="repository-模式推荐"><a class="markdownIt-Anchor" href="#repository-模式推荐"></a> Repository 模式（推荐）</h3>
+<pre><code class="highlight java"><span class="keyword">import</span> io.quarkus.hibernate.orm.panache.PanacheRepository;
+<span class="keyword">import</span> jakarta.enterprise.context.ApplicationScoped;
+
+<span class="meta">@ApplicationScoped</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserRepository</span> <span class="keyword">implements</span> <span class="title class_">PanacheRepository</span>&lt;User&gt; &#123;
+    
+    <span class="keyword">public</span> User <span class="title function_">findByEmail</span><span class="params">(String email)</span> &#123;
+        <span class="keyword">return</span> find(<span class="string">&quot;email&quot;</span>, email).firstResult();
+    &#125;
+    
+    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">findByAge</span><span class="params">(<span class="type">int</span> minAge)</span> &#123;
+        <span class="keyword">return</span> list(<span class="string">&quot;age &gt;= ?1&quot;</span>, minAge);
+    &#125;
+&#125;</code></pre>
+<h3 id="crud-接口"><a class="markdownIt-Anchor" href="#crud-接口"></a> CRUD 接口</h3>
+<pre><code class="highlight java"><span class="meta">@Path(&quot;/users&quot;)</span>
+<span class="meta">@Produces(MediaType.APPLICATION_JSON)</span>
+<span class="meta">@Consumes(MediaType.APPLICATION_JSON)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserResource</span> &#123;
+
+    <span class="meta">@Inject</span>
+    UserRepository userRepository;
+
+    <span class="meta">@GET</span>
+    <span class="keyword">public</span> List&lt;User&gt; <span class="title function_">listAll</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> userRepository.listAll();
+    &#125;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Path(&quot;/&#123;id&#125;&quot;)</span>
+    <span class="keyword">public</span> User <span class="title function_">getById</span><span class="params">(Long id)</span> &#123;
+        <span class="keyword">return</span> userRepository.findById(id);
+    &#125;
+
+    <span class="meta">@POST</span>
+    <span class="meta">@Transactional</span>
+    <span class="keyword">public</span> Response <span class="title function_">create</span><span class="params">(User user)</span> &#123;
+        userRepository.persist(user);
+        <span class="keyword">return</span> Response.status(<span class="number">201</span>).entity(user).build();
+    &#125;
+
+    <span class="meta">@PUT</span>
+    <span class="meta">@Path(&quot;/&#123;id&#125;&quot;)</span>
+    <span class="meta">@Transactional</span>
+    <span class="keyword">public</span> User <span class="title function_">update</span><span class="params">(Long id, User updated)</span> &#123;
+        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> userRepository.findById(id);
+        user.name = updated.name;
+        user.email = updated.email;
+        <span class="keyword">return</span> user;
+    &#125;
+
+    <span class="meta">@DELETE</span>
+    <span class="meta">@Path(&quot;/&#123;id&#125;&quot;)</span>
+    <span class="meta">@Transactional</span>
+    <span class="keyword">public</span> Response <span class="title function_">delete</span><span class="params">(Long id)</span> &#123;
+        userRepository.deleteById(id);
+        <span class="keyword">return</span> Response.noContent().build();
+    &#125;
+&#125;</code></pre>
+<hr />
+<h2 id="响应式编程reactive"><a class="markdownIt-Anchor" href="#响应式编程reactive"></a> 响应式编程（Reactive）</h2>
+<p>Quarkus 推荐使用响应式方式处理高并发：</p>
+<pre><code class="highlight java"><span class="keyword">import</span> io.smallrye.mutiny.Uni;
+
+<span class="meta">@Path(&quot;/reactive&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ReactiveResource</span> &#123;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Path(&quot;/hello&quot;)</span>
+    <span class="keyword">public</span> Uni&lt;String&gt; <span class="title function_">hello</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> Uni.createFrom().item(<span class="string">&quot;Hello Reactive!&quot;</span>);
+    &#125;
+
+    <span class="meta">@GET</span>
+    <span class="meta">@Path(&quot;/users&quot;)</span>
+    <span class="keyword">public</span> Multi&lt;User&gt; <span class="title function_">listUsers</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> Multi.createFrom().items(
+            <span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;张三&quot;</span>, <span class="number">25</span>),
+            <span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;李四&quot;</span>, <span class="number">30</span>)
+        );
+    &#125;
+&#125;</code></pre>
+<hr />
+<h2 id="开发模式dev-mode-核心亮点"><a class="markdownIt-Anchor" href="#开发模式dev-mode-核心亮点"></a> 开发模式（Dev Mode）— 核心亮点</h2>
+<pre><code class="highlight bash"><span class="comment"># 启动开发模式，支持热重载</span>
+./mvnw quarkus:dev</code></pre>
+<p>开发模式下：</p>
+<ul>
+<li>修改代码<strong>自动热重载</strong>，无需重启</li>
+<li>访问 <a target="_blank" rel="noopener" href="http://localhost:8080/q/dev">http://localhost:8080/q/dev</a> 进入 <strong>Dev UI</strong>，可以看到所有配置、扩展、接口文档</li>
+<li>内置 <strong>Dev Services</strong>：自动启动 Docker 容器提供数据库、Kafka 等，零配置</li>
+</ul>
+<hr />
+<h2 id="打包-部署"><a class="markdownIt-Anchor" href="#打包-部署"></a> 打包 &amp; 部署</h2>
+<h3 id="普通-jvm-打包"><a class="markdownIt-Anchor" href="#普通-jvm-打包"></a> 普通 JVM 打包</h3>
+<pre><code class="highlight bash">./mvnw package
+java -jar target/quarkus-app/quarkus-run.jar</code></pre>
+<h3 id="native-image-打包"><a class="markdownIt-Anchor" href="#native-image-打包"></a> Native Image 打包</h3>
+<pre><code class="highlight bash"><span class="comment"># 需要安装 GraalVM</span>
+./mvnw package -Pnative
+
+<span class="comment"># 或用 Docker 编译（不需要本地装 GraalVM）</span>
+./mvnw package -Pnative -Dquarkus.native.container-build=<span class="literal">true</span></code></pre>
+<h3 id="docker-镜像"><a class="markdownIt-Anchor" href="#docker-镜像"></a> Docker 镜像</h3>
+<pre><code class="highlight bash"><span class="comment"># 项目自动生成了 Dockerfile</span>
+docker build -f src/main/docker/Dockerfile.jvm -t my-app .
+<span class="comment"># 或 native 版本</span>
+docker build -f src/main/docker/Dockerfile.native -t my-app-native .</code></pre>
+<hr />
+<h2 id="常用扩展速查"><a class="markdownIt-Anchor" href="#常用扩展速查"></a> 常用扩展速查</h2>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>扩展名</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REST 接口</td>
+<td><code>quarkus-resteasy-reactive</code></td>
+</tr>
+<tr>
+<td>JSON</td>
+<td><code>quarkus-jackson</code></td>
+</tr>
+<tr>
+<td>数据库 ORM</td>
+<td><code>quarkus-hibernate-orm-panache</code></td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td><code>quarkus-jdbc-mysql</code></td>
+</tr>
+<tr>
+<td>Redis</td>
+<td><code>quarkus-redis-client</code></td>
+</tr>
+<tr>
+<td>Kafka</td>
+<td><code>quarkus-smallrye-reactive-messaging-kafka</code></td>
+</tr>
+<tr>
+<td>定时任务</td>
+<td><code>quarkus-scheduler</code></td>
+</tr>
+<tr>
+<td>健康检查</td>
+<td><code>quarkus-smallrye-health</code></td>
+</tr>
+<tr>
+<td>接口文档</td>
+<td><code>quarkus-smallrye-openapi</code></td>
+</tr>
+<tr>
+<td>安全认证</td>
+<td><code>quarkus-oidc</code> / <code>quarkus-smallrye-jwt</code></td>
+</tr>
+</tbody>
+</table>
+<p>添加扩展：</p>
+<pre><code class="highlight bash">quarkus ext add redis-client
+<span class="comment"># 或</span>
+./mvnw quarkus:add-extension -Dextensions=<span class="string">&quot;redis-client&quot;</span></code></pre>
+<hr />
+<h2 id="学习路径建议"><a class="markdownIt-Anchor" href="#学习路径建议"></a> 学习路径建议</h2>
+<ol>
+<li><strong>入门</strong>：创建项目 → REST 接口 → 依赖注入 → 配置读取</li>
+<li><strong>进阶</strong>：数据库操作（Panache）→ 响应式编程（Mutiny）→ Kafka 集成</li>
+<li><strong>生产</strong>：Native Image 打包 → Docker/K8s 部署 → 健康检查 &amp; 监控</li>
+</ol>
+<p><strong>官方资源：</strong></p>
+<ul>
+<li>官方文档：<a target="_blank" rel="noopener" href="https://quarkus.io/guides/">https://quarkus.io/guides/</a></li>
+<li>在线代码生成：<a target="_blank" rel="noopener" href="https://code.quarkus.io">https://code.quarkus.io</a></li>
+<li>官方示例：<a target="_blank" rel="noopener" href="https://github.com/quarkusio/quarkus-quickstarts">https://github.com/quarkusio/quarkus-quickstarts</a></li>
+</ul>
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

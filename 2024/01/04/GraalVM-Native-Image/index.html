@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    GraalVM-Native-Image 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">GraalVM-Native-Image</div>
+  <div class="post-meta">
+    <div class="date">2024 一月 4日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+      <div class="tag-item">GraalVM</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="graalvm-native-image"><a class="markdownIt-Anchor" href="#graalvm-native-image"></a> GraalVM Native Image</h1>
+<p>GraalVM是一个高性能的运行时环境，它不仅支持Java，还兼容JavaScript、Python等多种语言。其中，Native Image是其核心组件之一，它利用即时编译（AOT）技术，在应用程序部署前将其及其依赖转换为机器码，从而消除JVM的启动时间和内存开销。</p>
+<p>Native Image 是由 GraalVM 提供的一种技术，可以将 Java 应用直接编译为机器码的可执行文件（而不是 .jar）。 这意味着运行时不需要 JVM，也不会有 JIT 编译延迟。</p>
+<h3 id="优点"><a class="markdownIt-Anchor" href="#优点"></a> 优点</h3>
+<ul>
+<li>启动更快</li>
+<li>内存占用更低</li>
+<li>直接打包为单一二进制文件，部署简单</li>
+</ul>
+<h3 id="缺点"><a class="markdownIt-Anchor" href="#缺点"></a> 缺点</h3>
+<ul>
+<li>构建时间长</li>
+<li>反射、动态代理支持差</li>
+<li>调试困难</li>
+<li>很多库不兼容</li>
+</ul>
+<h2 id="什么是native-image"><a class="markdownIt-Anchor" href="#什么是native-image"></a> 什么是Native Image</h2>
+<p>传统 JVM 执行流程：</p>
+<ol>
+<li>启动 JVM。</li>
+<li>加载 .class 字节码文件。</li>
+<li>解析类、初始化静态变量。</li>
+<li>在运行时，通过解释器执行字节码。</li>
+<li>性能热点代码会被 HotSpot JIT（Just-In-Time）编译器动态编译成机器码以提高性能。</li>
+<li>执行垃圾回收（GC）等运行时任务。</li>
+</ol>
+<p>Native Image AOT 流程：</p>
+<ol>
+<li>构建时分析： 在构建阶段，native-image 工具会启动一个临时的 JVM 来执行你的应用程序的引导代码（通常是 main 方法）。在此期间，它会进行静态分析和可达性分析，跟踪所有可能被执行的代码路径，确定哪些类、方法、字段会在运行时被加载和使用。</li>
+<li>Substrate VM: 这个分析过程由 GraalVM 的 Substrate VM 完成，它是用于构建原生镜像的特殊运行时环境。</li>
+<li>元数据提取： 分析过程中收集到的所有信息（如所有可达的类、方法、反射信息、资源文件等）都会被提取出来。</li>
+<li>代码生成： GraalVM 编译器（基于 Graal JIT 编译器）将收集到的 Java 字节码和 GraalVM 自身的运行时组件（包括内存管理、线程调度等）一起，通过 LLVM 等后端编译成特定平台的本地机器码。</li>
+<li>链接： 所有生成的目标文件被链接在一起，最终形成一个独立的可执行文件。</li>
+</ol>
+<p>Native Image 的<strong>核心优势</strong></p>
+<ol>
+<li>闪电般的启动速度： 由于跳过了 JVM 启动、类加载、JIT 预热等一系列步骤，原生应用的启动时间可以从数秒甚至数十秒缩短到毫秒级。这对于需要快速响应的 Serverless 函数或需要频繁伸缩的微服务至关重要。</li>
+<li>更低的内存占用： 没有了 JVM 的运行时开销（如庞大的 GC 堆、方法区/元空间、JIT 编译器本身等），原生镜像的内存 Footprint 显著降低，通常只有传统 JVM 应用的几分之一。</li>
+<li>即时性能： 构建时的 AOT 编译已经对代码进行了深度优化，因此应用在启动后立即就能达到接近峰值的性能，无需等待 JIT 编译器优化热点代码。</li>
+<li>精简部署： 最终产物是一个单一的、包含所有依赖的可执行文件，部署变得极其简单，无需在目标机器上安装 JVM。</li>
+</ol>
+<p>Native Image 的<strong>缺点</strong></p>
+<ol>
+<li>构建时间长且资源消耗大： Native Image 的构建过程非常复杂，涉及深度的静态分析和代码优化，因此耗时很长（可能从几分钟到几十分钟不等），并且需要消耗大量 CPU 和内存。</li>
+<li>动态特性受限： 由于是静态分析，对于反射（Reflection）、动态代理（Dynamic Proxy）、运行时类加载（Runtime Class Loading）、资源文件动态查找等动态特性，必须在构建前通过配置文件（如 reflect-config.json）明确告知 native-image 工具哪些类和方法可能会被动态使用，否则在运行时会失败。</li>
+<li>生态系统兼容性： 并非所有 Java 库都能完美兼容 Native Image。一些过度依赖 JVM 动态特性的框架或库可能无法正常工作，或者需要特殊的适配或配置。例如，Spring Framework 推出了 Spring Native 项目来解决此问题。</li>
+</ol>
+<h2 id="从-java-应用到原生镜像"><a class="markdownIt-Anchor" href="#从-java-应用到原生镜像"></a> 从 Java 应用到原生镜像</h2>
+<h3 id="环境准备"><a class="markdownIt-Anchor" href="#环境准备"></a> 环境准备</h3>
+<p>GraalVM JDK: 从 GraalVM 官网 下载并安装适合你操作系统的 GraalVM JDK。推荐使用最新稳定版（例如，对应 Java 17 或 21 的版本）。</p>
+<p>设置 JAVA_HOME: 将你的 JAVA_HOME 环境变量指向 GraalVM JDK 的安装目录。例如，在 Linux/macOS 上，你可能需要在 ~/.bashrc 文件中添加：</p>
+<pre><code class="highlight plaintext">export JAVA_HOME=/path/to/your/graalvm-jdk</code></pre>
+<p>安装 native-image 组件: 打开终端，执行以下命令来安装 native-image 工具：</p>
+<pre><code class="highlight plaintext">gu install native-image</code></pre>
+<h3 id="创建一个简单的java应用"><a class="markdownIt-Anchor" href="#创建一个简单的java应用"></a> 创建一个简单的Java应用</h3>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorld</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        System.out.println(<span class="string">&quot;Hello, World!&quot;</span>);
+    &#125;
+&#125;</code></pre>
+<h3 id="编译java代码"><a class="markdownIt-Anchor" href="#编译java代码"></a> 编译Java代码</h3>
+<p>在终端中，进入 HelloNative.java 所在的目录，使用 GraalVM JDK 编译源码：</p>
+<pre><code class="highlight plaintext">javac HelloWorld.java</code></pre>
+<h3 id="构建native-image"><a class="markdownIt-Anchor" href="#构建native-image"></a> 构建Native Image</h3>
+<p>现在，我们尝试直接将 HelloNative.class 编译成原生镜像：</p>
+<pre><code class="highlight plaintext">./native-image HelloWorld</code></pre>
+<h3 id="执行"><a class="markdownIt-Anchor" href="#执行"></a> 执行</h3>
+<p>构建成功后，可以直接执行</p>
+<p>几乎是瞬间启动并完成输出的，这体现了 Native Image 的启动速度优势。</p>
+<pre><code class="highlight plaintext">./hello-world</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

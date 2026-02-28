@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Go 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Go</div>
+  <div class="post-meta">
+    <div class="date">2024 四月 29日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Go</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="go"><a class="markdownIt-Anchor" href="#go"></a> Go</h1>
+<p>最近在系统整理 Go 的知识，顺手写成文章。有 Java 基础的话上手会很快，语法比 Java 精简不少，但有几个地方思维要转换一下，后面会重点说。</p>
+<h2 id="环境搭建"><a class="markdownIt-Anchor" href="#环境搭建"></a> 环境搭建</h2>
+<p>安装没什么好说的，三个平台都支持。</p>
+<pre><code class="highlight bash"><span class="comment"># Mac</span>
+brew install go
+<span class="comment"># Linux</span>
+wget https://go.dev/dl/go1.22.linux-amd64.tar.gz
+tar -C /usr/local -xzf go1.22.linux-amd64.tar.gz
+<span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:/usr/local/go/bin
+<span class="comment"># 验证</span>
+go version</code></pre>
+<p>编辑器推荐 VS Code 装 Go 插件，免费够用。如果你用惯了 JetBrains 系列，GoLand 也行，界面和 IDEA 基本一样。<br />
+跑个 Hello World 试试：</p>
+<pre><code class="highlight go"><span class="keyword">package</span> main
+<span class="keyword">import</span> <span class="string">&quot;fmt&quot;</span>
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    fmt.Println(<span class="string">&quot;Hello, Go!&quot;</span>)
+&#125;</code></pre>
+<pre><code class="highlight bash">go run hello.go    <span class="comment"># 开发时直接跑</span>
+go build hello.go  <span class="comment"># 编译成二进制，发布用这个</span></code></pre>
+<p><code>go run</code> 背后也是先编译再执行，只是不保留编译产物。平时开发用 <code>go run</code> 方便，上线打包用 <code>go build</code>。</p>
+<h2 id="基础语法"><a class="markdownIt-Anchor" href="#基础语法"></a> 基础语法</h2>
+<h3 id="变量"><a class="markdownIt-Anchor" href="#变量"></a> 变量</h3>
+<p>Go 变量声明有几种写法，最常用的是 <code>:=</code>，编译器自动推断类型，不用像 Java 那样每次都写类型名。</p>
+<pre><code class="highlight go"><span class="comment">// 标准写法</span>
+<span class="keyword">var</span> name <span class="type">string</span> = <span class="string">&quot;张三&quot;</span>
+<span class="keyword">var</span> age <span class="type">int</span> = <span class="number">25</span>
+<span class="comment">// 类型推断</span>
+<span class="keyword">var</span> city = <span class="string">&quot;北京&quot;</span>
+<span class="comment">// 短变量声明，最常用，只能在函数内部用</span>
+score := <span class="number">99.5</span>
+isActive := <span class="literal">true</span>
+<span class="comment">// 多变量一起声明</span>
+a, b, c := <span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span></code></pre>
+<p>注意 <code>:=</code> 只能在函数里用，包级别的变量必须用 <code>var</code>。Go 还有一个规则：声明了的变量必须使用，否则编译不过。这个设计强迫你不留垃圾变量，代码整洁很多。</p>
+<h3 id="数据类型"><a class="markdownIt-Anchor" href="#数据类型"></a> 数据类型</h3>
+<p>日常用得最多的就是 <code>int</code>、<code>float64</code>、<code>string</code>、<code>bool</code> 这几个，Go 的数字类型要指定位数，不像 Java 有默认的 int/long。</p>
+<pre><code class="highlight go"><span class="keyword">var</span> i <span class="type">int</span> = <span class="number">10</span>
+<span class="keyword">var</span> i8 <span class="type">int8</span> = <span class="number">127</span>      <span class="comment">// -128 ~ 127</span>
+<span class="keyword">var</span> i64 <span class="type">int64</span> = <span class="number">9999999</span>
+<span class="comment">// 浮点推荐用 float64，精度更高</span>
+<span class="keyword">var</span> f64 <span class="type">float64</span> = <span class="number">3.1415926</span>
+<span class="comment">// 反引号可以写多行字符串，不用转义</span>
+s2 := <span class="string">`第一行</span>
+<span class="string">第二行`</span>
+<span class="keyword">var</span> b <span class="type">bool</span> = <span class="literal">true</span>
+<span class="comment">// byte 是 uint8 的别名，处理字节数据时会用到</span>
+<span class="keyword">var</span> by <span class="type">byte</span> = <span class="string">&#x27;A&#x27;</span></code></pre>
+<p>Go 没有隐式类型转换，不同类型必须显式转换，不然编译报错。这点比 Java 严格。</p>
+<pre><code class="highlight go"><span class="keyword">var</span> i <span class="type">int</span> = <span class="number">42</span>
+<span class="keyword">var</span> f <span class="type">float64</span> = <span class="type">float64</span>(i)  <span class="comment">// 必须显式转换</span>
+<span class="keyword">var</span> u <span class="type">uint</span> = <span class="type">uint</span>(f)</code></pre>
+<h3 id="函数"><a class="markdownIt-Anchor" href="#函数"></a> 函数</h3>
+<p>Go 函数最有意思的地方是支持多返回值，这在 Java 里要么用对象包装，要么抛异常，Go 直接返回两个值就解决了。</p>
+<pre><code class="highlight go"><span class="comment">// 参数类型写在变量名后面，和 Java 顺序相反</span>
+<span class="function"><span class="keyword">func</span> <span class="title">add</span><span class="params">(a, b <span class="type">int</span>)</span></span> <span class="type">int</span> &#123;
+    <span class="keyword">return</span> a + b
+&#125;
+<span class="comment">// 多返回值，一般把 error 放最后</span>
+<span class="function"><span class="keyword">func</span> <span class="title">divide</span><span class="params">(a, b <span class="type">float64</span>)</span></span> (<span class="type">float64</span>, <span class="type">error</span>) &#123;
+    <span class="keyword">if</span> b == <span class="number">0</span> &#123;
+        <span class="keyword">return</span> <span class="number">0</span>, fmt.Errorf(<span class="string">&quot;除数不能为0&quot;</span>)
+    &#125;
+    <span class="keyword">return</span> a / b, <span class="literal">nil</span>  <span class="comment">// nil 表示没有错误</span>
+&#125;
+<span class="comment">// 调用时两个返回值都要接</span>
+result, err := divide(<span class="number">10</span>, <span class="number">3</span>)
+<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+    fmt.Println(<span class="string">&quot;错误:&quot;</span>, err)
+    <span class="keyword">return</span>
+&#125;
+fmt.Println(result)
+<span class="comment">// 可变参数，... 接受任意数量的同类型参数</span>
+<span class="function"><span class="keyword">func</span> <span class="title">sum</span><span class="params">(nums ...<span class="type">int</span>)</span></span> <span class="type">int</span> &#123;
+    total := <span class="number">0</span>
+    <span class="keyword">for</span> _, n := <span class="keyword">range</span> nums &#123;
+        total += n
+    &#125;
+    <span class="keyword">return</span> total
+&#125;</code></pre>
+<p>Go 还支持<strong>命名返回值</strong>，把返回值提前在函数签名里命名，然后裸 return，代码简洁但可读性要看情况，不滥用。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">minMax</span><span class="params">(nums []<span class="type">int</span>)</span></span> (min, max <span class="type">int</span>) &#123;
+    min, max = nums[<span class="number">0</span>], nums[<span class="number">0</span>]
+    <span class="keyword">for</span> _, n := <span class="keyword">range</span> nums[<span class="number">1</span>:] &#123;
+        <span class="keyword">if</span> n &lt; min &#123; min = n &#125;
+        <span class="keyword">if</span> n &gt; max &#123; max = n &#125;
+    &#125;
+    <span class="keyword">return</span>  <span class="comment">// 裸 return，返回已命名的 min 和 max</span>
+&#125;</code></pre>
+<h3 id="流程控制"><a class="markdownIt-Anchor" href="#流程控制"></a> 流程控制</h3>
+<p>if 和 switch 的条件不用加括号，这点和 Java 不一样。Go 只有 <code>for</code> 循环，没有 <code>while</code>，但可以用 for 模拟。</p>
+<pre><code class="highlight go"><span class="comment">// if 不加括号</span>
+<span class="keyword">if</span> age &gt;= <span class="number">18</span> &#123;
+    fmt.Println(<span class="string">&quot;成年&quot;</span>)
+&#125; <span class="keyword">else</span> <span class="keyword">if</span> age &gt;= <span class="number">12</span> &#123;
+    fmt.Println(<span class="string">&quot;青少年&quot;</span>)
+&#125; <span class="keyword">else</span> &#123;
+    fmt.Println(<span class="string">&quot;儿童&quot;</span>)
+&#125;
+<span class="comment">// if 里可以带一个初始化语句，score 的作用域只在这个 if 块里</span>
+<span class="keyword">if</span> score := getScore(); score &gt;= <span class="number">60</span> &#123;
+    fmt.Println(<span class="string">&quot;及格&quot;</span>)
+&#125;
+<span class="comment">// 普通 for</span>
+<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">10</span>; i++ &#123;
+    fmt.Println(i)
+&#125;
+<span class="comment">// 模拟 while</span>
+n := <span class="number">0</span>
+<span class="keyword">for</span> n &lt; <span class="number">5</span> &#123;
+    n++
+&#125;
+<span class="comment">// 无限循环</span>
+<span class="keyword">for</span> &#123;
+    <span class="comment">// break 退出</span>
+&#125;
+<span class="comment">// switch 不需要写 break，每个 case 执行完自动退出</span>
+<span class="keyword">switch</span> day &#123;
+<span class="keyword">case</span> <span class="string">&quot;Monday&quot;</span>, <span class="string">&quot;Tuesday&quot;</span>:
+    fmt.Println(<span class="string">&quot;工作日&quot;</span>)
+<span class="keyword">case</span> <span class="string">&quot;Saturday&quot;</span>, <span class="string">&quot;Sunday&quot;</span>:
+    fmt.Println(<span class="string">&quot;周末&quot;</span>)
+<span class="keyword">default</span>:
+    fmt.Println(<span class="string">&quot;其他&quot;</span>)
+&#125;</code></pre>
+<p>switch 还有一种不带条件的写法，等价于 if-else if 链，有时候更清晰：</p>
+<pre><code class="highlight go"><span class="keyword">switch</span> &#123;
+<span class="keyword">case</span> score &gt;= <span class="number">90</span>:
+    fmt.Println(<span class="string">&quot;优秀&quot;</span>)
+<span class="keyword">case</span> score &gt;= <span class="number">60</span>:
+    fmt.Println(<span class="string">&quot;及格&quot;</span>)
+<span class="keyword">default</span>:
+    fmt.Println(<span class="string">&quot;不及格&quot;</span>)
+&#125;</code></pre>
+<h3 id="defer"><a class="markdownIt-Anchor" href="#defer"></a> defer</h3>
+<p><code>defer</code> 是 Go 里一个很有特色的关键字，作用是把一个函数调用推迟到当前函数返回前执行。不管函数是正常返回还是 panic，defer 都会执行，所以常用来做资源清理。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">readFile</span><span class="params">(path <span class="type">string</span>)</span></span> <span class="type">error</span> &#123;
+    f, err := os.Open(path)
+    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+        <span class="keyword">return</span> err
+    &#125;
+    <span class="keyword">defer</span> f.Close()  <span class="comment">// 不管后面怎么返回，文件一定会关闭</span>
+    <span class="comment">// 读文件操作...</span>
+    <span class="keyword">return</span> <span class="literal">nil</span>
+&#125;</code></pre>
+<p>多个 defer 按<strong>后进先出</strong>的顺序执行，类似栈。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;第三个执行&quot;</span>)
+    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;第二个执行&quot;</span>)
+    <span class="keyword">defer</span> fmt.Println(<span class="string">&quot;第一个执行&quot;</span>)
+    fmt.Println(<span class="string">&quot;函数体&quot;</span>)
+&#125;
+<span class="comment">// 输出顺序：函数体 → 第一个执行 → 第二个执行 → 第三个执行</span></code></pre>
+<h3 id="panic-和-recover"><a class="markdownIt-Anchor" href="#panic-和-recover"></a> panic 和 recover</h3>
+<p>Go 没有 try-catch，但有 <code>panic</code> 和 <code>recover</code>。<code>panic</code> 相当于抛出一个不可恢复的错误，程序会中断；<code>recover</code> 只能在 defer 里调用，用来捕获 panic，防止程序崩溃。<br />
+一般来说，业务代码里用 error 返回值处理可预期的错误，panic 留给真正的程序异常（比如数组越界、nil 指针）。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">safeDivide</span><span class="params">(a, b <span class="type">int</span>)</span></span> (result <span class="type">int</span>, err <span class="type">error</span>) &#123;
+    <span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;
+        <span class="keyword">if</span> r := <span class="built_in">recover</span>(); r != <span class="literal">nil</span> &#123;
+            err = fmt.Errorf(<span class="string">&quot;捕获到 panic: %v&quot;</span>, r)
+        &#125;
+    &#125;()
+    <span class="keyword">if</span> b == <span class="number">0</span> &#123;
+        <span class="built_in">panic</span>(<span class="string">&quot;除数为零&quot;</span>)  <span class="comment">// 触发 panic</span>
+    &#125;
+    <span class="keyword">return</span> a / b, <span class="literal">nil</span>
+&#125;
+result, err := safeDivide(<span class="number">10</span>, <span class="number">0</span>)
+<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+    fmt.Println(err)  <span class="comment">// 输出：捕获到 panic: 除数为零</span>
+&#125;</code></pre>
+<p>Web 框架比如 Gin，默认的 Recovery 中间件就是用这个原理防止某个请求的 panic 把整个服务搞挂。</p>
+<h2 id="复合数据类型"><a class="markdownIt-Anchor" href="#复合数据类型"></a> 复合数据类型</h2>
+<h3 id="切片slice"><a class="markdownIt-Anchor" href="#切片slice"></a> 切片（Slice）</h3>
+<p>Go 里数组用得很少，因为长度固定。实际开发几乎都用切片，可以理解成 Java 的 <code>ArrayList</code>，动态长度。</p>
+<pre><code class="highlight go"><span class="comment">// 数组，长度固定，基本不用</span>
+arr := [<span class="number">3</span>]<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;
+<span class="comment">// 切片，长度可变</span>
+nums := []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;
+<span class="comment">// 追加元素，注意结果要重新赋值给原变量，这是个容易漏掉的点</span>
+nums = <span class="built_in">append</span>(nums, <span class="number">6</span>, <span class="number">7</span>)
+<span class="comment">// 切片操作，左闭右开</span>
+sub := nums[<span class="number">1</span>:<span class="number">4</span>]   <span class="comment">// [2, 3, 4]</span>
+head := nums[:<span class="number">3</span>]   <span class="comment">// [1, 2, 3]</span>
+tail := nums[<span class="number">3</span>:]   <span class="comment">// [4, 5, 6, 7]</span>
+<span class="comment">// make 创建切片，第二个参数是长度，第三个是容量</span>
+s := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">5</span>)
+s2 := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">3</span>, <span class="number">10</span>)
+<span class="comment">// range 遍历</span>
+<span class="keyword">for</span> i, v := <span class="keyword">range</span> nums &#123;
+    fmt.Printf(<span class="string">&quot;索引:%d 值:%d\n&quot;</span>, i, v)
+&#125;</code></pre>
+<p><strong>切片的底层原理值得搞清楚</strong>，不然会踩坑。切片本质上是一个结构体，包含三个字段：指向底层数组的指针、长度（len）、容量（cap）。</p>
+<pre><code class="highlight plaintext">slice = &#123; ptr *array, len int, cap int &#125;</code></pre>
+<p>所以从同一个数组切出来的切片，共享底层数据，修改一个会影响另一个：</p>
+<pre><code class="highlight go">a := []<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;
+b := a[<span class="number">1</span>:<span class="number">3</span>]   <span class="comment">// b = [2, 3]，和 a 共享底层数组</span>
+b[<span class="number">0</span>] = <span class="number">99</span>
+fmt.Println(a) <span class="comment">// [1, 99, 3, 4, 5]，a 也被改了</span></code></pre>
+<p>如果不想共享，用 <code>copy</code> 或者三索引切片强制限制容量：</p>
+<pre><code class="highlight go"><span class="comment">// copy 完全独立</span>
+b := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">2</span>)
+<span class="built_in">copy</span>(b, a[<span class="number">1</span>:<span class="number">3</span>])
+<span class="comment">// 三索引切片，限制容量，append 时会触发复制</span>
+b := a[<span class="number">1</span>:<span class="number">3</span>:<span class="number">3</span>]</code></pre>
+<p>append 超出容量时会重新分配内存，一般是原容量的两倍（大切片有所不同）。这个扩容操作有开销，已知大小的情况下最好提前用 make 指定容量。</p>
+<h3 id="map"><a class="markdownIt-Anchor" href="#map"></a> Map</h3>
+<p>和 Java 的 HashMap 类似。查询时返回两个值，第二个是 bool，用来判断 key 是否存在，这样就不会把&quot;值不存在&quot;和&quot;值恰好是零&quot;混淆。</p>
+<pre><code class="highlight go">m := <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">int</span>&#123;
+    <span class="string">&quot;alice&quot;</span>: <span class="number">90</span>,
+    <span class="string">&quot;bob&quot;</span>:   <span class="number">85</span>,
+&#125;
+m2 := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="type">int</span>)
+m[<span class="string">&quot;charlie&quot;</span>] = <span class="number">95</span>
+<span class="built_in">delete</span>(m, <span class="string">&quot;bob&quot;</span>)
+score, exists := m[<span class="string">&quot;alice&quot;</span>]
+<span class="keyword">if</span> exists &#123;
+    fmt.Println(score)
+&#125;
+<span class="comment">// 遍历顺序是随机的，每次跑结果可能不一样</span>
+<span class="keyword">for</span> key, value := <span class="keyword">range</span> m &#123;
+    fmt.Printf(<span class="string">&quot;%s: %d\n&quot;</span>, key, value)
+&#125;</code></pre>
+<p>有几个坑要注意。第一，map 不是并发安全的，多个 goroutine 同时读写会 panic，需要加锁或用 <code>sync.Map</code>。第二，对 nil map 读是安全的（返回零值），但写会 panic，所以 map 一定要用 make 初始化再写。</p>
+<pre><code class="highlight go"><span class="keyword">var</span> m <span class="keyword">map</span>[<span class="type">string</span>]<span class="type">int</span>  <span class="comment">// nil map</span>
+_ = m[<span class="string">&quot;key&quot;</span>]          <span class="comment">// 安全，返回 0</span>
+m[<span class="string">&quot;key&quot;</span>] = <span class="number">1</span>          <span class="comment">// panic: assignment to entry in nil map</span></code></pre>
+<h3 id="结构体"><a class="markdownIt-Anchor" href="#结构体"></a> 结构体</h3>
+<p>Go 没有 class，用 struct 来组织数据，再给 struct 绑定方法，效果类似。</p>
+<pre><code class="highlight go"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;
+    ID    <span class="type">int</span>
+    Name  <span class="type">string</span>
+    Email <span class="type">string</span>
+    Age   <span class="type">int</span>
+&#125;
+u1 := User&#123;ID: <span class="number">1</span>, Name: <span class="string">&quot;张三&quot;</span>, Email: <span class="string">&quot;zs@example.com&quot;</span>, Age: <span class="number">25</span>&#125;
+u3 := &amp;User&#123;ID: <span class="number">3</span>, Name: <span class="string">&quot;王五&quot;</span>&#125;
+fmt.Println(u1.Name)
+u1.Age = <span class="number">26</span>
+<span class="comment">// 值接收者，操作的是副本</span>
+<span class="function"><span class="keyword">func</span> <span class="params">(u User)</span></span> String() <span class="type">string</span> &#123;
+    <span class="keyword">return</span> fmt.Sprintf(<span class="string">&quot;User&#123;%d, %s&#125;&quot;</span>, u.ID, u.Name)
+&#125;
+<span class="comment">// 指针接收者，可以修改原始数据</span>
+<span class="function"><span class="keyword">func</span> <span class="params">(u *User)</span></span> UpdateAge(age <span class="type">int</span>) &#123;
+    u.Age = age
+&#125;</code></pre>
+<p>Go 通过<strong>组合</strong>来复用代码，没有继承。把一个 struct 嵌入另一个 struct，外层可以直接访问内层的字段和方法，效果类似继承但更灵活。</p>
+<pre><code class="highlight go"><span class="keyword">type</span> Animal <span class="keyword">struct</span> &#123;
+    Name <span class="type">string</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(a Animal)</span></span> Breathe() &#123;
+    fmt.Println(a.Name, <span class="string">&quot;在呼吸&quot;</span>)
+&#125;
+<span class="keyword">type</span> Dog <span class="keyword">struct</span> &#123;
+    Animal        <span class="comment">// 嵌入 Animal，不需要字段名</span>
+    Breed <span class="type">string</span>
+&#125;
+d := Dog&#123;
+    Animal: Animal&#123;Name: <span class="string">&quot;旺财&quot;</span>&#125;,
+    Breed:  <span class="string">&quot;拉布拉多&quot;</span>,
+&#125;
+d.Breathe()       <span class="comment">// 直接调用 Animal 的方法</span>
+fmt.Println(d.Name)  <span class="comment">// 直接访问 Animal 的字段</span></code></pre>
+<hr />
+<h2 id="接口"><a class="markdownIt-Anchor" href="#接口"></a> 接口</h2>
+<p>Go 的接口是隐式实现的，不用写 <code>implements</code>，只要一个类型实现了接口定义的所有方法，它就自动满足这个接口。好处是解耦更彻底，定义接口的人和实现接口的人不需要提前约定。</p>
+<pre><code class="highlight go"><span class="keyword">type</span> Animal <span class="keyword">interface</span> &#123;
+    Sound() <span class="type">string</span>
+    Name() <span class="type">string</span>
+&#125;
+<span class="keyword">type</span> Dog <span class="keyword">struct</span>&#123; name <span class="type">string</span> &#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(d Dog)</span></span> Sound() <span class="type">string</span> &#123; <span class="keyword">return</span> <span class="string">&quot;汪汪&quot;</span> &#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(d Dog)</span></span> Name() <span class="type">string</span>  &#123; <span class="keyword">return</span> d.name &#125;
+<span class="keyword">type</span> Cat <span class="keyword">struct</span>&#123; name <span class="type">string</span> &#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(c Cat)</span></span> Sound() <span class="type">string</span> &#123; <span class="keyword">return</span> <span class="string">&quot;喵喵&quot;</span> &#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(c Cat)</span></span> Name() <span class="type">string</span>  &#123; <span class="keyword">return</span> c.name &#125;
+<span class="function"><span class="keyword">func</span> <span class="title">makeSound</span><span class="params">(a Animal)</span></span> &#123;
+    fmt.Printf(<span class="string">&quot;%s 说: %s\n&quot;</span>, a.Name(), a.Sound())
+&#125;
+makeSound(Dog&#123;name: <span class="string">&quot;旺财&quot;</span>&#125;)
+makeSound(Cat&#123;name: <span class="string">&quot;咪咪&quot;</span>&#125;)</code></pre>
+<p><strong>类型断言</strong>用来从接口值里取出具体类型，有两种写法：</p>
+<pre><code class="highlight go"><span class="keyword">var</span> a Animal = Dog&#123;name: <span class="string">&quot;旺财&quot;</span>&#125;
+<span class="comment">// 直接断言，断言失败会 panic</span>
+d := a.(Dog)
+fmt.Println(d.name)
+<span class="comment">// 带 ok 的安全断言，推荐用这个</span>
+d, ok := a.(Dog)
+<span class="keyword">if</span> ok &#123;
+    fmt.Println(d.name)
+&#125;</code></pre>
+<p><strong>类型 switch</strong> 可以同时判断多种类型，比一堆 if-else 清晰很多：</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">describe</span><span class="params">(i any)</span></span> &#123;
+    <span class="keyword">switch</span> v := i.(<span class="keyword">type</span>) &#123;
+    <span class="keyword">case</span> <span class="type">int</span>:
+        fmt.Printf(<span class="string">&quot;整数: %d\n&quot;</span>, v)
+    <span class="keyword">case</span> <span class="type">string</span>:
+        fmt.Printf(<span class="string">&quot;字符串: %s\n&quot;</span>, v)
+    <span class="keyword">case</span> <span class="type">bool</span>:
+        fmt.Printf(<span class="string">&quot;布尔: %v\n&quot;</span>, v)
+    <span class="keyword">default</span>:
+        fmt.Printf(<span class="string">&quot;未知类型: %T\n&quot;</span>, v)
+    &#125;
+&#125;</code></pre>
+<p>Go 里有几个常用的内置接口值得了解：<code>error</code> 接口只有一个 <code>Error() string</code> 方法，<code>Stringer</code> 接口（<code>fmt.Stringer</code>）实现了 <code>String() string</code> 后，fmt 打印时会自动调用。</p>
+<h2 id="并发"><a class="markdownIt-Anchor" href="#并发"></a> 并发</h2>
+<p>这是 Go 最值得学的部分，也是它和其他语言拉开差距的地方。<br />
+Go 的并发核心思想是：<strong>不要通过共享内存来通信，而要通过通信来共享内存</strong>。</p>
+<h3 id="goroutine"><a class="markdownIt-Anchor" href="#goroutine"></a> Goroutine</h3>
+<p>Goroutine 是 Go 的并发执行单元，比系统线程轻量得多，几十万个同时跑都没问题。启动方式极简单，函数调用前加个 <code>go</code> 关键字就行。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">fetchData</span><span class="params">(url <span class="type">string</span>)</span></span> &#123;
+    time.Sleep(time.Second)
+    fmt.Println(<span class="string">&quot;获取到:&quot;</span>, url)
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    <span class="keyword">go</span> fetchData(<span class="string">&quot;https://api1.example.com&quot;</span>)
+    <span class="keyword">go</span> fetchData(<span class="string">&quot;https://api2.example.com&quot;</span>)
+    <span class="keyword">go</span> fetchData(<span class="string">&quot;https://api3.example.com&quot;</span>)
+    time.Sleep(<span class="number">2</span> * time.Second)
+&#125;</code></pre>
+<h3 id="waitgroup"><a class="markdownIt-Anchor" href="#waitgroup"></a> WaitGroup</h3>
+<p>生产代码里等待 goroutine 完成要用 <code>sync.WaitGroup</code>，不能靠 Sleep 猜时间。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    <span class="keyword">var</span> wg sync.WaitGroup
+    urls := []<span class="type">string</span>&#123;<span class="string">&quot;url1&quot;</span>, <span class="string">&quot;url2&quot;</span>, <span class="string">&quot;url3&quot;</span>&#125;
+    <span class="keyword">for</span> _, url := <span class="keyword">range</span> urls &#123;
+        wg.Add(<span class="number">1</span>)
+        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">(u <span class="type">string</span>)</span></span> &#123;
+            <span class="keyword">defer</span> wg.Done()
+            fetchData(u)
+        &#125;(url)  <span class="comment">// 把 url 作为参数传进去，不要在闭包里直接用外部变量</span>
+    &#125;
+    wg.Wait()
+    fmt.Println(<span class="string">&quot;全部完成&quot;</span>)
+&#125;</code></pre>
+<h3 id="channel"><a class="markdownIt-Anchor" href="#channel"></a> Channel</h3>
+<p>Channel 是 goroutine 之间传数据的管道，不需要手动加锁，天然并发安全。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">producer</span><span class="params">(ch <span class="keyword">chan</span>&lt;- <span class="type">int</span>)</span></span> &#123;
+    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">5</span>; i++ &#123;
+        ch &lt;- i
+    &#125;
+    <span class="built_in">close</span>(ch)
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    ch := <span class="built_in">make</span>(<span class="keyword">chan</span> <span class="type">int</span>, <span class="number">5</span>)
+    <span class="keyword">go</span> producer(ch)
+    <span class="keyword">for</span> v := <span class="keyword">range</span> ch &#123;
+        fmt.Println(v)
+    &#125;
+&#125;</code></pre>
+<p><code>select</code> 同时监听多个 channel：</p>
+<pre><code class="highlight go"><span class="keyword">select</span> &#123;
+<span class="keyword">case</span> msg := &lt;-ch1:
+    fmt.Println(<span class="string">&quot;ch1:&quot;</span>, msg)
+<span class="keyword">case</span> msg := &lt;-ch2:
+    fmt.Println(<span class="string">&quot;ch2:&quot;</span>, msg)
+<span class="keyword">case</span> &lt;-time.After(<span class="number">3</span> * time.Second):
+    fmt.Println(<span class="string">&quot;超时退出&quot;</span>)
+&#125;</code></pre>
+<h3 id="mutex"><a class="markdownIt-Anchor" href="#mutex"></a> Mutex</h3>
+<p>不是所有并发场景都适合用 channel，有时候就是需要多个 goroutine 共享一块数据，这时候要用互斥锁 <code>sync.Mutex</code>。</p>
+<pre><code class="highlight go"><span class="keyword">type</span> SafeCounter <span class="keyword">struct</span> &#123;
+    mu    sync.Mutex
+    count <span class="type">int</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(c *SafeCounter)</span></span> Increment() &#123;
+    c.mu.Lock()
+    <span class="keyword">defer</span> c.mu.Unlock()  <span class="comment">// defer 确保锁一定释放</span>
+    c.count++
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="params">(c *SafeCounter)</span></span> Value() <span class="type">int</span> &#123;
+    c.mu.Lock()
+    <span class="keyword">defer</span> c.mu.Unlock()
+    <span class="keyword">return</span> c.count
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    counter := &amp;SafeCounter&#123;&#125;
+    <span class="keyword">var</span> wg sync.WaitGroup
+    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++ &#123;
+        wg.Add(<span class="number">1</span>)
+        <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;
+            <span class="keyword">defer</span> wg.Done()
+            counter.Increment()
+        &#125;()
+    &#125;
+    wg.Wait()
+    fmt.Println(counter.Value())  <span class="comment">// 稳定输出 1000</span>
+&#125;</code></pre>
+<p>读多写少的场景可以用 <code>sync.RWMutex</code>，读锁可以并发持有，写锁是独占的，性能更好。</p>
+<pre><code class="highlight go"><span class="keyword">var</span> rwmu sync.RWMutex
+<span class="keyword">var</span> data = <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="type">string</span>]<span class="type">string</span>)
+<span class="comment">// 读操作用读锁</span>
+<span class="function"><span class="keyword">func</span> <span class="title">read</span><span class="params">(key <span class="type">string</span>)</span></span> <span class="type">string</span> &#123;
+    rwmu.RLock()
+    <span class="keyword">defer</span> rwmu.RUnlock()
+    <span class="keyword">return</span> data[key]
+&#125;
+<span class="comment">// 写操作用写锁</span>
+<span class="function"><span class="keyword">func</span> <span class="title">write</span><span class="params">(key, value <span class="type">string</span>)</span></span> &#123;
+    rwmu.Lock()
+    <span class="keyword">defer</span> rwmu.Unlock()
+    data[key] = value
+&#125;</code></pre>
+<h3 id="context"><a class="markdownIt-Anchor" href="#context"></a> Context</h3>
+<p><code>context</code> 是 Go 并发里非常重要的一个包，用来在 goroutine 之间传递取消信号、超时、截止时间和请求范围的值。<br />
+最常见的场景是 HTTP 请求处理：客户端断开连接后，应该取消所有还在跑的后台查询，不然白白浪费资源。</p>
+<pre><code class="highlight go"><span class="comment">// 带超时的 context，超时后自动取消</span>
+ctx, cancel := context.WithTimeout(context.Background(), <span class="number">3</span>*time.Second)
+<span class="keyword">defer</span> cancel()  <span class="comment">// 函数退出时释放资源，养成习惯</span>
+<span class="comment">// 把 ctx 传给可能耗时的操作</span>
+result, err := queryDatabase(ctx, <span class="string">&quot;SELECT ...&quot;</span>)
+<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+    <span class="keyword">if</span> errors.Is(err, context.DeadlineExceeded) &#123;
+        fmt.Println(<span class="string">&quot;查询超时&quot;</span>)
+    &#125;
+&#125;</code></pre>
+<p>自己写的函数如果可能耗时，第一个参数应该接收 ctx：</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">queryDatabase</span><span class="params">(ctx context.Context, query <span class="type">string</span>)</span></span> (<span class="type">string</span>, <span class="type">error</span>) &#123;
+    <span class="comment">// 模拟一个可以被取消的操作</span>
+    <span class="keyword">select</span> &#123;
+    <span class="keyword">case</span> &lt;-time.After(<span class="number">5</span> * time.Second):  <span class="comment">// 正常操作耗时 5 秒</span>
+        <span class="keyword">return</span> <span class="string">&quot;result&quot;</span>, <span class="literal">nil</span>
+    <span class="keyword">case</span> &lt;-ctx.Done():                    <span class="comment">// 如果 context 被取消</span>
+        <span class="keyword">return</span> <span class="string">&quot;&quot;</span>, ctx.Err()
+    &#125;
+&#125;</code></pre>
+<p>context 还可以用来传递请求 ID 这类全链路透传的值，但不要滥用，业务参数该老老实实用函数参数传，别什么都往 ctx 里塞。</p>
+<h2 id="泛型go-118"><a class="markdownIt-Anchor" href="#泛型go-118"></a> 泛型（Go 1.18+）</h2>
+<p>Go 1.18 引入了泛型，在这之前写通用代码只能用 <code>any</code> + 类型断言，既没有类型安全，也没有代码提示。现在可以用类型参数解决这个问题。</p>
+<pre><code class="highlight go"><span class="comment">// 没有泛型之前，只能写 any</span>
+<span class="function"><span class="keyword">func</span> <span class="title">containsOld</span><span class="params">(slice []any, item any)</span></span> <span class="type">bool</span> &#123;
+    <span class="keyword">for</span> _, v := <span class="keyword">range</span> slice &#123;
+        <span class="keyword">if</span> v == item &#123;
+            <span class="keyword">return</span> <span class="literal">true</span>
+        &#125;
+    &#125;
+    <span class="keyword">return</span> <span class="literal">false</span>
+&#125;
+<span class="comment">// 有了泛型，类型安全，也有代码提示</span>
+<span class="function"><span class="keyword">func</span> <span class="title">Contains</span>[<span class="title">T</span> <span class="title">comparable</span>]<span class="params">(slice []T, item T)</span></span> <span class="type">bool</span> &#123;
+    <span class="keyword">for</span> _, v := <span class="keyword">range</span> slice &#123;
+        <span class="keyword">if</span> v == item &#123;
+            <span class="keyword">return</span> <span class="literal">true</span>
+        &#125;
+    &#125;
+    <span class="keyword">return</span> <span class="literal">false</span>
+&#125;
+<span class="comment">// 调用时编译器自动推断类型</span>
+fmt.Println(Contains([]<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;, <span class="number">2</span>))         <span class="comment">// true</span>
+fmt.Println(Contains([]<span class="type">string</span>&#123;<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>&#125;, <span class="string">&quot;c&quot;</span>))   <span class="comment">// false</span></code></pre>
+<p><code>comparable</code> 是 Go 内置的约束，表示可以用 <code>==</code> 比较的类型。也可以用 <code>any</code>（无约束）或自定义约束：</p>
+<pre><code class="highlight go"><span class="comment">// 自定义约束，限制只能是数字类型</span>
+<span class="keyword">type</span> Number <span class="keyword">interface</span> &#123;
+    <span class="type">int</span> | <span class="type">int64</span> | <span class="type">float32</span> | <span class="type">float64</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">Sum</span>[<span class="title">T</span> <span class="title">Number</span>]<span class="params">(nums []T)</span></span> T &#123;
+    <span class="keyword">var</span> total T
+    <span class="keyword">for</span> _, n := <span class="keyword">range</span> nums &#123;
+        total += n
+    &#125;
+    <span class="keyword">return</span> total
+&#125;
+fmt.Println(Sum([]<span class="type">int</span>&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;))         <span class="comment">// 6</span>
+fmt.Println(Sum([]<span class="type">float64</span>&#123;<span class="number">1.1</span>, <span class="number">2.2</span>&#125;))   <span class="comment">// 3.3</span></code></pre>
+<p>泛型对写工具库很有用，业务代码里不用刻意去用，够用就好。</p>
+<h2 id="web-开发"><a class="markdownIt-Anchor" href="#web-开发"></a> Web 开发</h2>
+<h3 id="标准库"><a class="markdownIt-Anchor" href="#标准库"></a> 标准库</h3>
+<p>Go 内置的 <code>net/http</code> 已经够用了，不用引入任何框架就能跑一个 HTTP 服务。</p>
+<pre><code class="highlight go"><span class="keyword">package</span> main
+<span class="keyword">import</span> (
+    <span class="string">&quot;encoding/json&quot;</span>
+    <span class="string">&quot;fmt&quot;</span>
+    <span class="string">&quot;net/http&quot;</span>
+)
+<span class="keyword">type</span> Response <span class="keyword">struct</span> &#123;
+    Code    <span class="type">int</span>    <span class="string">`json:&quot;code&quot;`</span>
+    Message <span class="type">string</span> <span class="string">`json:&quot;message&quot;`</span>
+    Data    any    <span class="string">`json:&quot;data&quot;`</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">helloHandler</span><span class="params">(w http.ResponseWriter, r *http.Request)</span></span> &#123;
+    w.Header().Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json&quot;</span>)
+    json.NewEncoder(w).Encode(Response&#123;
+        Code:    <span class="number">200</span>,
+        Message: <span class="string">&quot;success&quot;</span>,
+        Data:    <span class="string">&quot;Hello Go!&quot;</span>,
+    &#125;)
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    http.HandleFunc(<span class="string">&quot;/hello&quot;</span>, helloHandler)
+    fmt.Println(<span class="string">&quot;服务启动: http://localhost:8080&quot;</span>)
+    http.ListenAndServe(<span class="string">&quot;:8080&quot;</span>, <span class="literal">nil</span>)
+&#125;</code></pre>
+<h3 id="gin"><a class="markdownIt-Anchor" href="#gin"></a> Gin</h3>
+<p>复杂项目推荐用 Gin，Go 生态里用得最广的 Web 框架，性能很高，API 设计也简洁。有 Spring MVC 基础的话大概看半天就能上手。</p>
+<pre><code class="highlight bash">go mod init myapp
+go get github.com/gin-gonic/gin</code></pre>
+<pre><code class="highlight go"><span class="keyword">package</span> main
+<span class="keyword">import</span> (
+    <span class="string">&quot;net/http&quot;</span>
+    <span class="string">&quot;github.com/gin-gonic/gin&quot;</span>
+)
+<span class="keyword">type</span> User <span class="keyword">struct</span> &#123;
+    ID   <span class="type">int</span>    <span class="string">`json:&quot;id&quot;`</span>
+    Name <span class="type">string</span> <span class="string">`json:&quot;name&quot;`</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    r := gin.Default()  <span class="comment">// 自带日志和 panic 恢复中间件</span>
+    r.GET(<span class="string">&quot;/users/:id&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+        id := c.Param(<span class="string">&quot;id&quot;</span>)
+        _ = id
+        c.JSON(http.StatusOK, User&#123;ID: <span class="number">1</span>, Name: <span class="string">&quot;张三&quot;</span>&#125;)
+    &#125;)
+    r.POST(<span class="string">&quot;/users&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+        <span class="keyword">var</span> user User
+        <span class="keyword">if</span> err := c.ShouldBindJSON(&amp;user); err != <span class="literal">nil</span> &#123;
+            c.JSON(http.StatusBadRequest, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)
+            <span class="keyword">return</span>
+        &#125;
+        c.JSON(http.StatusCreated, user)
+    &#125;)
+    api := r.Group(<span class="string">&quot;/api/v1&quot;</span>)
+    &#123;
+        api.GET(<span class="string">&quot;/health&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+            c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">&quot;status&quot;</span>: <span class="string">&quot;ok&quot;</span>&#125;)
+        &#125;)
+    &#125;
+    r.Run(<span class="string">&quot;:8080&quot;</span>)
+&#125;</code></pre>
+<h3 id="gin-中间件"><a class="markdownIt-Anchor" href="#gin-中间件"></a> Gin 中间件</h3>
+<p>中间件是 Gin 里很重要的概念，可以在请求处理前后插入逻辑，类似 Spring 的拦截器。认证、日志、限流都可以用中间件实现。</p>
+<pre><code class="highlight go"><span class="comment">// 自定义认证中间件</span>
+<span class="function"><span class="keyword">func</span> <span class="title">AuthMiddleware</span><span class="params">()</span></span> gin.HandlerFunc &#123;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+        token := c.GetHeader(<span class="string">&quot;Authorization&quot;</span>)
+        <span class="keyword">if</span> token == <span class="string">&quot;&quot;</span> &#123;
+            c.JSON(http.StatusUnauthorized, gin.H&#123;<span class="string">&quot;error&quot;</span>: <span class="string">&quot;缺少 token&quot;</span>&#125;)
+            c.Abort()  <span class="comment">// 终止后续处理，不调用 Next</span>
+            <span class="keyword">return</span>
+        &#125;
+        <span class="comment">// 验证 token，这里简化处理</span>
+        userID, err := parseToken(token)
+        <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+            c.JSON(http.StatusUnauthorized, gin.H&#123;<span class="string">&quot;error&quot;</span>: <span class="string">&quot;token 无效&quot;</span>&#125;)
+            c.Abort()
+            <span class="keyword">return</span>
+        &#125;
+        <span class="comment">// 把用户 ID 存到 context，后续 handler 可以取到</span>
+        c.Set(<span class="string">&quot;userID&quot;</span>, userID)
+        c.Next()  <span class="comment">// 继续往下走</span>
+    &#125;
+&#125;
+<span class="comment">// 请求耗时日志中间件</span>
+<span class="function"><span class="keyword">func</span> <span class="title">LoggerMiddleware</span><span class="params">()</span></span> gin.HandlerFunc &#123;
+    <span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+        start := time.Now()
+        c.Next()
+        duration := time.Since(start)
+        log.Printf(<span class="string">&quot;%s %s 耗时 %v&quot;</span>, c.Request.Method, c.Request.URL.Path, duration)
+    &#125;
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    r := gin.New()  <span class="comment">// 不用 Default，自己组装中间件</span>
+    <span class="comment">// 全局中间件</span>
+    r.Use(LoggerMiddleware())
+    <span class="comment">// 只对特定路由组生效的中间件</span>
+    auth := r.Group(<span class="string">&quot;/api&quot;</span>)
+    auth.Use(AuthMiddleware())
+    &#123;
+        auth.GET(<span class="string">&quot;/profile&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+            userID := c.GetString(<span class="string">&quot;userID&quot;</span>)
+            c.JSON(<span class="number">200</span>, gin.H&#123;<span class="string">&quot;userID&quot;</span>: userID&#125;)
+        &#125;)
+    &#125;
+    r.Run(<span class="string">&quot;:8080&quot;</span>)
+&#125;</code></pre>
+<h3 id="参数绑定和验证"><a class="markdownIt-Anchor" href="#参数绑定和验证"></a> 参数绑定和验证</h3>
+<p>Gin 支持用 struct tag 做参数验证，配合 <code>binding</code> tag 省去大量手动校验代码。</p>
+<pre><code class="highlight go"><span class="comment">// go get github.com/go-playground/validator/v10  (Gin 自带，不用额外安装)</span>
+<span class="keyword">type</span> CreateUserRequest <span class="keyword">struct</span> &#123;
+    Name     <span class="type">string</span> <span class="string">`json:&quot;name&quot; binding:&quot;required,min=2,max=20&quot;`</span>
+    Email    <span class="type">string</span> <span class="string">`json:&quot;email&quot; binding:&quot;required,email&quot;`</span>
+    Age      <span class="type">int</span>    <span class="string">`json:&quot;age&quot; binding:&quot;required,gte=1,lte=150&quot;`</span>
+    Password <span class="type">string</span> <span class="string">`json:&quot;password&quot; binding:&quot;required,min=8&quot;`</span>
+&#125;
+r.POST(<span class="string">&quot;/users&quot;</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;
+    <span class="keyword">var</span> req CreateUserRequest
+    <span class="keyword">if</span> err := c.ShouldBindJSON(&amp;req); err != <span class="literal">nil</span> &#123;
+        <span class="comment">// err 里包含具体哪个字段不合法</span>
+        c.JSON(http.StatusBadRequest, gin.H&#123;<span class="string">&quot;error&quot;</span>: err.Error()&#125;)
+        <span class="keyword">return</span>
+    &#125;
+    <span class="comment">// req 已经验证通过，直接用</span>
+    c.JSON(http.StatusCreated, gin.H&#123;<span class="string">&quot;message&quot;</span>: <span class="string">&quot;创建成功&quot;</span>&#125;)
+&#125;)</code></pre>
+<hr />
+<h2 id="数据库"><a class="markdownIt-Anchor" href="#数据库"></a> 数据库</h2>
+<h3 id="gorm"><a class="markdownIt-Anchor" href="#gorm"></a> GORM</h3>
+<p>Go 里最成熟的 ORM，支持 MySQL、PostgreSQL、SQLite，有 MyBatis 或 Hibernate 基础的话上手很快。</p>
+<pre><code class="highlight bash">go get gorm.io/gorm
+go get gorm.io/driver/mysql</code></pre>
+<pre><code class="highlight go"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;
+    gorm.Model  <span class="comment">// 自动有 id、created_at、updated_at、deleted_at</span>
+    Name  <span class="type">string</span> <span class="string">`gorm:&quot;size:100;not null&quot;`</span>
+    Email <span class="type">string</span> <span class="string">`gorm:&quot;uniqueIndex&quot;`</span>
+    Age   <span class="type">int</span>
+&#125;
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    dsn := <span class="string">&quot;root:password@tcp(127.0.0.1:3306)/mydb?charset=utf8mb4&amp;parseTime=True&quot;</span>
+    db, err := gorm.Open(mysql.Open(dsn), &amp;gorm.Config&#123;&#125;)
+    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+        <span class="built_in">panic</span>(<span class="string">&quot;数据库连接失败&quot;</span>)
+    &#125;
+    db.AutoMigrate(&amp;User&#123;&#125;)
+    <span class="comment">// 增</span>
+    db.Create(&amp;User&#123;Name: <span class="string">&quot;张三&quot;</span>, Email: <span class="string">&quot;zs@test.com&quot;</span>, Age: <span class="number">25</span>&#125;)
+    <span class="comment">// 查</span>
+    <span class="keyword">var</span> user User
+    db.First(&amp;user, <span class="number">1</span>)
+    db.Where(<span class="string">&quot;name = ?&quot;</span>, <span class="string">&quot;张三&quot;</span>).First(&amp;user)
+    <span class="keyword">var</span> users []User
+    db.Where(<span class="string">&quot;age &gt; ?&quot;</span>, <span class="number">20</span>).Find(&amp;users)
+    <span class="comment">// 改</span>
+    db.Model(&amp;user).Update(<span class="string">&quot;age&quot;</span>, <span class="number">26</span>)
+    db.Model(&amp;user).Updates(User&#123;Name: <span class="string">&quot;新名字&quot;</span>, Age: <span class="number">27</span>&#125;)
+    <span class="comment">// 删（软删除）</span>
+    db.Delete(&amp;user, <span class="number">1</span>)
+&#125;</code></pre>
+<h3 id="gorm-事务"><a class="markdownIt-Anchor" href="#gorm-事务"></a> GORM 事务</h3>
+<p>涉及多表操作必须用事务，GORM 的事务 API 很干净。</p>
+<pre><code class="highlight go"><span class="comment">// 方式一：手动控制</span>
+tx := db.Begin()
+<span class="keyword">defer</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;
+    <span class="keyword">if</span> r := <span class="built_in">recover</span>(); r != <span class="literal">nil</span> &#123;
+        tx.Rollback()
+    &#125;
+&#125;()
+<span class="keyword">if</span> err := tx.Create(&amp;user).Error; err != <span class="literal">nil</span> &#123;
+    tx.Rollback()
+    <span class="keyword">return</span> err
+&#125;
+<span class="keyword">if</span> err := tx.Create(&amp;order).Error; err != <span class="literal">nil</span> &#123;
+    tx.Rollback()
+    <span class="keyword">return</span> err
+&#125;
+tx.Commit()
+<span class="comment">// 方式二：Transaction 方法，更简洁，推荐用这个</span>
+err := db.Transaction(<span class="function"><span class="keyword">func</span><span class="params">(tx *gorm.DB)</span></span> <span class="type">error</span> &#123;
+    <span class="keyword">if</span> err := tx.Create(&amp;user).Error; err != <span class="literal">nil</span> &#123;
+        <span class="keyword">return</span> err  <span class="comment">// 返回 error 自动回滚</span>
+    &#125;
+    <span class="keyword">if</span> err := tx.Create(&amp;order).Error; err != <span class="literal">nil</span> &#123;
+        <span class="keyword">return</span> err
+    &#125;
+    <span class="keyword">return</span> <span class="literal">nil</span>  <span class="comment">// 返回 nil 自动提交</span>
+&#125;)</code></pre>
+<h3 id="连接池配置"><a class="markdownIt-Anchor" href="#连接池配置"></a> 连接池配置</h3>
+<p>生产环境要配连接池，不然高并发下会挂。</p>
+<pre><code class="highlight go">sqlDB, err := db.DB()  <span class="comment">// 拿到底层的 *sql.DB</span>
+<span class="comment">// 最大空闲连接数</span>
+sqlDB.SetMaxIdleConns(<span class="number">10</span>)
+<span class="comment">// 最大打开连接数</span>
+sqlDB.SetMaxOpenConns(<span class="number">100</span>)
+<span class="comment">// 连接最大存活时间，超时会被回收</span>
+sqlDB.SetConnMaxLifetime(time.Hour)</code></pre>
+<hr />
+<h2 id="项目结构"><a class="markdownIt-Anchor" href="#项目结构"></a> 项目结构</h2>
+<h3 id="go-modules"><a class="markdownIt-Anchor" href="#go-modules"></a> Go Modules</h3>
+<p>Go 的包管理工具，类似 Maven。<code>go.mod</code> 记录依赖版本，<code>go.sum</code> 做哈希校验，两个文件都要提交到 git。</p>
+<pre><code class="highlight bash">go mod init github.com/yourname/myapp
+go get github.com/gin-gonic/gin
+go get github.com/gin-gonic/gin@v1.9.0
+go mod tidy  <span class="comment"># 清理多余依赖，补上缺失依赖</span></code></pre>
+<h3 id="目录结构"><a class="markdownIt-Anchor" href="#目录结构"></a> 目录结构</h3>
+<p>Go 社区有一套通用的项目布局，按这个来就行。</p>
+<pre><code class="highlight plaintext">myapp/
+├── cmd/
+│   └── main.go          # 入口，保持简洁，只管启动
+├── internal/            # 内部包，编译器保证外部模块无法引用
+│   ├── handler/         # 处理 HTTP 请求
+│   ├── service/         # 业务逻辑
+│   ├── repository/      # 数据库操作
+│   └── model/           # 数据结构定义
+├── pkg/                 # 可以被外部引用的公共包
+├── config/              # 配置文件
+├── go.mod
+└── go.sum</code></pre>
+<h3 id="错误处理"><a class="markdownIt-Anchor" href="#错误处理"></a> 错误处理</h3>
+<p>这是和 Java 差异最大的地方。Go 没有 try-catch，用多返回值传递错误，调用方必须显式处理。<br />
+初看会觉得到处都是 <code>if err != nil</code> 很啰嗦，但好处是错误处理强制可见，不会出现异常被某层吞掉然后莫名其妙出 bug 的情况。</p>
+<pre><code class="highlight go"><span class="function"><span class="keyword">func</span> <span class="title">getUser</span><span class="params">(id <span class="type">int</span>)</span></span> (*User, <span class="type">error</span>) &#123;
+    <span class="keyword">if</span> id &lt;= <span class="number">0</span> &#123;
+        <span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">&quot;无效的 ID: %d&quot;</span>, id)
+    &#125;
+    <span class="keyword">return</span> &amp;User&#123;&#125;, <span class="literal">nil</span>
+&#125;
+user, err := getUser(<span class="number">1</span>)
+<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+    log.Printf(<span class="string">&quot;获取用户失败: %v&quot;</span>, err)
+    <span class="keyword">return</span>
+&#125;
+fmt.Println(user.Name)</code></pre>
+<p>Go 1.13 引入了错误包装，可以用 <code>%w</code> 把原始错误包进去，调用方用 <code>errors.Is</code> 和 <code>errors.As</code> 来判断和提取具体错误：</p>
+<pre><code class="highlight go"><span class="comment">// 包装错误，保留原始信息</span>
+<span class="function"><span class="keyword">func</span> <span class="title">getUser</span><span class="params">(id <span class="type">int</span>)</span></span> (*User, <span class="type">error</span>) &#123;
+    user, err := db.QueryUser(id)
+    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;
+        <span class="keyword">return</span> <span class="literal">nil</span>, fmt.Errorf(<span class="string">&quot;getUser 失败: %w&quot;</span>, err)  <span class="comment">// %w 包装</span>
+    &#125;
+    <span class="keyword">return</span> user, <span class="literal">nil</span>
+&#125;
+<span class="comment">// 调用方判断具体错误类型</span>
+_, err := getUser(<span class="number">1</span>)
+<span class="keyword">if</span> errors.Is(err, sql.ErrNoRows) &#123;
+    fmt.Println(<span class="string">&quot;用户不存在&quot;</span>)
+&#125;
+<span class="comment">// 提取自定义错误类型</span>
+<span class="keyword">var</span> dbErr *DatabaseError
+<span class="keyword">if</span> errors.As(err, &amp;dbErr) &#123;
+    fmt.Println(<span class="string">&quot;数据库错误码:&quot;</span>, dbErr.Code)
+&#125;</code></pre>
+<hr />
+<h2 id="性能分析"><a class="markdownIt-Anchor" href="#性能分析"></a> 性能分析</h2>
+<p>Go 内置了性能分析工具 <code>pprof</code>，不需要任何第三方依赖。线上遇到内存泄漏或者 CPU 占用高，直接接入就能分析。</p>
+<pre><code class="highlight go"><span class="keyword">import</span> _ <span class="string">&quot;net/http/pprof&quot;</span>  <span class="comment">// 注册 pprof 路由</span>
+<span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;
+    <span class="comment">// pprof 会自动注册到 /debug/pprof/</span>
+    <span class="keyword">go</span> http.ListenAndServe(<span class="string">&quot;:6060&quot;</span>, <span class="literal">nil</span>)
+    <span class="comment">// 你的主服务</span>
+    <span class="comment">// ...</span>
+&#125;</code></pre>
+<p>然后用命令行采集和分析：</p>
+<pre><code class="highlight bash"><span class="comment"># 采集 30 秒的 CPU profile</span>
+go tool pprof http://localhost:6060/debug/pprof/profile?seconds=30
+<span class="comment"># 分析内存</span>
+go tool pprof http://localhost:6060/debug/pprof/heap
+<span class="comment"># 进入交互模式后常用命令</span>
+top       <span class="comment"># 按占用排序，看哪些函数消耗最多</span>
+list 函数名  <span class="comment"># 看具体哪一行代码占用多</span>
+web       <span class="comment"># 生成可视化调用图（需要安装 graphviz）</span></code></pre>
+<p>Go 还内置了 benchmark 测试，可以精确测量一段代码的性能：</p>
+<pre><code class="highlight go"><span class="comment">// xxx_test.go</span>
+<span class="function"><span class="keyword">func</span> <span class="title">BenchmarkContains</span><span class="params">(b *testing.B)</span></span> &#123;
+    data := <span class="built_in">make</span>([]<span class="type">int</span>, <span class="number">10000</span>)
+    <span class="keyword">for</span> i := <span class="keyword">range</span> data &#123;
+        data[i] = i
+    &#125;
+    b.ResetTimer()  <span class="comment">// 重置计时器，排除初始化时间</span>
+    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; b.N; i++ &#123;
+        Contains(data, <span class="number">9999</span>)
+    &#125;
+&#125;</code></pre>
+<pre><code class="highlight bash">go <span class="built_in">test</span> -bench=. -benchmem  <span class="comment"># -benchmem 同时显示内存分配情况</span></code></pre>
+<hr />
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

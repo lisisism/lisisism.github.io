@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java-New-Features 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java-New-Features</div>
+  <div class="post-meta">
+    <div class="date">2023 十二月 29日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java821新特性总结"><a class="markdownIt-Anchor" href="#java821新特性总结"></a> Java8→21新特性总结</h1>
+<hr />
+<h2 id="目录"><a class="markdownIt-Anchor" href="#目录"></a> 目录</h2>
+<ul>
+<li><a href="#java-8">Java 8（2014）— 划时代版本</a></li>
+<li><a href="#java-9">Java 9（2017）— 模块化时代</a></li>
+<li><a href="#java-10">Java 10（2018）— 局部变量推断</a></li>
+<li><a href="#java-11">Java 11（2018）— 第二个 LTS</a></li>
+<li><a href="#java-12-14">Java 12 ~ 14 — 过渡版本</a></li>
+<li><a href="#java-15-16">Java 15 ~ 16（2020~2021）— 特性逐渐成熟</a></li>
+<li><a href="#java-17">Java 17（2021）— 第三个 LTS</a></li>
+<li><a href="#java-18-20">Java 18 ~ 20（2022~2023）— 过渡版本</a></li>
+<li><a href="#java-21">Java 21（2023）— 第四个 LTS，最重磅</a></li>
+<li><a href="#%E7%89%88%E6%9C%AC%E9%80%89%E6%8B%A9%E5%BB%BA%E8%AE%AE">版本选择建议</a></li>
+</ul>
+<hr />
+<h2 id="java-8"><a class="markdownIt-Anchor" href="#java-8"></a> Java 8</h2>
+<blockquote>
+<p><strong>2014 年发布，目前仍是使用最广泛的版本，引入了函数式编程思想</strong></p>
+</blockquote>
+<h3 id="lambda-表达式"><a class="markdownIt-Anchor" href="#lambda-表达式"></a> Lambda 表达式</h3>
+<p>Lambda 是 Java 8 最重要的特性，让代码更简洁。</p>
+<pre><code class="highlight java"><span class="comment">// 旧写法</span>
+List&lt;String&gt; names = Arrays.asList(<span class="string">&quot;张三&quot;</span>, <span class="string">&quot;李四&quot;</span>, <span class="string">&quot;王五&quot;</span>);
+Collections.sort(names, <span class="keyword">new</span> <span class="title class_">Comparator</span>&lt;String&gt;() &#123;
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compare</span><span class="params">(String a, String b)</span> &#123;
+        <span class="keyword">return</span> a.compareTo(b);
+    &#125;
+&#125;);
+
+<span class="comment">// Lambda 写法</span>
+Collections.sort(names, (a, b) -&gt; a.compareTo(b));
+
+<span class="comment">// 更简洁</span>
+names.sort(String::compareTo);</code></pre>
+<h3 id="stream-api"><a class="markdownIt-Anchor" href="#stream-api"></a> Stream API</h3>
+<p>对集合进行链式操作，告别大量 for 循环。</p>
+<pre><code class="highlight java">List&lt;String&gt; names = Arrays.asList(<span class="string">&quot;张三&quot;</span>, <span class="string">&quot;李四&quot;</span>, <span class="string">&quot;王五&quot;</span>, <span class="string">&quot;赵六&quot;</span>);
+
+<span class="comment">// 过滤 + 转换 + 收集</span>
+List&lt;String&gt; result = names.stream()
+    .filter(name -&gt; name.startsWith(<span class="string">&quot;张&quot;</span>))   <span class="comment">// 过滤</span>
+    .map(String::toUpperCase)               <span class="comment">// 转换</span>
+    .sorted()                               <span class="comment">// 排序</span>
+    .collect(Collectors.toList());          <span class="comment">// 收集</span>
+
+<span class="comment">// 聚合操作</span>
+<span class="type">long</span> <span class="variable">count</span> <span class="operator">=</span> names.stream().filter(n -&gt; n.length() &gt; <span class="number">1</span>).count();
+Optional&lt;String&gt; first = names.stream().findFirst();
+
+<span class="comment">// 并行流（多核加速）</span>
+<span class="type">long</span> <span class="variable">sum</span> <span class="operator">=</span> LongStream.rangeClosed(<span class="number">1</span>, <span class="number">1_000_000</span>)
+    .parallel()
+    .sum();</code></pre>
+<h3 id="optional"><a class="markdownIt-Anchor" href="#optional"></a> Optional</h3>
+<p>优雅处理 null，避免 NullPointerException。</p>
+<pre><code class="highlight java"><span class="comment">// 旧写法</span>
+<span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> user != <span class="literal">null</span> ? user.getName() : <span class="string">&quot;默认名&quot;</span>;
+
+<span class="comment">// Optional 写法</span>
+Optional&lt;User&gt; user = userRepository.findById(id);
+<span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> user.map(User::getName).orElse(<span class="string">&quot;默认名&quot;</span>);
+
+<span class="comment">// 链式处理</span>
+<span class="type">String</span> <span class="variable">city</span> <span class="operator">=</span> Optional.ofNullable(user)
+    .map(User::getAddress)
+    .map(Address::getCity)
+    .orElse(<span class="string">&quot;未知城市&quot;</span>);</code></pre>
+<h3 id="函数式接口"><a class="markdownIt-Anchor" href="#函数式接口"></a> 函数式接口</h3>
+<p>四大核心函数式接口：</p>
+<pre><code class="highlight java"><span class="comment">// Function&lt;T, R&gt;：输入 T，返回 R</span>
+Function&lt;String, Integer&gt; strLen = String::length;
+System.out.println(strLen.apply(<span class="string">&quot;Hello&quot;</span>));  <span class="comment">// 5</span>
+
+<span class="comment">// Predicate&lt;T&gt;：输入 T，返回 boolean</span>
+Predicate&lt;String&gt; isEmpty = String::isEmpty;
+System.out.println(isEmpty.test(<span class="string">&quot;&quot;</span>));  <span class="comment">// true</span>
+
+<span class="comment">// Consumer&lt;T&gt;：输入 T，无返回</span>
+Consumer&lt;String&gt; print = System.out::println;
+print.accept(<span class="string">&quot;Hello&quot;</span>);
+
+<span class="comment">// Supplier&lt;T&gt;：无输入，返回 T</span>
+Supplier&lt;List&lt;String&gt;&gt; listFactory = ArrayList::<span class="keyword">new</span>;</code></pre>
+<h3 id="新的日期时间-api"><a class="markdownIt-Anchor" href="#新的日期时间-api"></a> 新的日期时间 API</h3>
+<p>终于告别 <code>Date</code> 和 <code>Calendar</code> 的混乱。</p>
+<pre><code class="highlight java"><span class="comment">// 日期</span>
+<span class="type">LocalDate</span> <span class="variable">today</span> <span class="operator">=</span> LocalDate.now();
+<span class="type">LocalDate</span> <span class="variable">birthday</span> <span class="operator">=</span> LocalDate.of(<span class="number">1995</span>, <span class="number">6</span>, <span class="number">15</span>);
+<span class="type">long</span> <span class="variable">age</span> <span class="operator">=</span> ChronoUnit.YEARS.between(birthday, today);
+
+<span class="comment">// 时间</span>
+<span class="type">LocalTime</span> <span class="variable">now</span> <span class="operator">=</span> LocalTime.now();
+<span class="type">LocalTime</span> <span class="variable">meeting</span> <span class="operator">=</span> LocalTime.of(<span class="number">14</span>, <span class="number">30</span>);
+
+<span class="comment">// 日期时间</span>
+<span class="type">LocalDateTime</span> <span class="variable">dateTime</span> <span class="operator">=</span> LocalDateTime.now();
+
+<span class="comment">// 带时区</span>
+<span class="type">ZonedDateTime</span> <span class="variable">shanghaiTime</span> <span class="operator">=</span> ZonedDateTime.now(ZoneId.of(<span class="string">&quot;Asia/Shanghai&quot;</span>));
+
+<span class="comment">// 格式化</span>
+<span class="type">DateTimeFormatter</span> <span class="variable">formatter</span> <span class="operator">=</span> DateTimeFormatter.ofPattern(<span class="string">&quot;yyyy-MM-dd HH:mm:ss&quot;</span>);
+<span class="type">String</span> <span class="variable">formatted</span> <span class="operator">=</span> dateTime.format(formatter);</code></pre>
+<h3 id="接口默认方法"><a class="markdownIt-Anchor" href="#接口默认方法"></a> 接口默认方法</h3>
+<p>接口可以有默认实现了。</p>
+<pre><code class="highlight java"><span class="keyword">interface</span> <span class="title class_">Greeting</span> &#123;
+    String <span class="title function_">greet</span><span class="params">(String name)</span>;
+
+    <span class="comment">// 默认方法，实现类可以不覆写</span>
+    <span class="keyword">default</span> String <span class="title function_">greetLoudly</span><span class="params">(String name)</span> &#123;
+        <span class="keyword">return</span> greet(name).toUpperCase();
+    &#125;
+
+    <span class="comment">// 静态方法</span>
+    <span class="keyword">static</span> Greeting <span class="title function_">formal</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> name -&gt; <span class="string">&quot;您好，&quot;</span> + name;
+    &#125;
+&#125;</code></pre>
+<hr />
+<h2 id="java-9"><a class="markdownIt-Anchor" href="#java-9"></a> Java 9</h2>
+<blockquote>
+<p><strong>2017 年发布，引入模块化系统，改变了 Java 平台结构</strong></p>
+</blockquote>
+<h3 id="模块化系统jpms"><a class="markdownIt-Anchor" href="#模块化系统jpms"></a> 模块化系统（JPMS）</h3>
+<p>将 JDK 自身拆分成模块，应用也可以声明依赖。</p>
+<pre><code class="highlight java"><span class="comment">// module-info.java</span>
+<span class="keyword">module</span> com.myapp &#123;
+    <span class="keyword">requires</span> java.sql;          <span class="comment">// 依赖 java.sql 模块</span>
+    <span class="keyword">requires</span> spring.core;       <span class="comment">// 依赖 Spring</span>
+    <span class="keyword">exports</span> com.myapp.api;      <span class="comment">// 对外暴露的包</span>
+&#125;</code></pre>
+<h3 id="集合工厂方法"><a class="markdownIt-Anchor" href="#集合工厂方法"></a> 集合工厂方法</h3>
+<p>创建不可变集合更方便。</p>
+<pre><code class="highlight java"><span class="comment">// 旧写法（繁琐）</span>
+List&lt;String&gt; list = Collections.unmodifiableList(Arrays.asList(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>));
+
+<span class="comment">// 新写法</span>
+List&lt;String&gt; list = List.of(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);
+Set&lt;String&gt; set = Set.of(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);
+Map&lt;String, Integer&gt; map = Map.of(<span class="string">&quot;key1&quot;</span>, <span class="number">1</span>, <span class="string">&quot;key2&quot;</span>, <span class="number">2</span>);</code></pre>
+<h3 id="stream-增强"><a class="markdownIt-Anchor" href="#stream-增强"></a> Stream 增强</h3>
+<pre><code class="highlight java"><span class="comment">// takeWhile：取满足条件的前缀元素</span>
+List&lt;Integer&gt; result = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">1</span>, <span class="number">2</span>)
+    .takeWhile(n -&gt; n &lt; <span class="number">4</span>)
+    .collect(Collectors.toList());  <span class="comment">// [1, 2, 3]</span>
+
+<span class="comment">// dropWhile：丢弃满足条件的前缀元素</span>
+List&lt;Integer&gt; result2 = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)
+    .dropWhile(n -&gt; n &lt; <span class="number">3</span>)
+    .collect(Collectors.toList());  <span class="comment">// [3, 4, 5]</span>
+
+<span class="comment">// Stream.iterate 增强（可以指定终止条件）</span>
+Stream.iterate(<span class="number">1</span>, n -&gt; n &lt; <span class="number">100</span>, n -&gt; n * <span class="number">2</span>)
+    .forEach(System.out::println);  <span class="comment">// 1, 2, 4, 8, ...</span></code></pre>
+<h3 id="optional-增强"><a class="markdownIt-Anchor" href="#optional-增强"></a> Optional 增强</h3>
+<pre><code class="highlight java">Optional&lt;String&gt; opt = Optional.of(<span class="string">&quot;hello&quot;</span>);
+
+<span class="comment">// ifPresentOrElse</span>
+opt.ifPresentOrElse(
+    v -&gt; System.out.println(<span class="string">&quot;有值: &quot;</span> + v),
+    () -&gt; System.out.println(<span class="string">&quot;没有值&quot;</span>)
+);
+
+<span class="comment">// or：为空时提供另一个 Optional</span>
+Optional&lt;String&gt; result = opt.or(() -&gt; Optional.of(<span class="string">&quot;默认值&quot;</span>));
+
+<span class="comment">// stream：转成 Stream</span>
+opt.stream().forEach(System.out::println);</code></pre>
+<hr />
+<h2 id="java-10"><a class="markdownIt-Anchor" href="#java-10"></a> Java 10</h2>
+<blockquote>
+<p><strong>2018 年发布，主要带来了局部变量类型推断</strong></p>
+</blockquote>
+<h3 id="var-局部变量类型推断"><a class="markdownIt-Anchor" href="#var-局部变量类型推断"></a> var 局部变量类型推断</h3>
+<pre><code class="highlight java"><span class="comment">// 旧写法</span>
+HashMap&lt;String, List&lt;Integer&gt;&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, List&lt;Integer&gt;&gt;();
+Iterator&lt;Map.Entry&lt;String, Integer&gt;&gt; iterator = map.entrySet().iterator();
+
+<span class="comment">// var 写法（编译器自动推断类型）</span>
+<span class="type">var</span> <span class="variable">map</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, List&lt;Integer&gt;&gt;();
+<span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();
+<span class="type">var</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;Hello World&quot;</span>;  <span class="comment">// 推断为 String</span>
+
+<span class="comment">// 在循环中使用</span>
+<span class="keyword">for</span> (<span class="keyword">var</span> entry : map.entrySet()) &#123;
+    System.out.println(entry.getKey() + <span class="string">&quot;=&quot;</span> + entry.getValue());
+&#125;</code></pre>
+<blockquote>
+<p><strong>注意：</strong> <code>var</code> 只能用于局部变量，不能用于方法参数、返回值、字段。</p>
+</blockquote>
+<hr />
+<h2 id="java-11"><a class="markdownIt-Anchor" href="#java-11"></a> Java 11</h2>
+<blockquote>
+<p><strong>2018 年发布，第二个 LTS 版本，企业升级的主要目标之一</strong></p>
+</blockquote>
+<h3 id="string-新方法"><a class="markdownIt-Anchor" href="#string-新方法"></a> String 新方法</h3>
+<pre><code class="highlight java"><span class="comment">// isBlank：判断是否空白（比 isEmpty 更严格）</span>
+<span class="string">&quot;  &quot;</span>.isBlank();   <span class="comment">// true</span>
+<span class="string">&quot;&quot;</span>.isBlank();     <span class="comment">// true</span>
+<span class="string">&quot; a&quot;</span>.isBlank();   <span class="comment">// false</span>
+
+<span class="comment">// strip：去除 Unicode 空白（比 trim 更强）</span>
+<span class="string">&quot;  hello  &quot;</span>.strip();       <span class="comment">// &quot;hello&quot;</span>
+<span class="string">&quot;  hello  &quot;</span>.stripLeading(); <span class="comment">// &quot;hello  &quot;</span>
+<span class="string">&quot;  hello  &quot;</span>.stripTrailing();<span class="comment">// &quot;  hello&quot;</span>
+
+<span class="comment">// lines：按行分割成 Stream</span>
+<span class="string">&quot;line1\nline2\nline3&quot;</span>.lines()
+    .forEach(System.out::println);
+
+<span class="comment">// repeat：重复字符串</span>
+<span class="string">&quot;ha&quot;</span>.repeat(<span class="number">3</span>);  <span class="comment">// &quot;hahaha&quot;</span></code></pre>
+<h3 id="直接运行-java-文件"><a class="markdownIt-Anchor" href="#直接运行-java-文件"></a> 直接运行 Java 文件</h3>
+<pre><code class="highlight bash"><span class="comment"># Java 11 之前需要先编译再运行</span>
+javac Hello.java
+java Hello
+
+<span class="comment"># Java 11 可以直接运行</span>
+java Hello.java</code></pre>
+<h3 id="httpclient-正式发布"><a class="markdownIt-Anchor" href="#httpclient-正式发布"></a> HttpClient 正式发布</h3>
+<pre><code class="highlight java"><span class="type">HttpClient</span> <span class="variable">client</span> <span class="operator">=</span> HttpClient.newHttpClient();
+
+<span class="type">HttpRequest</span> <span class="variable">request</span> <span class="operator">=</span> HttpRequest.newBuilder()
+    .uri(URI.create(<span class="string">&quot;https://api.example.com/users&quot;</span>))
+    .GET()
+    .build();
+
+HttpResponse&lt;String&gt; response = client.send(
+    request, HttpResponse.BodyHandlers.ofString()
+);
+
+System.out.println(response.statusCode());
+System.out.println(response.body());</code></pre>
+<hr />
+<h2 id="java-12~14"><a class="markdownIt-Anchor" href="#java-12~14"></a> Java 12~14</h2>
+<blockquote>
+<p><strong>过渡版本，主要以预览特性为主</strong></p>
+</blockquote>
+<h3 id="switch-表达式java-14-正式"><a class="markdownIt-Anchor" href="#switch-表达式java-14-正式"></a> Switch 表达式（Java 14 正式）</h3>
+<pre><code class="highlight java"><span class="comment">// 旧 switch（容易忘写 break，还只能做语句）</span>
+String result;
+<span class="keyword">switch</span> (day) &#123;
+    <span class="keyword">case</span> MONDAY:
+    <span class="keyword">case</span> FRIDAY:
+        result = <span class="string">&quot;工作日&quot;</span>;
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> SATURDAY:
+    <span class="keyword">case</span> SUNDAY:
+        result = <span class="string">&quot;周末&quot;</span>;
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        result = <span class="string">&quot;其他&quot;</span>;
+&#125;
+
+<span class="comment">// 新 switch 表达式（简洁、安全、可以有返回值）</span>
+<span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">switch</span> (day) &#123;
+    <span class="keyword">case</span> MONDAY, FRIDAY -&gt; <span class="string">&quot;工作日&quot;</span>;
+    <span class="keyword">case</span> SATURDAY, SUNDAY -&gt; <span class="string">&quot;周末&quot;</span>;
+    <span class="keyword">default</span> -&gt; <span class="string">&quot;其他&quot;</span>;
+&#125;;</code></pre>
+<h3 id="文本块-text-blockjava-13-预览14-继续预览"><a class="markdownIt-Anchor" href="#文本块-text-blockjava-13-预览14-继续预览"></a> 文本块 Text Block（Java 13 预览，14 继续预览）</h3>
+<pre><code class="highlight java"><span class="comment">// 旧写法（拼接 JSON/HTML/SQL 很痛苦）</span>
+<span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> <span class="string">&quot;&#123;\n&quot;</span> +
+              <span class="string">&quot;  \&quot;name\&quot;: \&quot;张三\&quot;,\n&quot;</span> +
+              <span class="string">&quot;  \&quot;age\&quot;: 25\n&quot;</span> +
+              <span class="string">&quot;&#125;&quot;</span>;
+
+<span class="comment">// 文本块写法（Java 15 正式）</span>
+<span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span>
+<span class="string">        &#123;</span>
+<span class="string">          &quot;name&quot;: &quot;张三&quot;,</span>
+<span class="string">          &quot;age&quot;: 25</span>
+<span class="string">        &#125;</span>
+<span class="string">        &quot;&quot;&quot;</span>;</code></pre>
+<hr />
+<h2 id="java-15~16"><a class="markdownIt-Anchor" href="#java-15~16"></a> Java 15~16</h2>
+<blockquote>
+<p><strong>特性逐渐从预览转为正式</strong></p>
+</blockquote>
+<h3 id="文本块正式发布java-15"><a class="markdownIt-Anchor" href="#文本块正式发布java-15"></a> 文本块正式发布（Java 15）</h3>
+<p>见上方示例，Java 15 正式发布，可以放心使用。</p>
+<h3 id="recordsjava-16-正式"><a class="markdownIt-Anchor" href="#recordsjava-16-正式"></a> Records（Java 16 正式）</h3>
+<p>不可变数据类，自动生成构造器、getter、equals、hashCode、toString。</p>
+<pre><code class="highlight java"><span class="comment">// 旧写法（一个简单的数据类需要写几十行）</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">User</span> &#123;
+    <span class="keyword">private</span> <span class="keyword">final</span> String name;
+    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> age;
+    <span class="keyword">public</span> <span class="title function_">User</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123; <span class="built_in">this</span>.name = name; <span class="built_in">this</span>.age = age; &#125;
+    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123; <span class="keyword">return</span> name; &#125;
+    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getAge</span><span class="params">()</span> &#123; <span class="keyword">return</span> age; &#125;
+    <span class="comment">// equals, hashCode, toString...</span>
+&#125;
+
+<span class="comment">// Record 写法（一行搞定）</span>
+<span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">User</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;&#125;
+
+<span class="comment">// 使用</span>
+<span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">User</span>(<span class="string">&quot;张三&quot;</span>, <span class="number">25</span>);
+System.out.println(user.name());  <span class="comment">// 张三</span>
+System.out.println(user.age());   <span class="comment">// 25</span>
+System.out.println(user);         <span class="comment">// User[name=张三, age=25]</span>
+
+<span class="comment">// 可以添加自定义方法</span>
+<span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">User</span><span class="params">(String name, <span class="type">int</span> age)</span> &#123;
+    <span class="comment">// 紧凑构造器（做参数校验）</span>
+    <span class="keyword">public</span> User &#123;
+        <span class="keyword">if</span> (age &lt; <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;年龄不能为负&quot;</span>);
+    &#125;
+    
+    <span class="keyword">public</span> String <span class="title function_">greeting</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> <span class="string">&quot;我叫&quot;</span> + name + <span class="string">&quot;，今年&quot;</span> + age + <span class="string">&quot;岁&quot;</span>;
+    &#125;
+&#125;</code></pre>
+<h3 id="instanceof-pattern-matchingjava-16-正式"><a class="markdownIt-Anchor" href="#instanceof-pattern-matchingjava-16-正式"></a> instanceof Pattern Matching（Java 16 正式）</h3>
+<pre><code class="highlight java"><span class="comment">// 旧写法</span>
+<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> String) &#123;
+    <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> (String) obj;  <span class="comment">// 需要强转</span>
+    System.out.println(s.length());
+&#125;
+
+<span class="comment">// 新写法（自动绑定变量）</span>
+<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> String s) &#123;
+    System.out.println(s.length());  <span class="comment">// 直接使用 s，无需强转</span>
+&#125;</code></pre>
+<hr />
+<h2 id="java-17"><a class="markdownIt-Anchor" href="#java-17"></a> Java 17</h2>
+<blockquote>
+<p><strong>2021 年发布，第三个 LTS，目前很多企业的升级目标</strong></p>
+</blockquote>
+<h3 id="sealed-classes-密封类"><a class="markdownIt-Anchor" href="#sealed-classes-密封类"></a> Sealed Classes 密封类</h3>
+<p>限制哪些类可以继承或实现，让类层级更可控。</p>
+<pre><code class="highlight java"><span class="comment">// 只有 Circle、Rectangle、Triangle 能实现 Shape</span>
+<span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">interface</span> <span class="title class_">Shape</span> <span class="keyword">permits</span> Circle, Rectangle, Triangle &#123;
+    <span class="type">double</span> <span class="title function_">area</span><span class="params">()</span>;
+&#125;
+
+<span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">Circle</span><span class="params">(<span class="type">double</span> radius)</span> <span class="keyword">implements</span> <span class="title class_">Shape</span> &#123;
+    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">area</span><span class="params">()</span> &#123; <span class="keyword">return</span> Math.PI * radius * radius; &#125;
+&#125;
+
+<span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">Rectangle</span><span class="params">(<span class="type">double</span> width, <span class="type">double</span> height)</span> <span class="keyword">implements</span> <span class="title class_">Shape</span> &#123;
+    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">area</span><span class="params">()</span> &#123; <span class="keyword">return</span> width * height; &#125;
+&#125;
+
+<span class="comment">// 配合 Pattern Matching 使用非常强大</span>
+<span class="type">double</span> <span class="title function_">describe</span><span class="params">(Shape shape)</span> &#123;
+    <span class="keyword">return</span> <span class="keyword">switch</span> (shape) &#123;
+        <span class="keyword">case</span> Circle c    -&gt; c.area();
+        <span class="keyword">case</span> Rectangle r -&gt; r.area();
+        <span class="keyword">case</span> Triangle t  -&gt; t.area();
+        <span class="comment">// 编译器知道 Shape 只有这三种，不需要 default！</span>
+    &#125;;
+&#125;</code></pre>
+<h3 id="增强的伪随机数生成器"><a class="markdownIt-Anchor" href="#增强的伪随机数生成器"></a> 增强的伪随机数生成器</h3>
+<pre><code class="highlight java"><span class="comment">// 统一的接口，支持多种算法</span>
+<span class="type">RandomGenerator</span> <span class="variable">rng</span> <span class="operator">=</span> RandomGeneratorFactory.of(<span class="string">&quot;L64X128MixRandom&quot;</span>).create();
+<span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> rng.nextInt(<span class="number">100</span>);
+
+<span class="comment">// 支持流式操作</span>
+rng.ints(<span class="number">10</span>, <span class="number">1</span>, <span class="number">100</span>).forEach(System.out::println);</code></pre>
+<hr />
+<h2 id="java-18~20"><a class="markdownIt-Anchor" href="#java-18~20"></a> Java 18~20</h2>
+<blockquote>
+<p><strong>过渡版本，引入了多个重要预览特性</strong></p>
+</blockquote>
+<h3 id="虚拟线程预览java-19"><a class="markdownIt-Anchor" href="#虚拟线程预览java-19"></a> 虚拟线程预览（Java 19）</h3>
+<pre><code class="highlight java"><span class="comment">// 预览版（Java 21 正式，见下文）</span>
+<span class="keyword">try</span> (<span class="type">var</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor()) &#123;
+    executor.submit(() -&gt; System.out.println(<span class="string">&quot;运行在虚拟线程中&quot;</span>));
+&#125;</code></pre>
+<h3 id="structured-concurrency-结构化并发预览java-19"><a class="markdownIt-Anchor" href="#structured-concurrency-结构化并发预览java-19"></a> Structured Concurrency 结构化并发预览（Java 19）</h3>
+<pre><code class="highlight java"><span class="comment">// 多个并发任务作为一个整体管理</span>
+<span class="keyword">try</span> (<span class="type">var</span> <span class="variable">scope</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StructuredTaskScope</span>.ShutdownOnFailure()) &#123;
+    Future&lt;String&gt; user  = scope.fork(() -&gt; fetchUser(id));
+    Future&lt;String&gt; order = scope.fork(() -&gt; fetchOrder(id));
+    
+    scope.join();           <span class="comment">// 等待所有任务</span>
+    scope.throwIfFailed();  <span class="comment">// 任意一个失败则抛异常</span>
+    
+    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(user.get(), order.get());
+&#125;</code></pre>
+<hr />
+<h2 id="java-21"><a class="markdownIt-Anchor" href="#java-21"></a> Java 21</h2>
+<blockquote>
+<p><strong>2023 年 9 月发布，第四个 LTS，目前最新 LTS，特性最丰富</strong></p>
+</blockquote>
+<h3 id="虚拟线程正式发布-最重磅特性"><a class="markdownIt-Anchor" href="#虚拟线程正式发布-最重磅特性"></a> 🌟 虚拟线程（正式发布）— 最重磅特性</h3>
+<p>虚拟线程是 Java 并发模型的重大变革，可以轻松创建百万级别线程。</p>
+<pre><code class="highlight java"><span class="comment">// 方式一：直接创建虚拟线程</span>
+<span class="type">Thread</span> <span class="variable">vThread</span> <span class="operator">=</span> Thread.ofVirtual().start(() -&gt; &#123;
+    System.out.println(<span class="string">&quot;这是虚拟线程: &quot;</span> + Thread.currentThread().isVirtual());
+&#125;);
+
+<span class="comment">// 方式二：虚拟线程执行器（推荐）</span>
+<span class="keyword">try</span> (<span class="type">var</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor()) &#123;
+    <span class="comment">// 提交 100 万个任务，完全不用担心资源耗尽</span>
+    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1_000_000</span>; i++) &#123;
+        executor.submit(() -&gt; &#123;
+            Thread.sleep(Duration.ofSeconds(<span class="number">1</span>));  <span class="comment">// 阻塞也没关系</span>
+            <span class="keyword">return</span> <span class="string">&quot;done&quot;</span>;
+        &#125;);
+    &#125;
+&#125;
+
+<span class="comment">// 方式三：Spring Boot 3.2 一行配置开启</span>
+<span class="comment">// application.properties</span>
+<span class="comment">// spring.threads.virtual.enabled=true</span></code></pre>
+<p><strong>为什么虚拟线程是革命性的？</strong></p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>平台线程（OS Thread）</th>
+<th>虚拟线程（Virtual Thread）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建成本</td>
+<td>高（约 1MB 栈内存）</td>
+<td>极低（KB 级别）</td>
+</tr>
+<tr>
+<td>数量限制</td>
+<td>通常几千个</td>
+<td>可达数百万</td>
+</tr>
+<tr>
+<td>阻塞时</td>
+<td>占用 OS 线程</td>
+<td>自动挂起，释放 OS 线程</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>CPU 密集型</td>
+<td>IO 密集型（Web 请求、数据库）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="pattern-matching-for-switch正式发布"><a class="markdownIt-Anchor" href="#pattern-matching-for-switch正式发布"></a> 🌟 Pattern Matching for Switch（正式发布）</h3>
+<pre><code class="highlight java"><span class="comment">// 强大的模式匹配 + switch 组合</span>
+<span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="number">42</span>;
+
+<span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">switch</span> (obj) &#123;
+    <span class="keyword">case</span> Integer i <span class="keyword">when</span> i &gt; <span class="number">0</span> -&gt; <span class="string">&quot;正整数: &quot;</span> + i;
+    <span class="keyword">case</span> Integer i            -&gt; <span class="string">&quot;非正整数: &quot;</span> + i;
+    <span class="keyword">case</span> String s             -&gt; <span class="string">&quot;字符串: &quot;</span> + s;
+    <span class="keyword">case</span> <span class="literal">null</span>                 -&gt; <span class="string">&quot;空值&quot;</span>;
+    <span class="keyword">default</span>                   -&gt; <span class="string">&quot;其他类型&quot;</span>;
+&#125;;</code></pre>
+<h3 id="sequenced-collections"><a class="markdownIt-Anchor" href="#sequenced-collections"></a> 🌟 Sequenced Collections</h3>
+<p>新增有序集合接口，统一操作第一个/最后一个元素。</p>
+<pre><code class="highlight java"><span class="comment">// 新接口：SequencedCollection</span>
+List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(List.of(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>));
+
+list.getFirst();  <span class="comment">// &quot;a&quot;</span>
+list.getLast();   <span class="comment">// &quot;c&quot;</span>
+list.addFirst(<span class="string">&quot;z&quot;</span>);
+list.addLast(<span class="string">&quot;z&quot;</span>);
+list.removeFirst();
+list.removeLast();
+
+<span class="comment">// 反转视图</span>
+List&lt;String&gt; reversed = list.reversed();</code></pre>
+<h3 id="record-patterns正式发布"><a class="markdownIt-Anchor" href="#record-patterns正式发布"></a> Record Patterns（正式发布）</h3>
+<p>解构 Record 对象，配合 Pattern Matching 使用。</p>
+<pre><code class="highlight java"><span class="keyword">record</span> <span class="title class_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;&#125;
+<span class="keyword">record</span> <span class="title class_">Line</span><span class="params">(Point start, Point end)</span> &#123;&#125;
+
+<span class="type">Object</span> <span class="variable">obj</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Line</span>(<span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">1</span>, <span class="number">2</span>), <span class="keyword">new</span> <span class="title class_">Point</span>(<span class="number">3</span>, <span class="number">4</span>));
+
+<span class="comment">// 直接解构嵌套 Record</span>
+<span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title function_">Line</span><span class="params">(Point(<span class="type">int</span> x1, <span class="type">int</span> y1)</span>, Point(<span class="type">int</span> x2, <span class="type">int</span> y2))) &#123;
+    System.out.println(<span class="string">&quot;起点: (&quot;</span> + x1 + <span class="string">&quot;, &quot;</span> + y1 + <span class="string">&quot;)&quot;</span>);
+    System.out.println(<span class="string">&quot;终点: (&quot;</span> + x2 + <span class="string">&quot;, &quot;</span> + y2 + <span class="string">&quot;)&quot;</span>);
+&#125;</code></pre>
+<h3 id="string-templates预览"><a class="markdownIt-Anchor" href="#string-templates预览"></a> String Templates（预览）</h3>
+<pre><code class="highlight java"><span class="comment">// 类似其他语言的字符串插值（Java 21 预览，未来正式）</span>
+<span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;张三&quot;</span>;
+<span class="type">int</span> <span class="variable">age</span> <span class="operator">=</span> <span class="number">25</span>;
+
+<span class="comment">// 预览语法（需要开启预览特性）</span>
+<span class="type">String</span> <span class="variable">msg</span> <span class="operator">=</span> STR.<span class="string">&quot;姓名：\&#123;name&#125;，年龄：\&#123;age&#125;&quot;</span>;
+<span class="comment">// 输出：姓名：张三，年龄：25</span></code></pre>
+<hr />
+<h2 id="版本选择建议"><a class="markdownIt-Anchor" href="#版本选择建议"></a> 版本选择建议</h2>
+<h3 id="lts-版本一览"><a class="markdownIt-Anchor" href="#lts-版本一览"></a> LTS 版本一览</h3>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>发布时间</th>
+<th>支持至</th>
+<th>推荐程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Java 8</td>
+<td>2014</td>
+<td>2030</td>
+<td>老项目维护</td>
+</tr>
+<tr>
+<td>Java 11</td>
+<td>2018</td>
+<td>2032</td>
+<td>逐步迁移</td>
+</tr>
+<tr>
+<td>Java 17</td>
+<td>2021</td>
+<td>2029</td>
+<td>新项目推荐</td>
+</tr>
+<tr>
+<td><strong>Java 21</strong></td>
+<td><strong>2023</strong></td>
+<td><strong>2031</strong></td>
+<td><strong>最推荐</strong></td>
+</tr>
+</tbody>
+</table>
+<h3 id="迁移路线建议"><a class="markdownIt-Anchor" href="#迁移路线建议"></a> 迁移路线建议</h3>
+<pre><code class="highlight plaintext">Java 8 用户  →  先升 Java 17（改动最小的 LTS）  →  再升 Java 21</code></pre>
+<p><strong>升级注意事项：</strong></p>
+<ul>
+<li>Java 9 引入了模块化，<code>sun.*</code> 内部 API 可能无法访问</li>
+<li>Java 17 强制封装了 JDK 内部 API，部分旧框架可能有兼容问题</li>
+<li>Spring Boot 3.x 要求 Java 17+</li>
+<li>Spring Boot 3.2+ 可以一行配置开启虚拟线程</li>
+</ul>
+<h3 id="各特性重要程度速览"><a class="markdownIt-Anchor" href="#各特性重要程度速览"></a> 各特性重要程度速览</h3>
+<table>
+<thead>
+<tr>
+<th>特性</th>
+<th>版本</th>
+<th>重要程度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Lambda / Stream / Optional</td>
+<td>Java 8</td>
+<td>⭐⭐⭐ 核心基础</td>
+</tr>
+<tr>
+<td>var 类型推断</td>
+<td>Java 10</td>
+<td>⭐⭐ 日常实用</td>
+</tr>
+<tr>
+<td>文本块</td>
+<td>Java 15</td>
+<td>⭐⭐ 日常实用</td>
+</tr>
+<tr>
+<td>Record</td>
+<td>Java 16</td>
+<td>⭐⭐⭐ 强烈推荐</td>
+</tr>
+<tr>
+<td>instanceof Pattern Matching</td>
+<td>Java 16</td>
+<td>⭐⭐ 日常实用</td>
+</tr>
+<tr>
+<td>Sealed Classes</td>
+<td>Java 17</td>
+<td>⭐⭐ 设计利器</td>
+</tr>
+<tr>
+<td>虚拟线程</td>
+<td>Java 21</td>
+<td>⭐⭐⭐ 重大变革</td>
+</tr>
+<tr>
+<td>Sequenced Collections</td>
+<td>Java 21</td>
+<td>⭐ 了解即可</td>
+</tr>
+<tr>
+<td>Record Patterns</td>
+<td>Java 21</td>
+<td>⭐⭐ 值得掌握</td>
+</tr>
+</tbody>
+</table>
+<hr />
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

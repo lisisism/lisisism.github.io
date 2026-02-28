@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Spark 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Spark</div>
+  <div class="post-meta">
+    <div class="date">2023 二月 25日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Spark</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="spark"><a class="markdownIt-Anchor" href="#spark"></a> Spark</h1>
+<h2 id="spark是什么"><a class="markdownIt-Anchor" href="#spark是什么"></a> Spark是什么</h2>
+<p>Spark 是一个开源的大数据处理引擎，它提供了一整套开发 API，包括流计算和机器学习。它支持批处理和流处理。Spark 的一个显著特点是它能够在内存中进行迭代计算，从而加快数据处理速度。</p>
+<h2 id="orc文件处理"><a class="markdownIt-Anchor" href="#orc文件处理"></a> Orc文件处理</h2>
+<p>Spark脱敏Orc文件代码示例：</p>
+<pre><code class="highlight java"><span class="keyword">import</span> com.suninfo.adm.duplicating.RandomWrapper;
+<span class="keyword">import</span> com.suninfo.adm.functions.GenerateCompanyName;
+<span class="keyword">import</span> com.suninfo.adm.functions.GenerateIPV4Address;
+<span class="keyword">import</span> org.apache.hadoop.conf.Configuration;
+<span class="keyword">import</span> org.apache.hadoop.fs.Path;
+<span class="keyword">import</span> org.apache.hadoop.security.UserGroupInformation;
+<span class="keyword">import</span> org.apache.hadoop.security.authentication.util.KerberosName;
+<span class="keyword">import</span> org.apache.spark.sql.SparkSession;
+<span class="keyword">import</span> org.apache.spark.sql.Dataset;
+<span class="keyword">import</span> org.apache.spark.sql.Row;
+<span class="keyword">import</span> org.apache.spark.sql.api.java.UDF1;
+<span class="keyword">import</span> org.apache.spark.sql.types.DataTypes;
+<span class="keyword">import</span> org.apache.spark.sql.types.StringType;
+<span class="keyword">import</span> org.apache.spark.sql.types.StructType;
+<span class="keyword">import</span> org.apache.spark.util.LongAccumulator;
+<span class="keyword">import</span> java.util.*;
+
+<span class="keyword">import</span> <span class="keyword">static</span> org.apache.spark.sql.functions.*;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LocalOrcProcessor</span> &#123;
+
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">LongAccumulator</span> <span class="variable">processedRecordsAccumulator</span> <span class="operator">=</span> <span class="literal">null</span>;
+
+    <span class="comment">// 使用懒加载Holder模式确保线程安全且高效的初始化</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">DataMaskingHolder</span> &#123;
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">GenerateCompanyName</span> <span class="variable">INSTANCE</span> <span class="operator">=</span> createDataMasking();
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">GenerateIPV4Address</span> <span class="variable">INSTANCEIMV4</span> <span class="operator">=</span> createDataMaskingIpv4();
+
+        <span class="keyword">private</span> <span class="keyword">static</span> GenerateCompanyName <span class="title function_">createDataMasking</span><span class="params">()</span> &#123;
+            <span class="keyword">try</span> &#123;
+                <span class="type">GenerateCompanyName</span> <span class="variable">masking</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenerateCompanyName</span>();
+                masking.parse(<span class="string">&quot;&#123;\n&quot;</span> +
+                        <span class="string">&quot;  \&quot;truncationLen\&quot;: 1,\n&quot;</span> +
+                        <span class="string">&quot;  \&quot;nameType\&quot;: 9\n&quot;</span> +
+                        <span class="string">&quot;&#125;&quot;</span>, <span class="literal">true</span>, <span class="keyword">new</span> <span class="title class_">RandomWrapper</span>(<span class="number">1</span>));
+                <span class="keyword">return</span> masking;
+            &#125; <span class="keyword">catch</span> (Exception e) &#123;
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Failed to initialize DataMasking&quot;</span>, e);
+            &#125;
+        &#125;
+
+        <span class="keyword">private</span> <span class="keyword">static</span> GenerateIPV4Address <span class="title function_">createDataMaskingIpv4</span><span class="params">()</span> &#123;
+            <span class="keyword">try</span> &#123;
+                <span class="type">GenerateIPV4Address</span> <span class="variable">masking</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">GenerateIPV4Address</span>();
+                masking.parse(<span class="string">&quot;&#123;\n&quot;</span> +
+                        <span class="string">&quot;  \&quot;truncationLen\&quot;: 1,\n&quot;</span> +
+                        <span class="string">&quot;  \&quot;nameType\&quot;: 9\n&quot;</span> +
+                        <span class="string">&quot;&#125;&quot;</span>, <span class="literal">true</span>, <span class="keyword">new</span> <span class="title class_">RandomWrapper</span>(<span class="number">1</span>));
+                <span class="keyword">return</span> masking;
+            &#125; <span class="keyword">catch</span> (Exception e) &#123;
+                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(<span class="string">&quot;Failed to initialize DataMasking&quot;</span>, e);
+            &#125;
+        &#125;
+    &#125;
+
+    <span class="comment">// 优化的UDF，避免每行检查初始化</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> UDF1&lt;String, String&gt; optimizedMaskUDF = value -&gt; &#123;
+        <span class="keyword">if</span> (value == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;
+        <span class="keyword">return</span> DataMaskingHolder.INSTANCE.generateMaskedRow(value);
+    &#125;;
+
+    <span class="keyword">private</span> <span class="keyword">static</span> UDF1&lt;String, String&gt; optimizedMaskIpv4UDF = value -&gt; &#123;
+        <span class="keyword">if</span> (value == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;
+        <span class="keyword">return</span> DataMaskingHolder.INSTANCEIMV4.generateMaskedRow(value);
+    &#125;;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception&#123;
+        <span class="type">Configuration</span> <span class="variable">conf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Configuration</span>();
+        <span class="comment">// 明确设置版本相关的配置</span>
+        conf.set(<span class="string">&quot;dfs.client.use.datanode.hostname&quot;</span>, <span class="string">&quot;true&quot;</span>);
+        conf.set(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;simple&quot;</span>);
+        conf.set(<span class="string">&quot;fs.hdfs.impl&quot;</span>, <span class="string">&quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;</span>);
+        conf.set(<span class="string">&quot;fs.hdfs.impl.disable.cache&quot;</span>,<span class="string">&quot;true&quot;</span>);
+        conf.addResource(<span class="keyword">new</span> <span class="title class_">Path</span>(<span class="string">&quot;F:\\Administrator\\Desktop\\hadoop\\hadoop201\\hdfs-site.xml&quot;</span>));
+        conf.set(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;Kerberos&quot;</span>);
+
+        UserGroupInformation.reset();
+        <span class="type">String</span> <span class="variable">kerb5FileName</span> <span class="operator">=</span> <span class="string">&quot;F:\\Administrator\\Desktop\\hadoop\\hadoop201\\krb5.conf&quot;</span>;
+        System.setProperty(<span class="string">&quot;java.security.krb5.conf&quot;</span>, kerb5FileName);
+        <span class="comment">//System.setProperty(&quot;javax.security.auth.useSubjectCredsOnly&quot;, &quot;false&quot;);</span>
+        sun.security.krb5.Config.refresh();
+        conf.set(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;Kerberos&quot;</span>);
+        <span class="comment">//conf.set(&quot;dfs.data.transfer.protection&quot;, hadoopConnectionInfo.getKerberosProtection());</span>
+        UserGroupInformation.setConfiguration(conf);
+        KerberosName.resetDefaultRealm();
+        <span class="type">String</span> <span class="variable">keytabFileName</span> <span class="operator">=</span> <span class="string">&quot;F:\\Administrator\\Desktop\\hadoop\\hadoop201\\hdfs.keytab&quot;</span>;
+        UserGroupInformation.loginUserFromKeytab(<span class="string">&quot;hdfs/hadoop1&quot;</span>, keytabFileName);
+
+        <span class="type">long</span> <span class="variable">currentTimeMillis</span> <span class="operator">=</span> System.currentTimeMillis();
+
+<span class="comment">//        String inputPath = args[0];</span>
+<span class="comment">//        String outputPath = args[1];</span>
+<span class="comment">//        int parallelism = Integer.parseInt(args[2]);</span>
+        <span class="type">String</span> <span class="variable">inputPath</span> <span class="operator">=</span> <span class="string">&quot;hdfs://192.168.218.201:9000/user/hive/warehouse/user_produce_big_orc_p/&quot;</span>;
+        <span class="type">String</span> <span class="variable">outputPath</span> <span class="operator">=</span> <span class="string">&quot;hdfs://192.168.218.201:9000/tmp/test/&quot;</span>;
+        <span class="type">int</span> <span class="variable">parallelism</span> <span class="operator">=</span> <span class="number">16</span>;
+
+        System.setProperty(<span class="string">&quot;HADOOP_USER_NAME&quot;</span>, <span class="string">&quot;root&quot;</span>);
+
+        <span class="type">int</span> <span class="variable">availableProcessors</span> <span class="operator">=</span> Runtime.getRuntime().availableProcessors();
+        HashMap&lt;String, Object&gt; confHashMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();
+        Iterator&lt;Map.Entry&lt;String, String&gt;&gt; iterator = conf.iterator();
+        <span class="keyword">while</span> (iterator.hasNext()) &#123;
+            Map.Entry&lt;String, String&gt; next = iterator.next();
+            confHashMap.put(next.getKey(), next.getValue());
+        &#125;
+
+        <span class="type">SparkSession</span> <span class="variable">spark</span> <span class="operator">=</span> SparkSession.builder()
+                .appName(<span class="string">&quot;Local ORC Processor Optimized&quot;</span>)
+                .master(<span class="string">&quot;local[&quot;</span> + availableProcessors + <span class="string">&quot;]&quot;</span>)
+                .config(<span class="string">&quot;spark.hadoop.fs.defaultFS&quot;</span>, <span class="string">&quot;hdfs://Hadoop1:9000&quot;</span>)
+                .config(<span class="string">&quot;spark.driver.memory&quot;</span>, getOptimalMemory())
+                .config(<span class="string">&quot;spark.sql.adaptive.enabled&quot;</span>, <span class="string">&quot;true&quot;</span>)
+                .config(<span class="string">&quot;spark.default.parallelism&quot;</span>, String.valueOf(parallelism))
+                .config(<span class="string">&quot;spark.sql.shuffle.partitions&quot;</span>, String.valueOf(parallelism))
+                .config(<span class="string">&quot;spark.serializer&quot;</span>, <span class="string">&quot;org.apache.spark.serializer.KryoSerializer&quot;</span>)
+                .config(<span class="string">&quot;spark.hadoop.hadoop.security.authentication&quot;</span>, <span class="string">&quot;kerberos&quot;</span>)
+                .config(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;kerberos&quot;</span>)
+                .config(<span class="string">&quot;spark.kerberos.keytab&quot;</span>, keytabFileName)
+                .config(<span class="string">&quot;spark.kerberos.principal&quot;</span>, <span class="string">&quot;hdfs/hadoop1&quot;</span>)
+                .config(confHashMap)
+                .getOrCreate();
+
+        <span class="comment">// 创建累加器</span>
+        processedRecordsAccumulator = spark.sparkContext().longAccumulator(<span class="string">&quot;processedRecords&quot;</span>);
+        <span class="keyword">try</span> &#123;
+            <span class="comment">// 修改UDF，处理时更新累加器</span>
+            UDF1&lt;String, String&gt; countingMaskUDF = value -&gt; &#123;
+                <span class="keyword">if</span> (value == <span class="literal">null</span>) <span class="keyword">return</span> <span class="literal">null</span>;
+                processedRecordsAccumulator.add(<span class="number">1</span>);
+                <span class="keyword">return</span> value;
+            &#125;;
+
+            <span class="comment">// 注册UDF</span>
+            spark.udf().register(<span class="string">&quot;countingMaskUDF&quot;</span>, countingMaskUDF, DataTypes.StringType);
+            spark.udf().register(<span class="string">&quot;optimizedMaskUDF&quot;</span>, optimizedMaskUDF, DataTypes.StringType);
+            spark.udf().register(<span class="string">&quot;optimizedMaskIpv4UDF&quot;</span>, optimizedMaskIpv4UDF, DataTypes.StringType);
+
+            <span class="comment">// 读取ORC文件</span>
+            Dataset&lt;Row&gt; df = spark.read()
+                    .format(<span class="string">&quot;orc&quot;</span>)
+                    .load(inputPath);
+
+            System.out.println(<span class="string">&quot;原始数据分区数: &quot;</span> + df.rdd().getNumPartitions());
+            System.out.println(<span class="string">&quot;设置并行度: &quot;</span> + parallelism);
+
+            <span class="comment">// 优化分区策略</span>
+            Dataset&lt;Row&gt; repartitionedDf = optimizePartitioning(df, parallelism);
+
+            <span class="comment">// 批量处理列，减少UDF调用次数</span>
+            Dataset&lt;Row&gt; processedDF = processColumnsBatch(repartitionedDf);
+
+            <span class="comment">// 优化写入</span>
+            processedDF.write()
+                    .format(<span class="string">&quot;orc&quot;</span>)
+                    .option(<span class="string">&quot;compression&quot;</span>, <span class="string">&quot;snappy&quot;</span>)
+                    .mode(<span class="string">&quot;overwrite&quot;</span>)
+                    .save(outputPath);
+
+            System.out.println(<span class="string">&quot;处理完成！输出路径: &quot;</span> + outputPath);
+            System.out.println(<span class="string">&quot;耗时: &quot;</span> + (System.currentTimeMillis() - currentTimeMillis) / <span class="number">1000</span> + <span class="string">&quot;秒&quot;</span>);
+
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="keyword">finally</span> &#123;
+            spark.stop();
+        &#125;
+    &#125;
+
+    <span class="comment">/**</span>
+<span class="comment">     * 优化分区策略</span>
+<span class="comment">     */</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> Dataset&lt;Row&gt; <span class="title function_">optimizePartitioning</span><span class="params">(Dataset&lt;Row&gt; df, <span class="type">int</span> parallelism)</span> &#123;
+        <span class="type">long</span> <span class="variable">dataSize</span> <span class="operator">=</span> df.count();
+        System.out.println(<span class="string">&quot;数据量: &quot;</span> + dataSize);
+
+        <span class="comment">// 根据数据量动态调整分区数</span>
+        <span class="type">int</span> <span class="variable">optimalPartitions</span> <span class="operator">=</span> calculateOptimalPartitions(dataSize, parallelism);
+
+        <span class="keyword">if</span> (df.rdd().getNumPartitions() &lt; optimalPartitions) &#123;
+            Dataset&lt;Row&gt; repartitioned = df.repartition(optimalPartitions);
+            System.out.println(<span class="string">&quot;重新分区到: &quot;</span> + optimalPartitions + <span class="string">&quot; 个分区&quot;</span>);
+            <span class="keyword">return</span> repartitioned;
+        &#125;
+        <span class="keyword">return</span> df;
+    &#125;
+
+    <span class="comment">/**</span>
+<span class="comment">     * 根据数据量计算最优分区数</span>
+<span class="comment">     */</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">calculateOptimalPartitions</span><span class="params">(<span class="type">long</span> dataSize, <span class="type">int</span> baseParallelism)</span> &#123;
+        <span class="comment">// 每个分区处理约10万行数据</span>
+        <span class="type">long</span> <span class="variable">rowsPerPartition</span> <span class="operator">=</span> <span class="number">100000L</span>;
+        <span class="type">int</span> <span class="variable">calculatedPartitions</span> <span class="operator">=</span> (<span class="type">int</span>) Math.max(<span class="number">1</span>, dataSize / rowsPerPartition);
+        <span class="keyword">return</span> Math.min(calculatedPartitions, baseParallelism * <span class="number">2</span>);
+    &#125;
+
+    <span class="comment">/**</span>
+<span class="comment">     * 批量处理列，优化性能</span>
+<span class="comment">     */</span>
+    <span class="keyword">private</span> <span class="keyword">static</span> Dataset&lt;Row&gt; <span class="title function_">processColumnsBatch</span><span class="params">(Dataset&lt;Row&gt; df)</span> &#123;
+        <span class="type">StructType</span> <span class="variable">schema</span> <span class="operator">=</span> df.schema();
+        String[] columns = df.columns();
+
+        System.out.println(<span class="string">&quot;处理列数: &quot;</span> + columns.length);
+
+        <span class="comment">// 收集所有需要处理的String列</span>
+        List&lt;String&gt; stringColumns = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();
+        <span class="keyword">for</span> (String column : columns) &#123;
+            <span class="keyword">if</span> (schema.apply(column).dataType() <span class="keyword">instanceof</span> StringType) &#123;
+                stringColumns.add(column);
+            &#125;
+        &#125;
+
+        System.out.println(<span class="string">&quot;找到String类型列数: &quot;</span> + stringColumns.size());
+
+        <span class="comment">// 如果不需要处理，直接返回</span>
+        <span class="keyword">if</span> (stringColumns.isEmpty()) &#123;
+            <span class="keyword">return</span> df;
+        &#125;
+
+        <span class="comment">// 批量构建处理表达式</span>
+        Dataset&lt;Row&gt; processedDF = df;
+<span class="comment">//        for (String column : stringColumns) &#123;</span>
+<span class="comment">//            // 使用SQL表达式而不是callUDF，性能更好</span>
+<span class="comment">//            processedDF = processedDF.withColumn(column,</span>
+<span class="comment">//                    expr(&quot;concat(&quot; + column + &quot;, optimizedMaskUDF(&quot; + column + &quot;), &#x27;*&#x27;)&quot;));</span>
+<span class="comment">//        &#125;</span>
+        processedDF = processedDF.withColumn(<span class="string">&quot;company&quot;</span>,callUDF(<span class="string">&quot;countingMaskUDF&quot;</span>, col(<span class="string">&quot;company&quot;</span>))).withColumn(<span class="string">&quot;company&quot;</span>,
+                    expr(<span class="string">&quot;concat(company,&#x27;|&#x27;, optimizedMaskUDF(company), &#x27;**&#x27;)&quot;</span>)).withColumn(<span class="string">&quot;ipv4&quot;</span>,expr(<span class="string">&quot;concat(ipv4,&#x27;|&#x27;, optimizedMaskIpv4UDF(ipv4), &#x27;**&#x27;)&quot;</span>));
+        <span class="keyword">return</span> processedDF;
+    &#125;
+
+<span class="comment">//    /**</span>
+<span class="comment">//     * 备选方案：使用mapPartitions进行批量处理（性能更好）</span>
+<span class="comment">//     */</span>
+<span class="comment">//    private static Dataset&lt;Row&gt; processWithMapPartitions(Dataset&lt;Row&gt; df) &#123;</span>
+<span class="comment">//        // 只有在UDF处理逻辑复杂且数据量大时使用</span>
+<span class="comment">//        return df.mapPartitions(partition -&gt; &#123;</span>
+<span class="comment">//            // 在分区内初始化一次UDF资源</span>
+<span class="comment">//            GenerateCompanyName localMasking = DataMaskingHolder.INSTANCE;</span>
+<span class="comment">//</span>
+<span class="comment">//            List&lt;Row&gt; result = new ArrayList&lt;&gt;();</span>
+<span class="comment">//            while (partition.hasNext()) &#123;</span>
+<span class="comment">//                Row originalRow = partition.next();</span>
+<span class="comment">//                Object[] newValues = new Object[originalRow.size()];</span>
+<span class="comment">//</span>
+<span class="comment">//                for (int i = 0; i &lt; originalRow.size(); i++) &#123;</span>
+<span class="comment">//                    Object value = originalRow.get(i);</span>
+<span class="comment">//                    if (value instanceof String) &#123;</span>
+<span class="comment">//                        String masked = localMasking.generateMaskedRow((String) value);</span>
+<span class="comment">//                        newValues[i] = value + masked + &quot;*&quot;;</span>
+<span class="comment">//                    &#125; else &#123;</span>
+<span class="comment">//                        newValues[i] = value;</span>
+<span class="comment">//                    &#125;</span>
+<span class="comment">//                &#125;</span>
+<span class="comment">//                result.add(RowFactory.create(newValues));</span>
+<span class="comment">//            &#125;</span>
+<span class="comment">//            return result.iterator();</span>
+<span class="comment">//        &#125;, df.encoder());</span>
+<span class="comment">//    &#125;</span>
+
+    <span class="keyword">private</span> <span class="keyword">static</span> String <span class="title function_">getOptimalMemory</span><span class="params">()</span> &#123;
+        <span class="type">long</span> <span class="variable">maxMemory</span> <span class="operator">=</span> Runtime.getRuntime().maxMemory() / (<span class="number">1024</span> * <span class="number">1024</span>);
+        <span class="type">long</span> <span class="variable">optimalMemory</span> <span class="operator">=</span> Math.min(maxMemory * <span class="number">3</span> / <span class="number">4</span>, <span class="number">8192</span>);
+        System.out.println(<span class="string">&quot;设置Spark内存: &quot;</span> + optimalMemory + <span class="string">&quot;MB&quot;</span>);
+        <span class="keyword">return</span> optimalMemory + <span class="string">&quot;m&quot;</span>;
+    &#125;
+
+
+&#125;</code></pre>
+<h2 id="parquet文件处理"><a class="markdownIt-Anchor" href="#parquet文件处理"></a> parquet文件处理</h2>
+<p>spark脱敏parquet文件代码示例：</p>
+<pre><code class="highlight java"><span class="keyword">import</span> org.apache.hadoop.conf.Configuration;
+<span class="keyword">import</span> org.apache.hadoop.fs.Path;
+<span class="keyword">import</span> org.apache.hadoop.security.UserGroupInformation;
+<span class="keyword">import</span> org.apache.hadoop.security.authentication.util.KerberosName;
+<span class="keyword">import</span> org.apache.spark.SparkConf;
+<span class="keyword">import</span> org.apache.spark.sql.Dataset;
+<span class="keyword">import</span> org.apache.spark.sql.Row;
+<span class="keyword">import</span> org.apache.spark.sql.SparkSession;
+<span class="keyword">import</span> org.w3c.dom.Document;
+<span class="keyword">import</span> org.w3c.dom.Node;
+<span class="keyword">import</span> org.w3c.dom.NodeList;
+<span class="keyword">import</span> org.w3c.dom.*;
+
+<span class="keyword">import</span> java.util.*;
+<span class="keyword">import</span> javax.xml.parsers.DocumentBuilder;
+<span class="keyword">import</span> javax.xml.parsers.DocumentBuilderFactory;
+<span class="keyword">import</span> java.security.PrivilegedAction;
+<span class="keyword">import</span> java.util.HashMap;
+<span class="keyword">import</span> java.util.Iterator;
+<span class="keyword">import</span> java.util.Map;
+
+<span class="keyword">import</span> <span class="keyword">static</span> org.apache.spark.sql.functions.*;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SparkParquet</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+<span class="comment">//        String inputPath = args[0];</span>
+<span class="comment">//        String outputPath = args[1];</span>
+<span class="comment">//        String kerberosSrcPath = args[2];</span>
+<span class="comment">//        String kerberosDestPath = args[3];</span>
+<span class="comment">//</span>
+        <span class="type">String</span> <span class="variable">inputPath</span> <span class="operator">=</span> <span class="string">&quot;hdfs://192.168.218.201:9000/user/hive/warehouse/user_produce_big_parquet_p/partitioned_id=1/000012_0&quot;</span>;
+        <span class="type">String</span> <span class="variable">outputPath</span> <span class="operator">=</span> <span class="string">&quot;hdfs://192.168.218.201:9000/tmp/test_parquet/&quot;</span>;
+        <span class="type">String</span> <span class="variable">kerberosSrcPath</span> <span class="operator">=</span> <span class="string">&quot;F:\\Administrator\\Desktop\\hadoop\\hadoop201\\&quot;</span>;
+        <span class="type">String</span> <span class="variable">kerberosDestPath</span> <span class="operator">=</span> <span class="string">&quot;F:\\Administrator\\Desktop\\hadoop\\hadoop202\\&quot;</span>;
+
+        <span class="type">Configuration</span> <span class="variable">srcConf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Configuration</span>();
+        <span class="comment">// 明确设置版本相关的配置</span>
+        srcConf.set(<span class="string">&quot;dfs.client.use.datanode.hostname&quot;</span>, <span class="string">&quot;true&quot;</span>);
+        srcConf.set(<span class="string">&quot;fs.hdfs.impl&quot;</span>, <span class="string">&quot;org.apache.hadoop.hdfs.DistributedFileSystem&quot;</span>);
+        srcConf.addResource(<span class="keyword">new</span> <span class="title class_">Path</span>(kerberosSrcPath+<span class="string">&quot;/hdfs-site.xml&quot;</span>));
+        srcConf.set(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;Kerberos&quot;</span>);
+
+        UserGroupInformation.reset();
+        <span class="type">String</span> <span class="variable">kerb5FileName</span> <span class="operator">=</span> kerberosSrcPath+<span class="string">&quot;/krb5.conf&quot;</span>;
+        System.setProperty(<span class="string">&quot;java.security.krb5.conf&quot;</span>, kerb5FileName);
+        sun.security.krb5.Config.refresh();
+        srcConf.set(<span class="string">&quot;hadoop.security.authentication&quot;</span>, <span class="string">&quot;Kerberos&quot;</span>);
+        UserGroupInformation.setConfiguration(srcConf);
+        KerberosName.resetDefaultRealm();
+        <span class="type">String</span> <span class="variable">keytabFileName</span> <span class="operator">=</span> kerberosSrcPath + <span class="string">&quot;/hdfs.keytab&quot;</span>;
+
+        Map&lt;String, String&gt; confMap = parseCoreSiteXml();
+        <span class="type">SparkConf</span> <span class="variable">sparkConf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SparkConf</span>();
+        confMap.forEach((k,v)-&gt;&#123;
+            sparkConf.set(<span class="string">&quot;spark.hadoop.&quot;</span>+k, v);
+        &#125;);
+
+<span class="comment">//        UserGroupInformation.loginUserFromKeytab(&quot;hdfs/hadoop1&quot;, keytabFileName);</span>
+        <span class="type">UserGroupInformation</span> <span class="variable">dstUgi</span> <span class="operator">=</span> UserGroupInformation.loginUserFromKeytabAndReturnUGI(<span class="string">&quot;hdfs/hadoop1&quot;</span>, keytabFileName);
+        dstUgi.doAs((PrivilegedAction&lt;Void&gt;) () -&gt; &#123;
+            <span class="comment">// 创建SparkSession（本地模式）</span>
+            <span class="type">SparkSession</span> <span class="variable">spark</span> <span class="operator">=</span> SparkSession.builder()
+                    .config(sparkConf)
+                    .appName(<span class="string">&quot;Parquet Phone Masker&quot;</span>)
+                    .master(<span class="string">&quot;local[*]&quot;</span>)  <span class="comment">// 使用本地模式，[*]表示使用所有CPU核心</span>
+                    .config(<span class="string">&quot;spark.sql.parquet.compression.codec&quot;</span>, <span class="string">&quot;snappy&quot;</span>)  <span class="comment">// 压缩格式</span>
+                    .getOrCreate();
+
+            TreeMap&lt;String, String&gt; treeMap = <span class="keyword">new</span> <span class="title class_">TreeMap</span>&lt;&gt;();
+            Iterator&lt;Map.Entry&lt;String, String&gt;&gt; iterator = spark.sparkContext().hadoopConfiguration().iterator();
+            <span class="keyword">while</span> (iterator.hasNext()) &#123;
+                Map.Entry&lt;String, String&gt; next = iterator.next();
+                <span class="keyword">if</span>( next.getValue().contains(<span class="string">&quot;kerberos&quot;</span>))&#123;
+                    treeMap.put(next.getKey(), next.getValue());
+                    System.out.println(next.getKey()+<span class="string">&quot;  &quot;</span>+next.getValue());
+                &#125;
+            &#125;
+            <span class="type">long</span> <span class="variable">l</span> <span class="operator">=</span> System.currentTimeMillis();
+            <span class="keyword">try</span> &#123;
+                <span class="comment">// 1. 读取Parquet文件</span>
+                System.out.println(<span class="string">&quot;正在读取Parquet文件: &quot;</span> + inputPath);
+                Dataset&lt;Row&gt; df = spark.read()
+                        .option(<span class="string">&quot;mergeSchema&quot;</span>, <span class="string">&quot;true&quot;</span>)
+                        .parquet(inputPath);
+
+                <span class="comment">// 显示数据结构和样本</span>
+                System.out.println(<span class="string">&quot;数据模式 (Schema):&quot;</span>);
+                df.printSchema();
+
+                <span class="comment">// 2. 检查phone列是否存在</span>
+                String[] columns = df.columns();
+                <span class="type">boolean</span> <span class="variable">hasPhoneColumn</span> <span class="operator">=</span> <span class="literal">false</span>;
+                <span class="keyword">for</span> (String column : columns) &#123;
+                    <span class="keyword">if</span> (column.equalsIgnoreCase(<span class="string">&quot;phone&quot;</span>)) &#123;
+                        hasPhoneColumn = <span class="literal">true</span>;
+                        <span class="keyword">break</span>;
+                    &#125;
+                &#125;
+
+                <span class="comment">// 3. 修改phone列为****</span>
+                Dataset&lt;Row&gt; maskedDf = df;
+                <span class="keyword">if</span> (hasPhoneColumn) &#123;
+                    <span class="comment">// 使用lit函数创建常量值&quot;****&quot;</span>
+                    maskedDf = df.withColumn(<span class="string">&quot;phone&quot;</span>, lit(<span class="string">&quot;****&quot;</span>));
+                    System.out.println(<span class="string">&quot;已将 &#x27;phone&#x27; 列替换为 &#x27;****&#x27;&quot;</span>);
+                &#125;
+
+                <span class="comment">// 4. 写入新的Parquet文件</span>
+                System.out.println(<span class="string">&quot;正在写入处理后的文件: &quot;</span> + outputPath);
+                maskedDf.write()
+                        .mode(<span class="string">&quot;overwrite&quot;</span>)  <span class="comment">// 如果文件已存在则覆盖</span>
+                        .parquet(outputPath);
+
+
+            &#125; <span class="keyword">catch</span> (Exception e) &#123;
+                System.err.println(<span class="string">&quot;处理过程中发生错误:&quot;</span>);
+                e.printStackTrace();
+            &#125; <span class="keyword">finally</span> &#123;
+                <span class="comment">// 关闭SparkSession</span>
+                spark.close();
+            &#125;
+            System.out.println(<span class="string">&quot;程序执行完成! 耗时：&quot;</span> + (System.currentTimeMillis() - l)/<span class="number">1000</span>);
+            <span class="keyword">return</span> <span class="literal">null</span>;
+        &#125;);
+
+    &#125;
+
+    <span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, String&gt; <span class="title function_">parseCoreSiteXml</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;
+        Map&lt;String, String&gt; configMap = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;();
+
+        <span class="comment">// 1. 创建解析器</span>
+        <span class="type">DocumentBuilderFactory</span> <span class="variable">factory</span> <span class="operator">=</span> DocumentBuilderFactory.newInstance();
+        <span class="type">DocumentBuilder</span> <span class="variable">builder</span> <span class="operator">=</span> factory.newDocumentBuilder();
+
+        <span class="comment">// 2. 解析XML文件</span>
+        <span class="type">Document</span> <span class="variable">doc</span> <span class="operator">=</span> builder.parse(SparkParquet.class.getClassLoader().getResourceAsStream(<span class="string">&quot;core-site111.xml&quot;</span>));
+        doc.getDocumentElement().normalize();
+
+        <span class="comment">// 3. 获取所有property节点</span>
+        <span class="type">NodeList</span> <span class="variable">propertyList</span> <span class="operator">=</span> doc.getElementsByTagName(<span class="string">&quot;property&quot;</span>);
+
+        <span class="comment">// 4. 遍历每个property，提取name和value</span>
+        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; propertyList.getLength(); i++) &#123;
+            <span class="type">Node</span> <span class="variable">propertyNode</span> <span class="operator">=</span> propertyList.item(i);
+
+            <span class="keyword">if</span> (propertyNode.getNodeType() == Node.ELEMENT_NODE) &#123;
+                <span class="type">Element</span> <span class="variable">propertyElement</span> <span class="operator">=</span> (Element) propertyNode;
+
+                <span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> getTagValue(<span class="string">&quot;name&quot;</span>, propertyElement);
+                <span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> getTagValue(<span class="string">&quot;value&quot;</span>, propertyElement);
+
+                <span class="keyword">if</span> (name != <span class="literal">null</span> &amp;&amp; value != <span class="literal">null</span>) &#123;
+                    configMap.put(name, value);
+                &#125;
+            &#125;
+        &#125;
+
+        <span class="keyword">return</span> configMap;
+    &#125;
+
+    <span class="keyword">private</span> <span class="keyword">static</span> String <span class="title function_">getTagValue</span><span class="params">(String tag, Element element)</span> &#123;
+        <span class="type">NodeList</span> <span class="variable">nodeList</span> <span class="operator">=</span> element.getElementsByTagName(tag);
+        <span class="keyword">if</span> (nodeList.getLength() &gt; <span class="number">0</span>) &#123;
+            <span class="type">Node</span> <span class="variable">node</span> <span class="operator">=</span> nodeList.item(<span class="number">0</span>);
+            <span class="keyword">return</span> node.getTextContent();
+        &#125;
+        <span class="keyword">return</span> <span class="literal">null</span>;
+    &#125;
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

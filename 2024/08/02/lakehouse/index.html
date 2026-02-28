@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    湖仓一体Delta Lake、Iceberg、Hudi 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">湖仓一体Delta Lake、Iceberg、Hudi</div>
+  <div class="post-meta">
+    <div class="date">2024 八月 2日</div>
+    <div class="tags">
+      
+      <div class="tag-item">大数据</div>
+      
+      <div class="tag-item">Spark</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="湖仓一体delta-lake-iceberg-hudi"><a class="markdownIt-Anchor" href="#湖仓一体delta-lake-iceberg-hudi"></a> 湖仓一体Delta Lake、Iceberg、Hudi</h1>
+<p>最近系统梳理了湖仓一体这块，把 Delta Lake、Iceberg、Hudi、Databricks 的来龙去脉、使用场景、怎么搭建、怎么用都整理了一遍。内容比较长，建议收藏慢慢看。</p>
+<h2 id="背景"><a class="markdownIt-Anchor" href="#背景"></a> 背景</h2>
+<p>传统大数据架构分两层：数据湖和数据仓库。<br />
+数据湖（HDFS / S3）的问题是：文件堆在一起，没有事务，没有索引，写一半失败了数据就乱，也没办法改历史数据，查询性能差，治理困难。<br />
+数据仓库（Hive / Redshift）的问题是：贵，格式封闭，数据要经过 ETL 才能进来，实时性差，灵活度低。<br />
+湖仓一体（Lakehouse）的思路是：在数据湖的文件存储之上加一层「元数据 + 事务日志」，让数据湖具备数据仓库的能力，同时保留数据湖的低成本和开放性。<br />
+Delta Lake、Iceberg、Hudi 就是实现这一层的三种开放表格式。</p>
+<h2 id="delta-lake"><a class="markdownIt-Anchor" href="#delta-lake"></a> Delta Lake</h2>
+<h3 id="是什么"><a class="markdownIt-Anchor" href="#是什么"></a> 是什么</h3>
+<p>Databricks 2019 年开源的存储层框架。核心是在 Parquet 文件之上维护一个事务日志目录 <code>_delta_log</code>，所有写操作先记日志，通过日志保证 ACID 事务。</p>
+<pre><code class="highlight plaintext">s3://my-bucket/events/
+├── _delta_log/              ← 事务日志，Delta 的核心
+│   ├── 00000000000000000000.json
+│   ├── 00000000000000000001.json
+│   └── 00000000000000000002.checkpoint.parquet
+├── part-00000-xxx.parquet
+└── part-00001-xxx.parquet</code></pre>
+<h3 id="核心能力"><a class="markdownIt-Anchor" href="#核心能力"></a> 核心能力</h3>
+<p>ACID 事务：多个并发写操作不会互相覆盖，写失败自动回滚。<br />
+时间旅行（Time Travel）：每次写操作都有版本号，可以查询任意历史版本。</p>
+<pre><code class="highlight sql"><span class="comment">-- 查某个时间点的数据</span>
+<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> events <span class="type">TIMESTAMP</span> <span class="keyword">AS</span> <span class="keyword">OF</span> <span class="string">&#x27;2024-01-01 12:00:00&#x27;</span>
+<span class="comment">-- 查特定版本号</span>
+<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> events VERSION <span class="keyword">AS</span> <span class="keyword">OF</span> <span class="number">5</span>
+<span class="comment">-- 查看历史版本列表</span>
+<span class="keyword">DESCRIBE</span> HISTORY events</code></pre>
+<p>Upsert（MERGE INTO）：支持根据条件更新或插入，传统数据湖做不到这个。</p>
+<pre><code class="highlight sql"><span class="keyword">MERGE</span> <span class="keyword">INTO</span> target t
+<span class="keyword">USING</span> source s <span class="keyword">ON</span> t.id <span class="operator">=</span> s.id
+<span class="keyword">WHEN</span> MATCHED <span class="keyword">THEN</span>
+  <span class="keyword">UPDATE</span> <span class="keyword">SET</span> t.value <span class="operator">=</span> s.value, t.updated_at <span class="operator">=</span> s.updated_at
+<span class="keyword">WHEN</span> <span class="keyword">NOT</span> MATCHED <span class="keyword">THEN</span>
+  <span class="keyword">INSERT</span> (id, <span class="keyword">value</span>, updated_at) <span class="keyword">VALUES</span> (s.id, s.value, s.updated_at)</code></pre>
+<p>Schema 演化：表结构变化不用重建表，自动兼容历史数据。<br />
+小文件合并（OPTIMIZE）：流式写入会产生大量小文件，OPTIMIZE 合并它们提升查询性能。</p>
+<pre><code class="highlight sql">OPTIMIZE events
+ZORDER <span class="keyword">BY</span> (user_id, event_time)  <span class="comment">-- Z-Order 索引，加速多维查询</span></code></pre>
+<h3 id="适合什么场景"><a class="markdownIt-Anchor" href="#适合什么场景"></a> 适合什么场景</h3>
+<ul>
+<li>已经在用 Spark / Databricks 的团队，Delta Lake 和 Spark 生态集成最深</li>
+<li>需要频繁 upsert 的场景，比如订单状态更新、用户画像更新</li>
+<li>需要数据审计或者版本回溯的场景</li>
+</ul>
+<h3 id="怎么搭建和使用"><a class="markdownIt-Anchor" href="#怎么搭建和使用"></a> 怎么搭建和使用</h3>
+<p>本地 PySpark 环境：</p>
+<pre><code class="highlight bash">pip install pyspark delta-spark</code></pre>
+<pre><code class="highlight python"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession
+spark = SparkSession.builder \
+    .appName(<span class="string">&quot;DeltaLake&quot;</span>) \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;io.delta:delta-core_2.12:2.4.0&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.extensions&quot;</span>, <span class="string">&quot;io.delta.sql.DeltaSparkSessionExtension&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.spark_catalog&quot;</span>, <span class="string">&quot;org.apache.spark.sql.delta.catalog.DeltaCatalog&quot;</span>) \
+    .getOrCreate()
+<span class="comment"># 写入 Delta 表，相当于创建</span>
+df = spark.<span class="built_in">range</span>(<span class="number">0</span>, <span class="number">100</span>)
+df.write.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).save(<span class="string">&quot;/tmp/delta-table&quot;</span>)
+<span class="comment"># 读取</span>
+df2 = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).load(<span class="string">&quot;/tmp/delta-table&quot;</span>)
+<span class="comment"># 时间旅行</span>
+df_old = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>) \
+    .option(<span class="string">&quot;versionAsOf&quot;</span>, <span class="number">0</span>) \
+    .load(<span class="string">&quot;/tmp/delta-table&quot;</span>)
+    
+
+<span class="comment"># 读取上一个版本的表 (版本号 -1) </span>
+df_v1 = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).option(<span class="string">&quot;versionAsOf&quot;</span>, <span class="number">0</span>).load(<span class="string">&quot;/tmp/my-delta-table&quot;</span>) <span class="comment"># 读取特定时间点的表 (例如，昨天) </span>
+df_time_travel = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).option(<span class="string">&quot;timestampAsOf&quot;</span>, <span class="string">&quot;2023-10-27 10:00:00&quot;</span>).load(<span class="string">&quot;/tmp/my-delta-table&quot;</span>)</code></pre>
+<p>云上（AWS S3）：</p>
+<pre><code class="highlight python">spark = SparkSession.builder \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;io.delta:delta-core_2.12:2.4.0,org.apache.hadoop:hadoop-aws:3.3.4&quot;</span>) \
+    .config(<span class="string">&quot;spark.hadoop.fs.s3a.access.key&quot;</span>, <span class="string">&quot;YOUR_ACCESS_KEY&quot;</span>) \
+    .config(<span class="string">&quot;spark.hadoop.fs.s3a.secret.key&quot;</span>, <span class="string">&quot;YOUR_SECRET_KEY&quot;</span>) \
+    .getOrCreate()
+df.write.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).save(<span class="string">&quot;s3a://your-bucket/delta/events&quot;</span>)</code></pre>
+<p>用 SQL 操作：</p>
+<pre><code class="highlight python">spark.sql(<span class="string">&quot;CREATE TABLE events USING DELTA LOCATION &#x27;/tmp/events&#x27;&quot;</span>)
+spark.sql(<span class="string">&quot;INSERT INTO events VALUES (1, &#x27;click&#x27;, &#x27;2024-01-01&#x27;)&quot;</span>)
+spark.sql(<span class="string">&quot;UPDATE events SET event_type = &#x27;view&#x27; WHERE id = 1&quot;</span>)
+spark.sql(<span class="string">&quot;DELETE FROM events WHERE id = 1&quot;</span>)</code></pre>
+<h3 id="kafka流入delta-lake"><a class="markdownIt-Anchor" href="#kafka流入delta-lake"></a> Kafka流入Delta Lake</h3>
+<pre><code class="highlight python"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession
+<span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> col, from_json, current_timestamp
+<span class="keyword">from</span> pyspark.sql.types <span class="keyword">import</span> StructType, StringType, LongType <span class="comment"># 根据你的实际数据调整</span>
+
+<span class="comment"># --- 1. 初始化 SparkSession ---</span>
+<span class="comment"># 注意：这里必须配置 Delta Lake 相关的扩展和目录</span>
+spark = SparkSession.builder \
+    .appName(<span class="string">&quot;KafkaToDeltaLakePipeline&quot;</span>) \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;io.delta:delta-core_2.12:2.4.0,org.apache.spark:spark-sql-kafka-0-10_2.12:3.4.0&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.extensions&quot;</span>, <span class="string">&quot;io.delta.sql.DeltaSparkSessionExtension&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.spark_catalog&quot;</span>, <span class="string">&quot;org.apache.spark.sql.delta.catalog.DeltaCatalog&quot;</span>) \
+    .getOrCreate()
+
+spark.sparkContext.setLogLevel(<span class="string">&quot;WARN&quot;</span>) <span class="comment"># 减少日志输出</span>
+
+<span class="comment"># --- 2. 定义数据 Schema ---</span>
+<span class="comment"># 假设 Kafka 中的消息是 JSON 格式的，包含 event_id, user_id, action, timestamp</span>
+json_schema = StructType() \
+    .add(<span class="string">&quot;event_id&quot;</span>, StringType()) \
+    .add(<span class="string">&quot;user_id&quot;</span>, StringType()) \
+    .add(<span class="string">&quot;action&quot;</span>, StringType()) \
+    .add(<span class="string">&quot;original_timestamp&quot;</span>, StringType()) <span class="comment"># 假设源数据里有个时间戳</span>
+
+<span class="comment"># --- 3. 从 Kafka 创建流式 DataFrame ---</span>
+kafka_brokers = <span class="string">&quot;your_kafka_broker_address:9092&quot;</span> <span class="comment"># 替换为你的 Kafka 地址</span>
+input_topic = <span class="string">&quot;input-topic&quot;</span>
+
+df_kafka = spark \
+    .readStream \
+    .<span class="built_in">format</span>(<span class="string">&quot;kafka&quot;</span>) \
+    .option(<span class="string">&quot;kafka.bootstrap.servers&quot;</span>, kafka_brokers) \
+    .option(<span class="string">&quot;subscribe&quot;</span>, input_topic) \
+    .option(<span class="string">&quot;startingOffsets&quot;</span>, <span class="string">&quot;latest&quot;</span>) <span class="comment"># 或 &quot;earliest&quot; # 根据需求选择从哪里开始读</span>
+    .load()
+
+<span class="comment"># --- 4. 解析 Kafka 消息 (value 字段) ---</span>
+<span class="comment"># Kafka 消息的 value 是二进制的，需要转换成字符串，再解析 JSON</span>
+df_with_json = df_kafka.select(
+    col(<span class="string">&quot;key&quot;</span>).cast(StringType()), <span class="comment"># 如果需要 key</span>
+    from_json(col(<span class="string">&quot;value&quot;</span>).cast(StringType()), json_schema).alias(<span class="string">&quot;parsed_value&quot;</span>),
+    col(<span class="string">&quot;topic&quot;</span>),
+    col(<span class="string">&quot;partition&quot;</span>),
+    col(<span class="string">&quot;offset&quot;</span>),
+    current_timestamp().alias(<span class="string">&quot;processing_time&quot;</span>) <span class="comment"># 添加 Spark 处理的时间</span>
+)
+
+<span class="comment"># 展开解析后的结构体字段</span>
+df_events = df_with_json.select(
+    col(<span class="string">&quot;parsed_value.event_id&quot;</span>),
+    col(<span class="string">&quot;parsed_value.user_id&quot;</span>),
+    col(<span class="string">&quot;parsed_value.action&quot;</span>),
+    col(<span class="string">&quot;parsed_value.original_timestamp&quot;</span>),
+    col(<span class="string">&quot;processing_time&quot;</span>),
+    col(<span class="string">&quot;topic&quot;</span>),
+    col(<span class="string">&quot;partition&quot;</span>),
+    col(<span class="string">&quot;offset&quot;</span>)
+)
+
+<span class="comment"># --- 5. (可选) 数据转换 ---</span>
+<span class="comment"># 在这里可以进行各种 ETL 操作，比如过滤、聚合、Join 等</span>
+<span class="comment"># 示例：过滤掉空的 event_id</span>
+df_processed = df_events.<span class="built_in">filter</span>(col(<span class="string">&quot;event_id&quot;</span>).isNotNull())
+
+<span class="comment"># --- 6. 将处理后的数据流写入 Delta Lake ---</span>
+output_path = <span class="string">&quot;/path/to/delta/events_table&quot;</span> <span class="comment"># 替换为你的实际路径</span>
+
+<span class="comment"># 使用 foreachBatch 写入 Delta Table 是推荐方式，因为它能更好地处理事务</span>
+<span class="keyword">def</span> <span class="title function_">write_to_delta</span>(<span class="params">batch_df, batch_id</span>):
+    <span class="string">&quot;&quot;&quot;</span>
+<span class="string">    这个函数会在每个微批次 (micro-batch) 结束时被调用</span>
+<span class="string">    batch_df: 当前批次的 DataFrame</span>
+<span class="string">    batch_id: 批次的唯一 ID</span>
+<span class="string">    &quot;&quot;&quot;</span>
+    <span class="built_in">print</span>(<span class="string">f&quot;Writing batch <span class="subst">&#123;batch_id&#125;</span> with <span class="subst">&#123;batch_df.count()&#125;</span> records to Delta...&quot;</span>)
+    <span class="comment"># mode(&quot;append&quot;) 表示追加数据</span>
+    <span class="comment"># format(&quot;delta&quot;) 指定格式</span>
+    batch_df.write \
+             .<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>) \
+             .mode(<span class="string">&quot;append&quot;</span>) \
+             .save(output_path) <span class="comment"># 可以选择 saveAsTable(&quot;db.table_name&quot;) 如果使用 Hive Metastore</span>
+    <span class="built_in">print</span>(<span class="string">f&quot;Successfully wrote batch <span class="subst">&#123;batch_id&#125;</span>&quot;</span>)
+
+query = df_processed.writeStream \
+    .foreachBatch(write_to_delta) \
+    .option(<span class="string">&quot;checkpointLocation&quot;</span>, <span class="string">&quot;/path/to/checkpoint/dir/events_pipeline&quot;</span>) \
+    .trigger(processingTime=<span class="string">&#x27;10 seconds&#x27;</span>) \
+    .start()
+
+<span class="comment"># 等待查询结束 (通常是手动停止)</span>
+query.awaitTermination()</code></pre>
+<h3 id="下游消费数据"><a class="markdownIt-Anchor" href="#下游消费数据"></a> 下游消费数据</h3>
+<h4 id="批处理查询"><a class="markdownIt-Anchor" href="#批处理查询"></a> 批处理查询</h4>
+<pre><code class="highlight py"><span class="comment"># 查询最新的所有数据</span>
+latest_df = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).load(<span class="string">&quot;/path/to/delta/events_table&quot;</span>)
+latest_df.show()
+
+<span class="comment"># 查询特定条件的数据</span>
+recent_user_actions = spark.read.<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>).load(<span class="string">&quot;/path/to/delta/events_table&quot;</span>) \
+                               .<span class="built_in">filter</span>(col(<span class="string">&quot;user_id&quot;</span>) == <span class="string">&quot;some_user_id&quot;</span>) \
+                               .orderBy(col(<span class="string">&quot;original_timestamp&quot;</span>))
+recent_user_actions.show()</code></pre>
+<h4 id="流式消费"><a class="markdownIt-Anchor" href="#流式消费"></a> 流式消费</h4>
+<pre><code class="highlight py"><span class="comment"># --- 下游流式消费者 ---</span>
+<span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession
+<span class="keyword">from</span> pyspark.sql.functions <span class="keyword">import</span> col
+
+spark_downstream = SparkSession.builder \
+    .appName(<span class="string">&quot;DownstreamDeltaConsumer&quot;</span>) \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;io.delta:delta-core_2.12:2.4.0&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.extensions&quot;</span>, <span class="string">&quot;io.delta.sql.DeltaSparkSessionExtension&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.spark_catalog&quot;</span>, <span class="string">&quot;org.apache.spark.sql.delta.catalog.DeltaCatalog&quot;</span>) \
+    .getOrCreate()
+
+<span class="comment"># 从 Delta 表创建一个流式 DataFrame</span>
+df_from_delta_stream = spark_downstream \
+    .readStream \
+    .<span class="built_in">format</span>(<span class="string">&quot;delta&quot;</span>) \
+    .option(<span class="string">&quot;path&quot;</span>, <span class="string">&quot;/path/to/delta/events_table&quot;</span>) \
+    .load()
+
+<span class="comment"># 对流进行处理，例如，只关心特定用户的动作</span>
+filtered_stream = df_from_delta_stream.<span class="built_in">filter</span>(col(<span class="string">&quot;user_id&quot;</span>).startswith(<span class="string">&quot;VIP&quot;</span>))
+
+<span class="comment"># 将结果写入另一个 Kafka Topic 或打印出来</span>
+query_downstream = filtered_stream \
+    .select(<span class="string">&quot;user_id&quot;</span>, <span class="string">&quot;action&quot;</span>, <span class="string">&quot;processing_time&quot;</span>) \
+    .writeStream \
+    .outputMode(<span class="string">&quot;append&quot;</span>) \
+    .<span class="built_in">format</span>(<span class="string">&quot;console&quot;</span>) \
+    .option(<span class="string">&quot;truncate&quot;</span>, <span class="literal">False</span>) \
+    .trigger(processingTime=<span class="string">&#x27;5 seconds&#x27;</span>) \
+    .start()
+
+query_downstream.awaitTermination()</code></pre>
+<hr />
+<h2 id="apache-iceberg"><a class="markdownIt-Anchor" href="#apache-iceberg"></a> Apache Iceberg</h2>
+<h3 id="是什么-2"><a class="markdownIt-Anchor" href="#是什么-2"></a> 是什么</h3>
+<p>Netflix 2018 年开发，后捐给 Apache 基金会。解决的核心问题和 Delta Lake 类似，但设计理念更偏向引擎无关和大规模数据管理。</p>
+<p>Apache Iceberg 是一个开源的高性能表格式（Table Format），专为分析型数据湖设计。它提供了一个结构化的元数据层，将数据文件的物理存储与逻辑表结构解耦，从而实现了强大的功能，如 ACID 事务、隐藏分区、模式演进和高效的数据管理。</p>
+<p>Iceberg 把表的元数据设计成树形结构：</p>
+<pre><code class="highlight plaintext">catalog（目录）
+  └── metadata.json（当前快照指针）
+        └── snapshot（快照，每次写操作一个）
+              └── manifest list（清单列表）
+                    └── manifest file（记录数据文件信息）
+                          └── data files（实际 Parquet / ORC 文件）</code></pre>
+<p>这个树形设计让元数据操作（比如列出所有文件）变得非常高效，不需要扫描整个目录，百亿级文件的表也能快速管理。</p>
+<h3 id="比-delta-lake-多的特性"><a class="markdownIt-Anchor" href="#比-delta-lake-多的特性"></a> 比 Delta Lake 多的特性</h3>
+<p>隐藏分区（Hidden Partitioning）：查询时不需要在 SQL 里写分区过滤条件，Iceberg 自动把时间函数映射到分区，减少了大量人为错误。</p>
+<pre><code class="highlight sql"><span class="comment">-- 建表时定义分区转换</span>
+<span class="keyword">CREATE TABLE</span> orders (
+    order_id <span class="type">BIGINT</span>,
+    customer_id <span class="type">BIGINT</span>,
+    order_time <span class="type">TIMESTAMP</span>,
+    amount <span class="type">DECIMAL</span>(<span class="number">10</span>,<span class="number">2</span>)
+) <span class="keyword">USING</span> iceberg
+PARTITIONED <span class="keyword">BY</span> (days(order_time))
+<span class="comment">-- 查询时直接写时间条件，不需要手动写分区字段</span>
+<span class="comment">-- Iceberg 自动知道去哪个分区找</span>
+<span class="keyword">SELECT</span> <span class="operator">*</span> <span class="keyword">FROM</span> orders <span class="keyword">WHERE</span> order_time <span class="operator">&gt;=</span> <span class="string">&#x27;2024-01-01&#x27;</span></code></pre>
+<p>分区演化（Partition Evolution）：分区策略可以随时修改，历史数据不需要重写。</p>
+<pre><code class="highlight sql"><span class="comment">-- 业务增长后，从按天分区改为按小时，历史数据不动</span>
+<span class="keyword">ALTER TABLE</span> orders REPLACE <span class="keyword">PARTITION</span> FIELD days(order_time) <span class="keyword">WITH</span> hours(order_time)</code></pre>
+<p>多引擎支持：这是 Iceberg 最大的优势，同一张表可以被不同引擎同时读写，不和任何一个框架绑定。</p>
+<pre><code class="highlight plaintext">Flink（实时写入）
+       ↓
+  Iceberg 表（S3/OSS）
+   ↑           ↑          ↑
+Spark(ETL)  Trino(BI)  Hive(兼容)</code></pre>
+<h3 id="适合什么场景-2"><a class="markdownIt-Anchor" href="#适合什么场景-2"></a> 适合什么场景</h3>
+<ul>
+<li>多引擎混用的数据平台，Flink 写、Spark 处理、Trino 查</li>
+<li>数据量极大、需要精细分区管理的场景</li>
+<li>想避免被云厂商绑定，追求开放标准的团队</li>
+<li>国内上云项目，阿里云、腾讯云对 Iceberg 支持最好</li>
+</ul>
+<h3 id="怎么搭建和使用-2"><a class="markdownIt-Anchor" href="#怎么搭建和使用-2"></a> 怎么搭建和使用</h3>
+<p>Spark + Iceberg：</p>
+<pre><code class="highlight python"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession
+spark = SparkSession.builder \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;org.apache.iceberg:iceberg-spark-runtime-3.4_2.12:1.4.0&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.extensions&quot;</span>, <span class="string">&quot;org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.local&quot;</span>, <span class="string">&quot;org.apache.iceberg.spark.SparkCatalog&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.local.type&quot;</span>, <span class="string">&quot;hadoop&quot;</span>) \
+    .config(<span class="string">&quot;spark.sql.catalog.local.warehouse&quot;</span>, <span class="string">&quot;/tmp/iceberg-warehouse&quot;</span>) \
+    .getOrCreate()
+<span class="comment"># 建表</span>
+spark.sql(<span class="string">&quot;&quot;&quot;</span>
+<span class="string">    CREATE TABLE local.db.events (</span>
+<span class="string">        id BIGINT,</span>
+<span class="string">        event_type STRING,</span>
+<span class="string">        user_id BIGINT,</span>
+<span class="string">        event_time TIMESTAMP</span>
+<span class="string">    ) USING iceberg</span>
+<span class="string">    PARTITIONED BY (days(event_time))</span>
+<span class="string">&quot;&quot;&quot;</span>)
+<span class="comment"># 写数据</span>
+spark.sql(<span class="string">&quot;INSERT INTO local.db.events VALUES (1, &#x27;click&#x27;, 100, current_timestamp())&quot;</span>)
+<span class="comment"># 查询快照历史</span>
+spark.sql(<span class="string">&quot;SELECT * FROM local.db.events.snapshots&quot;</span>).show()
+<span class="comment"># 时间旅行</span>
+spark.sql(<span class="string">&quot;SELECT * FROM local.db.events TIMESTAMP AS OF &#x27;2024-01-01 00:00:00&#x27;&quot;</span>)
+<span class="comment"># 查看数据文件分布</span>
+spark.sql(<span class="string">&quot;SELECT * FROM local.db.events.files&quot;</span>).show()</code></pre>
+<p>Flink + Iceberg 实时写入：</p>
+<pre><code class="highlight java"><span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+<span class="type">StreamTableEnvironment</span> <span class="variable">tableEnv</span> <span class="operator">=</span> StreamTableEnvironment.create(env);
+<span class="comment">// 注册 Iceberg catalog</span>
+tableEnv.executeSql(
+    <span class="string">&quot;CREATE CATALOG iceberg_catalog WITH (&quot;</span> +
+    <span class="string">&quot;&#x27;type&#x27;=&#x27;iceberg&#x27;,&quot;</span> +
+    <span class="string">&quot;&#x27;catalog-type&#x27;=&#x27;hadoop&#x27;,&quot;</span> +
+    <span class="string">&quot;&#x27;warehouse&#x27;=&#x27;s3://your-bucket/warehouse&#x27;&quot;</span> +
+    <span class="string">&quot;)&quot;</span>
+);
+<span class="comment">// 建目标表</span>
+tableEnv.executeSql(
+    <span class="string">&quot;CREATE TABLE IF NOT EXISTS iceberg_catalog.db.events (&quot;</span> +
+    <span class="string">&quot;id BIGINT, event_type STRING, event_time TIMESTAMP(3)&quot;</span> +
+    <span class="string">&quot;) PARTITIONED BY (days(event_time))&quot;</span>
+);
+<span class="comment">// Kafka source 实时写入 Iceberg</span>
+tableEnv.executeSql(<span class="string">&quot;INSERT INTO iceberg_catalog.db.events SELECT * FROM kafka_source&quot;</span>);</code></pre>
+<hr />
+<h2 id="apache-hudi"><a class="markdownIt-Anchor" href="#apache-hudi"></a> Apache Hudi</h2>
+<h3 id="是什么-3"><a class="markdownIt-Anchor" href="#是什么-3"></a> 是什么</h3>
+<p>Uber 2016 年开发，Hadoop Upsert Delete and Incremental 的缩写，专门为增量数据处理设计。<br />
+Hudi 的核心场景是 CDC（Change Data Capture）：把 MySQL / PostgreSQL 的增删改实时同步到数据湖，保持数据湖和数据库的一致性。</p>
+<p>Apache Hudi (Hadoop Upserts Deletes and Incrementals) 是一个开源的数据湖框架，旨在简化增量数据处理和数据管道的管理。它通过提供 upserts（插入/更新）、deletes（删除）、change streams（变更流）、原子性提交和数据版本控制等核心功能，使数据湖具备了近似实时的能力。</p>
+<p><strong>特点</strong></p>
+<ol>
+<li>增量数据摄取 (Incremental Data Ingestion): Hudi 的核心优势之一是能够高效地处理增量数据。它只处理自上次写入以来发生更改的部分，而不是全量重写，这大大提高了效率。</li>
+<li>Upserts (插入/更新) 和 Deletes (删除): 原生支持基于主键的 upsert 操作（如果记录存在则更新，否则插入）和 delete 操作，这对于维护数据准确性至关重要。</li>
+<li>两种表类型:
+<ol>
+<li>Copy-on-Write (COW): 写时复制。每次写入都会生成新的文件版本，旧版本文件保留。适合读多写少的场景，提供更好的读性能，因为读取时不需要合并操作。</li>
+<li>Merge-on-Read (MOR): 读时合并。写入时会将增量数据（deltalog files）快速追加到基础文件（base files）旁。读取时可以选择返回最新快照（需要合并）或仅基础文件数据。适合写多读少、对写入延迟要求高的场景。</li>
+</ol>
+</li>
+<li>数据版本控制 (Timeline): Hudi 维护一个时间轴（Timeline），记录了所有在表上执行的操作（如 commits, cleanups, rollbacks 等），支持数据回滚和时间旅行查询。</li>
+<li>可插拔索引 (Pluggable Indexing): 为了快速定位记录所在的文件，Hudi 支持多种索引机制（如 Bloom Filter, HBase, Global BLOOM, etc.），这对于 upsert 性能至关重要。</li>
+<li>原子性与并发控制 (Atomicity &amp; Concurrency Control): 所有写入操作都是原子性的，要么完全成功，要么完全失败。Hudi 还支持乐观并发控制，允许多个写入器同时写入同一张表。</li>
+<li>流式处理支持: 可以与 Spark Streaming、Flink 等流处理引擎集成，支持流式数据的摄取和查询。</li>
+</ol>
+<h3 id="两种存储类型"><a class="markdownIt-Anchor" href="#两种存储类型"></a> 两种存储类型</h3>
+<p>COW（Copy On Write，写时复制）：写入时直接复写 Parquet 文件，读性能好，但写入较慢，适合读多写少的场景。<br />
+MOR（Merge On Read，读时合并）：写入时先写增量日志文件（.log），定期合并到 Parquet，写入极快，读时需要合并，适合高频写入的场景。</p>
+<pre><code class="highlight plaintext">MOR 表文件结构：
+base_file_20240101.parquet    ← 基础文件（快照）
+.20240101_delta_1.log         ← 增量日志 1
+.20240101_delta_2.log         ← 增量日志 2
+读取时：base + delta1 + delta2 合并后返回最新数据</code></pre>
+<h3 id="核心特性"><a class="markdownIt-Anchor" href="#核心特性"></a> 核心特性</h3>
+<p>增量查询（Incremental Query）：只查某个时间点之后变化的数据，不用全表扫，ETL 效率极高。</p>
+<pre><code class="highlight python"><span class="comment"># 只读取过去 1 小时变化的数据</span>
+incremental_df = spark.read.<span class="built_in">format</span>(<span class="string">&quot;hudi&quot;</span>) \
+    .option(<span class="string">&quot;hoodie.datasource.query.type&quot;</span>, <span class="string">&quot;incremental&quot;</span>) \
+    .option(<span class="string">&quot;hoodie.datasource.read.begin.instanttime&quot;</span>, <span class="string">&quot;20240101120000&quot;</span>) \
+    .load(<span class="string">&quot;/path/to/hudi-table&quot;</span>)</code></pre>
+<h3 id="经典-cdc-入湖架构"><a class="markdownIt-Anchor" href="#经典-cdc-入湖架构"></a> 经典 CDC 入湖架构</h3>
+<pre><code class="highlight plaintext">MySQL（业务数据库）
+  ↓ Debezium（捕获 binlog 变更）
+Kafka（消息队列）
+  ↓ Flink（实时消费处理）
+Hudi 表（MOR 模式，毫秒级入湖）
+  ↓ 定期 Compaction（合并小文件）
+Parquet 文件（供 Spark / Hive 分析查询）</code></pre>
+<h3 id="怎么搭建和使用-3"><a class="markdownIt-Anchor" href="#怎么搭建和使用-3"></a> 怎么搭建和使用</h3>
+<p>Spark 写入 Hudi：</p>
+<pre><code class="highlight python"><span class="keyword">from</span> pyspark.sql <span class="keyword">import</span> SparkSession
+spark = SparkSession.builder \
+    .config(<span class="string">&quot;spark.jars.packages&quot;</span>, <span class="string">&quot;org.apache.hudi:hudi-spark3.4-bundle_2.12:0.14.0&quot;</span>) \
+    .config(<span class="string">&quot;spark.serializer&quot;</span>, <span class="string">&quot;org.apache.spark.serializer.KryoSerializer&quot;</span>) \
+    .getOrCreate()
+data = [(<span class="number">1</span>, <span class="string">&quot;张三&quot;</span>, <span class="number">25</span>, <span class="string">&quot;2024-01-01&quot;</span>), (<span class="number">2</span>, <span class="string">&quot;李四&quot;</span>, <span class="number">30</span>, <span class="string">&quot;2024-01-01&quot;</span>)]
+df = spark.createDataFrame(data, [<span class="string">&quot;id&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>, <span class="string">&quot;ts&quot;</span>])
+hudi_options = &#123;
+    <span class="string">&quot;hoodie.table.name&quot;</span>: <span class="string">&quot;users&quot;</span>,
+    <span class="string">&quot;hoodie.datasource.write.recordkey.field&quot;</span>: <span class="string">&quot;id&quot;</span>,        <span class="comment"># 主键</span>
+    <span class="string">&quot;hoodie.datasource.write.precombine.field&quot;</span>: <span class="string">&quot;ts&quot;</span>,        <span class="comment"># 去重时间戳</span>
+    <span class="string">&quot;hoodie.datasource.write.operation&quot;</span>: <span class="string">&quot;upsert&quot;</span>,
+    <span class="string">&quot;hoodie.datasource.write.table.type&quot;</span>: <span class="string">&quot;COPY_ON_WRITE&quot;</span>,
+&#125;
+<span class="comment"># 初次写入</span>
+df.write.<span class="built_in">format</span>(<span class="string">&quot;hudi&quot;</span>).options(**hudi_options).mode(<span class="string">&quot;append&quot;</span>).save(<span class="string">&quot;/tmp/hudi/users&quot;</span>)
+<span class="comment"># upsert：id=1 已存在则更新，不存在则插入</span>
+update_data = [(<span class="number">1</span>, <span class="string">&quot;张三新名字&quot;</span>, <span class="number">26</span>, <span class="string">&quot;2024-01-02&quot;</span>)]
+update_df = spark.createDataFrame(update_data, [<span class="string">&quot;id&quot;</span>, <span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>, <span class="string">&quot;ts&quot;</span>])
+update_df.write.<span class="built_in">format</span>(<span class="string">&quot;hudi&quot;</span>).options(**hudi_options).mode(<span class="string">&quot;append&quot;</span>).save(<span class="string">&quot;/tmp/hudi/users&quot;</span>)
+<span class="comment"># 读取最新数据</span>
+spark.read.<span class="built_in">format</span>(<span class="string">&quot;hudi&quot;</span>).load(<span class="string">&quot;/tmp/hudi/users&quot;</span>).show()
+<span class="comment"># 增量读取（只读 2024-01-02 之后的变更）</span>
+spark.read.<span class="built_in">format</span>(<span class="string">&quot;hudi&quot;</span>) \
+    .option(<span class="string">&quot;hoodie.datasource.query.type&quot;</span>, <span class="string">&quot;incremental&quot;</span>) \
+    .option(<span class="string">&quot;hoodie.datasource.read.begin.instanttime&quot;</span>, <span class="string">&quot;20240102000000&quot;</span>) \
+    .load(<span class="string">&quot;/tmp/hudi/users&quot;</span>).show()</code></pre>
+<h2 id="三者横向对比"><a class="markdownIt-Anchor" href="#三者横向对比"></a> 三者横向对比</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>Delta Lake</th>
+<th>Iceberg</th>
+<th>Hudi</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>发起方</td>
+<td>Databricks</td>
+<td>Netflix</td>
+<td>Uber</td>
+</tr>
+<tr>
+<td>开源时间</td>
+<td>2019</td>
+<td>2018</td>
+<td>2016</td>
+</tr>
+<tr>
+<td>最强场景</td>
+<td>Spark 生态、upsert</td>
+<td>多引擎兼容</td>
+<td>CDC 增量同步</td>
+</tr>
+<tr>
+<td>引擎支持</td>
+<td>Spark 最佳</td>
+<td>全引擎</td>
+<td>Spark / Flink</td>
+</tr>
+<tr>
+<td>分区管理</td>
+<td>手动</td>
+<td>隐藏分区（自动）</td>
+<td>手动</td>
+</tr>
+<tr>
+<td>国内云支持</td>
+<td>一般</td>
+<td>最好</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>社区活跃度</td>
+<td>高</td>
+<td>最高（上升最快）</td>
+<td>中</td>
+</tr>
+<tr>
+<td>学习难度</td>
+<td>低</td>
+<td>中</td>
+<td>中</td>
+</tr>
+<tr>
+<td>选型建议：</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>已经在用 Databricks / Spark，直接用 Delta Lake，生态最完整</li>
+<li>新建数据平台、需要多引擎，优先选 Iceberg，社区趋势最明显</li>
+<li>核心场景是 MySQL 实时同步入湖，选 Hudi</li>
+<li>实在纠结，Iceberg 现在是最安全的选择，云厂商和社区都在重点投入</li>
+</ul>
+<hr />
+<h2 id="完整数据链路架构"><a class="markdownIt-Anchor" href="#完整数据链路架构"></a> 完整数据链路架构</h2>
+<p>把上面所有东西串起来，一个典型的现代数据湖架构长这样：</p>
+<pre><code class="highlight plaintext">数据源层
+MySQL / PostgreSQL / 日志文件 / 埋点数据
+        ↓                    ↓
+  CDC（Debezium）         批量导入 / 实时埋点
+        ↓                    ↓
+消息队列层：Kafka（缓冲 + 解耦）
+        ↓ Flink（实时）  ↓ Spark（批量）
+存储层（湖仓）
+Iceberg / Delta Lake / Hudi
+存储在 HDFS / S3 / OSS
+        ↓ Spark SQL  ↓ Trino  ↓ Hive
+计算层
+数仓分层：ODS → DWD → DWS → ADS
+        ↓
+应用层
+BI 报表 / 机器学习 / 数据 API</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

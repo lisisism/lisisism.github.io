@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Debezium(CDC) 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Debezium(CDC)</div>
+  <div class="post-meta">
+    <div class="date">2024 三月 1日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Debezium</div>
+      
+      <div class="tag-item">CDC</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="debezium"><a class="markdownIt-Anchor" href="#debezium"></a> Debezium</h1>
+<h2 id="简介与核心概念"><a class="markdownIt-Anchor" href="#简介与核心概念"></a> 简介与核心概念</h2>
+<h3 id="简介"><a class="markdownIt-Anchor" href="#简介"></a> 简介</h3>
+<p>Debezium 是一个开源的分布式 CDC（变更数据捕获）平台，由 Red Hat 开发并开源。它通过读取数据库的事务日志（如 MySQL 的 binlog、PostgreSQL 的 WAL）来捕获数据变更事件，并将这些事件发布到消息队列（如 Kafka）中，实现实时数据同步。</p>
+<h3 id="cdc捕获变更数据"><a class="markdownIt-Anchor" href="#cdc捕获变更数据"></a> CDC(捕获变更数据)</h3>
+<p>传统数据同步方案的痛点：</p>
+<ul>
+<li>延迟严重：批量处理导致数据延迟</li>
+<li>资源浪费：频繁查询数据库增加负载</li>
+<li>数据不一致：难以保证实时一致性</li>
+<li>复杂维护：自定义脚本难以管理和扩展</li>
+</ul>
+<p>Debezium 通过以下方式解决这些问题：</p>
+<ul>
+<li>实时捕获：毫秒级延迟的变更数据捕获</li>
+<li>低影响：基于数据库日志，不增加数据库负载</li>
+<li>可靠性高：基于成熟的消息队列技术</li>
+<li>易于扩展：支持多种数据库和输出目标</li>
+</ul>
+<h3 id="核心特征"><a class="markdownIt-Anchor" href="#核心特征"></a> 核心特征</h3>
+<ul>
+<li>
+<p>多数据库支持：MySQL、PostgreSQL、MongoDB、Oracle、SQL Server、Db2 等</p>
+</li>
+<li>
+<p>实时性强：基于事务日志捕获，延迟可低至毫秒级</p>
+</li>
+<li>
+<p>低侵入性：仅读取数据库日志，不影响正常业务</p>
+</li>
+<li>
+<p>Exactly-Once 语义：通过 Kafka 事务机制保证数据一致性</p>
+</li>
+<li>
+<p>完整数据变更：捕获 INSERT、UPDATE、DELETE 操作及变更前后镜像</p>
+</li>
+<li>
+<p>Schema 变更同步：自动同步表结构变更事件</p>
+</li>
+<li>
+<p>快照模式：支持初始全量快照 + 增量变更捕获</p>
+</li>
+</ul>
+<h3 id="核心架构"><a class="markdownIt-Anchor" href="#核心架构"></a> 核心架构</h3>
+<p>Debezium 提供三种部署架构：</p>
+<table>
+<thead>
+<tr>
+<th>部署方式</th>
+<th>适用场景</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Apache Kafka Connect​</td>
+<td>生产环境、大规模部署</td>
+<td>高可用、可扩展、与 Kafka 生态集成</td>
+<td>需要维护 Kafka 集群</td>
+</tr>
+<tr>
+<td>独立服务器​</td>
+<td>无 Kafka 环境</td>
+<td>支持多种消息平台（Redis、Kinesis、Pub/Sub）</td>
+<td>功能相对有限</td>
+</tr>
+<tr>
+<td>嵌入式引擎​</td>
+<td>轻量级应用</td>
+<td>无需外部依赖、部署简单</td>
+<td>缺乏高可用保障</td>
+</tr>
+</tbody>
+</table>
+<h3 id="工作流程"><a class="markdownIt-Anchor" href="#工作流程"></a> 工作流程：</h3>
+<ul>
+<li>连接数据库：通过数据库专属连接器获取事务日志读取权限</li>
+<li>实时捕获变更：持续监听数据库事务日志</li>
+<li>生成标准化事件：将变更解析为统一格式的事件</li>
+<li>分发事件流：将事件写入消息队列供下游消费</li>
+</ul>
+<h2 id="部署"><a class="markdownIt-Anchor" href="#部署"></a> 部署</h2>
+<h3 id="docker"><a class="markdownIt-Anchor" href="#docker"></a> docker</h3>
+<p>快速开始：Docker Compose 部署</p>
+<pre><code class="highlight yaml"><span class="comment"># docker-compose.yml</span>
+<span class="attr">version:</span> <span class="string">&#x27;3&#x27;</span>
+<span class="attr">services:</span>
+  <span class="attr">zookeeper:</span>
+    <span class="attr">image:</span> <span class="string">debezium/zookeeper:2.5</span>
+    <span class="attr">ports:</span>
+      <span class="bullet">-</span> <span class="string">&quot;2181:2181&quot;</span>
+  
+  <span class="attr">kafka:</span>
+    <span class="attr">image:</span> <span class="string">debezium/kafka:2.5</span>
+    <span class="attr">ports:</span>
+      <span class="bullet">-</span> <span class="string">&quot;9092:9092&quot;</span>
+    <span class="attr">environment:</span>
+      <span class="bullet">-</span> <span class="string">ZOOKEEPER_CONNECT=zookeeper:2181</span>
+    <span class="attr">depends_on:</span>
+      <span class="bullet">-</span> <span class="string">zookeeper</span>
+  
+  <span class="attr">mysql:</span>
+    <span class="attr">image:</span> <span class="string">debezium/example-mysql:2.5</span>
+    <span class="attr">ports:</span>
+      <span class="bullet">-</span> <span class="string">&quot;3306:3306&quot;</span>
+    <span class="attr">environment:</span>
+      <span class="bullet">-</span> <span class="string">MYSQL_ROOT_PASSWORD=123456</span>
+      <span class="bullet">-</span> <span class="string">MYSQL_USER=dbz</span>
+      <span class="bullet">-</span> <span class="string">MYSQL_PASSWORD=dbz</span>
+  
+  <span class="attr">connect:</span>
+    <span class="attr">image:</span> <span class="string">debezium/connect:2.5</span>
+    <span class="attr">ports:</span>
+      <span class="bullet">-</span> <span class="string">&quot;8083:8083&quot;</span>
+    <span class="attr">environment:</span>
+      <span class="bullet">-</span> <span class="string">BOOTSTRAP_SERVERS=kafka:9092</span>
+      <span class="bullet">-</span> <span class="string">GROUP_ID=1</span>
+      <span class="bullet">-</span> <span class="string">CONFIG_STORAGE_TOPIC=my_connect_configs</span>
+      <span class="bullet">-</span> <span class="string">OFFSET_STORAGE_TOPIC=my_connect_offsets</span>
+    <span class="attr">depends_on:</span>
+      <span class="bullet">-</span> <span class="string">kafka</span>
+      <span class="bullet">-</span> <span class="string">mysql</span></code></pre>
+<p>启动</p>
+<pre><code class="highlight plaintext">docker-compose up -d</code></pre>
+<h3 id="手动部署"><a class="markdownIt-Anchor" href="#手动部署"></a> 手动部署</h3>
+<p>安装 Kafka Connect</p>
+<pre><code class="highlight bash"><span class="comment"># 下载 Apache Kafka（包含 Kafka Connect）</span>
+wget https://downloads.apache.org/kafka/3.5.0/kafka_2.13-3.5.0.tgz
+tar -xzf kafka_2.13-3.5.0.tgz
+<span class="built_in">cd</span> kafka_2.13-3.5.0
+
+<span class="comment"># 启动 Zookeeper</span>
+bin/zookeeper-server-start.sh config/zookeeper.properties &amp;
+
+<span class="comment"># 启动 Kafka</span>
+bin/kafka-server-start.sh config/server.properties &amp;
+
+<span class="comment"># 启动 Kafka Connect（独立模式）</span>
+bin/connect-standalone.sh config/connect-standalone.properties</code></pre>
+<p>安装 Debezium 连接器</p>
+<pre><code class="highlight bash"><span class="comment"># 下载 Debezium MySQL 连接器</span>
+wget https://repo1.maven.org/maven2/io/debezium/debezium-connector-mysql/2.5.0.Final/debezium-connector-mysql-2.5.0.Final-plugin.tar.gz
+
+<span class="comment"># 解压到 Kafka Connect 插件目录</span>
+tar -xzf debezium-connector-mysql-2.5.0.Final-plugin.tar.gz -C /path/to/kafka/plugins/
+
+<span class="comment"># 配置 Kafka Connect 插件路径</span>
+<span class="comment"># 编辑 config/connect-standalone.properties</span>
+plugin.path=/path/to/kafka/plugins</code></pre>
+<h2 id="数据库配置"><a class="markdownIt-Anchor" href="#数据库配置"></a> 数据库配置</h2>
+<h3 id="mysql"><a class="markdownIt-Anchor" href="#mysql"></a> mysql</h3>
+<pre><code class="highlight sql"><span class="comment">-- 1. 创建 Debezium 用户</span>
+<span class="keyword">CREATE</span> <span class="keyword">USER</span> <span class="string">&#x27;debezium&#x27;</span>@<span class="string">&#x27;%&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;dbz&#x27;</span>;
+<span class="keyword">GRANT</span> <span class="keyword">SELECT</span>, RELOAD, <span class="keyword">SHOW</span> DATABASES, REPLICATION SLAVE, REPLICATION CLIENT <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;debezium&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;
+
+<span class="comment">-- 2. 检查 binlog 配置</span>
+<span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;log_bin&#x27;</span>;  <span class="comment">-- 应为 ON</span>
+<span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;binlog_format&#x27;</span>;  <span class="comment">-- 应为 ROW</span>
+<span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;binlog_row_image&#x27;</span>;  <span class="comment">-- 应为 FULL</span>
+
+<span class="comment">-- 3. 修改 MySQL 配置文件（my.cnf）</span>
+[mysqld]
+server<span class="operator">-</span>id         <span class="operator">=</span> <span class="number">223344</span>
+log_bin           <span class="operator">=</span> mysql<span class="operator">-</span>bin
+binlog_format     <span class="operator">=</span> <span class="type">ROW</span>
+binlog_row_image  <span class="operator">=</span> <span class="keyword">FULL</span>
+expire_logs_days  <span class="operator">=</span> <span class="number">10</span></code></pre>
+<h3 id="pg"><a class="markdownIt-Anchor" href="#pg"></a> pg</h3>
+<pre><code class="highlight sql"><span class="comment">-- 1. 修改 postgresql.conf</span>
+wal_level <span class="operator">=</span> logical
+max_replication_slots <span class="operator">=</span> <span class="number">10</span>
+max_wal_senders <span class="operator">=</span> <span class="number">10</span>
+
+<span class="comment">-- 2. 创建复制用户</span>
+<span class="keyword">CREATE</span> <span class="keyword">USER</span> debezium <span class="keyword">WITH</span> REPLICATION LOGIN PASSWORD <span class="string">&#x27;dbz&#x27;</span>;
+<span class="keyword">GRANT</span> <span class="keyword">SELECT</span> <span class="keyword">ON</span> <span class="keyword">ALL</span> TABLES <span class="keyword">IN</span> SCHEMA public <span class="keyword">TO</span> debezium;
+
+<span class="comment">-- 3. 设置表 REPLICA IDENTITY（用于 UPDATE/DELETE）</span>
+<span class="keyword">ALTER TABLE</span> your_table REPLICA <span class="keyword">IDENTITY</span> <span class="keyword">FULL</span>;</code></pre>
+<h2 id="debezium-核心配置与使用"><a class="markdownIt-Anchor" href="#debezium-核心配置与使用"></a> Debezium 核心配置与使用</h2>
+<h3 id="连接器配置详解"><a class="markdownIt-Anchor" href="#连接器配置详解"></a> 连接器配置详解</h3>
+<p>MySQL 连接器配置</p>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;184054&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbserver1&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;table.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory.customers,inventory.orders&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;topic.prefix&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.bootstrap.servers&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost:9092&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.topic&quot;</span><span class="punctuation">:</span> <span class="string">&quot;schema-changes.inventory&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;include.schema.changes&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.locking.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;minimal&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;decimal.handling.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;double&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;time.precision.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;connect&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<p>pg连接器配置</p>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;postgres-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.postgresql.PostgresConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5432&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.dbname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;postgres&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;postgres-server&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;plugin.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;pgoutput&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;slot.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium_slot&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;publication.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium_pub&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;table.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;public.users,public.orders&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.bootstrap.servers&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost:9092&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.topic&quot;</span><span class="punctuation">:</span> <span class="string">&quot;schema-changes.postgres&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tombstones.on.delete&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<h3 id="注册连接器"><a class="markdownIt-Anchor" href="#注册连接器"></a> 注册连接器</h3>
+<pre><code class="highlight java"># 使用 REST API 注册连接器
+curl -i -X POST -H <span class="string">&quot;Accept:application/json&quot;</span> \
+  -H <span class="string">&quot;Content-Type:application/json&quot;</span> \
+  http:<span class="comment">//localhost:8083/connectors/ \</span>
+  -d <span class="string">&#x27;&#123;</span>
+<span class="string">    &quot;name&quot;: &quot;inventory-connector&quot;,</span>
+<span class="string">    &quot;config&quot;: &#123;</span>
+<span class="string">      &quot;connector.class&quot;: &quot;io.debezium.connector.mysql.MySqlConnector&quot;,</span>
+<span class="string">      &quot;tasks.max&quot;: &quot;1&quot;,</span>
+<span class="string">      &quot;database.hostname&quot;: &quot;mysql&quot;,</span>
+<span class="string">      &quot;database.port&quot;: &quot;3306&quot;,</span>
+<span class="string">      &quot;database.user&quot;: &quot;dbz&quot;,</span>
+<span class="string">      &quot;database.password&quot;: &quot;dbz&quot;,</span>
+<span class="string">      &quot;database.server.id&quot;: &quot;184054&quot;,</span>
+<span class="string">      &quot;topic.prefix&quot;: &quot;dbserver1&quot;,</span>
+<span class="string">      &quot;schema.history.internal.kafka.bootstrap.servers&quot;: &quot;kafka:9092&quot;,</span>
+<span class="string">      &quot;schema.history.internal.kafka.topic&quot;: &quot;schema-changes.inventory&quot;</span>
+<span class="string">    &#125;</span>
+<span class="string">  &#125;&#x27;</span></code></pre>
+<h3 id="快照模式"><a class="markdownIt-Anchor" href="#快照模式"></a> 快照模式</h3>
+<table>
+<thead>
+<tr>
+<th>快照模式</th>
+<th>描述</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>initial（默认）</td>
+<td>首次启动时执行全量快照，然后切换到增量捕获</td>
+<td>首次同步，需要历史数据</td>
+</tr>
+<tr>
+<td>initial_only​</td>
+<td>只执行全量快照，不进行增量捕获</td>
+<td>一次性数据导出</td>
+</tr>
+<tr>
+<td>schema_only​</td>
+<td>只捕获表结构，不捕获数据</td>
+<td>仅需表结构同步</td>
+</tr>
+<tr>
+<td>schema_only_recovery​</td>
+<td>恢复丢失的 schema 历史记录</td>
+<td>故障恢复</td>
+</tr>
+<tr>
+<td>never​</td>
+<td>不执行快照，只捕获启动后的变更</td>
+<td>仅需增量数据</td>
+</tr>
+<tr>
+<td>when_needed​</td>
+<td>仅在需要时执行快照</td>
+<td>灵活控制</td>
+</tr>
+</tbody>
+</table>
+<h3 id="事件数据结构"><a class="markdownIt-Anchor" href="#事件数据结构"></a> 事件数据结构</h3>
+<p>Debezium 生成的变更事件采用标准化的 JSON 格式：</p>
+<p>关键字段说明：</p>
+<ul>
+<li>before：变更前的数据（DELETE 和 UPDATE 操作）</li>
+<li>after：变更后的数据（INSERT 和 UPDATE 操作）</li>
+<li>op：操作类型（c=CREATE, u=UPDATE, d=DELETE, r=READ）</li>
+<li>source：源数据库元数据</li>
+<li>ts_ms：事件时间戳</li>
+</ul>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;before&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1004</span><span class="punctuation">,</span>
+    <span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Anne&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Kretchmar&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;annek@noanswer.org&quot;</span>
+  <span class="punctuation">&#125;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;after&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="number">1004</span><span class="punctuation">,</span>
+    <span class="attr">&quot;first_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Anne&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;last_name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;Kretchmar&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;anne@example.com&quot;</span>
+  <span class="punctuation">&#125;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;source&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;version&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2.5.0.Final&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;connector&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbserver1&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;ts_ms&quot;</span><span class="punctuation">:</span> <span class="number">1704067200000</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot&quot;</span><span class="punctuation">:</span> <span class="string">&quot;false&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;db&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;table&quot;</span><span class="punctuation">:</span> <span class="string">&quot;customers&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;server_id&quot;</span><span class="punctuation">:</span> <span class="number">223344</span><span class="punctuation">,</span>
+    <span class="attr">&quot;gtid&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span><span class="punctuation">,</span>
+    <span class="attr">&quot;file&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql-bin.000003&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;pos&quot;</span><span class="punctuation">:</span> <span class="number">154</span><span class="punctuation">,</span>
+    <span class="attr">&quot;row&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span>
+    <span class="attr">&quot;thread&quot;</span><span class="punctuation">:</span> <span class="number">7</span><span class="punctuation">,</span>
+    <span class="attr">&quot;query&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span>
+  <span class="punctuation">&#125;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;op&quot;</span><span class="punctuation">:</span> <span class="string">&quot;u&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;ts_ms&quot;</span><span class="punctuation">:</span> <span class="number">1704067201000</span><span class="punctuation">,</span>
+  <span class="attr">&quot;transaction&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">null</span></span>
+<span class="punctuation">&#125;</span></code></pre>
+<h2 id="常用场景"><a class="markdownIt-Anchor" href="#常用场景"></a> 常用场景</h2>
+<h3 id="mysql-到-kafka-实时数据同步"><a class="markdownIt-Anchor" href="#mysql-到-kafka-实时数据同步"></a> MySQL 到 Kafka 实时数据同步</h3>
+<p>环境准备</p>
+<pre><code class="highlight sql"><span class="comment">-- 创建测试数据库和表</span>
+<span class="keyword">CREATE</span> DATABASE IF <span class="keyword">NOT</span> <span class="keyword">EXISTS</span> inventory;
+USE inventory;
+
+<span class="keyword">CREATE TABLE</span> customers (
+  id <span class="type">INT</span> <span class="keyword">PRIMARY KEY</span> AUTO_INCREMENT,
+  first_name <span class="type">VARCHAR</span>(<span class="number">50</span>),
+  last_name <span class="type">VARCHAR</span>(<span class="number">50</span>),
+  email <span class="type">VARCHAR</span>(<span class="number">100</span>),
+  created_at <span class="type">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span>,
+  updated_at <span class="type">TIMESTAMP</span> <span class="keyword">DEFAULT</span> <span class="built_in">CURRENT_TIMESTAMP</span> <span class="keyword">ON</span> <span class="keyword">UPDATE</span> <span class="built_in">CURRENT_TIMESTAMP</span>
+);
+
+<span class="keyword">CREATE TABLE</span> orders (
+  id <span class="type">INT</span> <span class="keyword">PRIMARY KEY</span> AUTO_INCREMENT,
+  customer_id <span class="type">INT</span>,
+  order_date <span class="type">DATE</span>,
+  total_amount <span class="type">DECIMAL</span>(<span class="number">10</span>, <span class="number">2</span>),
+  status <span class="type">VARCHAR</span>(<span class="number">20</span>),
+  <span class="keyword">FOREIGN KEY</span> (customer_id) <span class="keyword">REFERENCES</span> customers(id)
+);</code></pre>
+<p>连接器配置</p>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql-inventory-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;184054&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql-server&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;table.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;inventory.customers,inventory.orders&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;topic.prefix&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.bootstrap.servers&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost:9092&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;schema.history.internal.kafka.topic&quot;</span><span class="punctuation">:</span> <span class="string">&quot;schema-history.inventory&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;include.schema.changes&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;initial&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.locking.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;minimal&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;decimal.handling.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;double&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;time.precision.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;connect&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;unwrap&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.unwrap.type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.transforms.ExtractNewRecordState&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.unwrap.drop.tombstones&quot;</span><span class="punctuation">:</span> <span class="string">&quot;false&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.unwrap.delete.handling.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;rewrite&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<p>验证</p>
+<pre><code class="highlight bash"><span class="comment"># 查看 Kafka Topic</span>
+./kafka-topics.sh --list --bootstrap-server localhost:9092
+
+<span class="comment"># 消费变更事件</span>
+./kafka-console-consumer.sh \
+  --bootstrap-server localhost:9092 \
+  --topic mysql.inventory.customers \
+  --from-beginning
+
+<span class="comment"># 在 MySQL 中执行操作</span>
+INSERT INTO customers (first_name, last_name, email) 
+VALUES (<span class="string">&#x27;John&#x27;</span>, <span class="string">&#x27;Doe&#x27;</span>, <span class="string">&#x27;john.doe@example.com&#x27;</span>);
+
+UPDATE customers SET email = <span class="string">&#x27;john.new@example.com&#x27;</span> WHERE <span class="built_in">id</span> = 1;
+
+DELETE FROM customers WHERE <span class="built_in">id</span> = 1;</code></pre>
+<h3 id="嵌入式-debeziumjava-应用集成"><a class="markdownIt-Anchor" href="#嵌入式-debeziumjava-应用集成"></a> 嵌入式 Debezium（Java 应用集成）</h3>
+<pre><code class="highlight xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.debezium<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>debezium-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.debezium<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>debezium-embedded<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.debezium<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>debezium-connector-mysql<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.0.Final<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.kafka<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>kafka-clients<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></code></pre>
+<pre><code class="highlight java"><span class="keyword">import</span> io.debezium.engine.ChangeEvent;
+<span class="keyword">import</span> io.debezium.engine.DebeziumEngine;
+<span class="keyword">import</span> io.debezium.engine.format.Json;
+<span class="keyword">import</span> org.apache.kafka.connect.source.SourceRecord;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.Properties;
+<span class="keyword">import</span> java.util.concurrent.ExecutorService;
+<span class="keyword">import</span> java.util.concurrent.Executors;
+<span class="keyword">import</span> java.util.concurrent.TimeUnit;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EmbeddedDebeziumExample</span> &#123;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> IOException &#123;
+        <span class="comment">// 配置属性</span>
+        <span class="type">Properties</span> <span class="variable">props</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        props.setProperty(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;embedded-engine&quot;</span>);
+        props.setProperty(<span class="string">&quot;connector.class&quot;</span>, <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span>);
+        
+        <span class="comment">// 偏移量存储配置</span>
+        props.setProperty(<span class="string">&quot;offset.storage&quot;</span>, <span class="string">&quot;org.apache.kafka.connect.storage.FileOffsetBackingStore&quot;</span>);
+        props.setProperty(<span class="string">&quot;offset.storage.file.filename&quot;</span>, <span class="string">&quot;/tmp/offsets.dat&quot;</span>);
+        props.setProperty(<span class="string">&quot;offset.flush.interval.ms&quot;</span>, <span class="string">&quot;60000&quot;</span>);
+        
+        <span class="comment">// MySQL 连接配置</span>
+        props.setProperty(<span class="string">&quot;database.hostname&quot;</span>, <span class="string">&quot;localhost&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.port&quot;</span>, <span class="string">&quot;3306&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.user&quot;</span>, <span class="string">&quot;debezium&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.password&quot;</span>, <span class="string">&quot;dbz&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.server.id&quot;</span>, <span class="string">&quot;85744&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.server.name&quot;</span>, <span class="string">&quot;embedded-mysql&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.include.list&quot;</span>, <span class="string">&quot;inventory&quot;</span>);
+        props.setProperty(<span class="string">&quot;table.include.list&quot;</span>, <span class="string">&quot;inventory.customers&quot;</span>);
+        
+        <span class="comment">// 历史记录存储</span>
+        props.setProperty(<span class="string">&quot;database.history&quot;</span>, <span class="string">&quot;io.debezium.relational.history.FileDatabaseHistory&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.history.file.filename&quot;</span>, <span class="string">&quot;/tmp/dbhistory.dat&quot;</span>);
+        
+        <span class="comment">// 快照配置</span>
+        props.setProperty(<span class="string">&quot;snapshot.mode&quot;</span>, <span class="string">&quot;initial&quot;</span>);
+        props.setProperty(<span class="string">&quot;snapshot.locking.mode&quot;</span>, <span class="string">&quot;minimal&quot;</span>);
+        
+        <span class="comment">// 创建 Debezium 引擎</span>
+        <span class="keyword">try</span> (DebeziumEngine&lt;ChangeEvent&lt;String, String&gt;&gt; engine = DebeziumEngine
+                .create(Json.class)
+                .using(props)
+                .notifying(record -&gt; &#123;
+                    <span class="comment">// 处理变更事件</span>
+                    System.out.println(<span class="string">&quot;Key: &quot;</span> + record.key());
+                    System.out.println(<span class="string">&quot;Value: &quot;</span> + record.value());
+                    System.out.println(<span class="string">&quot;Destination: &quot;</span> + record.destination());
+                    
+                    <span class="comment">// 解析 JSON 事件</span>
+                    <span class="comment">// 这里可以添加业务逻辑，如写入本地文件、调用API等</span>
+                    processChangeEvent(record.value());
+                &#125;)
+                .using((success, message, error) -&gt; &#123;
+                    <span class="comment">// 完成回调</span>
+                    <span class="keyword">if</span> (error != <span class="literal">null</span>) &#123;
+                        System.err.println(<span class="string">&quot;Engine failed: &quot;</span> + message + <span class="string">&quot;, error: &quot;</span> + error);
+                    &#125; <span class="keyword">else</span> &#123;
+                        System.out.println(<span class="string">&quot;Engine completed: &quot;</span> + message);
+                    &#125;
+                &#125;)
+                .build()) &#123;
+            
+            <span class="comment">// 异步执行引擎</span>
+            <span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newSingleThreadExecutor();
+            executor.execute(engine);
+            
+            <span class="comment">// 等待终止信号</span>
+            Runtime.getRuntime().addShutdownHook(<span class="keyword">new</span> <span class="title class_">Thread</span>(() -&gt; &#123;
+                System.out.println(<span class="string">&quot;Requesting engine to stop...&quot;</span>);
+                <span class="keyword">try</span> &#123;
+                    engine.close();
+                &#125; <span class="keyword">catch</span> (IOException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;));
+            
+            <span class="comment">// 保持主线程运行</span>
+            <span class="keyword">while</span> (!executor.isTerminated()) &#123;
+                <span class="keyword">try</span> &#123;
+                    executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;
+                    Thread.currentThread().interrupt();
+                    <span class="keyword">break</span>;
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+    
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">processChangeEvent</span><span class="params">(String jsonEvent)</span> &#123;
+        <span class="comment">// 解析和处理变更事件的业务逻辑</span>
+        <span class="comment">// 示例：将事件发送到消息队列、更新缓存、写入文件等</span>
+        System.out.println(<span class="string">&quot;Processing event: &quot;</span> + jsonEvent);
+        
+        <span class="comment">// 这里可以添加具体的业务处理逻辑</span>
+        <span class="comment">// 例如：解析JSON，提取关键信息，调用其他服务等</span>
+    &#125;
+&#125;</code></pre>
+<h3 id="spring-boot集成"><a class="markdownIt-Anchor" href="#spring-boot集成"></a> Spring Boot集成</h3>
+<pre><code class="highlight java"><span class="keyword">import</span> io.debezium.engine.ChangeEvent;
+<span class="keyword">import</span> io.debezium.engine.DebeziumEngine;
+<span class="keyword">import</span> io.debezium.engine.format.Json;
+<span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;
+<span class="keyword">import</span> org.springframework.boot.CommandLineRunner;
+<span class="keyword">import</span> org.springframework.boot.SpringApplication;
+<span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;
+<span class="keyword">import</span> org.springframework.context.annotation.Bean;
+<span class="keyword">import</span> org.springframework.stereotype.Component;
+
+<span class="keyword">import</span> java.io.IOException;
+<span class="keyword">import</span> java.util.Properties;
+<span class="keyword">import</span> java.util.concurrent.Executor;
+<span class="keyword">import</span> java.util.concurrent.Executors;
+
+<span class="meta">@SpringBootApplication</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DebeziumApplication</span> &#123;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        SpringApplication.run(DebeziumApplication.class, args);
+    &#125;
+    
+    <span class="meta">@Bean</span>
+    <span class="keyword">public</span> Executor <span class="title function_">debeziumExecutor</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> Executors.newSingleThreadExecutor();
+    &#125;
+&#125;
+
+<span class="meta">@Component</span>
+<span class="keyword">class</span> <span class="title class_">DebeziumRunner</span> <span class="keyword">implements</span> <span class="title class_">CommandLineRunner</span> &#123;
+    
+    <span class="meta">@Value(&quot;$&#123;debezium.database.hostname&#125;&quot;)</span>
+    <span class="keyword">private</span> String dbHostname;
+    
+    <span class="meta">@Value(&quot;$&#123;debezium.database.port&#125;&quot;)</span>
+    <span class="keyword">private</span> String dbPort;
+    
+    <span class="meta">@Value(&quot;$&#123;debezium.database.user&#125;&quot;)</span>
+    <span class="keyword">private</span> String dbUser;
+    
+    <span class="meta">@Value(&quot;$&#123;debezium.database.password&#125;&quot;)</span>
+    <span class="keyword">private</span> String dbPassword;
+    
+    <span class="meta">@Value(&quot;$&#123;debezium.database.name&#125;&quot;)</span>
+    <span class="keyword">private</span> String dbName;
+    
+    <span class="keyword">private</span> <span class="keyword">final</span> Executor executor;
+    <span class="keyword">private</span> DebeziumEngine&lt;?&gt; engine;
+    
+    <span class="keyword">public</span> <span class="title function_">DebeziumRunner</span><span class="params">(Executor executor)</span> &#123;
+        <span class="built_in">this</span>.executor = executor;
+    &#125;
+    
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">(String... args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">Properties</span> <span class="variable">props</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        props.setProperty(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;spring-debezium-engine&quot;</span>);
+        props.setProperty(<span class="string">&quot;connector.class&quot;</span>, <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span>);
+        props.setProperty(<span class="string">&quot;offset.storage&quot;</span>, <span class="string">&quot;org.apache.kafka.connect.storage.FileOffsetBackingStore&quot;</span>);
+        props.setProperty(<span class="string">&quot;offset.storage.file.filename&quot;</span>, <span class="string">&quot;/tmp/spring-offsets.dat&quot;</span>);
+        props.setProperty(<span class="string">&quot;offset.flush.interval.ms&quot;</span>, <span class="string">&quot;60000&quot;</span>);
+        
+        props.setProperty(<span class="string">&quot;database.hostname&quot;</span>, dbHostname);
+        props.setProperty(<span class="string">&quot;database.port&quot;</span>, dbPort);
+        props.setProperty(<span class="string">&quot;database.user&quot;</span>, dbUser);
+        props.setProperty(<span class="string">&quot;database.password&quot;</span>, dbPassword);
+        props.setProperty(<span class="string">&quot;database.server.id&quot;</span>, <span class="string">&quot;85745&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.server.name&quot;</span>, <span class="string">&quot;spring-mysql&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.include.list&quot;</span>, dbName);
+        
+        props.setProperty(<span class="string">&quot;database.history&quot;</span>, <span class="string">&quot;io.debezium.relational.history.FileDatabaseHistory&quot;</span>);
+        props.setProperty(<span class="string">&quot;database.history.file.filename&quot;</span>, <span class="string">&quot;/tmp/spring-dbhistory.dat&quot;</span>);
+        props.setProperty(<span class="string">&quot;snapshot.mode&quot;</span>, <span class="string">&quot;initial&quot;</span>);
+        
+        <span class="comment">// 创建引擎</span>
+        engine = DebeziumEngine.create(Json.class)
+                .using(props)
+                .notifying(<span class="built_in">this</span>::handleChangeEvent)
+                .using((success, message, error) -&gt; &#123;
+                    <span class="keyword">if</span> (error != <span class="literal">null</span>) &#123;
+                        System.err.println(<span class="string">&quot;Debezium engine failed: &quot;</span> + message);
+                        error.printStackTrace();
+                    &#125;
+                &#125;)
+                .build();
+        
+        <span class="comment">// 异步执行</span>
+        executor.execute(engine);
+    &#125;
+    
+    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">handleChangeEvent</span><span class="params">(ChangeEvent&lt;String, String&gt; event)</span> &#123;
+        <span class="type">String</span> <span class="variable">key</span> <span class="operator">=</span> event.key();
+        <span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> event.value();
+        <span class="type">String</span> <span class="variable">destination</span> <span class="operator">=</span> event.destination();
+        
+        System.out.println(<span class="string">&quot;Destination: &quot;</span> + destination);
+        System.out.println(<span class="string">&quot;Key: &quot;</span> + key);
+        System.out.println(<span class="string">&quot;Value: &quot;</span> + value);
+        
+        <span class="comment">// 业务处理逻辑</span>
+        <span class="comment">// 可以注入Spring Bean进行业务处理</span>
+    &#125;
+    
+    <span class="meta">@Override</span>
+    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">destroy</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="keyword">if</span> (engine != <span class="literal">null</span>) &#123;
+            <span class="keyword">try</span> &#123;
+                engine.close();
+            &#125; <span class="keyword">catch</span> (IOException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h3 id="夺标合并到单一topic"><a class="markdownIt-Anchor" href="#夺标合并到单一topic"></a> 夺标合并到单一Topic</h3>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;multi-table-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;localhost&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;184055&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;multi-table-server&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ecommerce&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;table.include.list&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ecommerce.orders,ecommerce.customers,ecommerce.products&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;topic.prefix&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ecommerce&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;route&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.route.type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;org.apache.kafka.connect.transforms.RegexRouter&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.route.regex&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ecommerce\\.(.*)&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.route.replacement&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ecommerce-all-changes&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;transforms.route.by.field&quot;</span><span class="punctuation">:</span> <span class="string">&quot;table&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;key.converter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;org.apache.kafka.connect.json.JsonConverter&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;key.converter.schemas.enable&quot;</span><span class="punctuation">:</span> <span class="string">&quot;false&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;value.converter&quot;</span><span class="punctuation">:</span> <span class="string">&quot;org.apache.kafka.connect.json.JsonConverter&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;value.converter.schemas.enable&quot;</span><span class="punctuation">:</span> <span class="string">&quot;false&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<p>事件路由处理器</p>
+<pre><code class="highlight java"><span class="keyword">import</span> com.fasterxml.jackson.databind.JsonNode;
+<span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;
+<span class="keyword">import</span> org.apache.kafka.clients.consumer.ConsumerRecord;
+<span class="keyword">import</span> org.apache.kafka.clients.consumer.ConsumerRecords;
+<span class="keyword">import</span> org.apache.kafka.clients.consumer.KafkaConsumer;
+
+<span class="keyword">import</span> java.time.Duration;
+<span class="keyword">import</span> java.util.Collections;
+<span class="keyword">import</span> java.util.Properties;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">MultiTableConsumer</span> &#123;
+    
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">ObjectMapper</span> <span class="variable">mapper</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ObjectMapper</span>();
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;
+        <span class="type">Properties</span> <span class="variable">props</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        props.put(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;localhost:9092&quot;</span>);
+        props.put(<span class="string">&quot;group.id&quot;</span>, <span class="string">&quot;multi-table-consumer&quot;</span>);
+        props.put(<span class="string">&quot;key.deserializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>);
+        props.put(<span class="string">&quot;value.deserializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>);
+        props.put(<span class="string">&quot;auto.offset.reset&quot;</span>, <span class="string">&quot;earliest&quot;</span>);
+        
+        <span class="keyword">try</span> (KafkaConsumer&lt;String, String&gt; consumer = <span class="keyword">new</span> <span class="title class_">KafkaConsumer</span>&lt;&gt;(props)) &#123;
+            consumer.subscribe(Collections.singletonList(<span class="string">&quot;ecommerce-all-changes&quot;</span>));
+            
+            <span class="keyword">while</span> (<span class="literal">true</span>) &#123;
+                ConsumerRecords&lt;String, String&gt; records = consumer.poll(Duration.ofMillis(<span class="number">100</span>));
+                
+                <span class="keyword">for</span> (ConsumerRecord&lt;String, String&gt; record : records) &#123;
+                    <span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> record.value();
+                    <span class="type">JsonNode</span> <span class="variable">event</span> <span class="operator">=</span> mapper.readTree(value);
+                    
+                    <span class="comment">// 根据表名路由处理</span>
+                    <span class="type">String</span> <span class="variable">tableName</span> <span class="operator">=</span> event.path(<span class="string">&quot;source&quot;</span>).path(<span class="string">&quot;table&quot;</span>).asText();
+                    <span class="type">String</span> <span class="variable">operation</span> <span class="operator">=</span> event.path(<span class="string">&quot;op&quot;</span>).asText();
+                    
+                    <span class="keyword">switch</span> (tableName) &#123;
+                        <span class="keyword">case</span> <span class="string">&quot;orders&quot;</span>:
+                            processOrderEvent(event, operation);
+                            <span class="keyword">break</span>;
+                        <span class="keyword">case</span> <span class="string">&quot;customers&quot;</span>:
+                            processCustomerEvent(event, operation);
+                            <span class="keyword">break</span>;
+                        <span class="keyword">case</span> <span class="string">&quot;products&quot;</span>:
+                            processProductEvent(event, operation);
+                            <span class="keyword">break</span>;
+                        <span class="keyword">default</span>:
+                            System.out.println(<span class="string">&quot;Unknown table: &quot;</span> + tableName);
+                    &#125;
+                &#125;
+            &#125;
+        &#125; <span class="keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+    
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">processOrderEvent</span><span class="params">(JsonNode event, String operation)</span> &#123;
+        <span class="type">JsonNode</span> <span class="variable">after</span> <span class="operator">=</span> event.path(<span class="string">&quot;after&quot;</span>);
+        <span class="type">JsonNode</span> <span class="variable">before</span> <span class="operator">=</span> event.path(<span class="string">&quot;before&quot;</span>);
+        
+        <span class="keyword">switch</span> (operation) &#123;
+            <span class="keyword">case</span> <span class="string">&quot;c&quot;</span>: <span class="comment">// CREATE</span>
+                System.out.println(<span class="string">&quot;New order created: &quot;</span> + after);
+                <span class="comment">// 发送订单创建通知、更新库存等</span>
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">&quot;u&quot;</span>: <span class="comment">// UPDATE</span>
+                System.out.println(<span class="string">&quot;Order updated: &quot;</span> + before + <span class="string">&quot; -&gt; &quot;</span> + after);
+                <span class="comment">// 处理订单状态变更</span>
+                <span class="keyword">break</span>;
+            <span class="keyword">case</span> <span class="string">&quot;d&quot;</span>: <span class="comment">// DELETE</span>
+                System.out.println(<span class="string">&quot;Order deleted: &quot;</span> + before);
+                <span class="comment">// 处理订单删除逻辑</span>
+                <span class="keyword">break</span>;
+        &#125;
+    &#125;
+    
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">processCustomerEvent</span><span class="params">(JsonNode event, String operation)</span> &#123;
+        <span class="comment">// 客户信息变更处理逻辑</span>
+        System.out.println(<span class="string">&quot;Customer event: &quot;</span> + operation + <span class="string">&quot; - &quot;</span> + event);
+    &#125;
+    
+    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">processProductEvent</span><span class="params">(JsonNode event, String operation)</span> &#123;
+        <span class="comment">// 商品信息变更处理逻辑</span>
+        System.out.println(<span class="string">&quot;Product event: &quot;</span> + operation + <span class="string">&quot; - &quot;</span> + event);
+    &#125;
+&#125;</code></pre>
+<h2 id="高可用配置"><a class="markdownIt-Anchor" href="#高可用配置"></a> 高可用配置</h2>
+<p>Kafka Connect 集群部署</p>
+<pre><code class="highlight properties"><span class="comment"># config/connect-distributed.properties</span>
+<span class="attr">bootstrap.servers</span>=<span class="string">kafka1:9092,kafka2:9092,kafka3:9092</span>
+<span class="attr">group.id</span>=<span class="string">connect-cluster</span>
+<span class="attr">key.converter</span>=<span class="string">org.apache.kafka.connect.json.JsonConverter</span>
+<span class="attr">value.converter</span>=<span class="string">org.apache.kafka.connect.json.JsonConverter</span>
+<span class="attr">key.converter.schemas.enable</span>=<span class="string">true</span>
+<span class="attr">value.converter.schemas.enable</span>=<span class="string">true</span>
+<span class="attr">offset.storage.topic</span>=<span class="string">connect-offsets</span>
+<span class="attr">config.storage.topic</span>=<span class="string">connect-configs</span>
+<span class="attr">status.storage.topic</span>=<span class="string">connect-status</span>
+<span class="attr">offset.storage.replication.factor</span>=<span class="string">3</span>
+<span class="attr">config.storage.replication.factor</span>=<span class="string">3</span>
+<span class="attr">status.storage.replication.factor</span>=<span class="string">3</span>
+<span class="attr">plugin.path</span>=<span class="string">/usr/share/java,/usr/share/kafka/plugins</span></code></pre>
+<p>连接器高可用配置</p>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ha-mysql-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3&quot;</span><span class="punctuation">,</span>  <span class="comment">// 增加任务数提高并行度</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql-cluster&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;184054&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.server.name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ha-mysql-server&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.history.kafka.bootstrap.servers&quot;</span><span class="punctuation">:</span> <span class="string">&quot;kafka1:9092,kafka2:9092,kafka3:9092&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.history.kafka.topic&quot;</span><span class="punctuation">:</span> <span class="string">&quot;schema-history.ha&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.history.kafka.recovery.poll.interval.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.history.skip.unparseable.ddl&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;when_needed&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.locking.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;minimal&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;snapshot.delay.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;10000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;heartbeat.interval.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;5000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;heartbeat.topics.prefix&quot;</span><span class="punctuation">:</span> <span class="string">&quot;__debezium-heartbeat&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;max.batch.size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20480&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;max.queue.size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;81920&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;poll.interval.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;500&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;connect.keep.alive&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;connect.timeout.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;connection.timeout.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<h2 id="性能优化"><a class="markdownIt-Anchor" href="#性能优化"></a> 性能优化</h2>
+<p>MySQL 性能优化</p>
+<pre><code class="highlight sql"><span class="comment">-- 优化 binlog 设置</span>
+<span class="keyword">SET</span> <span class="keyword">GLOBAL</span> binlog_row_image <span class="operator">=</span> <span class="string">&#x27;MINIMAL&#x27;</span>;  <span class="comment">-- 只记录变更的列</span>
+<span class="keyword">SET</span> <span class="keyword">GLOBAL</span> binlog_rows_query_log_events <span class="operator">=</span> <span class="keyword">ON</span>;  <span class="comment">-- 记录原始SQL</span>
+<span class="keyword">SET</span> <span class="keyword">GLOBAL</span> binlog_cache_size <span class="operator">=</span> <span class="number">32768</span>;  <span class="comment">-- 增加缓存大小</span>
+<span class="keyword">SET</span> <span class="keyword">GLOBAL</span> max_binlog_size <span class="operator">=</span> <span class="number">1073741824</span>;  <span class="comment">-- 1GB</span>
+
+<span class="comment">-- 监控 binlog 状态</span>
+<span class="keyword">SHOW</span> <span class="type">BINARY</span> LOGS;
+<span class="keyword">SHOW</span> BINLOG EVENTS;
+<span class="keyword">SHOW</span> SLAVE STATUS;</code></pre>
+<p>Debezium连接器优化</p>
+<pre><code class="highlight json"><span class="punctuation">&#123;</span>
+  <span class="attr">&quot;name&quot;</span><span class="punctuation">:</span> <span class="string">&quot;optimized-mysql-connector&quot;</span><span class="punctuation">,</span>
+  <span class="attr">&quot;config&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span>
+    <span class="attr">&quot;connector.class&quot;</span><span class="punctuation">:</span> <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;tasks.max&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.hostname&quot;</span><span class="punctuation">:</span> <span class="string">&quot;mysql&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.port&quot;</span><span class="punctuation">:</span> <span class="string">&quot;3306&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.user&quot;</span><span class="punctuation">:</span> <span class="string">&quot;debezium&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;database.password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;dbz&quot;</span><span class="punctuation">,</span>
+    
+    <span class="comment">// 性能优化参数</span>
+    <span class="attr">&quot;max.batch.size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;20480&quot;</span><span class="punctuation">,</span>  <span class="comment">// 每批最大记录数</span>
+    <span class="attr">&quot;max.queue.size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;81920&quot;</span><span class="punctuation">,</span>  <span class="comment">// 队列最大容量</span>
+    <span class="attr">&quot;poll.interval.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;100&quot;</span><span class="punctuation">,</span>  <span class="comment">// 轮询间隔</span>
+    <span class="attr">&quot;snapshot.fetch.size&quot;</span><span class="punctuation">:</span> <span class="string">&quot;2000&quot;</span><span class="punctuation">,</span>  <span class="comment">// 快照批次大小</span>
+    
+    <span class="comment">// 内存优化</span>
+    <span class="attr">&quot;binary.handling.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;bytes&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;decimal.handling.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;double&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;time.precision.mode&quot;</span><span class="punctuation">:</span> <span class="string">&quot;connect&quot;</span><span class="punctuation">,</span>
+    
+    <span class="comment">// 网络优化</span>
+    <span class="attr">&quot;connect.timeout.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;connection.timeout.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;30000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;keep.alive&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;keep.alive.interval.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;60000&quot;</span><span class="punctuation">,</span>
+    
+    <span class="comment">// 容错配置</span>
+    <span class="attr">&quot;errors.tolerance&quot;</span><span class="punctuation">:</span> <span class="string">&quot;all&quot;</span><span class="punctuation">,</span>  <span class="comment">// 容忍所有错误</span>
+    <span class="attr">&quot;errors.log.enable&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;errors.log.include.messages&quot;</span><span class="punctuation">:</span> <span class="string">&quot;true&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;errors.retry.delay.max.ms&quot;</span><span class="punctuation">:</span> <span class="string">&quot;60000&quot;</span><span class="punctuation">,</span>
+    <span class="attr">&quot;errors.retry.timeout&quot;</span><span class="punctuation">:</span> <span class="string">&quot;0&quot;</span>
+  <span class="punctuation">&#125;</span>
+<span class="punctuation">&#125;</span></code></pre>
+<h2 id="监控"><a class="markdownIt-Anchor" href="#监控"></a> 监控</h2>
+<p>JMX监控配置</p>
+<pre><code class="highlight properties"><span class="comment"># Kafka Connect JMX 配置</span>
+<span class="attr">JMX_PORT</span>=<span class="string">9999</span>
+<span class="attr">KAFKA_JMX_OPTS</span>=<span class="string">&quot;-Dcom.sun.management.jmxremote \</span>
+<span class="string">  -Dcom.sun.management.jmxremote.authenticate=false \</span>
+<span class="string">  -Dcom.sun.management.jmxremote.ssl=false \</span>
+<span class="string">  -Dcom.sun.management.jmxremote.port=9999 \</span>
+<span class="string">  -Djava.rmi.server.hostname=localhost&quot;</span></code></pre>
+<p>关键监控指标</p>
+<pre><code class="highlight bash"><span class="comment"># 查看连接器状态</span>
+curl -s http://localhost:8083/connectors | jq .
+
+<span class="comment"># 查看特定连接器状态</span>
+curl -s http://localhost:8083/connectors/mysql-connector/status | jq .
+
+<span class="comment"># 查看任务状态</span>
+curl -s http://localhost:8083/connectors/mysql-connector/tasks | jq .
+
+<span class="comment"># 重启连接器</span>
+curl -X POST http://localhost:8083/connectors/mysql-connector/restart
+
+<span class="comment"># 暂停连接器</span>
+curl -X PUT http://localhost:8083/connectors/mysql-connector/pause
+
+<span class="comment"># 恢复连接器</span>
+curl -X PUT http://localhost:8083/connectors/mysql-connector/resume</code></pre>
+<p>Prometheus监控配置</p>
+<pre><code class="highlight yaml"><span class="comment"># prometheus.yml</span>
+<span class="attr">scrape_configs:</span>
+  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;kafka-connect&#x27;</span>
+    <span class="attr">static_configs:</span>
+      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;connect1:8083&#x27;</span>, <span class="string">&#x27;connect2:8083&#x27;</span>, <span class="string">&#x27;connect3:8083&#x27;</span>]
+    <span class="attr">metrics_path:</span> <span class="string">&#x27;/metrics&#x27;</span>
+    
+  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&#x27;debezium-metrics&#x27;</span>
+    <span class="attr">static_configs:</span>
+      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&#x27;localhost:9999&#x27;</span>]
+    <span class="attr">relabel_configs:</span>
+      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__address__</span>]
+        <span class="attr">target_label:</span> <span class="string">instance</span>
+        <span class="attr">regex:</span> <span class="string">&#x27;(.*):.*&#x27;</span>
+        <span class="attr">replacement:</span> <span class="string">&#x27;$&#123;1&#125;&#x27;</span></code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

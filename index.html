@@ -51,6 +51,159 @@
     <div class="post-list">
   
   <section class="post-item">
+    <a class="post-item-title" href="/2024/09/10/Flink/">Flink</a>
+    <div class="post-item-summary">
+      Apache Flink 是一个开源的分布式流处理和批处理框架，以其低延迟、高吞吐和精确一次（Exactly-Once）语义而闻名。Flink 支持真正的流批一体计算，能够同时处理无界流数据（实时数据）和有界流数据（批处理数据）
+      <a class="read-more" href="/2024/09/10/Flink/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.09.10</div>
+      <div class="tags">
+        
+        <div class="tag-item">Flink</div>
+        
+        <div class="tag-item">大数据</div>
+        
+        <div class="tag-item">Java</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/08/02/lakehouse/">湖仓一体Delta Lake、Iceberg、Hudi</a>
+    <div class="post-item-summary">
+      湖仓一体（Lakehouse）的思路是：在数据湖的文件存储之上加一层「元数据 + 事务日志」，让数据湖具备数据仓库的能力，同时保留数据湖的低成本和开放性。Delta Lake、Iceberg、Hudi 就是实现这一层的三种开放表格式。
+      <a class="read-more" href="/2024/08/02/lakehouse/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.08.02</div>
+      <div class="tags">
+        
+        <div class="tag-item">大数据</div>
+        
+        <div class="tag-item">Spark</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/04/29/go/">Go</a>
+    <div class="post-item-summary">
+      Go 语言（又称 Golang）是由 Google 开发的一种开源、静态类型的编程语言。它于 2007 年开始构思，2009 年正式对外发布。Go 语言的设计目标是简洁、高效、可靠，并特别注重现代硬件特性和网络编程的需求，尤其是在并发处理方面表现出色。如今，Go 已成为云原生、微服务、DevOps 工具等领域最受欢迎的语言之一。
+      <a class="read-more" href="/2024/04/29/go/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.04.29</div>
+      <div class="tags">
+        
+        <div class="tag-item">Go</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/03/09/Java-Virtual-Threads/">Java Virtual Threads</a>
+    <div class="post-item-summary">
+      Java 21 正式引入了虚拟线程，这是 Java 并发编程近十年来最重要的一次变革。虚拟线程是由 JVM 管理的轻量级线程，不直接对应 OS 线程。
+      <a class="read-more" href="/2024/03/09/Java-Virtual-Threads/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.03.09</div>
+      <div class="tags">
+        
+        <div class="tag-item">Java</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/03/01/Debezium/">Debezium(CDC)</a>
+    <div class="post-item-summary">
+      Debezium 是一个开源的分布式 CDC（变更数据捕获）平台，由 Red Hat 开发并开源。它通过读取数据库的事务日志（如 MySQL 的 binlog、PostgreSQL 的 WAL）来捕获数据变更事件，并将这些事件发布到消息队列（如 Kafka）中，实现实时数据同步。
+      <a class="read-more" href="/2024/03/01/Debezium/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.03.01</div>
+      <div class="tags">
+        
+        <div class="tag-item">Debezium</div>
+        
+        <div class="tag-item">CDC</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/01/10/quarkus/">Quarkus</a>
+    <div class="post-item-summary">
+      Quarkus 是一个专门为云原生和 GraalVM Native Image 设计的 Java 框架。它的核心思想是把传统框架在运行期做的事情（比如依赖注入、注解扫描、反射）提前到编译期完成，这样生成的代码天然就对 Native Image 友好，不需要大量额外配置。同时 Quarkus 即使不用 Native Image，用普通 JVM 运行也比 Spring Boot 启动更快。
+      <a class="read-more" href="/2024/01/10/quarkus/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.01.10</div>
+      <div class="tags">
+        
+        <div class="tag-item">Java</div>
+        
+        <div class="tag-item">Quarkus</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2024/01/04/GraalVM-Native-Image/">GraalVM-Native-Image</a>
+    <div class="post-item-summary">
+      GraalVM是一个高性能的运行时环境，它不仅支持Java，还兼容JavaScript、Python等多种语言。其中，Native Image是其核心组件之一，它利用即时编译（AOT）技术，在应用程序部署前将其及其依赖转换为机器码，从而消除JVM的启动时间和内存开销。
+      <a class="read-more" href="/2024/01/04/GraalVM-Native-Image/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2024.01.04</div>
+      <div class="tags">
+        
+        <div class="tag-item">Java</div>
+        
+        <div class="tag-item">GraalVM</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
+    <a class="post-item-title" href="/2023/12/29/java-new-features/">Java-New-Features</a>
+    <div class="post-item-summary">
+       Java8→21新特性总结
+
+ 目录
+
+Java 8（2014）— 划时代版本
+Java 9（2017）— 模块化时代
+Java 10（2018）— 局部变量推断
+Java 11（2018）— 第二个 LTS
+Java 12 ~ 14 — 过渡版本
+Java 15 ~ 16（2020~2021）— 特性逐渐成熟
+Java 17（2021）— 第三个 LTS
+Java 18 ~ 20（2022~2023）— 过渡版本
+Java 21（2023）— 第四个 LTS，最重磅
+版本
+      <a class="read-more" href="/2023/12/29/java-new-features/"> ... </a>
+    </div>
+    <div class="post-item-extra">
+      <div class="date">2023.12.29</div>
+      <div class="tags">
+        
+        <div class="tag-item">Java</div>
+        
+      </div>
+    </div>
+  </section>
+  
+  <section class="post-item">
     <a class="post-item-title" href="/2023/09/03/ZFS/">ZFS</a>
     <div class="post-item-summary">
       ZFS（Zettabyte File System）是一种高级的文件系统和卷管理器，最初由Sun Microsystems开发。它具有许多先进的功能，旨在提供高性能、数据完整性、可扩展性和先进的存储管理功能。ZFS最初是为Solaris操作系统设计的，但现在也可在其他操作系统上使用，包括各种Linux发行版和FreeBSD。
@@ -84,151 +237,11 @@
     </div>
   </section>
   
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/07/02/Spring-Boot/">Spring Boot</a>
-    <div class="post-item-summary">
-      Spring Boot是一个基于Spring的套件，它帮我们预组装了Spring的一系列组件，以便以尽可能少的代码和配置来开发基于Spring的Java应用程序。
-      <a class="read-more" href="/2023/07/02/Spring-Boot/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.07.02</div>
-      <div class="tags">
-        
-        <div class="tag-item">Java</div>
-        
-        <div class="tag-item">Spring</div>
-        
-        <div class="tag-item">String-Boot</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/06/29/Spring_AOP/">Spring AOP</a>
-    <div class="post-item-summary">
-      AOP采取横向抽取机制，取代了传统纵向继承体系的重复性代码（性能监视，事务管理，安全检查，缓存）在程序运行期间，不修改源码对已有方法进行增强，将业务逻辑和系统处理的代码（关闭连接，事务管理，操作日志记录）解耦
-      <a class="read-more" href="/2023/06/29/Spring_AOP/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.06.29</div>
-      <div class="tags">
-        
-        <div class="tag-item">Java</div>
-        
-        <div class="tag-item">Spring</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/03/29/Spring_JDBC-%E4%BA%8B%E5%8A%A1/">Spring JDBC/事务</a>
-    <div class="post-item-summary">
-      Spring JDBC就是指spring自身对jdbc的代码进行了一些封装，使得使用更加的简单，方便，快捷。
-      <a class="read-more" href="/2023/03/29/Spring_JDBC-%E4%BA%8B%E5%8A%A1/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.03.29</div>
-      <div class="tags">
-        
-        <div class="tag-item">Java</div>
-        
-        <div class="tag-item">Spring</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/03/16/Spring_MVC/">Spring MVC</a>
-    <div class="post-item-summary">
-      Spring MVC是Spring框架一个非常重要的功能模块，实现了MVC结构，便于简单，快速开发MVC结构的Web程序，Spring Web MVC提供的API封装了Web开发中常用的功能，简化了Web过程。springMVC是为了解决表现层问题的web框架，他们都是基于MVC设计模式的，表现层的主要职责就是处理前端HTTP请求
-      <a class="read-more" href="/2023/03/16/Spring_MVC/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.03.16</div>
-      <div class="tags">
-        
-        <div class="tag-item">Java</div>
-        
-        <div class="tag-item">Spring</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/03/05/Spring/">Spring</a>
-    <div class="post-item-summary">
-      Spring是一个开源的轻量级的应用开发框架，其目的是用于简化企业级应用程序开发，Spring提供的IOC和AOP应用，可以将组建的耦合度降至最低，即解耦，便于系统日后的维护和升级
-      <a class="read-more" href="/2023/03/05/Spring/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.03.05</div>
-      <div class="tags">
-        
-        <div class="tag-item">Java</div>
-        
-        <div class="tag-item">Spring</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2023/01/04/Redis/">Redis</a>
-    <div class="post-item-summary">
-      Redis是一个开源的使用ANSI C语言编写、支持网络、可基于内存亦可持久化的日志型、Key-Value内存数据库。Redis安装，Spring集成，事务，分布式锁，持久化，主从，LUA。
-      <a class="read-more" href="/2023/01/04/Redis/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2023.01.04</div>
-      <div class="tags">
-        
-        <div class="tag-item">Redis</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2022/12/29/zookeeper/">zookeeper</a>
-    <div class="post-item-summary">
-      zookeeper是一个开源的分布式应用程序协调服务器，其为分布式系统提供一致性服务。其一致性是通过基于Paxos算法的ZAB协议完成的，其主要功能包括：配置维护，域名服务，分布式同步，集群管理等。
-      <a class="read-more" href="/2022/12/29/zookeeper/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2022.12.29</div>
-      <div class="tags">
-        
-        <div class="tag-item">zookeeper</div>
-        
-      </div>
-    </div>
-  </section>
-  
-  <section class="post-item">
-    <a class="post-item-title" href="/2022/12/12/Linux/">Linux</a>
-    <div class="post-item-summary">
-      本文详细介绍了Linux的核心概念、常用命令，权限，系统命令，归档备份，网络系统，vim，程序管理，环境变量，管道符，重定向，磁盘。
-      <a class="read-more" href="/2022/12/12/Linux/"> ... </a>
-    </div>
-    <div class="post-item-extra">
-      <div class="date">2022.12.12</div>
-      <div class="tags">
-        
-        <div class="tag-item">Linux</div>
-        
-      </div>
-    </div>
-  </section>
-  
 </div>
 
 
 <div class="paginator">
-  <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/">5</a><a class="extend next" rel="next" href="/page/2/">&gt;</a>
+  <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/2/">&gt;</a>
 </div>
 
   </main>

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Java Virtual Threads 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Java Virtual Threads</div>
+  <div class="post-meta">
+    <div class="date">2024 三月 9日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="java-虚拟线程virtual-threads"><a class="markdownIt-Anchor" href="#java-虚拟线程virtual-threads"></a> Java 虚拟线程（Virtual Threads）</h1>
+<blockquote>
+<p>Java 21 正式引入了虚拟线程，这是 Java 并发编程近十年来最重要的一次变革。本文从原理到实战，带你彻底搞懂虚拟线程。</p>
+</blockquote>
+<hr />
+<ul>
+<li><a href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B">为什么需要虚拟线程</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E6%98%AF%E4%BB%80%E4%B9%88">虚拟线程是什么</a></li>
+<li><a href="#%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B-vs-%E5%B9%B3%E5%8F%B0%E7%BA%BF%E7%A8%8B">虚拟线程 vs 平台线程</a></li>
+<li><a href="#%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B">快速上手</a></li>
+<li><a href="#%E4%B8%8E-spring-boot-%E9%9B%86%E6%88%90">与 Spring Boot 集成</a></li>
+<li><a href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E4%B8%8E%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9">使用场景与注意事项</a></li>
+<li><a href="#%E5%B8%B8%E8%A7%81%E8%AF%AF%E5%8C%BA">常见误区</a></li>
+<li><a href="#%E5%B0%8F%E7%BB%93">小结</a></li>
+</ul>
+<hr />
+<h2 id="为什么需要虚拟线程"><a class="markdownIt-Anchor" href="#为什么需要虚拟线程"></a> 为什么需要虚拟线程</h2>
+<p>在聊虚拟线程之前，先看看传统线程模型有什么问题。</p>
+<h3 id="传统线程的瓶颈"><a class="markdownIt-Anchor" href="#传统线程的瓶颈"></a> 传统线程的瓶颈</h3>
+<p>Java 的传统线程（也叫平台线程）是对操作系统线程的直接封装，一个 Java 线程对应一个 OS 线程。这带来了几个根本性的限制：<br />
+<strong>创建成本高</strong>。每个平台线程默认会分配约 1MB 的栈内存，创建和销毁都需要系统调用，开销不小。<br />
+<strong>数量有上限</strong>。正因为资源占用高，一台普通服务器能维持的线程数通常在几千个左右，超过这个数量系统就会吃不消。<br />
+<strong>阻塞时浪费资源</strong>。这是最大的问题。当线程在等待数据库响应、HTTP 调用、读写文件时，它什么都不做，却依然占着 OS 线程不放。<br />
+举个实际场景：一个普通的 Web 接口，处理一次请求需要查两次数据库，每次数据库查询耗时 50ms。在这 100ms 里，线程大部分时间都在阻塞等待，真正执行业务逻辑的时间可能只有几毫秒。</p>
+<pre><code class="highlight plaintext">请求进来 → [查数据库，等待 50ms] → [查缓存，等待 30ms] → [计算，5ms] → 返回
+               ↑ 线程在睡觉              ↑ 线程在睡觉        ↑ 真正在干活</code></pre>
+<p>为了应对高并发，我们只能加线程、加机器，但这条路是有尽头的。</p>
+<h3 id="响应式编程的代价"><a class="markdownIt-Anchor" href="#响应式编程的代价"></a> 响应式编程的代价</h3>
+<p>为了解决这个问题，社区推出了响应式编程（Reactive），比如 WebFlux、RxJava。响应式的思路是用少量线程处理大量请求，线程不再等待，而是注册回调，IO 完成后再继续。<br />
+理论上很美好，但实际写起来：</p>
+<pre><code class="highlight java"><span class="comment">// 响应式风格，光是读懂就需要一会儿</span>
+userService.findById(id)
+    .flatMap(user -&gt; orderService.findByUserId(user.getId()))
+    .flatMap(orders -&gt; inventoryService.checkStock(orders))
+    .map(result -&gt; ResponseEntity.ok(result))
+    .onErrorResume(e -&gt; Mono.just(ResponseEntity.status(<span class="number">500</span>).build()))
+    .subscribe();</code></pre>
+<p>代码的可读性、调试难度、错误排查成本都大幅上升。响应式是用代码复杂度换取性能，不是所有团队都愿意接受这笔交易。<br />
+<strong>虚拟线程的出现，让我们可以用最朴素的同步写法，获得接近响应式的并发性能。</strong></p>
+<h2 id="虚拟线程是什么"><a class="markdownIt-Anchor" href="#虚拟线程是什么"></a> 虚拟线程是什么</h2>
+<p>虚拟线程是由 JVM 管理的轻量级线程，不直接对应 OS 线程。</p>
+<h3 id="工作原理"><a class="markdownIt-Anchor" href="#工作原理"></a> 工作原理</h3>
+<p>JVM 内部维护了一个平台线程池（称为 Carrier Threads，载体线程），虚拟线程运行在载体线程之上。关键在于：</p>
+<ul>
+<li>当虚拟线程发生阻塞（比如等待 IO），JVM 会自动把它从载体线程上<strong>卸载</strong>，载体线程立刻去执行其他虚拟线程</li>
+<li>当阻塞结束，虚拟线程会被<strong>重新挂载</strong>到某个可用的载体线程上继续执行</li>
+</ul>
+<pre><code class="highlight plaintext">载体线程 1:  [虚拟线程A执行] → [A阻塞，切换] → [虚拟线程B执行] → [B阻塞，切换] → [虚拟线程A继续]
+载体线程 2:  [虚拟线程C执行] → [虚拟线程D执行] → ...</code></pre>
+<p>整个切换过程发生在 JVM 内部，不需要系统调用，成本极低。<br />
+这样一来，几个载体线程就能调度数百万个虚拟线程，IO 等待时间被充分利用起来，吞吐量大幅提升。</p>
+<h2 id="虚拟线程-vs-平台线程"><a class="markdownIt-Anchor" href="#虚拟线程-vs-平台线程"></a> 虚拟线程 vs 平台线程</h2>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>平台线程</th>
+<th>虚拟线程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>对应关系</td>
+<td>1:1 对应 OS 线程</td>
+<td>多:1 挂载在载体线程上</td>
+</tr>
+<tr>
+<td>创建成本</td>
+<td>高（约 1MB 栈内存）</td>
+<td>极低（KB 级别，按需扩展）</td>
+</tr>
+<tr>
+<td>可创建数量</td>
+<td>通常几千个</td>
+<td>轻松达到数百万</td>
+</tr>
+<tr>
+<td>阻塞时</td>
+<td>占用 OS 线程，白白浪费</td>
+<td>自动挂起，释放载体线程</td>
+</tr>
+<tr>
+<td>上下文切换</td>
+<td>需要系统调用，成本较高</td>
+<td>JVM 内部调度，成本极低</td>
+</tr>
+<tr>
+<td>适合场景</td>
+<td>CPU 密集型计算</td>
+<td>IO 密集型（数据库、网络请求）</td>
+</tr>
+<tr>
+<td>代码改造成本</td>
+<td>—</td>
+<td>几乎为零，同步写法照常用</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="快速上手"><a class="markdownIt-Anchor" href="#快速上手"></a> 快速上手</h2>
+<p>虚拟线程在 Java 21 中正式发布，API 设计上刻意保持了向下兼容，学习成本很低。</p>
+<h3 id="环境要求"><a class="markdownIt-Anchor" href="#环境要求"></a> 环境要求</h3>
+<pre><code class="highlight plaintext">JDK 21+</code></pre>
+<h3 id="创建虚拟线程的几种方式"><a class="markdownIt-Anchor" href="#创建虚拟线程的几种方式"></a> 创建虚拟线程的几种方式</h3>
+<p><strong>方式一：Thread.ofVirtual()</strong></p>
+<pre><code class="highlight java"><span class="comment">// 创建并启动一个虚拟线程</span>
+<span class="type">Thread</span> <span class="variable">vThread</span> <span class="operator">=</span> Thread.ofVirtual().start(() -&gt; &#123;
+    System.out.println(<span class="string">&quot;当前线程是否为虚拟线程: &quot;</span> + Thread.currentThread().isVirtual());
+    System.out.println(<span class="string">&quot;线程名: &quot;</span> + Thread.currentThread().getName());
+&#125;);
+vThread.join(); <span class="comment">// 等待执行完毕</span></code></pre>
+<p><strong>方式二：虚拟线程工厂</strong></p>
+<pre><code class="highlight java"><span class="type">ThreadFactory</span> <span class="variable">factory</span> <span class="operator">=</span> Thread.ofVirtual().name(<span class="string">&quot;worker-&quot;</span>, <span class="number">0</span>).factory();
+<span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> factory.newThread(() -&gt; System.out.println(<span class="string">&quot;任务1&quot;</span>));
+<span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> factory.newThread(() -&gt; System.out.println(<span class="string">&quot;任务2&quot;</span>));
+t1.start();
+t2.start();</code></pre>
+<p><strong>方式三：ExecutorService（最常用）</strong></p>
+<pre><code class="highlight java"><span class="comment">// 每提交一个任务，就创建一个虚拟线程来执行</span>
+<span class="keyword">try</span> (<span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor()) &#123;
+    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;
+        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">taskId</span> <span class="operator">=</span> i;
+        executor.submit(() -&gt; &#123;
+            <span class="comment">// 模拟 IO 操作</span>
+            Thread.sleep(Duration.ofMillis(<span class="number">100</span>));
+            System.out.println(<span class="string">&quot;任务 &quot;</span> + taskId + <span class="string">&quot; 完成，线程: &quot;</span> + Thread.currentThread());
+            <span class="keyword">return</span> taskId;
+        &#125;);
+    &#125;
+&#125; <span class="comment">// try-with-resources 会自动 shutdown 并等待所有任务完成</span></code></pre>
+<p>注意这里提交了 10000 个任务，每个任务都会阻塞 100ms，用平台线程池根本撑不住，但虚拟线程完全没有压力。</p>
+<h3 id="一个直观的性能对比"><a class="markdownIt-Anchor" href="#一个直观的性能对比"></a> 一个直观的性能对比</h3>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadComparison</span> &#123;
+    <span class="comment">// 用平台线程池跑 10000 个任务</span>
+    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">withPlatformThreads</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();
+       
+        <span class="keyword">try</span> (<span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">200</span>)) &#123;
+            List&lt;Future&lt;?&gt;&gt; futures = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();
+            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;
+                futures.add(executor.submit(() -&gt; &#123;
+                    Thread.sleep(Duration.ofMillis(<span class="number">50</span>)); <span class="comment">// 模拟 IO</span>
+                    <span class="keyword">return</span> <span class="literal">null</span>;
+                &#125;));
+            &#125;
+            <span class="keyword">for</span> (Future&lt;?&gt; f : futures) f.get();
+        &#125;
+       
+        System.out.println(<span class="string">&quot;平台线程耗时: &quot;</span> + (System.currentTimeMillis() - start) + <span class="string">&quot;ms&quot;</span>);
+        <span class="comment">// 预期耗时：约 2500ms（10000 / 200 * 50ms）</span>
+    &#125;
+    <span class="comment">// 用虚拟线程跑同样的 10000 个任务</span>
+    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">withVirtualThreads</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();
+       
+        <span class="keyword">try</span> (<span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor()) &#123;
+            List&lt;Future&lt;?&gt;&gt; futures = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();
+            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10000</span>; i++) &#123;
+                futures.add(executor.submit(() -&gt; &#123;
+                    Thread.sleep(Duration.ofMillis(<span class="number">50</span>)); <span class="comment">// 模拟 IO</span>
+                    <span class="keyword">return</span> <span class="literal">null</span>;
+                &#125;));
+            &#125;
+            <span class="keyword">for</span> (Future&lt;?&gt; f : futures) f.get();
+        &#125;
+       
+        System.out.println(<span class="string">&quot;虚拟线程耗时: &quot;</span> + (System.currentTimeMillis() - start) + <span class="string">&quot;ms&quot;</span>);
+        <span class="comment">// 预期耗时：约 50~100ms（几乎所有任务并行执行）</span>
+    &#125;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        withPlatformThreads();
+        withVirtualThreads();
+    &#125;
+&#125;</code></pre>
+<h3 id="结构化并发structured-concurrency"><a class="markdownIt-Anchor" href="#结构化并发structured-concurrency"></a> 结构化并发（Structured Concurrency）</h3>
+<p>Java 21 同期引入了结构化并发 API，配合虚拟线程使用体验非常好。它的核心思想是：<strong>多个并发任务作为一个整体来管理，任意一个失败则整体失败，不会出现任务泄漏。</strong></p>
+<pre><code class="highlight java"><span class="keyword">import</span> java.util.concurrent.StructuredTaskScope;
+<span class="keyword">record</span> <span class="title class_">UserProfile</span><span class="params">(User user, List&lt;Order&gt; orders, List&lt;Address&gt; addresses)</span> &#123;&#125;
+UserProfile <span class="title function_">fetchUserProfile</span><span class="params">(<span class="type">long</span> userId)</span> <span class="keyword">throws</span> Exception &#123;
+    <span class="keyword">try</span> (<span class="type">var</span> <span class="variable">scope</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StructuredTaskScope</span>.ShutdownOnFailure()) &#123;
+       
+        <span class="comment">// 三个任务并发执行，每个都跑在独立的虚拟线程上</span>
+        StructuredTaskScope.Subtask&lt;User&gt; userTask =
+            scope.fork(() -&gt; userService.findById(userId));
+       
+        StructuredTaskScope.Subtask&lt;List&lt;Order&gt;&gt; orderTask =
+            scope.fork(() -&gt; orderService.findByUserId(userId));
+       
+        StructuredTaskScope.Subtask&lt;List&lt;Address&gt;&gt; addressTask =
+            scope.fork(() -&gt; addressService.findByUserId(userId));
+        scope.join();           <span class="comment">// 等待所有任务完成</span>
+        scope.throwIfFailed();  <span class="comment">// 任意一个失败则抛异常，其余任务自动取消</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">UserProfile</span>(
+            userTask.get(),
+            orderTask.get(),
+            addressTask.get()
+        );
+    &#125;
+&#125;</code></pre>
+<p>对比一下传统的 <code>CompletableFuture</code> 写法，结构化并发的代码意图更清晰，错误处理也更可靠。</p>
+<h2 id="与-spring-boot-集成"><a class="markdownIt-Anchor" href="#与-spring-boot-集成"></a> 与 Spring Boot 集成</h2>
+<p>Spring Boot 3.2 之后对虚拟线程提供了完整支持，开启方式非常简单。</p>
+<h3 id="一行配置开启"><a class="markdownIt-Anchor" href="#一行配置开启"></a> 一行配置开启</h3>
+<pre><code class="highlight properties"><span class="comment"># application.properties</span>
+<span class="attr">spring.threads.virtual.enabled</span>=<span class="string">true</span></code></pre>
+<p>加上这一行，Spring Boot 会自动将 Tomcat、定时任务等组件切换到虚拟线程模式，无需改动任何业务代码。</p>
+<h3 id="手动配置需要精细控制时"><a class="markdownIt-Anchor" href="#手动配置需要精细控制时"></a> 手动配置（需要精细控制时）</h3>
+<pre><code class="highlight java"><span class="meta">@Configuration</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ThreadConfig</span> &#123;
+    <span class="comment">// 将 Tomcat 切换为虚拟线程</span>
+    <span class="meta">@Bean</span>
+    <span class="keyword">public</span> TomcatProtocolHandlerCustomizer&lt;?&gt; virtualThreadsProtocolHandlerCustomizer() &#123;
+        <span class="keyword">return</span> protocolHandler -&gt;
+            protocolHandler.setExecutor(Executors.newVirtualThreadPerTaskExecutor());
+    &#125;
+    <span class="comment">// 提供一个虚拟线程的 TaskExecutor，供 @Async 使用</span>
+    <span class="meta">@Bean</span>
+    <span class="keyword">public</span> AsyncTaskExecutor <span class="title function_">applicationTaskExecutor</span><span class="params">()</span> &#123;
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">TaskExecutorAdapter</span>(Executors.newVirtualThreadPerTaskExecutor());
+    &#125;
+    <span class="comment">// 定时任务也走虚拟线程</span>
+    <span class="meta">@Bean</span>
+    <span class="keyword">public</span> TaskScheduler <span class="title function_">taskScheduler</span><span class="params">()</span> &#123;
+        <span class="type">ThreadPoolTaskScheduler</span> <span class="variable">scheduler</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ThreadPoolTaskScheduler</span>();
+        scheduler.setVirtualThreads(<span class="literal">true</span>);
+        <span class="keyword">return</span> scheduler;
+    &#125;
+&#125;</code></pre>
+<h3 id="实战示例高并发接口"><a class="markdownIt-Anchor" href="#实战示例高并发接口"></a> 实战示例：高并发接口</h3>
+<pre><code class="highlight java"><span class="meta">@RestController</span>
+<span class="meta">@RequestMapping(&quot;/api&quot;)</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">UserController</span> &#123;
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> UserService userService;
+    <span class="meta">@Autowired</span>
+    <span class="keyword">private</span> OrderService orderService;
+    <span class="comment">// 开启虚拟线程后，即使这个接口有大量并发请求</span>
+    <span class="comment">// 每个请求都能分配到独立的虚拟线程，数据库等待不再成为瓶颈</span>
+    <span class="meta">@GetMapping(&quot;/users/&#123;id&#125;/profile&quot;)</span>
+    <span class="keyword">public</span> UserProfileVO <span class="title function_">getUserProfile</span><span class="params">(<span class="meta">@PathVariable</span> Long id)</span> &#123;
+        <span class="comment">// 同步写法，清晰直观</span>
+        <span class="type">User</span> <span class="variable">user</span> <span class="operator">=</span> userService.findById(id);           <span class="comment">// 可能阻塞 20ms</span>
+        List&lt;Order&gt; orders = orderService.findByUserId(id); <span class="comment">// 可能阻塞 30ms</span>
+        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">UserProfileVO</span>(user, orders);
+    &#125;
+&#125;</code></pre>
+<hr />
+<h2 id="使用场景与注意事项"><a class="markdownIt-Anchor" href="#使用场景与注意事项"></a> 使用场景与注意事项</h2>
+<h3 id="最适合的场景"><a class="markdownIt-Anchor" href="#最适合的场景"></a> 最适合的场景</h3>
+<p>虚拟线程在 IO 密集型场景下收益最大：</p>
+<ul>
+<li><strong>Web 服务</strong>：处理大量并发 HTTP 请求</li>
+<li><strong>数据库访问</strong>：大量 SQL 查询、事务操作</li>
+<li><strong>微服务调用</strong>：服务间的 HTTP/RPC 调用</li>
+<li><strong>文件读写</strong>：批量处理文件</li>
+<li><strong>消息消费</strong>：消费 Kafka、RocketMQ 等消息队列</li>
+</ul>
+<h3 id="不适合的场景"><a class="markdownIt-Anchor" href="#不适合的场景"></a> 不适合的场景</h3>
+<p><strong>CPU 密集型任务</strong>不适合用虚拟线程。图像处理、加解密、大量数值计算这类任务，线程几乎不阻塞，虚拟线程的优势发挥不出来，这时候老老实实用固定大小的平台线程池反而更合适。</p>
+<pre><code class="highlight java"><span class="comment">// CPU 密集型，用平台线程池</span>
+<span class="type">ExecutorService</span> <span class="variable">cpuPool</span> <span class="operator">=</span> Executors.newFixedThreadPool(
+    Runtime.getRuntime().availableProcessors()
+);
+<span class="comment">// IO 密集型，用虚拟线程</span>
+<span class="type">ExecutorService</span> <span class="variable">ioExecutor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor();</code></pre>
+<h3 id="注意事项"><a class="markdownIt-Anchor" href="#注意事项"></a> 注意事项</h3>
+<p><strong>1. 不要池化虚拟线程</strong><br />
+虚拟线程的创建成本已经极低，不需要也不应该用线程池来复用它们。每个任务直接新建一个虚拟线程即可。</p>
+<pre><code class="highlight java"><span class="comment">// ❌ 错误做法，失去了虚拟线程的意义</span>
+<span class="type">ExecutorService</span> <span class="variable">pool</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">100</span>); <span class="comment">// 还是平台线程池</span>
+<span class="comment">// ✅ 正确做法</span>
+<span class="type">ExecutorService</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor();</code></pre>
+<p><strong>2. 注意 synchronized 的 pinning 问题</strong><br />
+当虚拟线程在 <code>synchronized</code> 块内发生阻塞时，它无法从载体线程上卸载，会导致载体线程被&quot;钉住&quot;（pinning），影响性能。</p>
+<pre><code class="highlight java"><span class="comment">// ❌ 可能导致 pinning</span>
+<span class="keyword">synchronized</span> (lock) &#123;
+    <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> database.query(sql); <span class="comment">// IO 阻塞，但虚拟线程无法卸载</span>
+&#125;
+<span class="comment">// ✅ 改用 ReentrantLock</span>
+<span class="keyword">private</span> <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();
+lock.lock();
+<span class="keyword">try</span> &#123;
+    <span class="type">var</span> <span class="variable">result</span> <span class="operator">=</span> database.query(sql); <span class="comment">// IO 阻塞，虚拟线程可以正常卸载</span>
+&#125; <span class="keyword">finally</span> &#123;
+    lock.unlock();
+&#125;</code></pre>
+<p>Java 24 之后这个限制已经被移除，但如果你用的是 Java 21，需要留意这一点。<br />
+<strong>3. ThreadLocal 谨慎使用</strong><br />
+虚拟线程数量可能达到百万级别，如果每个虚拟线程都往 <code>ThreadLocal</code> 里存大对象，内存压力会很大。Java 21 引入了 <code>ScopedValue</code> 作为更安全的替代方案。</p>
+<pre><code class="highlight java"><span class="comment">// 传统 ThreadLocal（虚拟线程多时要谨慎）</span>
+ThreadLocal&lt;UserContext&gt; userContext = <span class="keyword">new</span> <span class="title class_">ThreadLocal</span>&lt;&gt;();
+<span class="comment">// ScopedValue（虚拟线程友好，不可变，自动清理）</span>
+<span class="keyword">static</span> <span class="keyword">final</span> ScopedValue&lt;UserContext&gt; USER_CONTEXT = ScopedValue.newInstance();
+ScopedValue.where(USER_CONTEXT, <span class="keyword">new</span> <span class="title class_">UserContext</span>(userId)).run(() -&gt; &#123;
+    <span class="comment">// 在这个作用域内可以访问 USER_CONTEXT.get()</span>
+    processRequest();
+&#125;);</code></pre>
+<hr />
+<h2 id="常见误区"><a class="markdownIt-Anchor" href="#常见误区"></a> 常见误区</h2>
+<p><strong>误区一：虚拟线程会让所有程序变快</strong><br />
+不是的。虚拟线程解决的是 IO 等待造成的线程资源浪费问题。如果你的程序本来就是 CPU 密集型，或者并发量不高，虚拟线程带来的提升非常有限。<br />
+<strong>误区二：用了虚拟线程就不用关心并发安全</strong><br />
+虚拟线程只是改变了线程的调度方式，共享状态的并发安全问题依然存在，该加锁的地方还是要加锁。<br />
+<strong>误区三：虚拟线程可以替代异步编程的所有场景</strong><br />
+对于需要精细控制背压（Backpressure）、流式处理的场景，响应式编程仍然有其优势。两者并不是非此即彼的关系。</p>
+<hr />
+<h2 id="小结"><a class="markdownIt-Anchor" href="#小结"></a> 小结</h2>
+<p>虚拟线程最让人欣慰的地方在于，它几乎没有学习成本和迁移成本。不需要引入新的编程范式，不需要改写业务代码，只需要换一种方式创建线程，就能获得接近响应式的并发能力。<br />
+对于绝大多数以 IO 操作为主的 Java 后端服务来说，升级到 Java 21 并开启虚拟线程，是一件性价比极高的事情。</p>
+<hr />
+</main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>

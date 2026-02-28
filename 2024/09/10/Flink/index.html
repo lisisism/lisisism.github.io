@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+  <title>
+    
+    Flink 丨
+    
+
+    Lism Blog
+  </title>
+
+  
+  <link rel="shortcut icon" href="/icon.svg">
+  
+
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <link id="theme" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.css">
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@11.9.0/highlight.min.js"></script>
+  
+
+  <!-- 字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+
+  
+<link rel="stylesheet" href="/css/root.css">
+
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<link rel="stylesheet" href="/css/post.css">
+
+<meta name="generator" content="Hexo 7.3.0"><link rel="alternate" href="/atom.xml" title="/Lism Blog" type="application/atom+xml">
+</head>
+
+<body>
+  <header class="header">
+  <section class="header-container">
+    <a class="logo" href="/">/Lism Blog</a>
+    <ul class="nav">
+      
+      <li><a href="/archives">archives</a></li>
+      
+      <li><a href="/about">about</a></li>
+      
+    </ul>
+  </section>
+</header>
+  <main class="main">
+    <article class="post">
+  
+  <div class="post-title">Flink</div>
+  <div class="post-meta">
+    <div class="date">2024 九月 10日</div>
+    <div class="tags">
+      
+      <div class="tag-item">Flink</div>
+      
+      <div class="tag-item">大数据</div>
+      
+      <div class="tag-item">Java</div>
+      
+    </div>
+  </div>
+  
+
+  <main class="post-content"><h1 id="apache-flink"><a class="markdownIt-Anchor" href="#apache-flink"></a> Apache Flink</h1>
+<h2 id="简介与核心概念"><a class="markdownIt-Anchor" href="#简介与核心概念"></a> 简介与核心概念</h2>
+<p>Apache Flink 是一个开源的分布式流处理和批处理框架，以其低延迟、高吞吐和精确一次（Exactly-Once）语义而闻名。Flink 支持真正的流批一体计算，能够同时处理无界流数据（实时数据）和有界流数据（批处理数据）</p>
+<ul>
+<li>流处理（Flink）：持续运行，周期性输出（每分钟输出一次）</li>
+<li>批处理（如Spark）：处理完整数据集后一次性输出</li>
+</ul>
+<p><strong>核心特性</strong></p>
+<ul>
+<li>真正的流处理：不同于微批处理，Flink 采用真正的流处理模型</li>
+<li>精确一次语义：确保每条数据被精确处理一次，不会重复或丢失</li>
+<li>强大的状态管理：支持多种状态存储方式，状态可达 TB 级别</li>
+<li>灵活的时间语义：支持事件时间、处理时间和摄入时间</li>
+<li>流批一体：同一套 API 处理实时和批量数据</li>
+<li>高可用性：支持多种部署模式，无单点故障</li>
+</ul>
+<p><strong>核心概念</strong></p>
+<ul>
+<li>DataStream：表示无限数据流的核心抽象</li>
+<li>算子（Operator）：数据转换操作，如 map、filter、flatMap</li>
+<li>窗口（Window）：将无限流切分为有限块进行计算</li>
+<li>状态（State）：算子中间计算结果存储</li>
+<li>Watermark：处理乱序数据的时间戳标记</li>
+<li>Checkpoint：状态快照机制，实现容错恢复</li>
+</ul>
+<h2 id="搭建"><a class="markdownIt-Anchor" href="#搭建"></a> 搭建</h2>
+<pre><code class="highlight sh"><span class="comment"># 下载 Flink（以 1.18.0 为例）</span>
+wget https://archive.apache.org/dist/flink/flink-1.18.0/flink-1.18.0-bin-scala_2.12.tar.gz
+
+<span class="comment"># 解压安装包</span>
+tar -xzf flink-1.18.0-bin-scala_2.12.tar.gz
+<span class="built_in">cd</span> flink-1.18.0
+
+<span class="comment"># 配置环境变量（可选）</span>
+<span class="built_in">export</span> FLINK_HOME=/path/to/flink-1.18.0
+<span class="built_in">export</span> PATH=<span class="variable">$PATH</span>:<span class="variable">$FLINK_HOME</span>/bin</code></pre>
+<h2 id="部署模式"><a class="markdownIt-Anchor" href="#部署模式"></a> 部署模式</h2>
+<h3 id="本地模式"><a class="markdownIt-Anchor" href="#本地模式"></a> 本地模式</h3>
+<pre><code class="highlight bash"><span class="comment"># 启动本地集群</span>
+./bin/start-cluster.sh
+
+<span class="comment"># 验证启动</span>
+jps
+<span class="comment"># 应看到 StandaloneSessionClusterEntrypoint（JobManager）和 TaskManagerRunner 进程</span>
+
+<span class="comment"># 访问 Web UI</span>
+<span class="comment"># 浏览器访问 http://localhost:8081</span></code></pre>
+<h3 id="standalone集群模式"><a class="markdownIt-Anchor" href="#standalone集群模式"></a> Standalone集群模式</h3>
+<ol>
+<li>修改配置文件​ conf/flink-conf.yaml：</li>
+</ol>
+<pre><code class="highlight bash"><span class="comment"># JobManager 地址</span>
+jobmanager.rpc.address: master-node
+
+<span class="comment"># TaskManager 内存配置</span>
+taskmanager.memory.process.size: 4096m
+taskmanager.numberOfTaskSlots: 4
+
+<span class="comment"># 检查点配置</span>
+state.backend: filesystem
+state.checkpoints.dir: file:///tmp/flink-checkpoints</code></pre>
+<ol start="2">
+<li>配置 workers 文件：</li>
+</ol>
+<pre><code class="highlight bash"><span class="comment"># conf/workers</span>
+worker-node1
+worker-node2
+worker-node3</code></pre>
+<ol start="3">
+<li>分发启动</li>
+</ol>
+<pre><code class="highlight bash"><span class="comment"># 分发到各节点</span>
+scp -r flink-1.18.0/ worker-node1:/opt/
+scp -r flink-1.18.0/ worker-node2:/opt/
+
+<span class="comment"># 在 master 节点启动集群</span>
+./bin/start-cluster.sh</code></pre>
+<h3 id="docker部署"><a class="markdownIt-Anchor" href="#docker部署"></a> docker部署</h3>
+<pre><code class="highlight yaml"><span class="comment"># docker-compose.yml</span>
+<span class="attr">version:</span> <span class="string">&#x27;3.8&#x27;</span>
+<span class="attr">services:</span>
+  <span class="attr">jobmanager:</span>
+    <span class="attr">image:</span> <span class="string">flink:1.18.0-scala_2.12</span>
+    <span class="attr">ports:</span>
+      <span class="bullet">-</span> <span class="string">&quot;8081:8081&quot;</span>
+    <span class="attr">command:</span> <span class="string">jobmanager</span>
+    <span class="attr">environment:</span>
+      <span class="bullet">-</span> <span class="string">JOB_MANAGER_RPC_ADDRESS=jobmanager</span>
+    <span class="attr">volumes:</span>
+      <span class="bullet">-</span> <span class="string">./data:/opt/flink/data</span>
+  
+  <span class="attr">taskmanager:</span>
+    <span class="attr">image:</span> <span class="string">flink:1.18.0-scala_2.12</span>
+    <span class="attr">depends_on:</span>
+      <span class="bullet">-</span> <span class="string">jobmanager</span>
+    <span class="attr">command:</span> <span class="string">taskmanager</span>
+    <span class="attr">environment:</span>
+      <span class="bullet">-</span> <span class="string">JOB_MANAGER_RPC_ADDRESS=jobmanager</span>
+      <span class="bullet">-</span> <span class="string">TASK_MANAGER_NUMBER_OF_TASK_SLOTS=4</span>
+    <span class="attr">deploy:</span>
+      <span class="attr">replicas:</span> <span class="number">2</span></code></pre>
+<h3 id="maven"><a class="markdownIt-Anchor" href="#maven"></a> Maven</h3>
+<pre><code class="highlight xml"><span class="comment">&lt;!-- pom.xml --&gt;</span>
+<span class="tag">&lt;<span class="name">properties</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">flink.version</span>&gt;</span>1.18.0<span class="tag">&lt;/<span class="name">flink.version</span>&gt;</span>
+    <span class="tag">&lt;<span class="name">scala.binary.version</span>&gt;</span>2.12<span class="tag">&lt;/<span class="name">scala.binary.version</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">properties</span>&gt;</span>
+
+<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span>
+    <span class="comment">&lt;!-- Flink 核心依赖 --&gt;</span>
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-streaming-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    
+    <span class="comment">&lt;!-- 可选：Table API --&gt;</span>
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-table-api-java-bridge<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    
+    <span class="comment">&lt;!-- 可选：连接器 --&gt;</span>
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-connector-kafka<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+    
+    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.flink<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>flink-connector-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;flink.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span>
+    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></code></pre>
+<h2 id="flink基础使用"><a class="markdownIt-Anchor" href="#flink基础使用"></a> Flink基础使用</h2>
+<h4 id="第一个-flink-程序wordcount"><a class="markdownIt-Anchor" href="#第一个-flink-程序wordcount"></a> 第一个 Flink 程序：WordCount</h4>
+<pre><code class="highlight java"><span class="keyword">import</span> org.apache.flink.api.common.functions.FlatMapFunction;
+<span class="keyword">import</span> org.apache.flink.api.java.tuple.Tuple2;
+<span class="keyword">import</span> org.apache.flink.streaming.api.datastream.DataStream;
+<span class="keyword">import</span> org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+<span class="keyword">import</span> org.apache.flink.util.Collector;
+
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">WordCount</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="comment">// 1. 创建执行环境</span>
+        <span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+        
+        <span class="comment">// 2. 创建数据源</span>
+        DataStream&lt;String&gt; text = env.fromElements(
+            <span class="string">&quot;Hello Flink&quot;</span>,
+            <span class="string">&quot;Hello Java&quot;</span>, 
+            <span class="string">&quot;Hello World&quot;</span>
+        );
+        
+        <span class="comment">// 3. 定义转换操作</span>
+        DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; wordCounts = text
+            .flatMap(<span class="keyword">new</span> <span class="title class_">Tokenizer</span>())
+            .keyBy(value -&gt; value.f0)
+            .sum(<span class="number">1</span>);
+        
+        <span class="comment">// 4. 输出结果</span>
+        wordCounts.print();
+        
+        <span class="comment">// 5. 执行程序</span>
+        env.execute(<span class="string">&quot;WordCount Example&quot;</span>);
+    &#125;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">Tokenizer</span> <span class="keyword">implements</span> <span class="title class_">FlatMapFunction</span>&lt;String, Tuple2&lt;String, Integer&gt;&gt; &#123;
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">flatMap</span><span class="params">(String value, Collector&lt;Tuple2&lt;String, Integer&gt;&gt; out)</span> &#123;
+            String[] words = value.toLowerCase().split(<span class="string">&quot;\\W+&quot;</span>);
+            <span class="keyword">for</span> (String word : words) &#123;
+                <span class="keyword">if</span> (word.length() &gt; <span class="number">0</span>) &#123;
+                    out.collect(<span class="keyword">new</span> <span class="title class_">Tuple2</span>&lt;&gt;(word, <span class="number">1</span>));
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="流处理"><a class="markdownIt-Anchor" href="#流处理"></a> 流处理</h4>
+<pre><code class="highlight java"><span class="comment">// 创建执行环境</span>
+<span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+
+<span class="comment">// 设置并行度</span>
+env.setParallelism(<span class="number">4</span>);
+
+<span class="comment">// 启用检查点（每5秒）</span>
+env.enableCheckpointing(<span class="number">5000</span>);
+
+<span class="comment">// 常见数据源</span>
+DataStream&lt;String&gt; source1 = env.fromElements(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);
+DataStream&lt;String&gt; source2 = env.readTextFile(<span class="string">&quot;input.txt&quot;</span>);
+DataStream&lt;String&gt; source3 = env.socketTextStream(<span class="string">&quot;localhost&quot;</span>, <span class="number">9999</span>);
+
+<span class="comment">// 基本转换算子</span>
+DataStream&lt;String&gt; mapped = source1.map(String::toUpperCase);
+DataStream&lt;String&gt; filtered = source1.filter(s -&gt; s.startsWith(<span class="string">&quot;a&quot;</span>));
+DataStream&lt;String&gt; flatMapped = source1.flatMap((String s, Collector&lt;String&gt; out) -&gt; &#123;
+    <span class="keyword">for</span> (String word : s.split(<span class="string">&quot; &quot;</span>)) &#123;
+        out.collect(word);
+    &#125;
+&#125;);
+
+<span class="comment">// 分组聚合</span>
+DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; keyed = source1
+    .map(s -&gt; <span class="keyword">new</span> <span class="title class_">Tuple2</span>&lt;&gt;(s, <span class="number">1</span>))
+    .keyBy(t -&gt; t.f0)
+    .sum(<span class="number">1</span>);
+
+<span class="comment">// 窗口操作</span>
+DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; windowed = source1
+    .map(s -&gt; <span class="keyword">new</span> <span class="title class_">Tuple2</span>&lt;&gt;(s, <span class="number">1</span>))
+    .keyBy(t -&gt; t.f0)
+    .window(TumblingProcessingTimeWindows.of(Time.seconds(<span class="number">10</span>)))
+    .sum(<span class="number">1</span>);</code></pre>
+<h4 id="table-api-sql"><a class="markdownIt-Anchor" href="#table-api-sql"></a> Table API &amp; SQL</h4>
+<pre><code class="highlight java"><span class="comment">// 创建表环境</span>
+<span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+<span class="type">StreamTableEnvironment</span> <span class="variable">tableEnv</span> <span class="operator">=</span> StreamTableEnvironment.create(env);
+
+<span class="comment">// 从 DataStream 创建表</span>
+DataStream&lt;Order&gt; orderStream = env.addSource(...);
+<span class="type">Table</span> <span class="variable">orderTable</span> <span class="operator">=</span> tableEnv.fromDataStream(orderStream);
+
+<span class="comment">// 注册表</span>
+tableEnv.createTemporaryView(<span class="string">&quot;orders&quot;</span>, orderTable);
+
+<span class="comment">// 执行 SQL 查询</span>
+<span class="type">Table</span> <span class="variable">resultTable</span> <span class="operator">=</span> tableEnv.sqlQuery(
+    <span class="string">&quot;SELECT user_id, COUNT(*) as order_count &quot;</span> +
+    <span class="string">&quot;FROM orders &quot;</span> +
+    <span class="string">&quot;WHERE status = &#x27;SUCCESS&#x27; &quot;</span> +
+    <span class="string">&quot;GROUP BY user_id&quot;</span>
+);
+
+<span class="comment">// 将结果转换为 DataStream</span>
+DataStream&lt;Row&gt; resultStream = tableEnv.toDataStream(resultTable);</code></pre>
+<h4 id="实时处理kafka数据分析"><a class="markdownIt-Anchor" href="#实时处理kafka数据分析"></a> 实时处理kafka数据分析：</h4>
+<pre><code class="highlight java"><span class="comment">// 实时日志分析示例</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LogAnalysisJob</span> &#123;
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+        
+        <span class="comment">// 从 Kafka 读取日志</span>
+        <span class="type">Properties</span> <span class="variable">kafkaProps</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        kafkaProps.setProperty(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;localhost:9092&quot;</span>);
+        
+        FlinkKafkaConsumer&lt;String&gt; source = <span class="keyword">new</span> <span class="title class_">FlinkKafkaConsumer</span>&lt;&gt;(
+            <span class="string">&quot;app-logs&quot;</span>,
+            <span class="keyword">new</span> <span class="title class_">SimpleStringSchema</span>(),
+            kafkaProps
+        );
+        
+        DataStream&lt;String&gt; logStream = env.addSource(source);
+        
+        <span class="comment">// 解析日志并统计错误率</span>
+        DataStream&lt;Tuple3&lt;String, String, Integer&gt;&gt; parsedLogs = logStream
+            .map(<span class="keyword">new</span> <span class="title class_">LogParser</span>())
+            .assignTimestampsAndWatermarks(
+                WatermarkStrategy
+                    .&lt;LogEvent&gt;forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">5</span>))
+                    .withTimestampAssigner((event, timestamp) -&gt; event.getTimestamp())
+            );
+        
+        <span class="comment">// 每5分钟统计各服务的错误率</span>
+        DataStream&lt;ServiceErrorRate&gt; errorRates = parsedLogs
+            .filter(event -&gt; <span class="string">&quot;ERROR&quot;</span>.equals(event.getLevel()))
+            .keyBy(LogEvent::getServiceName)
+            .window(TumblingEventTimeWindows.of(Time.minutes(<span class="number">5</span>)))
+            .process(<span class="keyword">new</span> <span class="title class_">ErrorRateCalculator</span>());
+        
+        errorRates.print();
+        env.execute(<span class="string">&quot;Log Analysis Job&quot;</span>);
+    &#125;
+    
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">LogParser</span> <span class="keyword">implements</span> <span class="title class_">MapFunction</span>&lt;String, LogEvent&gt; &#123;
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> LogEvent <span class="title function_">map</span><span class="params">(String value)</span> &#123;
+            <span class="comment">// 解析日志格式：timestamp|service|level|message</span>
+            String[] parts = value.split(<span class="string">&quot;\\|&quot;</span>);
+            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">LogEvent</span>(
+                Long.parseLong(parts[<span class="number">0</span>]),
+                parts[<span class="number">1</span>],
+                parts[<span class="number">2</span>],
+                parts[<span class="number">3</span>]
+            );
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="实时-etl-管道kafka-elasticsearch"><a class="markdownIt-Anchor" href="#实时-etl-管道kafka-elasticsearch"></a> 实时 ETL 管道（Kafka → Elasticsearch）</h4>
+<pre><code class="highlight java"><span class="comment">// 完整 ETL 管道示例</span>
+<span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">KafkaToElasticsearchETL</span> &#123;
+    
+    <span class="comment">// 数据模型定义</span>
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">UserEvent</span> &#123;
+        <span class="keyword">private</span> String userId;
+        <span class="keyword">private</span> String eventType;
+        <span class="keyword">private</span> String ipAddress;
+        <span class="keyword">private</span> String userAgent;
+        <span class="keyword">private</span> Double value;
+        <span class="keyword">private</span> Long timestamp;
+    &#125;
+    
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">ProcessedEvent</span> &#123;
+        <span class="keyword">private</span> String userId;
+        <span class="keyword">private</span> String eventType;
+        <span class="keyword">private</span> String location;
+        <span class="keyword">private</span> String deviceCategory;
+        <span class="keyword">private</span> String osFamily;
+        <span class="keyword">private</span> Double normalizedValue;
+        <span class="keyword">private</span> Instant eventTime;
+        <span class="keyword">private</span> Instant processTime;
+    &#125;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+        
+        <span class="comment">// 1. Kafka Source</span>
+        KafkaSource&lt;UserEvent&gt; source = KafkaSource.&lt;UserEvent&gt;builder()
+            .setBootstrapServers(<span class="string">&quot;localhost:9092&quot;</span>)
+            .setTopics(<span class="string">&quot;user-events&quot;</span>)
+            .setGroupId(<span class="string">&quot;flink-etl-group&quot;</span>)
+            .setStartingOffsets(OffsetsInitializer.latest())
+            .setValueOnlyDeserializer(<span class="keyword">new</span> <span class="title class_">JsonDeserializationSchema</span>&lt;&gt;(UserEvent.class))
+            .build();
+        
+        DataStream&lt;UserEvent&gt; rawStream = env.fromSource(
+            source,
+            WatermarkStrategy.forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">5</span>)),
+            <span class="string">&quot;Kafka Source&quot;</span>
+        );
+        
+        <span class="comment">// 2. 数据转换处理</span>
+        DataStream&lt;ProcessedEvent&gt; processedStream = rawStream
+            .map(<span class="keyword">new</span> <span class="title class_">EventEnricher</span>())
+            .name(<span class="string">&quot;Event Enrichment&quot;</span>)
+            .filter(event -&gt; event.getNormalizedValue() &gt; <span class="number">0</span>)
+            .name(<span class="string">&quot;Filter Invalid Events&quot;</span>);
+        
+        <span class="comment">// 3. Elasticsearch Sink</span>
+        List&lt;HttpHost&gt; httpHosts = Arrays.asList(
+            <span class="keyword">new</span> <span class="title class_">HttpHost</span>(<span class="string">&quot;localhost&quot;</span>, <span class="number">9200</span>, <span class="string">&quot;http&quot;</span>)
+        );
+        
+        ElasticsearchSink&lt;ProcessedEvent&gt; esSink = <span class="keyword">new</span> <span class="title class_">Elasticsearch7SinkBuilder</span>&lt;ProcessedEvent&gt;()
+            .setHosts(httpHosts)
+            .setEmitter((element, context, indexer) -&gt; &#123;
+                <span class="type">IndexRequest</span> <span class="variable">request</span> <span class="operator">=</span> Requests.indexRequest()
+                    .index(<span class="string">&quot;user-events&quot;</span>)
+                    .id(element.getUserId() + <span class="string">&quot;_&quot;</span> + element.getEventTime())
+                    .source(JsonUtils.toJson(element), XContentType.JSON);
+                indexer.add(request);
+            &#125;)
+            .setBulkFlushMaxActions(<span class="number">1000</span>)
+            .setBulkFlushInterval(<span class="number">1000L</span>)
+            .setBulkFlushBackoffStrategy(FlushBackoffType.EXPONENTIAL, <span class="number">3</span>, <span class="number">1000</span>)
+            .build();
+        
+        processedStream.sinkTo(esSink).name(<span class="string">&quot;Elasticsearch Sink&quot;</span>);
+        
+        <span class="comment">// 4. 执行作业</span>
+        env.execute(<span class="string">&quot;Kafka to Elasticsearch ETL&quot;</span>);
+    &#125;
+    
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">EventEnricher</span> <span class="keyword">implements</span> <span class="title class_">MapFunction</span>&lt;UserEvent, ProcessedEvent&gt; &#123;
+        <span class="keyword">private</span> <span class="keyword">transient</span> IPLocationService locationService;
+        <span class="keyword">private</span> <span class="keyword">transient</span> UserAgentParser uaParser;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> &#123;
+            locationService = <span class="keyword">new</span> <span class="title class_">IPLocationService</span>();
+            uaParser = <span class="keyword">new</span> <span class="title class_">UserAgentParser</span>();
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> ProcessedEvent <span class="title function_">map</span><span class="params">(UserEvent event)</span> &#123;
+            <span class="comment">// 丰富数据：IP解析地理位置、UserAgent解析设备信息</span>
+            <span class="type">String</span> <span class="variable">location</span> <span class="operator">=</span> locationService.getLocation(event.getIpAddress());
+            <span class="type">UserAgentInfo</span> <span class="variable">uaInfo</span> <span class="operator">=</span> uaParser.parse(event.getUserAgent());
+            
+            <span class="comment">// 数据标准化</span>
+            <span class="type">Double</span> <span class="variable">normalizedValue</span> <span class="operator">=</span> normalize(event.getValue());
+            
+            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">ProcessedEvent</span>(
+                event.getUserId(),
+                event.getEventType(),
+                location,
+                uaInfo.getDeviceCategory(),
+                uaInfo.getOsFamily(),
+                normalizedValue,
+                Instant.ofEpochMilli(event.getTimestamp()),
+                Instant.now()
+            );
+        &#125;
+        
+        <span class="keyword">private</span> Double <span class="title function_">normalize</span><span class="params">(Double value)</span> &#123;
+            <span class="comment">// 标准化逻辑</span>
+            <span class="keyword">return</span> value != <span class="literal">null</span> ? value / <span class="number">100.0</span> : <span class="number">0.0</span>;
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="检测电商数据"><a class="markdownIt-Anchor" href="#检测电商数据"></a> 检测电商数据</h4>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">EcommerceOrderMonitor</span> &#123;
+    
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">OrderEvent</span> &#123;
+        <span class="keyword">private</span> String orderId;
+        <span class="keyword">private</span> String userId;
+        <span class="keyword">private</span> String region;
+        <span class="keyword">private</span> Double amount;
+        <span class="keyword">private</span> String paymentMethod;
+        <span class="keyword">private</span> Long timestamp;
+    &#125;
+    
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>  
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">RegionOrderStats</span> &#123;
+        <span class="keyword">private</span> String region;
+        <span class="keyword">private</span> Long windowStart;
+        <span class="keyword">private</span> Long windowEnd;
+        <span class="keyword">private</span> Long orderCount;
+        <span class="keyword">private</span> Double totalAmount;
+        <span class="keyword">private</span> Double avgAmount;
+    &#125;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+        env.setParallelism(<span class="number">4</span>);
+        
+        <span class="comment">// 1. 从 Kafka 读取订单数据</span>
+        <span class="type">Properties</span> <span class="variable">props</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Properties</span>();
+        props.setProperty(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;kafka1:9092,kafka2:9092&quot;</span>);
+        props.setProperty(<span class="string">&quot;group.id&quot;</span>, <span class="string">&quot;order-monitor&quot;</span>);
+        
+        FlinkKafkaConsumer&lt;OrderEvent&gt; source = <span class="keyword">new</span> <span class="title class_">FlinkKafkaConsumer</span>&lt;&gt;(
+            <span class="string">&quot;orders&quot;</span>,
+            <span class="keyword">new</span> <span class="title class_">JsonDeserializationSchema</span>&lt;&gt;(OrderEvent.class),
+            props
+        );
+        
+        source.setStartFromLatest();
+        
+        DataStream&lt;OrderEvent&gt; orderStream = env.addSource(source)
+            .assignTimestampsAndWatermarks(
+                WatermarkStrategy
+                    .&lt;OrderEvent&gt;forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">10</span>))
+                    .withTimestampAssigner((event, timestamp) -&gt; event.getTimestamp())
+            );
+        
+        <span class="comment">// 2. 实时统计：每分钟各地区订单量和金额</span>
+        DataStream&lt;RegionOrderStats&gt; regionStats = orderStream
+            .keyBy(OrderEvent::getRegion)
+            .window(TumblingEventTimeWindows.of(Time.minutes(<span class="number">1</span>)))
+            .aggregate(<span class="keyword">new</span> <span class="title class_">OrderAggregator</span>(), <span class="keyword">new</span> <span class="title class_">OrderWindowProcessor</span>());
+        
+        <span class="comment">// 3. 异常检测：检测异常大额订单</span>
+        OutputTag&lt;OrderEvent&gt; largeOrderTag = <span class="keyword">new</span> <span class="title class_">OutputTag</span>&lt;OrderEvent&gt;(<span class="string">&quot;large-orders&quot;</span>) &#123;&#125;;
+        
+        SingleOutputStreamOperator&lt;OrderEvent&gt; normalOrders = orderStream
+            .process(<span class="keyword">new</span> <span class="title class_">FraudDetectionProcessFunction</span>(largeOrderTag));
+        
+        DataStream&lt;OrderEvent&gt; largeOrders = normalOrders.getSideOutput(largeOrderTag);
+        
+        <span class="comment">// 4. 输出结果</span>
+        regionStats.print(<span class="string">&quot;Region Statistics&quot;</span>);
+        largeOrders.print(<span class="string">&quot;Large Orders Alert&quot;</span>);
+        
+        <span class="comment">// 5. 将统计结果写入数据库</span>
+        regionStats.addSink(<span class="keyword">new</span> <span class="title class_">JdbcSink</span>&lt;&gt;(
+            <span class="string">&quot;INSERT INTO region_order_stats (region, window_start, window_end, order_count, total_amount, avg_amount) &quot;</span> +
+            <span class="string">&quot;VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE &quot;</span> +
+            <span class="string">&quot;order_count=VALUES(order_count), total_amount=VALUES(total_amount), avg_amount=VALUES(avg_amount)&quot;</span>,
+            (statement, stats) -&gt; &#123;
+                statement.setString(<span class="number">1</span>, stats.getRegion());
+                statement.setTimestamp(<span class="number">2</span>, <span class="keyword">new</span> <span class="title class_">Timestamp</span>(stats.getWindowStart()));
+                statement.setTimestamp(<span class="number">3</span>, <span class="keyword">new</span> <span class="title class_">Timestamp</span>(stats.getWindowEnd()));
+                statement.setLong(<span class="number">4</span>, stats.getOrderCount());
+                statement.setDouble(<span class="number">5</span>, stats.getTotalAmount());
+                statement.setDouble(<span class="number">6</span>, stats.getAvgAmount());
+            &#125;,
+            JdbcExecutionOptions.builder()
+                .withBatchSize(<span class="number">1000</span>)
+                .withBatchIntervalMs(<span class="number">200</span>)
+                .build(),
+            JdbcConnectionOptions.builder()
+                .withUrl(<span class="string">&quot;jdbc:mysql://localhost:3306/ecommerce&quot;</span>)
+                .withDriverName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>)
+                .withUsername(<span class="string">&quot;flink&quot;</span>)
+                .withPassword(<span class="string">&quot;password&quot;</span>)
+                .build()
+        ));
+        
+        env.execute(<span class="string">&quot;E-commerce Order Monitor&quot;</span>);
+    &#125;
+    
+    <span class="comment">// 聚合函数：累加订单数量和金额</span>
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">OrderAggregator</span> <span class="keyword">implements</span> <span class="title class_">AggregateFunction</span>&lt;OrderEvent, Tuple3&lt;Long, Double, Long&gt;, Tuple3&lt;Long, Double, Long&gt;&gt; &#123;
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> Tuple3&lt;Long, Double, Long&gt; <span class="title function_">createAccumulator</span><span class="params">()</span> &#123;
+            <span class="keyword">return</span> Tuple3.of(<span class="number">0L</span>, <span class="number">0.0</span>, <span class="number">0L</span>); <span class="comment">// count, amount, timestamp</span>
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> Tuple3&lt;Long, Double, Long&gt; <span class="title function_">add</span><span class="params">(OrderEvent value, Tuple3&lt;Long, Double, Long&gt; accumulator)</span> &#123;
+            <span class="keyword">return</span> Tuple3.of(
+                accumulator.f0 + <span class="number">1</span>,
+                accumulator.f1 + value.getAmount(),
+                Math.max(accumulator.f2, value.getTimestamp())
+            );
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> Tuple3&lt;Long, Double, Long&gt; <span class="title function_">getResult</span><span class="params">(Tuple3&lt;Long, Double, Long&gt; accumulator)</span> &#123;
+            <span class="keyword">return</span> accumulator;
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> Tuple3&lt;Long, Double, Long&gt; <span class="title function_">merge</span><span class="params">(Tuple3&lt;Long, Double, Long&gt; a, Tuple3&lt;Long, Double, Long&gt; b)</span> &#123;
+            <span class="keyword">return</span> Tuple3.of(a.f0 + b.f0, a.f1 + b.f1, Math.max(a.f2, b.f2));
+        &#125;
+    &#125;
+    
+    <span class="comment">// 窗口处理函数：生成统计结果</span>
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">OrderWindowProcessor</span> <span class="keyword">extends</span> <span class="title class_">ProcessWindowFunction</span>&lt;
+        Tuple3&lt;Long, Double, Long&gt;, RegionOrderStats, String, TimeWindow&gt; &#123;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">process</span><span class="params">(String region, Context context, </span>
+<span class="params">                          Iterable&lt;Tuple3&lt;Long, Double, Long&gt;&gt; elements,</span>
+<span class="params">                          Collector&lt;RegionOrderStats&gt; out)</span> &#123;
+            Tuple3&lt;Long, Double, Long&gt; result = elements.iterator().next();
+            
+            <span class="type">RegionOrderStats</span> <span class="variable">stats</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">RegionOrderStats</span>(
+                region,
+                context.window().getStart(),
+                context.window().getEnd(),
+                result.f0, <span class="comment">// orderCount</span>
+                result.f1, <span class="comment">// totalAmount</span>
+                result.f0 &gt; <span class="number">0</span> ? result.f1 / result.f0 : <span class="number">0.0</span> <span class="comment">// avgAmount</span>
+            );
+            
+            out.collect(stats);
+        &#125;
+    &#125;
+    
+    <span class="comment">// 欺诈检测处理函数</span>
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">FraudDetectionProcessFunction</span> <span class="keyword">extends</span> <span class="title class_">ProcessFunction</span>&lt;OrderEvent, OrderEvent&gt; &#123;
+        <span class="keyword">private</span> <span class="keyword">final</span> OutputTag&lt;OrderEvent&gt; largeOrderTag;
+        <span class="keyword">private</span> <span class="keyword">transient</span> ValueState&lt;Double&gt; userTotalState;
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Double</span> <span class="variable">LARGE_ORDER_THRESHOLD</span> <span class="operator">=</span> <span class="number">10000.0</span>;
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Double</span> <span class="variable">USER_HOURLY_THRESHOLD</span> <span class="operator">=</span> <span class="number">50000.0</span>;
+        
+        <span class="keyword">public</span> <span class="title function_">FraudDetectionProcessFunction</span><span class="params">(OutputTag&lt;OrderEvent&gt; largeOrderTag)</span> &#123;
+            <span class="built_in">this</span>.largeOrderTag = largeOrderTag;
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> &#123;
+            ValueStateDescriptor&lt;Double&gt; descriptor = 
+                <span class="keyword">new</span> <span class="title class_">ValueStateDescriptor</span>&lt;&gt;(<span class="string">&quot;user-total&quot;</span>, Double.class);
+            
+            <span class="comment">// 设置状态 TTL：1小时</span>
+            <span class="type">StateTtlConfig</span> <span class="variable">ttlConfig</span> <span class="operator">=</span> StateTtlConfig
+                .newBuilder(Time.hours(<span class="number">1</span>))
+                .setUpdateType(StateTtlConfig.UpdateType.OnCreateAndWrite)
+                .setStateVisibility(StateTtlConfig.StateVisibility.NeverReturnExpired)
+                .build();
+            
+            descriptor.enableTimeToLive(ttlConfig);
+            userTotalState = getRuntimeContext().getState(descriptor);
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processElement</span><span class="params">(OrderEvent event, Context ctx, </span>
+<span class="params">                                 Collector&lt;OrderEvent&gt; out)</span> <span class="keyword">throws</span> Exception &#123;
+            
+            <span class="comment">// 检测单笔大额订单</span>
+            <span class="keyword">if</span> (event.getAmount() &gt; LARGE_ORDER_THRESHOLD) &#123;
+                ctx.output(largeOrderTag, event);
+            &#125;
+            
+            <span class="comment">// 检测用户累计金额异常</span>
+            <span class="type">Double</span> <span class="variable">userTotal</span> <span class="operator">=</span> userTotalState.value();
+            <span class="keyword">if</span> (userTotal == <span class="literal">null</span>) &#123;
+                userTotal = <span class="number">0.0</span>;
+            &#125;
+            
+            userTotal += event.getAmount();
+            userTotalState.update(userTotal);
+            
+            <span class="keyword">if</span> (userTotal &gt; USER_HOURLY_THRESHOLD) &#123;
+                ctx.output(largeOrderTag, event);
+            &#125;
+            
+            <span class="comment">// 正常订单继续向下游传递</span>
+            out.collect(event);
+        &#125;
+    &#125;
+&#125;</code></pre>
+<h4 id="物联网设备监控"><a class="markdownIt-Anchor" href="#物联网设备监控"></a> 物联网设备监控</h4>
+<pre><code class="highlight java"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">IoTDeviceMonitor</span> &#123;
+    
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SensorData</span> &#123;
+        <span class="keyword">private</span> String deviceId;
+        <span class="keyword">private</span> String sensorType;
+        <span class="keyword">private</span> Double value;
+        <span class="keyword">private</span> Long timestamp;
+        <span class="keyword">private</span> Double latitude;
+        <span class="keyword">private</span> Double longitude;
+    &#125;
+    
+    <span class="meta">@Data</span>
+    <span class="meta">@NoArgsConstructor</span>
+    <span class="meta">@AllArgsConstructor</span>
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">DeviceAlert</span> &#123;
+        <span class="keyword">private</span> String deviceId;
+        <span class="keyword">private</span> String alertType;
+        <span class="keyword">private</span> Double currentValue;
+        <span class="keyword">private</span> Double threshold;
+        <span class="keyword">private</span> String message;
+        <span class="keyword">private</span> Long timestamp;
+    &#125;
+    
+    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;
+        <span class="type">StreamExecutionEnvironment</span> <span class="variable">env</span> <span class="operator">=</span> StreamExecutionEnvironment.getExecutionEnvironment();
+        
+        <span class="comment">// 1. 从 MQTT/Kafka 读取传感器数据</span>
+        DataStream&lt;SensorData&gt; sensorStream = env
+            .addSource(<span class="keyword">new</span> <span class="title class_">MQTTSource</span>(<span class="string">&quot;tcp://mqtt-server:1883&quot;</span>, <span class="string">&quot;sensors/#&quot;</span>))
+            .map(message -&gt; parseSensorData(message))
+            .assignTimestampsAndWatermarks(
+                WatermarkStrategy
+                    .&lt;SensorData&gt;forBoundedOutOfOrderness(Duration.ofSeconds(<span class="number">5</span>))
+                    .withTimestampAssigner((event, timestamp) -&gt; event.getTimestamp())
+            );
+        
+        <span class="comment">// 2. 温度异常检测：连续3次超过阈值</span>
+        OutputTag&lt;DeviceAlert&gt; temperatureAlertTag = <span class="keyword">new</span> <span class="title class_">OutputTag</span>&lt;DeviceAlert&gt;(<span class="string">&quot;temperature-alert&quot;</span>) &#123;&#125;;
+        
+        DataStream&lt;SensorData&gt; temperatureStream = sensorStream
+            .filter(data -&gt; <span class="string">&quot;temperature&quot;</span>.equals(data.getSensorType()));
+        
+        SingleOutputStreamOperator&lt;SensorData&gt; normalTempStream = temperatureStream
+            .keyBy(SensorData::getDeviceId)
+            .process(<span class="keyword">new</span> <span class="title class_">TemperatureAnomalyDetector</span>(temperatureAlertTag));
+        
+        DataStream&lt;DeviceAlert&gt; temperatureAlerts = normalTempStream
+            .getSideOutput(temperatureAlertTag);
+        
+        <span class="comment">// 3. 设备离线检测：5分钟无数据上报</span>
+        OutputTag&lt;DeviceAlert&gt; offlineAlertTag = <span class="keyword">new</span> <span class="title class_">OutputTag</span>&lt;DeviceAlert&gt;(<span class="string">&quot;offline-alert&quot;</span>) &#123;&#125;;
+        
+        SingleOutputStreamOperator&lt;SensorData&gt; onlineDevices = sensorStream
+            .keyBy(SensorData::getDeviceId)
+            .process(<span class="keyword">new</span> <span class="title class_">DeviceOfflineDetector</span>(offlineAlertTag, Time.minutes(<span class="number">5</span>)));
+        
+        DataStream&lt;DeviceAlert&gt; offlineAlerts = onlineDevices
+            .getSideOutput(offlineAlertTag);
+        
+        <span class="comment">// 4. 实时统计：每10分钟设备平均指标</span>
+        DataStream&lt;DeviceStats&gt; deviceStats = sensorStream
+            .keyBy(SensorData::getDeviceId)
+            .window(TumblingEventTimeWindows.of(Time.minutes(<span class="number">10</span>)))
+            .aggregate(<span class="keyword">new</span> <span class="title class_">DeviceStatsAggregator</span>());
+        
+        <span class="comment">// 5. 输出和存储</span>
+        temperatureAlerts.print(<span class="string">&quot;Temperature Alerts&quot;</span>);
+        offlineAlerts.print(<span class="string">&quot;Offline Alerts&quot;</span>);
+        deviceStats.print(<span class="string">&quot;Device Statistics&quot;</span>);
+        
+        <span class="comment">// 将告警写入时序数据库</span>
+        temperatureAlerts.addSink(<span class="keyword">new</span> <span class="title class_">InfluxDBSink</span>&lt;&gt;());
+        offlineAlerts.addSink(<span class="keyword">new</span> <span class="title class_">InfluxDBSink</span>&lt;&gt;());
+        
+        env.execute(<span class="string">&quot;IoT Device Monitor&quot;</span>);
+    &#125;
+    
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">TemperatureAnomalyDetector</span> <span class="keyword">extends</span> <span class="title class_">KeyedProcessFunction</span>&lt;String, SensorData, SensorData&gt; &#123;
+        <span class="keyword">private</span> <span class="keyword">final</span> OutputTag&lt;DeviceAlert&gt; alertTag;
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">Double</span> <span class="variable">TEMP_THRESHOLD</span> <span class="operator">=</span> <span class="number">85.0</span>;
+        <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">CONSECUTIVE_COUNT</span> <span class="operator">=</span> <span class="number">3</span>;
+        
+        <span class="keyword">private</span> <span class="keyword">transient</span> ListState&lt;Double&gt; recentTemperatures;
+        <span class="keyword">private</span> <span class="keyword">transient</span> ValueState&lt;Long&gt; lastAlertTime;
+        
+        <span class="keyword">public</span> <span class="title function_">TemperatureAnomalyDetector</span><span class="params">(OutputTag&lt;DeviceAlert&gt; alertTag)</span> &#123;
+            <span class="built_in">this</span>.alertTag = alertTag;
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> &#123;
+            ListStateDescriptor&lt;Double&gt; tempDescriptor = 
+                <span class="keyword">new</span> <span class="title class_">ListStateDescriptor</span>&lt;&gt;(<span class="string">&quot;recent-temps&quot;</span>, Double.class);
+            recentTemperatures = getRuntimeContext().getListState(tempDescriptor);
+            
+            ValueStateDescriptor&lt;Long&gt; alertDescriptor = 
+                <span class="keyword">new</span> <span class="title class_">ValueStateDescriptor</span>&lt;&gt;(<span class="string">&quot;last-alert&quot;</span>, Long.class);
+            lastAlertTime = getRuntimeContext().getState(alertDescriptor);
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processElement</span><span class="params">(SensorData data, Context ctx, </span>
+<span class="params">                                 Collector&lt;SensorData&gt; out)</span> <span class="keyword">throws</span> Exception &#123;
+            
+            <span class="comment">// 添加到最近温度列表</span>
+            Iterable&lt;Double&gt; temps = recentTemperatures.get();
+            List&lt;Double&gt; tempList = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;();
+            temps.forEach(tempList::add);
+            
+            tempList.add(data.getValue());
+            
+            <span class="comment">// 只保留最近 CONSECUTIVE_COUNT 次温度</span>
+            <span class="keyword">if</span> (tempList.size() &gt; CONSECUTIVE_COUNT) &#123;
+                tempList = tempList.subList(tempList.size() - CONSECUTIVE_COUNT, tempList.size());
+            &#125;
+            
+            recentTemperatures.update(tempList);
+            
+            <span class="comment">// 检查是否连续超过阈值</span>
+            <span class="type">boolean</span> <span class="variable">allAboveThreshold</span> <span class="operator">=</span> tempList.stream()
+                .allMatch(temp -&gt; temp &gt; TEMP_THRESHOLD);
+            
+            <span class="type">Long</span> <span class="variable">lastAlert</span> <span class="operator">=</span> lastAlertTime.value();
+            <span class="type">Long</span> <span class="variable">currentTime</span> <span class="operator">=</span> ctx.timestamp();
+            
+            <span class="comment">// 避免频繁告警：至少间隔1分钟</span>
+            <span class="keyword">if</span> (allAboveThreshold &amp;&amp; 
+                (lastAlert == <span class="literal">null</span> || currentTime - lastAlert &gt; <span class="number">60000</span>)) &#123;
+                
+                <span class="type">DeviceAlert</span> <span class="variable">alert</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeviceAlert</span>(
+                    data.getDeviceId(),
+                    <span class="string">&quot;HIGH_TEMPERATURE&quot;</span>,
+                    data.getValue(),
+                    TEMP_THRESHOLD,
+                    String.format(<span class="string">&quot;设备温度连续%d次超过阈值&quot;</span>, CONSECUTIVE_COUNT),
+                    currentTime
+                );
+                
+                ctx.output(alertTag, alert);
+                lastAlertTime.update(currentTime);
+            &#125;
+            
+            out.collect(data);
+        &#125;
+    &#125;
+    
+    <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">DeviceOfflineDetector</span> <span class="keyword">extends</span> <span class="title class_">KeyedProcessFunction</span>&lt;String, SensorData, SensorData&gt; &#123;
+        <span class="keyword">private</span> <span class="keyword">final</span> OutputTag&lt;DeviceAlert&gt; alertTag;
+        <span class="keyword">private</span> <span class="keyword">final</span> Time offlineThreshold;
+        
+        <span class="keyword">private</span> <span class="keyword">transient</span> ValueState&lt;Long&gt; lastSeenTime;
+        <span class="keyword">private</span> <span class="keyword">transient</span> ValueState&lt;Long&gt; timerState;
+        
+        <span class="keyword">public</span> <span class="title function_">DeviceOfflineDetector</span><span class="params">(OutputTag&lt;DeviceAlert&gt; alertTag, Time offlineThreshold)</span> &#123;
+            <span class="built_in">this</span>.alertTag = alertTag;
+            <span class="built_in">this</span>.offlineThreshold = offlineThreshold;
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">open</span><span class="params">(Configuration parameters)</span> &#123;
+            ValueStateDescriptor&lt;Long&gt; lastSeenDescriptor = 
+                <span class="keyword">new</span> <span class="title class_">ValueStateDescriptor</span>&lt;&gt;(<span class="string">&quot;last-seen&quot;</span>, Long.class);
+            lastSeenTime = getRuntimeContext().getState(lastSeenDescriptor);
+            
+            ValueStateDescriptor&lt;Long&gt; timerDescriptor = 
+                <span class="keyword">new</span> <span class="title class_">ValueStateDescriptor</span>&lt;&gt;(<span class="string">&quot;timer&quot;</span>, Long.class);
+            timerState = getRuntimeContext().getState(timerDescriptor);
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">processElement</span><span class="params">(SensorData data, Context ctx, </span>
+<span class="params">                                 Collector&lt;SensorData&gt; out)</span> <span class="keyword">throws</span> Exception &#123;
+            
+            <span class="type">Long</span> <span class="variable">currentTime</span> <span class="operator">=</span> ctx.timestamp();
+            <span class="type">Long</span> <span class="variable">lastSeen</span> <span class="operator">=</span> lastSeenTime.value();
+            
+            <span class="comment">// 更新最后看到时间</span>
+            lastSeenTime.update(currentTime);
+            
+            <span class="comment">// 取消之前的定时器</span>
+            <span class="type">Long</span> <span class="variable">currentTimer</span> <span class="operator">=</span> timerState.value();
+            <span class="keyword">if</span> (currentTimer != <span class="literal">null</span>) &#123;
+                ctx.timerService().deleteEventTimeTimer(currentTimer);
+            &#125;
+            
+            <span class="comment">// 注册新的定时器</span>
+            <span class="type">Long</span> <span class="variable">newTimer</span> <span class="operator">=</span> currentTime + offlineThreshold.toMilliseconds();
+            ctx.timerService().registerEventTimeTimer(newTimer);
+            timerState.update(newTimer);
+            
+            out.collect(data);
+        &#125;
+        
+        <span class="meta">@Override</span>
+        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onTimer</span><span class="params">(<span class="type">long</span> timestamp, OnTimerContext ctx, </span>
+<span class="params">                          Collector&lt;SensorData&gt; out)</span> <span class="keyword">throws</span> Exception &#123;
+            
+            <span class="type">Long</span> <span class="variable">lastSeen</span> <span class="operator">=</span> lastSeenTime.value();
+            
+            <span class="comment">// 如果最后看到时间加上阈值小于当前时间，说明设备离线</span>
+            <span class="keyword">if</span> (lastSeen != <span class="literal">null</span> &amp;&amp; 
+                lastSeen + offlineThreshold.toMilliseconds() &lt;= timestamp) &#123;
+                
+                <span class="type">DeviceAlert</span> <span class="variable">alert</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">DeviceAlert</span>(
+                    ctx.getCurrentKey(),
+                    <span class="string">&quot;DEVICE_OFFLINE&quot;</span>,
+                    <span class="literal">null</span>,
+                    <span class="literal">null</span>,
+                    String.format(<span class="string">&quot;设备已离线超过%d分钟&quot;</span>, offlineThreshold.toMinutes()),
+                    timestamp
+                );
+                
+                ctx.output(alertTag, alert);
+            &#125;
+        &#125;
+    &#125;
+&#125;</code></pre></main>
+
+</article>
+
+
+<script src="/js/highlight.js"></script>
+
+  </main>
+  <footer class="footer">
+  
+  <span>Copyright © 2026 Lism Blog | lisisism@qq.com</span>
+  
+</footer>
+  
+<script src="/js/theme.js"></script>
+
+</body>
+
+</html>
